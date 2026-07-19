@@ -31,9 +31,15 @@ pip install -r requirements.txt
 for f in scripts/04_figures/plot_fig*.py; do python "$f"; done
 ```
 
-Figures land in `figures/`. Two scripts need the full data (see below):
-`plot_figS9.py` (substitution matrix) and `plot_figS10.py` (alphabet states) read
-the trained model directly.
+Figures land in `figures/`. All figures except two redraw from the bundled
+results with no extra data. `plot_figS10.py` (substitution matrix) and
+`plot_figS11.py` (alphabet states) read the trained model directly and need
+`RFOLDSEEK_DATA` (see below).
+
+Bundled results take precedence over `RFOLDSEEK_DATA`, so pointing that variable
+at a working tree cannot silently substitute in-progress numbers for the
+published ones. Set `RFOLDSEEK_PREFER_EXTERNAL=1` to read results from
+`RFOLDSEEK_DATA` instead.
 
 ## Data
 
@@ -74,14 +80,14 @@ files/production/chain_sequences.tsv           for the BLASTN baseline
 | Fig S6 | `plot_figS6.py` | `ablation_figS6_substitution_matrix.py` | `cv_s6_clan_5fold.json` |
 | Fig S7 | `plot_figS7.py` | `ablation_figS7_prefilter.py` | `cv_s7_clan_5fold.json` |
 | Fig S8 | `plot_figS8.py` | `ablation_figS8_virtual_centre.py` | `cv_vc_clan_5fold.json` |
-| Fig S9 | `plot_figS9.py` | `scripts/01_train/train_final_model.py` | needs `RFOLDSEEK_DATA` |
-| Fig S10 | `plot_figS10.py` | — (reads the trained model directly) | needs `RFOLDSEEK_DATA` |
-| Fig S11 | `plot_figS11.py` | `eval_recall1_figS11.py` | `recall1_rfam_test.json` |
-| Fig S12 | `plot_figS12.py` | `ablation_figS12_prefilter_scoring.py` | `cv_prefilter_score_5fold.json` |
+| Fig S9 | `plot_figS9.py` | `ablation_figS9_prefilter_scoring.py` | `cv_prefilter_score_5fold.json` |
+| Fig S10 | `plot_figS10.py` | `scripts/01_train/train_final_model.py` | needs `RFOLDSEEK_DATA` |
+| Fig S11 | `plot_figS11.py` | — (reads the trained model directly) | needs `RFOLDSEEK_DATA` |
+| Fig S12 | `plot_figS12.py` | `eval_recall1_figS12.py` | `recall1_rfam_test.json` |
 
 Not included: **Fig 1** and **Fig S1**, which are schematics drawn externally.
 
-`plot_figS10.py` also writes a companion `token_state_representatives.tsv`
+`plot_figS11.py` also writes a companion `token_state_representatives.tsv`
 listing the chosen representatives. Its `frequency` and `role` columns come from
 `--profile` (`files/motifs_v2/token_profile_summary.tsv`), a table that predates
 the final retrain, so those two columns refer to the earlier codebook's token
@@ -104,7 +110,7 @@ clan-evaluable query chains), using two metrics:
 The two use different label conventions by design; see the manuscript's
 Supplementary Methods.
 
-All design ablations (Figs S2–S8) use PDB-disjoint 5-fold cross-validation on the
+All design ablations (Figs S2–S9) use PDB-disjoint 5-fold cross-validation on the
 train+validation partition only, reporting mean ± SD across folds. The test split
 is untouched throughout model selection.
 

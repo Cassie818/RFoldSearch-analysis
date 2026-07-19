@@ -2,7 +2,7 @@
 family-level and clan-level Sens@1FP vs K in {20,40,60,80}."""
 import sys as _sys, os as _os
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
+from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
 _sys.path.insert(0, SRC_SEARCH); _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
@@ -11,7 +11,7 @@ matplotlib.use("Agg")
 matplotlib.rcParams["font.family"]="sans-serif"
 matplotlib.rcParams["font.sans-serif"]=["Arial","Helvetica","DejaVu Sans"]
 import matplotlib.pyplot as plt
-d=json.load(open("files/ablation/cv_s4_clan_5fold.json"))
+d=json.load(open(resolve("files/ablation/cv_s4_clan_5fold.json")))
 KS=[20,40,60,80,100]
 fam_m=np.array([d[f"K{K}"]["fam_sens_mean"] for K in KS]); fam_s=np.array([d[f"K{K}"]["fam_sens_std"] for K in KS])
 clan_m=np.array([d[f"K{K}"]["clan_sens_mean"] for K in KS]); clan_s=np.array([d[f"K{K}"]["clan_sens_std"] for K in KS])

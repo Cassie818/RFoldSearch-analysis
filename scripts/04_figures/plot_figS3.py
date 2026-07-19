@@ -1,7 +1,7 @@
 """Fig S3: tier-2 combo ablation, 5-fold CV, same style as S2."""
 import sys as _sys, os as _os
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
+from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
 _sys.path.insert(0, SRC_SEARCH); _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
@@ -10,7 +10,7 @@ matplotlib.use("Agg")
 matplotlib.rcParams["font.family"]="sans-serif"
 matplotlib.rcParams["font.sans-serif"]=["Arial","Helvetica","DejaVu Sans"]
 import matplotlib.pyplot as plt
-d=json.load(open("files/ablation/cv_s3_clan_5fold.json"))
+d=json.load(open(resolve("files/ablation/cv_s3_clan_5fold.json")))
 COMBOS=["ctx+nn1 (17D)","ctx+nn1+nn2 (27D)","ctx+nn1+bp (28D)","ctx+nn1+nn2+bp (38D)","ctx+nn1+bp+st (39D)"]
 LABELS=["ctx + nn1\n(17D)","ctx + nn1\n+ nn2 (27D)","ctx + nn1\n+ bp (28D)","ctx + nn1\n+ nn2 + bp (38D)","ctx + nn1\n+ bp + st (39D)"]
 KS=[20,40,60,80]

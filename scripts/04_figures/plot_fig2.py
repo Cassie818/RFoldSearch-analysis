@@ -13,7 +13,7 @@ Writes figures/fig2.png.
 """
 import sys as _sys, os as _os
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
+from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
 _sys.path.insert(0, SRC_SEARCH); _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 import json
@@ -27,8 +27,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 REPO = Path(DATA_ROOT)
-SRC = REPO / "files" / "production" / "retrieval" / "per_query_sens_test.json"
-TM = REPO / "files" / "production" / "retrieval" / "structural_tmscore_metrics_test.json"
+SRC = Path(resolve("files/production/retrieval/per_query_sens_test.json"))
+TM = Path(resolve("files/production/retrieval/structural_tmscore_metrics_test.json"))
 OUT = Path(FIG_DIR) / "fig2.png"
 
 METHODS = ["RFoldseek", "US-align", "RMalign", "RiboSeek", "BLASTN"]

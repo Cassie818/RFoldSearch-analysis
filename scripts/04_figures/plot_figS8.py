@@ -3,7 +3,7 @@
 Line plot in the Fig S4/S5/S6/S7 style."""
 import sys as _sys, os as _os
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
+from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
 _sys.path.insert(0, SRC_SEARCH); _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
@@ -12,7 +12,7 @@ matplotlib.use("Agg")
 matplotlib.rcParams["font.family"]="sans-serif"
 matplotlib.rcParams["font.sans-serif"]=["Arial","Helvetica","DejaVu Sans"]
 import matplotlib.pyplot as plt
-d=json.load(open("files/ablation/cv_vc_clan_5fold.json"))
+d=json.load(open(resolve("files/ablation/cv_vc_clan_5fold.json")))
 NAMES=[("0_0_0","(0, 0, 0)\nC4$'$-only"),
        ("0.5_0.5_0.5","(0.5, 0.5, 0.5)"),
        ("1_0.5_0.25","(1, 0.5, 0.25)")]

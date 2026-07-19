@@ -1,99 +1,43 @@
-"""Supplementary figure: the production codebook-cosine substitution matrix.
-
-Panel A : 80x80 token-to-token cosine similarity heatmap, with token order
-          permuted by hierarchical clustering of the matrix itself so that
-          structurally similar tokens form visible block-diagonal groups.
-Panel B : off-diagonal cosine similarity distribution (negative entries =
-          structurally dissimilar pairs; positive entries = structurally
-          equivalent tokens that the matrix lets Smith--Waterman trade).
-
-Writes: figures/S8.png
-"""
+"""Fig S9: similar-k-mer scoring ablation for the prefilter, PDB-disjoint 5-fold
+CV, K=80 deployed VQ-VAE + Structure-BLOSUM reranking. Same style as Figs S4-S8."""
 import sys as _sys, os as _os
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
+from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
 _sys.path.insert(0, SRC_SEARCH); _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
-
-import matplotlib
+import json,numpy as np,matplotlib
 matplotlib.use("Agg")
-matplotlib.rcParams["font.family"] = "Arial"
-matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
+matplotlib.rcParams["font.family"]="sans-serif"
+matplotlib.rcParams["font.sans-serif"]=["Arial","Helvetica","DejaVu Sans"]
 import matplotlib.pyplot as plt
-import numpy as np
-import torch
-from scipy.cluster.hierarchy import linkage, leaves_list
-from scipy.spatial.distance import squareform
-
-REPO = Path(__file__).resolve().parent.parent
-SRC = Path(DATA_ROOT) / "files/production_new/sub_matrix.pt"
-OUT = Path(FIG_DIR) / "S9.png"
-
-
-def main():
-    d = torch.load(SRC, map_location="cpu", weights_only=False)
-    M = d["matrix"].numpy() if isinstance(d["matrix"], torch.Tensor) else np.asarray(d["matrix"])
-    K = M.shape[0]
-    assert M.shape == (K, K), f"unexpected matrix shape {M.shape}"
-
-    # Hierarchical clustering on the matrix as a similarity → distance
-    dist = float(M.max()) - M
-    np.fill_diagonal(dist, 0.0)
-    dist = (dist + dist.T) / 2          # symmetrise to silence FP noise
-    np.clip(dist, 0, None, out=dist)
-    cond = squareform(dist, checks=False)
-    order = leaves_list(linkage(cond, method="average"))
-    M_clust = M[np.ix_(order, order)]
-
-    off = M[np.triu_indices(K, k=1)]
-
-    fig = plt.figure(figsize=(12.6, 5.2))
-    gs = fig.add_gridspec(1, 2, width_ratios=[1.05, 1.0], wspace=0.30)
-
-    # --- Panel A : clustered heatmap ---
-    ax = fig.add_subplot(gs[0, 0])
-    vext = float(np.abs([M.min(), M.max()]).max())
-    im = ax.imshow(M_clust, cmap="RdBu_r", vmin=-vext, vmax=vext,
-                   aspect="equal", interpolation="nearest")
-    cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.03)
-    cbar.set_label("Substitution score (log-odds)", fontsize=10)
-    cbar.ax.tick_params(labelsize=9)
-    ax.set_xlabel("Token (clustered)", fontsize=11)
-    ax.set_ylabel("Token (clustered)", fontsize=11)
-    ax.set_xticks([]); ax.set_yticks([])
-    ax.set_title(f"{K}×{K} Structure-BLOSUM substitution matrix",
-                 fontsize=11, pad=6)
-    ax.text(-0.10, 1.04, "A", transform=ax.transAxes,
-            fontsize=16, fontweight="bold", va="bottom", ha="right")
-
-    # --- Panel B : off-diagonal distribution ---
-    ax = fig.add_subplot(gs[0, 1])
-    ax.hist(off, bins=70, color="#6C8EBF", edgecolor="none",
-            rwidth=1.0, alpha=0.95)
-    ax.axvline(0, color="#444", linestyle="--", linewidth=1.2,
-               label="score $= 0$")
-    ax.axvline(off.mean(), color="#D62728", linestyle="-", linewidth=1.4,
-               label=f"mean = {off.mean():.3f}")
-    ax.set_xlabel("Substitution score (off-diagonal)", fontsize=11)
-    ax.set_ylabel("Token-pair count", fontsize=11)
-    _pad = 0.05 * (off.max() - off.min())
-    ax.set_xlim(off.min() - _pad, off.max() + _pad)
-    ax.tick_params(axis="both", labelsize=10)
-    ax.grid(False)
-    ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, fontsize=10, loc="upper left")
-    ax.set_title("Off-diagonal substitution-score distribution",
-                 fontsize=11, pad=6)
-    ax.text(-0.10, 1.04, "B", transform=ax.transAxes,
-            fontsize=16, fontweight="bold", va="bottom", ha="right")
-
-    fig.tight_layout()
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT, dpi=220, bbox_inches="tight")
-    print(f"wrote {OUT}  ({K}×{K}, off-diag mean {off.mean():.3f}, "
-          f"std {off.std():.3f})")
-
-
-if __name__ == "__main__":
-    main()
+d=json.load(open(resolve("files/ablation/cv_prefilter_score_5fold.json")))
+NAMES=[("E4","No expansion"),
+       ("blosum>=.25","Structure-BLOSUM\n$S\\geq0.25$"),
+       ("blosum>=0","Structure-BLOSUM\n$S\\geq0$"),
+       ("cos>=0","Codebook cosine\n$\\cos\\geq0$")]
+xs=np.arange(len(NAMES))
+fam_m=np.array([d[k[0]]["fam_sens_mean"] for k in NAMES]); fam_s=np.array([d[k[0]]["fam_sens_std"] for k in NAMES])
+clan_m=np.array([d[k[0]]["clan_sens_mean"] for k in NAMES]); clan_s=np.array([d[k[0]]["clan_sens_std"] for k in NAMES])
+fig,ax=plt.subplots(figsize=(7,4.8))
+C1="#5B7C99"; C2="#B08D5C"
+ax.plot(xs,fam_m,"o-",color=C1,linewidth=2,markersize=7,label="Family Sens@1FP",markerfacecolor=C1,markeredgecolor="white",markeredgewidth=1,zorder=3)
+for x,v,e in zip(xs,fam_m,fam_s):
+    ax.vlines(x,v,v+e,colors="#333333",linewidth=1.0,alpha=0.9,zorder=2)
+    ax.hlines(v+e,x-0.10,x+0.10,colors="#333333",linewidth=1.0,alpha=0.9,zorder=2)
+ax.plot(xs,clan_m,"s-",color=C2,linewidth=2,markersize=7,label="Clan Sens@1FP",markerfacecolor=C2,markeredgecolor="white",markeredgewidth=1,zorder=3)
+for x,v,e in zip(xs,clan_m,clan_s):
+    ax.vlines(x,v,v+e,colors="#333333",linewidth=1.0,alpha=0.9,zorder=2)
+    ax.hlines(v+e,x-0.10,x+0.10,colors="#333333",linewidth=1.0,alpha=0.9,zorder=2)
+for x,v,e in zip(xs,fam_m,fam_s): ax.text(x,v+e+0.012,f"{v:.3f}",ha="center",fontsize=8,color=C1)
+for x,v,e in zip(xs,clan_m,clan_s): ax.text(x,v+e+0.012,f"{v:.3f}",ha="center",fontsize=8,color=C2)
+ax.set_xlabel("Similar-$k$-mer scoring criterion",fontsize=12)
+ax.xaxis.set_label_coords(0.5,-0.18)
+ax.set_ylabel("Sens@1FP",fontsize=12)
+ax.set_xticks(xs); ax.set_xticklabels([n[1] for n in NAMES],fontsize=10)
+ax.set_xlim(-0.4,len(NAMES)-0.6); ax.set_ylim(0,0.5)
+ax.spines[["top","right"]].set_visible(False)
+ax.legend(loc="lower center",frameon=False,fontsize=11,ncol=2,bbox_to_anchor=(0.5,-0.38),handlelength=2.0,columnspacing=2.5)
+fig.tight_layout(rect=(0,0.07,1,1))
+OUT=str(Path(FIG_DIR)/"S9.png")
+fig.savefig(OUT,dpi=200,bbox_inches="tight"); print(f"wrote {OUT}")

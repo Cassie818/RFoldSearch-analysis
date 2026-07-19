@@ -1,7 +1,7 @@
 """Regenerate Fig S2 with cleaner error bars + shared bottom legend."""
 import sys as _sys, os as _os
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
+from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
 _sys.path.insert(0, SRC_SEARCH); _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
@@ -9,7 +9,7 @@ import json,numpy as np,matplotlib
 matplotlib.use("Agg"); matplotlib.rcParams["font.family"]="sans-serif"
 matplotlib.rcParams["font.sans-serif"]=["Arial","Helvetica","DejaVu Sans"]
 import matplotlib.pyplot as plt
-d=json.load(open("files/ablation/cv_s2_clan_5fold.json"))
+d=json.load(open(resolve("files/ablation/cv_s2_clan_5fold.json")))
 BLOCKS=["g_nn1","g_nn2","g_bp","g_st","g_ctx"]
 LABELS=["$g_{\\mathrm{nn}}^{(1)}$","$g_{\\mathrm{nn}}^{(2)}$","$g_{\\mathrm{bp}} + m_{\\mathrm{bp}}$","$g_{\\mathrm{st}} + m_{\\mathrm{st}}$","$g_{\\mathrm{ctx}}$"]
 KS=[20,40,60,80]
