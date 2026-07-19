@@ -88,10 +88,12 @@ files/production/chain_sequences.tsv           for the BLASTN baseline
 Not included: **Fig 1** and **Fig S1**, which are schematics drawn externally.
 
 `plot_figS11.py` also writes a companion `token_state_representatives.tsv`
-listing the chosen representatives. Its `frequency` and `role` columns come from
-`--profile` (`files/motifs_v2/token_profile_summary.tsv`), a table that predates
-the final retrain, so those two columns refer to the earlier codebook's token
-indices. The figure itself does not use the profile and is unaffected.
+into `figures/` listing the chosen representatives. Because `figures/` is
+gitignored it is a local artifact, not a bundled result. Its `frequency` and
+`role` columns come from `--profile`
+(`files/motifs_v2/token_profile_summary.tsv`), a table that predates the final
+retrain, so those two columns refer to the earlier codebook's token indices.
+The figure itself does not use the profile and is unaffected.
 
 ## Evaluation protocol
 

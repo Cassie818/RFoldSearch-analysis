@@ -1,4 +1,4 @@
-"""Plot the 80-state RFoldSeek structural alphabet from real representatives.
+"""Fig S11: the 80-state RFoldseek structural alphabet, drawn from real representatives.
 
 For each token, the script selects representative occurrences closest to the
 token centroid in the normalised 17-D production descriptor space. Their
@@ -47,6 +47,9 @@ def parse_args():
         "--output", default=str(Path(FIG_DIR) / "S11.png")
     )
     p.add_argument(
+        # Companion table listing the chosen representatives. Written next to
+        # the figure; note that figures/ is gitignored, so this is a local
+        # artifact rather than a bundled result.
         "--table",
         default=str(Path(FIG_DIR) / "token_state_representatives.tsv"),
     )
