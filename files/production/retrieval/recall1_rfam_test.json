@@ -2,7 +2,7 @@
   "_note": "Rfam family/clan Recall@1, test queries. Paper definition (Methods 'Evaluation on the RNAsolo benchmark'): top-ranked non-self target is a TP, no neutral set; family TP=same family, clan TP=same clan including same family.",
   "RFoldseek": {
     "family_recall1": 0.8773584905660378,
-    "clan_recall1": 0.9240506329113924,
+    "clan_recall1": 0.9113924050632911,
     "n_family": 106,
     "n_clan": 79
   },

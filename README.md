@@ -77,6 +77,7 @@ files/production/chain_sequences.tsv           for the BLASTN baseline
 | Fig S9 | `plot_figS9.py` | `scripts/01_train/train_final_model.py` | needs `RFOLDSEEK_DATA` |
 | Fig S10 | `plot_figS10.py` | — (reads the trained model directly) | needs `RFOLDSEEK_DATA` |
 | Fig S11 | `plot_figS11.py` | `eval_recall1_figS11.py` | `recall1_rfam_test.json` |
+| Fig S12 | `plot_figS12.py` | `ablation_figS12_prefilter_scoring.py` | `cv_prefilter_score_5fold.json` |
 
 Not included: **Fig 1** and **Fig S1**, which are schematics drawn externally.
 
@@ -113,6 +114,13 @@ K = 80 codebook, 17-D descriptor (`g_ctx` + `g_nn1`), VQ-VAE with 2-layer encode
 and 4-layer decoder, exact 4-mer inverted-index prefilter with 1-substitution
 similar-k-mer expansion, top-100 candidates, token Smith-Waterman reranking with
 the Structure-BLOSUM matrix (gap open −2.0, extend −0.5).
+
+Similar k-mers in the prefilter are admitted by their Structure-BLOSUM score
+(S >= 0), following Foldseek's 3Di convention. Note that the ablations in
+`scripts/03_ablations/` (Figs S2-S8) predate this change and admitted neighbours
+by codebook cosine instead; the two criteria are compared in Fig S12 and differ
+by less than the fold-to-fold variation. Candidate ties at the top-N cutoff are
+broken deterministically by target index.
 
 ## Baselines
 

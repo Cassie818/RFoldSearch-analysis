@@ -144,7 +144,7 @@ def retrieval_eval(m,K,heldout_dis,desc_all):
             for kid in expand_kmer(qk,cos,K,thresh):
                 for ti,tp in idx.get(kid,()):
                     if ti!=q: d=qp-tp; td[ti][d]=td[ti].get(d,0)+1
-        sc=[(ti,max((c for c in dm.values() if c>=2),default=-1)) for ti,dm in td.items()]; sc=[x for x in sc if x[1]>0]; sc.sort(key=lambda x:-x[1])
+        sc=[(ti,max((c for c in dm.values() if c>=2),default=-1)) for ti,dm in td.items()]; sc=[x for x in sc if x[1]>0]; sc.sort(key=lambda x:(-x[1],x[0]))   # deterministic tie-break: score, then target index
         cand=np.array([x[0] for x in sc[:100]],np.int64)
         if len(cand)==0: famS.append(0.0); continue
         r=cand[np.argsort(-np.array([smith_waterman_numba(tt,tok_list[t],cos,-2.0,-0.5) for t in cand]),kind="stable")]

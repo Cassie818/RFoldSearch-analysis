@@ -41,20 +41,24 @@ for ti,tt in enumerate(toks):
     for p in range(len(tt)-KMER_K+1): idx[int(np.dot(tt[p:p+KMER_K],powers))].append((ti,p))
 smith_waterman_numba(np.zeros(4,np.int64),np.zeros(4,np.int64),sub,GO,GE)
 thr=THRESH_FRAC*KMER_K
+# Similar k-mers are scored with the Structure-BLOSUM substitution matrix
+# (Foldseek's 3Di prefilter convention). The admissible substitutions depend
+# only on the matrix, so tabulate them once instead of rescanning per k-mer.
+NBR=[np.nonzero(((KMER_K-1)*1.0+sub[t])>=thr)[0] for t in range(K)]
+NBR=[nb[nb!=t].astype(np.int64) for t,nb in enumerate(NBR)]
 def expand(qk):
-    out={int(np.dot(qk,powers))}
+    base=int(np.dot(qk,powers)); out=[base]
     for pos in range(KMER_K):
-        for tok in range(K):
-            if tok!=qk[pos] and (KMER_K-1)*1.0+cos[qk[pos],tok]>=thr:
-                tr=qk.copy(); tr[pos]=tok; out.add(int(np.dot(tr,powers)))
-    return list(out)
+        delta=int(powers[pos]); cur=int(qk[pos])
+        for tok in NBR[cur]: out.append(base+delta*(int(tok)-cur))
+    return out
 def rank_new(q):
     tt=toks[q]; td=defaultdict(dict)
     for qp in range(len(tt)-KMER_K+1):
         for kid in expand(tt[qp:qp+KMER_K]):
             for ti,tp in idx.get(kid,()):
                 if ti!=q: d=qp-tp; td[ti][d]=td[ti].get(d,0)+1
-    sc=[(ti,max((c for c in dm.values() if c>=2),default=-1)) for ti,dm in td.items()]; sc=[x for x in sc if x[1]>0]; sc.sort(key=lambda x:-x[1])
+    sc=[(ti,max((c for c in dm.values() if c>=2),default=-1)) for ti,dm in td.items()]; sc=[x for x in sc if x[1]>0]; sc.sort(key=lambda x:(-x[1],x[0]))   # deterministic tie-break: score, then target index
     cand=np.array([x[0] for x in sc[:TOPN]],np.int64)
     if len(cand)==0: return np.zeros(0,np.int64)
     return cand[np.argsort(-np.array([smith_waterman_numba(tt,toks[t],sub,GO,GE) for t in cand]),kind="stable")]
