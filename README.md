@@ -1,0 +1,130 @@
+# RFoldseek — code for the manuscript Results
+
+Analysis and figure code behind the Results section of the RFoldseek manuscript
+(RNA structural search over a learned discrete *3Dr* alphabet).
+
+Every script here maps to a specific figure. Ablation results are bundled as
+JSON so all figures can be redrawn immediately after cloning; regenerating those
+JSONs from scratch additionally requires the large data artifacts described
+under [Data](#data).
+
+## Layout
+
+```
+paths.py                  path resolution (RFOLDSEEK_DATA / RFOLDSEEK_FIGURES)
+src/models/               VQ-VAE tokenizer, codebook, descriptors
+src/search/               k-mer prefilter, token Smith-Waterman, substitution matrices
+scripts/01_train/         final deployed model training
+scripts/02_benchmark/     retrieval evaluation and baselines
+scripts/03_ablations/     5-fold cross-validated design ablations
+scripts/04_figures/       figure generation
+files/                    bundled ablation + retrieval results (JSON)
+figures/                  output
+```
+
+## Quick start
+
+```bash
+pip install -r requirements.txt
+
+# Redraw every figure from the bundled results (no large data needed)
+for f in scripts/04_figures/plot_fig*.py; do python "$f"; done
+```
+
+Figures land in `figures/`. Two scripts need the full data (see below):
+`plot_figS9.py` (substitution matrix) and `plot_figS10.py` (alphabet states) read
+the trained model directly.
+
+## Data
+
+Large inputs are not bundled: the tokenized database, descriptor tensors, the
+trained model, and the US-align / RMalign pairwise caches. Point `RFOLDSEEK_DATA`
+at the directory containing `files/` and `Splits/`:
+
+```bash
+export RFOLDSEEK_DATA=/path/to/RFoldSeek
+```
+
+Scripts that need it fail with a clear `FileNotFoundError` if it is unset.
+
+Required layout under `$RFOLDSEEK_DATA`:
+
+```
+Splits/labels.tsv                              Rfam family / clan annotation
+Splits/pdb_out/{train,val,test}.json           PDB-disjoint split
+Splits/pdb_out/{train,val}_desc.pt             descriptor tensors
+files/production_new/db.pt                     tokenized 885-chain database
+files/production_new/sub_matrix.pt             Structure-BLOSUM matrix
+files/production_new/desc_vqvae_best.pt        trained tokenizer
+files/production/retrieval/usalign_full.cache.jsonl
+files/production/retrieval/rmalign_full.cache.jsonl
+files/production/chain_sequences.tsv           for the BLASTN baseline
+```
+
+## Figure map
+
+| Manuscript figure | Plot script | Computed by | Bundled result |
+|---|---|---|---|
+| Fig 2A,B | `plot_fig2.py` | `eval_rfam_sens_fig2ab.py` | `per_query_sens_test.json` |
+| Fig 2C,D | `plot_fig2.py` | `eval_structural_sens_fig2cd.py` | `structural_tmscore_metrics_test.json` |
+| Fig S2 | `plot_figS2.py` | `ablation_figS2_descriptor_blocks.py` | `cv_s2_clan_5fold.json` |
+| Fig S3 | `plot_figS3.py` | `ablation_figS3_descriptor_blocks2.py` | `cv_s3_clan_5fold.json` |
+| Fig S4 | `plot_figS4.py` | `ablation_figS4_codebook_size.py` | `cv_s4_clan_5fold.json` |
+| Fig S5 | `plot_figS5.py` | `ablation_figS5_vqvae_arch.py` | `cv_s5_clan_5fold.json` |
+| Fig S6 | `plot_figS6.py` | `ablation_figS6_substitution_matrix.py` | `cv_s6_clan_5fold.json` |
+| Fig S7 | `plot_figS7.py` | `ablation_figS7_prefilter.py` | `cv_s7_clan_5fold.json` |
+| Fig S8 | `plot_figS8.py` | `ablation_figS8_virtual_centre.py` | `cv_vc_clan_5fold.json` |
+| Fig S9 | `plot_figS9.py` | `scripts/01_train/train_final_model.py` | needs `RFOLDSEEK_DATA` |
+| Fig S10 | `plot_figS10.py` | — (reads the trained model directly) | needs `RFOLDSEEK_DATA` |
+| Fig S11 | `plot_figS11.py` | `eval_recall1_figS11.py` | `recall1_rfam_test.json` |
+
+Not included: **Fig 1** and **Fig S1**, which are schematics drawn externally.
+
+`plot_figS10.py` also writes a companion `token_state_representatives.tsv`
+listing the chosen representatives. Its `frequency` and `role` columns come from
+`--profile` (`files/motifs_v2/token_profile_summary.tsv`), a table that predates
+the final retrain, so those two columns refer to the earlier codebook's token
+indices. The figure itself does not use the profile and is unaffected.
+
+## Evaluation protocol
+
+Retrieval is evaluated Foldseek-style over the full 885-chain database with
+self-hits removed, on the held-out test partition (106 family-evaluable and 79
+clan-evaluable query chains), using two metrics:
+
+- **Sens@1FP** (main text) — fraction of true positives ranked before the first
+  false positive, macro-averaged. Hierarchical labels: at the *family* level
+  same-family targets are true positives and same-clan/different-family targets
+  are neutral; at the *clan* level same-clan/different-family targets are true
+  positives and same-family targets are neutral.
+- **Recall@1** (Supplementary) — top-ranked non-self target is a true positive,
+  with **no neutral set**; clan-level true positives include same-family targets.
+
+The two use different label conventions by design; see the manuscript's
+Supplementary Methods.
+
+All design ablations (Figs S2–S8) use PDB-disjoint 5-fold cross-validation on the
+train+validation partition only, reporting mean ± SD across folds. The test split
+is untouched throughout model selection.
+
+## Deployed configuration
+
+K = 80 codebook, 17-D descriptor (`g_ctx` + `g_nn1`), VQ-VAE with 2-layer encoder
+and 4-layer decoder, exact 4-mer inverted-index prefilter with 1-substitution
+similar-k-mer expansion, top-100 candidates, token Smith-Waterman reranking with
+the Structure-BLOSUM matrix (gap open −2.0, extend −0.5).
+
+## Baselines
+
+US-align, RMalign, BLASTN and RiboSeek. RiboSeek uses the released PyPI package
+(`riboseek`, `sa20` alphabet) rather than a reimplementation. BLASTN binaries are
+resolved from `PATH`; override with `RFS_BLAST_BIN`.
+
+## Notes
+
+- `scripts/01_train/train_final_model.py` trains 30 seeds and selects on
+  validation Sens@1FP; it is the most expensive script here.
+- `riboseek_baseline.py` needs Python ≥ 3.9 for the `riboseek` package, while the
+  rest of the pipeline was run under Python 3.8. Encoded chains are cached.
+- Set `KMP_DUPLICATE_LIB_OK=TRUE` if you hit an OpenMP duplicate-runtime error
+  on macOS.

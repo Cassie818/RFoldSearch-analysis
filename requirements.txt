@@ -1,0 +1,13 @@
+# Versions used to produce the manuscript results.
+torch==2.2.2
+numpy==1.21.5
+scikit-learn==1.0.2
+matplotlib==3.5.2
+numba==0.55.1
+
+# RiboSeek baseline only (scripts/02_benchmark/riboseek_baseline.py).
+# Requires Python >= 3.9; the rest of the pipeline was run under Python 3.8.
+riboseek==0.1.0
+
+# External binaries, not pip-installable:
+#   US-align, RMalign, NCBI BLAST+ (blastn, makeblastdb)

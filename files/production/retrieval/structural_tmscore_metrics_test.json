@@ -1,0 +1,116 @@
+{
+  "_note": "test-only covered queries; US-align* is the TM ceiling.",
+  "thresholds": {
+    "0.4": {
+      "RFoldseek": {
+        "Recall@1": 0.9333333333333333,
+        "Sens@1FP": 0.5991211262756351,
+        "Sens@1FP_clan": 0.4555205285099938,
+        "n_queries": 105,
+        "n_clan": 91
+      },
+      "US-align*": {
+        "Recall@1": 1.0,
+        "Sens@1FP": 1.0,
+        "Sens@1FP_clan": 1.0,
+        "n_queries": 105,
+        "n_clan": 91
+      },
+      "RMalign": {
+        "Recall@1": 0.8571428571428571,
+        "Sens@1FP": 0.4463037340975984,
+        "Sens@1FP_clan": 0.25367294022139536,
+        "n_queries": 105,
+        "n_clan": 91
+      },
+      "RiboSeek": {
+        "Recall@1": 0.8285714285714286,
+        "Sens@1FP": 0.25390849977524754,
+        "Sens@1FP_clan": 0.07115778276088554,
+        "n_queries": 105,
+        "n_clan": 91
+      },
+      "BLASTN": {
+        "Recall@1": 0.42857142857142855,
+        "Sens@1FP": 0.14177516976347307,
+        "Sens@1FP_clan": 0.009823142352921138,
+        "n_queries": 105,
+        "n_clan": 91
+      }
+    },
+    "0.45": {
+      "RFoldseek": {
+        "Recall@1": 0.9134615384615384,
+        "Sens@1FP": 0.602137431230767,
+        "Sens@1FP_clan": 0.4607556712049524,
+        "n_queries": 104,
+        "n_clan": 86
+      },
+      "US-align*": {
+        "Recall@1": 1.0,
+        "Sens@1FP": 1.0,
+        "Sens@1FP_clan": 1.0,
+        "n_queries": 104,
+        "n_clan": 86
+      },
+      "RMalign": {
+        "Recall@1": 0.8461538461538461,
+        "Sens@1FP": 0.44383334292319504,
+        "Sens@1FP_clan": 0.2707124393054497,
+        "n_queries": 104,
+        "n_clan": 86
+      },
+      "RiboSeek": {
+        "Recall@1": 0.8076923076923077,
+        "Sens@1FP": 0.2602402707504127,
+        "Sens@1FP_clan": 0.09143245607884029,
+        "n_queries": 104,
+        "n_clan": 86
+      },
+      "BLASTN": {
+        "Recall@1": 0.4230769230769231,
+        "Sens@1FP": 0.14931482757136158,
+        "Sens@1FP_clan": 0.011147255102336337,
+        "n_queries": 104,
+        "n_clan": 86
+      }
+    },
+    "0.5": {
+      "RFoldseek": {
+        "Recall@1": 0.8823529411764706,
+        "Sens@1FP": 0.5865878474018208,
+        "Sens@1FP_clan": 0.4695212505858001,
+        "n_queries": 102,
+        "n_clan": 79
+      },
+      "US-align*": {
+        "Recall@1": 1.0,
+        "Sens@1FP": 1.0,
+        "Sens@1FP_clan": 1.0,
+        "n_queries": 102,
+        "n_clan": 79
+      },
+      "RMalign": {
+        "Recall@1": 0.8627450980392157,
+        "Sens@1FP": 0.4466293169102812,
+        "Sens@1FP_clan": 0.3553756651340942,
+        "n_queries": 102,
+        "n_clan": 79
+      },
+      "RiboSeek": {
+        "Recall@1": 0.803921568627451,
+        "Sens@1FP": 0.2865923904457179,
+        "Sens@1FP_clan": 0.09616299143075571,
+        "n_queries": 102,
+        "n_clan": 79
+      },
+      "BLASTN": {
+        "Recall@1": 0.4215686274509804,
+        "Sens@1FP": 0.16124835150128056,
+        "Sens@1FP_clan": 0.008148847826592889,
+        "n_queries": 102,
+        "n_clan": 79
+      }
+    }
+  }
+}
