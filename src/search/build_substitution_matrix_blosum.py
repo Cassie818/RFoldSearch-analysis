@@ -31,17 +31,18 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from smith_waterman import smith_waterman_numba
 
 REPO = Path(__file__).resolve().parents[2]
-DB_PATH    = REPO / "files" / "production" / "db.pt"
+DB_PATH = REPO / "files" / "production" / "db.pt"
 LABELS_TSV = REPO / "Splits" / "labels.tsv"
-OUT_PT     = REPO / "files" / "production" / "sub_matrix_blosum.pt"
+OUT_PT = REPO / "files" / "production" / "sub_matrix_blosum.pt"
 TRAIN_JSON = REPO / "Splits" / "pdb_out" / "train.json"
 
-MAX_PAIRS_PER_FAMILY = 100   # cap so giant families don't dominate
-SCALE = 2.0                  # multiply the log-odds (similar to BLOSUM62)
+MAX_PAIRS_PER_FAMILY = 100  # cap so giant families don't dominate
+SCALE = 2.0  # multiply the log-odds (similar to BLOSUM62)
 GAP_OPEN, GAP_EXTEND = -1.0, -0.2
 
 # ─── Numba traceback to extract aligned column pairs ──────────────────
 from numba import njit
+
 
 @njit(cache=True)
 def sw_traceback(q, t, sub, gap_open, gap_extend):
@@ -50,7 +51,9 @@ def sw_traceback(q, t, sub, gap_open, gap_extend):
     E = np.full((Lq + 1, Lt + 1), -1e9, dtype=np.float32)
     F = np.full((Lq + 1, Lt + 1), -1e9, dtype=np.float32)
     TB = np.zeros((Lq + 1, Lt + 1), dtype=np.int8)
-    best = 0.0; bi = 0; bj = 0
+    best = 0.0
+    bi = 0
+    bj = 0
     for i in range(1, Lq + 1):
         qi = q[i - 1]
         for j in range(1, Lt + 1):
@@ -58,13 +61,23 @@ def sw_traceback(q, t, sub, gap_open, gap_extend):
             E[i, j] = max(E[i, j - 1] + gap_extend, H[i, j - 1] + gap_open)
             F[i, j] = max(F[i - 1, j] + gap_extend, H[i - 1, j] + gap_open)
             m = H[i - 1, j - 1] + sub[qi, tj]
-            v = 0.0; tb = 0
-            if m > v: v = m; tb = 1   # diag
-            if E[i, j] > v: v = E[i, j]; tb = 2  # gap in q (left)
-            if F[i, j] > v: v = F[i, j]; tb = 3  # gap in t (up)
-            H[i, j] = v; TB[i, j] = tb
+            v = 0.0
+            tb = 0
+            if m > v:
+                v = m
+                tb = 1  # diag
+            if E[i, j] > v:
+                v = E[i, j]
+                tb = 2  # gap in q (left)
+            if F[i, j] > v:
+                v = F[i, j]
+                tb = 3  # gap in t (up)
+            H[i, j] = v
+            TB[i, j] = tb
             if v > best:
-                best = v; bi = i; bj = j
+                best = v
+                bi = i
+                bj = j
     # traceback
     pairs_i = np.empty(Lq + Lt, dtype=np.int64)
     pairs_j = np.empty(Lq + Lt, dtype=np.int64)
@@ -75,7 +88,8 @@ def sw_traceback(q, t, sub, gap_open, gap_extend):
             pairs_i[n] = q[i - 1]
             pairs_j[n] = t[j - 1]
             n += 1
-            i -= 1; j -= 1
+            i -= 1
+            j -= 1
         elif TB[i, j] == 2:
             j -= 1
         else:
@@ -88,14 +102,20 @@ def main():
     ap.add_argument("--db", default=str(DB_PATH))
     ap.add_argument("--labels", default=str(LABELS_TSV))
     ap.add_argument("--out", default=str(OUT_PT))
-    ap.add_argument("--fit_entries", default=str(TRAIN_JSON),
-                    help="JSON/JSONL entries used to estimate the matrix. "
-                         "Defaults to the PDB-out training split to avoid "
-                         "using evaluation labels.")
-    ap.add_argument("--allow_full_db_fit", action="store_true",
-                    help="Estimate from all labelled DB entries. Use only for "
-                         "diagnostic ablations because this uses evaluation "
-                         "labels when the DB contains test chains.")
+    ap.add_argument(
+        "--fit_entries",
+        default=str(TRAIN_JSON),
+        help="JSON/JSONL entries used to estimate the matrix. "
+        "Defaults to the PDB-out training split to avoid "
+        "using evaluation labels.",
+    )
+    ap.add_argument(
+        "--allow_full_db_fit",
+        action="store_true",
+        help="Estimate from all labelled DB entries. Use only for "
+        "diagnostic ablations because this uses evaluation "
+        "labels when the DB contains test chains.",
+    )
     args = ap.parse_args()
 
     db = torch.load(args.db, map_location="cpu", weights_only=False)
@@ -139,8 +159,10 @@ def main():
 
     # only families with >=2 members
     fam_to_idx = {f: ids for f, ids in fam_to_idx.items() if len(ids) >= 2}
-    print(f"Same-family pools: {len(fam_to_idx)} families, "
-          f"sizes {sorted([len(v) for v in fam_to_idx.values()], reverse=True)[:10]} ...")
+    print(
+        f"Same-family pools: {len(fam_to_idx)} families, "
+        f"sizes {sorted([len(v) for v in fam_to_idx.values()], reverse=True)[:10]} ..."
+    )
 
     # identity scoring for the alignment that *generates* the BLOSUM signal.
     # Match = +1, mismatch = 0; affine gaps.
@@ -156,8 +178,9 @@ def main():
     for fam, ids in fam_to_idx.items():
         pairs = [(a, b) for a in ids for b in ids if a < b]
         if len(pairs) > MAX_PAIRS_PER_FAMILY:
-            pairs = [pairs[k] for k in
-                     rng.choice(len(pairs), size=MAX_PAIRS_PER_FAMILY, replace=False)]
+            pairs = [
+                pairs[k] for k in rng.choice(len(pairs), size=MAX_PAIRS_PER_FAMILY, replace=False)
+            ]
         for a, b in pairs:
             q = entries[a]["tokens"].astype(np.int64)
             t = entries[b]["tokens"].astype(np.int64)
@@ -170,13 +193,12 @@ def main():
                 joint[y, x] += 1
             n_alignments += 1
             n_aligned_pairs += int(pi.size)
-    print(f"  {n_alignments} same-family alignments, "
-          f"{n_aligned_pairs} aligned (i,j) pairs")
+    print(f"  {n_alignments} same-family alignments, " f"{n_aligned_pairs} aligned (i,j) pairs")
 
     # Marginals (symmetric)
     total = joint.sum()
-    p_ij = joint / max(total, 1.0)              # joint probability
-    p_i = p_ij.sum(axis=1)                       # marginal token frequency
+    p_ij = joint / max(total, 1.0)  # joint probability
+    p_i = p_ij.sum(axis=1)  # marginal token frequency
     p_i = np.maximum(p_i, 1e-8)
 
     # BLOSUM log-odds: s_ij = log2(p_ij / (p_i p_j))
@@ -190,37 +212,43 @@ def main():
     if dead.any():
         log_odds[dead, :] = 0.0
         log_odds[:, dead] = 0.0
-        print(f"  {int(dead.sum())} tokens had vanishing marginal "
-              f"(zeroed)")
+        print(f"  {int(dead.sum())} tokens had vanishing marginal " f"(zeroed)")
 
     # Save
     Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    torch.save({
-        "matrix":   torch.from_numpy(log_odds),
-        "n_codes":  K,
-        "method":   "blosum-rfam",
-        "scale":    SCALE,
-        "gap_open": GAP_OPEN,
-        "gap_extend": GAP_EXTEND,
-        "fit_entries": str(fit_path) if fit_path else "",
-        "allow_full_db_fit": bool(args.allow_full_db_fit),
-        "n_fit_entries": len(fit_ids) if fit_ids is not None else len(entries),
-        "n_alignments": n_alignments,
-        "n_aligned_pairs": n_aligned_pairs,
-        "marginal_freq": torch.from_numpy(p_i.astype(np.float32)),
-    }, args.out)
+    torch.save(
+        {
+            "matrix": torch.from_numpy(log_odds),
+            "n_codes": K,
+            "method": "blosum-rfam",
+            "scale": SCALE,
+            "gap_open": GAP_OPEN,
+            "gap_extend": GAP_EXTEND,
+            "fit_entries": str(fit_path) if fit_path else "",
+            "allow_full_db_fit": bool(args.allow_full_db_fit),
+            "n_fit_entries": len(fit_ids) if fit_ids is not None else len(entries),
+            "n_alignments": n_alignments,
+            "n_aligned_pairs": n_aligned_pairs,
+            "marginal_freq": torch.from_numpy(p_i.astype(np.float32)),
+        },
+        args.out,
+    )
     print(f"Saved {args.out}")
 
     print(f"\nDiagonal (self-substitution) summary:")
     diag = np.diag(log_odds)
-    print(f"  min/mean/median/max = "
-          f"{diag.min():.2f} / {diag.mean():.2f} / "
-          f"{np.median(diag):.2f} / {diag.max():.2f}")
+    print(
+        f"  min/mean/median/max = "
+        f"{diag.min():.2f} / {diag.mean():.2f} / "
+        f"{np.median(diag):.2f} / {diag.max():.2f}"
+    )
     print(f"Off-diagonal:")
     off = log_odds[~np.eye(K, dtype=bool)]
-    print(f"  min/mean/median/max = "
-          f"{off.min():.2f} / {off.mean():.2f} / "
-          f"{np.median(off):.2f} / {off.max():.2f}")
+    print(
+        f"  min/mean/median/max = "
+        f"{off.min():.2f} / {off.mean():.2f} / "
+        f"{np.median(off):.2f} / {off.max():.2f}"
+    )
 
 
 if __name__ == "__main__":

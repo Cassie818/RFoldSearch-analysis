@@ -7,15 +7,15 @@ import numpy as np
 
 class EMACodebook(nn.Module):
     def __init__(
-            self,
-            n_codes,
-            embedding_dim,
-            no_random_restart=False,
-            restart_thres=1.0,
-            ema_decay=0.99,
-            commitment_weight=1.0,
-            epsilon=1e-5,
-            l2_normalize=True,
+        self,
+        n_codes,
+        embedding_dim,
+        no_random_restart=False,
+        restart_thres=1.0,
+        ema_decay=0.99,
+        commitment_weight=1.0,
+        epsilon=1e-5,
+        l2_normalize=True,
     ):
         super().__init__()
         init = torch.randn(n_codes, embedding_dim)
@@ -39,11 +39,17 @@ class EMACodebook(nn.Module):
     def reset_parameters(self):
         pass
 
-    def _load_from_state_dict(self, state_dict, prefix, local_metadata, strict,
-                              missing_keys, unexpected_keys, error_msgs):
+    def _load_from_state_dict(
+        self, state_dict, prefix, local_metadata, strict, missing_keys, unexpected_keys, error_msgs
+    ):
         super()._load_from_state_dict(
-            state_dict, prefix, local_metadata, strict,
-            missing_keys, unexpected_keys, error_msgs,
+            state_dict,
+            prefix,
+            local_metadata,
+            strict,
+            missing_keys,
+            unexpected_keys,
+            error_msgs,
         )
         # A loaded codebook already has learned embeddings / EMA statistics.
         # Without this guard, resuming training from a checkpoint would
@@ -80,13 +86,13 @@ class EMACodebook(nn.Module):
         flat_inputs = z.reshape(-1, self.embedding_dim)
 
         distances = (
-                (flat_inputs ** 2).sum(dim=1, keepdim=True)
-                - 2 * flat_inputs @ self.embeddings.t()
-                + (self.embeddings.t() ** 2).sum(dim=0, keepdim=True)
+            (flat_inputs**2).sum(dim=1, keepdim=True)
+            - 2 * flat_inputs @ self.embeddings.t()
+            + (self.embeddings.t() ** 2).sum(dim=0, keepdim=True)
         )
 
         encoding_indices = torch.argmin(distances, dim=1)
-        encoding_indices = encoding_indices.view(*z.shape[:2]) # back to batch × seq_len
+        encoding_indices = encoding_indices.view(*z.shape[:2])  # back to batch × seq_len
 
         embeddings = F.embedding(
             encoding_indices,
@@ -103,8 +109,9 @@ class EMACodebook(nn.Module):
                 acc_dtype = torch.float32
                 n = torch.bincount(enc, minlength=self.n_codes).to(acc_dtype)
 
-                z_sum = torch.zeros(self.n_codes, self.embedding_dim,
-                                    device=flat_inputs.device, dtype=acc_dtype)
+                z_sum = torch.zeros(
+                    self.n_codes, self.embedding_dim, device=flat_inputs.device, dtype=acc_dtype
+                )
                 z_sum.index_add_(0, enc, flat_inputs.to(acc_dtype))
 
                 if dist.is_available() and dist.is_initialized():
@@ -119,12 +126,16 @@ class EMACodebook(nn.Module):
                     dead = self.N < self.restart_thres
                     num_dead = int(dead.sum().item())
                     if num_dead > 0 and flat_inputs.shape[0] > 0:
-                        perm = torch.randperm(flat_inputs.shape[0], device=flat_inputs.device)[:num_dead]
+                        perm = torch.randperm(flat_inputs.shape[0], device=flat_inputs.device)[
+                            :num_dead
+                        ]
                         self.z_avg[dead] = flat_inputs[perm].to(self.z_avg.dtype)
                         self.N[dead] = 1.0
 
                 n_total = self.N.sum()
-                smoothed_N = (self.N + self.epsilon) / (n_total + self.n_codes * self.epsilon) * n_total
+                smoothed_N = (
+                    (self.N + self.epsilon) / (n_total + self.n_codes * self.epsilon) * n_total
+                )
                 denom = smoothed_N.unsqueeze(1)
 
                 new_emb = (self.z_avg / denom).to(self.embeddings.dtype)

@@ -21,8 +21,14 @@ from descriptors import compute_descriptor, parse_descriptor
 class DescriptorEncoder(nn.Module):
     """MLP encoder: descriptor → latent z (L2-normalised by default)."""
 
-    def __init__(self, d_in: int = 49, d_hidden: int = 256, d_out: int = 64,
-                 n_layers: int = 1, l2_normalize: bool = True):
+    def __init__(
+        self,
+        d_in: int = 49,
+        d_hidden: int = 256,
+        d_out: int = 64,
+        n_layers: int = 1,
+        l2_normalize: bool = True,
+    ):
         super().__init__()
         assert n_layers >= 1, "encoder must have at least one Linear layer"
         self.norm = nn.LayerNorm(d_in)
@@ -49,8 +55,7 @@ class DescriptorEncoder(nn.Module):
 class DescriptorDecoder(nn.Module):
     """MLP decoder: quantised latent z_q → descriptor reconstruction."""
 
-    def __init__(self, d_in: int = 64, d_hidden: int = 128, d_out: int = 49,
-                 n_layers: int = 4):
+    def __init__(self, d_in: int = 64, d_hidden: int = 128, d_out: int = 49, n_layers: int = 4):
         super().__init__()
         assert n_layers >= 1, "decoder must have at least one Linear layer"
         mods: list[nn.Module] = []
@@ -92,29 +97,35 @@ class DescriptorVQVAE(nn.Module):
     """RNA Structure Descriptor VQ-VAE."""
 
     def __init__(
-            self,
-            d_descriptor: int = 49,
-            d_hidden: int = 256,
-            d_latent: int = 64,
-            n_codes: int = 60,
-            n_enc_layers: int = 1,
-            n_dec_layers: int = 4,
-            no_random_restart: bool = True,
-            ema_decay: float = 0.99,
-            l2_normalize_encoder: bool = True,
-            l2_normalize_codebook: bool = True,
+        self,
+        d_descriptor: int = 49,
+        d_hidden: int = 256,
+        d_latent: int = 64,
+        n_codes: int = 60,
+        n_enc_layers: int = 1,
+        n_dec_layers: int = 4,
+        no_random_restart: bool = True,
+        ema_decay: float = 0.99,
+        l2_normalize_encoder: bool = True,
+        l2_normalize_codebook: bool = True,
     ):
         super().__init__()
-        self.encoder = DescriptorEncoder(d_descriptor, d_hidden, d_latent,
-                                         n_layers=n_enc_layers,
-                                         l2_normalize=l2_normalize_encoder)
-        self.codebook = EMACodebook(n_codes, d_latent,
-                                    no_random_restart=no_random_restart,
-                                    restart_thres=1.0,
-                                    ema_decay=ema_decay,
-                                    l2_normalize=l2_normalize_codebook)
-        self.decoder = DescriptorDecoder(d_latent, d_hidden, d_descriptor,
-                                         n_layers=n_dec_layers)
+        self.encoder = DescriptorEncoder(
+            d_descriptor,
+            d_hidden,
+            d_latent,
+            n_layers=n_enc_layers,
+            l2_normalize=l2_normalize_encoder,
+        )
+        self.codebook = EMACodebook(
+            n_codes,
+            d_latent,
+            no_random_restart=no_random_restart,
+            restart_thres=1.0,
+            ema_decay=ema_decay,
+            l2_normalize=l2_normalize_codebook,
+        )
+        self.decoder = DescriptorDecoder(d_latent, d_hidden, d_descriptor, n_layers=n_dec_layers)
 
     def forward(self, descriptor: torch.Tensor) -> dict[str, torch.Tensor]:
         # Codebook expects 3D (B, L, D); add dummy L=1 dim for flat 2D input
@@ -133,21 +144,28 @@ class DescriptorVQVAE(nn.Module):
             f_hat = f_hat.squeeze(1)
 
         return {
-            "z": z, "z_q": z_q, "indices": indices,
-            "commitment_loss": commitment_loss, "f_hat": f_hat,
+            "z": z,
+            "z_q": z_q,
+            "indices": indices,
+            "commitment_loss": commitment_loss,
+            "f_hat": f_hat,
         }
 
     @torch.no_grad()
     def encode(
-            self,
-            coords: torch.Tensor,
-            mask: torch.Tensor,
-            pair_idx: torch.Tensor | None = None,
-            stack_idx: torch.Tensor | None = None,
-            pair_orient: torch.Tensor | None = None,
+        self,
+        coords: torch.Tensor,
+        mask: torch.Tensor,
+        pair_idx: torch.Tensor | None = None,
+        stack_idx: torch.Tensor | None = None,
+        pair_orient: torch.Tensor | None = None,
     ) -> torch.Tensor:
         descriptor, _ = compute_descriptor(
-            coords, mask, pair_idx, stack_idx, pair_orient=pair_orient,
+            coords,
+            mask,
+            pair_idx,
+            stack_idx,
+            pair_orient=pair_orient,
         )
         z = self.encoder(descriptor)
         _, indices, _ = self.codebook(z)
@@ -155,16 +173,16 @@ class DescriptorVQVAE(nn.Module):
 
 
 def descriptor_loss(
-        output: dict[str, torch.Tensor],
-        target: torch.Tensor,
-        beta_commit: float = 0.25,
-        lambda_geom: float = 1.0,
-        lambda_pair: float = 1.0,
-        lambda_stack: float = 1.0,
-        lambda_mask: float = 1.0,
-        pair_stack_reduce: str = "sum",
-        lambda_latent_norm: float = 0.0,
-        active_blocks: set | None = None,
+    output: dict[str, torch.Tensor],
+    target: torch.Tensor,
+    beta_commit: float = 0.25,
+    lambda_geom: float = 1.0,
+    lambda_pair: float = 1.0,
+    lambda_stack: float = 1.0,
+    lambda_mask: float = 1.0,
+    pair_stack_reduce: str = "sum",
+    lambda_latent_norm: float = 0.0,
+    active_blocks: set | None = None,
 ) -> dict[str, torch.Tensor]:
     """Three-group reconstruction loss for the 49-D structural descriptor.
 
@@ -238,17 +256,18 @@ def descriptor_loss(
     # 3. Mask prediction (BCE on {0, 1}) — only on active mask blocks.
     mask_terms = []
     if "g_bp" in active:
-        mask_terms.append(F.binary_cross_entropy_with_logits(
-            pred["m_bp"].squeeze(-1), m_bp, reduction="mean"))
+        mask_terms.append(
+            F.binary_cross_entropy_with_logits(pred["m_bp"].squeeze(-1), m_bp, reduction="mean")
+        )
     if "g_st" in active:
-        mask_terms.append(F.binary_cross_entropy_with_logits(
-            pred["m_st"].squeeze(-1), m_st, reduction="mean"))
+        mask_terms.append(
+            F.binary_cross_entropy_with_logits(pred["m_st"].squeeze(-1), m_st, reduction="mean")
+        )
     L_mask = torch.stack(mask_terms).sum() if mask_terms else target.new_zeros(())
 
-    L_recon = (lambda_geom * L_geom +
-               lambda_pair * L_pair +
-               lambda_stack * L_stack +
-               lambda_mask * L_mask)
+    L_recon = (
+        lambda_geom * L_geom + lambda_pair * L_pair + lambda_stack * L_stack + lambda_mask * L_mask
+    )
     L_commit = beta_commit * output["commitment_loss"]
     L_latent = lambda_latent_norm * output["z"].pow(2).mean()
 

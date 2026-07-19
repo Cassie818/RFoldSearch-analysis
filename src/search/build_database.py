@@ -58,8 +58,12 @@ def load_model(checkpoint_path: str, device: torch.device):
     n_dec = ckpt.get("n_dec_layers", infer_n_dec_layers(sd))
     ema_decay = ckpt.get("ema_decay", 0.99)
     model = DescriptorVQVAE(
-        d_descriptor=d_descriptor, d_hidden=d_hidden, d_latent=d_latent,
-        n_codes=n_codes, n_enc_layers=n_enc, n_dec_layers=n_dec,
+        d_descriptor=d_descriptor,
+        d_hidden=d_hidden,
+        d_latent=d_latent,
+        n_codes=n_codes,
+        n_enc_layers=n_enc,
+        n_dec_layers=n_dec,
         ema_decay=ema_decay,
     ).to(device)
     model.load_state_dict(sd)
@@ -88,23 +92,27 @@ def prepare_sample(entry, device="cpu"):
         stack_edges = stack_edges[..., 0]
     if pair_orient is not None and pair_orient.ndim == 3:
         pair_orient = pair_orient[..., 0]
-    if (coords.shape[1] != mask.shape[1]
-            or pair_edges.shape[1] != mask.shape[1]
-            or stack_edges.shape[1] != mask.shape[1]
-            or (pair_orient is not None and pair_orient.shape[1] != mask.shape[1])):
+    if (
+        coords.shape[1] != mask.shape[1]
+        or pair_edges.shape[1] != mask.shape[1]
+        or stack_edges.shape[1] != mask.shape[1]
+        or (pair_orient is not None and pair_orient.shape[1] != mask.shape[1])
+    ):
         return None
     return coords, mask, pair_edges, stack_edges, pair_orient
 
 
 @torch.no_grad()
-def encode_entry(model, entry, device, norm_mean, norm_std,
-                 zero_dim=-1, zero_dims=None):
+def encode_entry(model, entry, device, norm_mean, norm_std, zero_dim=-1, zero_dims=None):
     sample = prepare_sample(entry, device)
     if sample is None:
         return None
     coords, mask, pair_edges, stack_edges, pair_orient = sample
     descriptor, _info = compute_descriptor(
-        coords, mask, pair_edges, stack_edges,
+        coords,
+        mask,
+        pair_edges,
+        stack_edges,
         pair_orient=pair_orient,
     )
 
@@ -123,10 +131,10 @@ def encode_entry(model, entry, device, norm_mean, norm_std,
     valid_mask = mask[0].cpu()
     tokens = output["indices"][0].cpu()[valid_mask].numpy().astype(np.int16)
     return {
-        "id":     entry.get("id", ""),
+        "id": entry.get("id", ""),
         "tokens": tokens,
         "coords": coords[0].cpu().numpy(),
-        "mask":   mask[0].cpu().numpy(),
+        "mask": mask[0].cpu().numpy(),
         "n_valid": int(valid_mask.sum()),
     }
 
@@ -134,19 +142,35 @@ def encode_entry(model, entry, device, norm_mean, norm_std,
 def main():
     parent = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
     parser = argparse.ArgumentParser(description="Build searchable token database")
-    parser.add_argument("--checkpoint", type=str,
-                        default=os.path.join(parent, "files", "pdb_out", "desc_vqvae_best.pt"))
-    parser.add_argument("--data", type=str, nargs="+",
-                        default=[os.path.join(parent, "Splits", "pdb_out", "test.json")])
-    parser.add_argument("--output", type=str,
-                        default=os.path.join(parent, "files", "search", "pdb_out", "db.pt"))
+    parser.add_argument(
+        "--checkpoint",
+        type=str,
+        default=os.path.join(parent, "files", "pdb_out", "desc_vqvae_best.pt"),
+    )
+    parser.add_argument(
+        "--data",
+        type=str,
+        nargs="+",
+        default=[os.path.join(parent, "Splits", "pdb_out", "test.json")],
+    )
+    parser.add_argument(
+        "--output", type=str, default=os.path.join(parent, "files", "search", "pdb_out", "db.pt")
+    )
     parser.add_argument("--min_len", type=int, default=20)
-    parser.add_argument("--zero_dim", type=int, default=-1,
-                        help="If >=0, zero this dim of the normalized descriptor "
-                             "before encoding (per-dim ablation). -1 disables.")
-    parser.add_argument("--zero_dims", type=str, default="",
-                        help="Comma-separated normalized descriptor dims to zero "
-                             "before encoding (e.g. 0,1,2). Overrides --zero_dim.")
+    parser.add_argument(
+        "--zero_dim",
+        type=int,
+        default=-1,
+        help="If >=0, zero this dim of the normalized descriptor "
+        "before encoding (per-dim ablation). -1 disables.",
+    )
+    parser.add_argument(
+        "--zero_dims",
+        type=str,
+        default="",
+        help="Comma-separated normalized descriptor dims to zero "
+        "before encoding (e.g. 0,1,2). Overrides --zero_dim.",
+    )
     args = parser.parse_args()
 
     device = torch.device("cpu")
@@ -155,7 +179,7 @@ def main():
     print("Loading model from %s ..." % args.checkpoint)
     model, ckpt, n_codes, d_descriptor = load_model(args.checkpoint, device)
     norm_mean = ckpt.get("norm_mean", None)
-    norm_std  = ckpt.get("norm_std",  None)
+    norm_std = ckpt.get("norm_std", None)
     zero_dims = []
     if args.zero_dims.strip():
         zero_dims = [int(x.strip()) for x in args.zero_dims.split(",") if x.strip()]
@@ -182,14 +206,17 @@ def main():
                     continue
                 e["_source_json"] = data_path
                 structures.append(e)
-    print("  %d structures (read=%d, short=%d, duplicate=%d)" %
-          (len(structures), n_read, n_short, n_duplicate))
+    print(
+        "  %d structures (read=%d, short=%d, duplicate=%d)"
+        % (len(structures), n_read, n_short, n_duplicate)
+    )
 
     # ── Encode ──
     entries = []
     for i, e in enumerate(structures):
-        ent = encode_entry(model, e, device, norm_mean, norm_std,
-                           zero_dim=args.zero_dim, zero_dims=zero_dims)
+        ent = encode_entry(
+            model, e, device, norm_mean, norm_std, zero_dim=args.zero_dim, zero_dims=zero_dims
+        )
         if ent is not None:
             entries.append(ent)
         if (i + 1) % 100 == 0:
@@ -198,16 +225,21 @@ def main():
 
     # ── Save ──
     os.makedirs(os.path.dirname(args.output) or ".", exist_ok=True)
-    torch.save({
-        "n_codes":    n_codes,
-        "entries":    entries,
-        "checkpoint": args.checkpoint,
-        "data":       data_paths,
-    }, args.output)
+    torch.save(
+        {
+            "n_codes": n_codes,
+            "entries": entries,
+            "checkpoint": args.checkpoint,
+            "data": data_paths,
+        },
+        args.output,
+    )
     lengths = [e["n_valid"] for e in entries]
     print("\nSaved: %s" % args.output)
-    print("  Entries: %d  (length: mean=%.0f, median=%.0f, max=%d)" % (
-        len(entries), np.mean(lengths), np.median(lengths), max(lengths)))
+    print(
+        "  Entries: %d  (length: mean=%.0f, median=%.0f, max=%d)"
+        % (len(entries), np.mean(lengths), np.median(lengths), max(lengths))
+    )
 
 
 if __name__ == "__main__":

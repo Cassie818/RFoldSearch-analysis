@@ -39,8 +39,9 @@ def attach_labels(entries: list[dict], labels: dict[str, str]) -> np.ndarray:
     return np.array([labels.get(str(e["id"]), "") for e in entries], dtype=object)
 
 
-def first_fp_sensitivity(ranking: np.ndarray, is_relevant: np.ndarray,
-                         is_neutral: np.ndarray | None = None) -> float:
+def first_fp_sensitivity(
+    ranking: np.ndarray, is_relevant: np.ndarray, is_neutral: np.ndarray | None = None
+) -> float:
     """Foldseek-style sensitivity up to the first false positive (ROC1).
 
     Walk the ranked list from the top, counting same-family hits (TP) until the
@@ -58,8 +59,7 @@ def first_fp_sensitivity(ranking: np.ndarray, is_relevant: np.ndarray,
     if n_rel == 0:
         return 0.0
     rel = is_relevant[ranking]
-    neu = (is_neutral[ranking] if is_neutral is not None
-           else np.zeros(len(ranking), dtype=bool))
+    neu = is_neutral[ranking] if is_neutral is not None else np.zeros(len(ranking), dtype=bool)
     tp = 0
     for r, nu in zip(rel, neu):
         if r:
@@ -77,10 +77,9 @@ def evaluable_queries(fams: np.ndarray) -> np.ndarray:
     for fam in fams:
         if fam:
             fam_counts[fam] += 1
-    return np.array([
-        i for i, fam in enumerate(fams)
-        if fam and fam_counts[fam] >= 2
-    ], dtype=np.int64)
+    return np.array(
+        [i for i, fam in enumerate(fams) if fam and fam_counts[fam] >= 2], dtype=np.int64
+    )
 
 
 def parse_ints(text: str) -> list[int]:
@@ -95,8 +94,7 @@ def load_sub_matrix(path: str, n_codes: int) -> np.ndarray:
     matrix = np.asarray(matrix, dtype=np.float32)
     if matrix.shape != (n_codes, n_codes):
         raise ValueError(
-            "sub_matrix shape %s does not match database n_codes=%d"
-            % (matrix.shape, n_codes)
+            "sub_matrix shape %s does not match database n_codes=%d" % (matrix.shape, n_codes)
         )
     return matrix
 
@@ -150,14 +148,22 @@ def build_padded(entries: list[dict], indices: np.ndarray) -> tuple[np.ndarray, 
     padded = np.zeros((len(indices), max_len), dtype=np.int64)
     for row, idx in enumerate(indices):
         toks = entries[idx]["tokens"].astype(np.int64)
-        padded[row, :len(toks)] = toks
+        padded[row, : len(toks)] = toks
     return padded, lengths
 
 
-def evaluate_prefilter(entries: list[dict], fams: np.ndarray, evaluable_idx: np.ndarray,
-                       sub_matrix: np.ndarray, pre_scores: np.ndarray, top_n: int,
-                       gap_open: float, gap_extend: float, rerank_mode: str,
-                       clans: np.ndarray | None = None) -> dict:
+def evaluate_prefilter(
+    entries: list[dict],
+    fams: np.ndarray,
+    evaluable_idx: np.ndarray,
+    sub_matrix: np.ndarray,
+    pre_scores: np.ndarray,
+    top_n: int,
+    gap_open: float,
+    gap_extend: float,
+    rerank_mode: str,
+    clans: np.ndarray | None = None,
+) -> dict:
     r1_hits = []
     fp1_sens = []
     per_fam = defaultdict(lambda: {"n": 0, "r1": 0, "fp1": 0.0})
@@ -170,38 +176,48 @@ def evaluate_prefilter(entries: list[dict], fams: np.ndarray, evaluable_idx: np.
         q_tokens = entries[q_idx]["tokens"].astype(np.int64)
         q_fam = fams[q_idx]
         candidates = np.argsort(-pre_scores[q_idx])
-        candidates = candidates[candidates != q_idx][:min(top_n, n_targets - 1)]
+        candidates = candidates[candidates != q_idx][: min(top_n, n_targets - 1)]
         n_dp_pairs += len(candidates)
 
         t0 = time.time()
         if rerank_mode == "batch":
             padded, lengths = build_padded(entries, candidates)
             sw_scores = smith_waterman_batch(
-                q_tokens, padded, lengths, sub_matrix,
-                gap_open=gap_open, gap_extend=gap_extend,
+                q_tokens,
+                padded,
+                lengths,
+                sub_matrix,
+                gap_open=gap_open,
+                gap_extend=gap_extend,
             )
         elif rerank_mode == "fast_loop":
-            sw_scores = np.array([
-                smith_waterman_fast(
-                    q_tokens,
-                    entries[idx]["tokens"].astype(np.int64),
-                    sub_matrix,
-                    gap_open=gap_open,
-                    gap_extend=gap_extend,
-                )
-                for idx in candidates
-            ], dtype=np.float32)
+            sw_scores = np.array(
+                [
+                    smith_waterman_fast(
+                        q_tokens,
+                        entries[idx]["tokens"].astype(np.int64),
+                        sub_matrix,
+                        gap_open=gap_open,
+                        gap_extend=gap_extend,
+                    )
+                    for idx in candidates
+                ],
+                dtype=np.float32,
+            )
         elif rerank_mode == "numba_loop":
-            sw_scores = np.array([
-                smith_waterman_numba(
-                    q_tokens,
-                    entries[idx]["tokens"].astype(np.int64),
-                    sub_matrix,
-                    gap_open=gap_open,
-                    gap_extend=gap_extend,
-                )
-                for idx in candidates
-            ], dtype=np.float32)
+            sw_scores = np.array(
+                [
+                    smith_waterman_numba(
+                        q_tokens,
+                        entries[idx]["tokens"].astype(np.int64),
+                        sub_matrix,
+                        gap_open=gap_open,
+                        gap_extend=gap_extend,
+                    )
+                    for idx in candidates
+                ],
+                dtype=np.float32,
+            )
         else:
             raise ValueError("Unknown rerank_mode: %s" % rerank_mode)
         t_dp += time.time() - t0
@@ -246,19 +262,27 @@ def main():
     parser = argparse.ArgumentParser()
     parent = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
     parser.add_argument("--db", default=os.path.join(parent, "files", "search", "pdb_out", "db.pt"))
-    parser.add_argument("--sub_matrix", default=os.path.join(parent, "files", "codebook", "sub_matrix.pt"))
+    parser.add_argument(
+        "--sub_matrix", default=os.path.join(parent, "files", "codebook", "sub_matrix.pt")
+    )
     parser.add_argument("--labels", default=os.path.join(parent, "Splits", "labels.tsv"))
-    parser.add_argument("--label_column", default="rfam_acc",
-                        help="TSV column to use as 'same-class' label. "
-                             "rfam_acc = family-level retrieval (default); "
-                             "clan_acc = Rfam-clan-level retrieval.")
-    parser.add_argument("--output", default=os.path.join(parent, "files", "search", "prefilter_results.json"))
+    parser.add_argument(
+        "--label_column",
+        default="rfam_acc",
+        help="TSV column to use as 'same-class' label. "
+        "rfam_acc = family-level retrieval (default); "
+        "clan_acc = Rfam-clan-level retrieval.",
+    )
+    parser.add_argument(
+        "--output", default=os.path.join(parent, "files", "search", "prefilter_results.json")
+    )
     parser.add_argument("--methods", default="hist_cosine,jaccard,hist_intersection")
     parser.add_argument("--top_ns", default="10,20,30,50")
     parser.add_argument("--gap_open", type=float, default=-2.0)
     parser.add_argument("--gap_extend", type=float, default=-0.5)
-    parser.add_argument("--rerank_mode", choices=["batch", "fast_loop", "numba_loop"],
-                        default="numba_loop")
+    parser.add_argument(
+        "--rerank_mode", choices=["batch", "fast_loop", "numba_loop"], default="numba_loop"
+    )
     args = parser.parse_args()
 
     print("Loading DB: %s" % args.db, flush=True)
@@ -286,14 +310,22 @@ def main():
 
     labeled_mask = fams != ""
     labeled_fams = set(fams[labeled_mask])
-    print("  targets: %d entries (%d labeled, %d unlabeled distractors), %d unique classes" % (
-        len(entries), int(labeled_mask.sum()), int((~labeled_mask).sum()),
-        len(labeled_fams),
-    ), flush=True)
-    print("  queries: %d entries, %d classes" %
-          (len(evaluable_idx), len(set(fams[evaluable_idx])) if len(evaluable_idx) else 0), flush=True)
-    print("  full DP pairs would be: %d" %
-          (len(evaluable_idx) * (len(entries) - 1)), flush=True)
+    print(
+        "  targets: %d entries (%d labeled, %d unlabeled distractors), %d unique classes"
+        % (
+            len(entries),
+            int(labeled_mask.sum()),
+            int((~labeled_mask).sum()),
+            len(labeled_fams),
+        ),
+        flush=True,
+    )
+    print(
+        "  queries: %d entries, %d classes"
+        % (len(evaluable_idx), len(set(fams[evaluable_idx])) if len(evaluable_idx) else 0),
+        flush=True,
+    )
+    print("  full DP pairs would be: %d" % (len(evaluable_idx) * (len(entries) - 1)), flush=True)
 
     all_results = {}
     for method in methods:
@@ -305,9 +337,16 @@ def main():
         for top_n in top_ns:
             t0 = time.time()
             metrics = evaluate_prefilter(
-                entries, fams, evaluable_idx, sub_matrix, scores, top_n,
-                gap_open=args.gap_open, gap_extend=args.gap_extend,
-                rerank_mode=args.rerank_mode, clans=clans,
+                entries,
+                fams,
+                evaluable_idx,
+                sub_matrix,
+                scores,
+                top_n,
+                gap_open=args.gap_open,
+                gap_extend=args.gap_extend,
+                rerank_mode=args.rerank_mode,
+                clans=clans,
             )
             total_time = time.time() - t0 + pre_time
             metrics["prefilter_time_sec"] = float(pre_time)
@@ -316,12 +355,18 @@ def main():
             metrics["method"] = method
             metrics["rerank_mode"] = args.rerank_mode
             method_results[str(top_n)] = metrics
-            print("  top%-4d R@1=%.3f FP1-sens=%.3f "
-                  "time=%.2fs dp_pairs=%d" % (
-                      top_n,
-                      metrics["Recall@1"], metrics["FirstFP_sensitivity"],
-                      metrics["total_time_sec"], metrics["dp_pairs"],
-                  ), flush=True)
+            print(
+                "  top%-4d R@1=%.3f FP1-sens=%.3f "
+                "time=%.2fs dp_pairs=%d"
+                % (
+                    top_n,
+                    metrics["Recall@1"],
+                    metrics["FirstFP_sensitivity"],
+                    metrics["total_time_sec"],
+                    metrics["dp_pairs"],
+                ),
+                flush=True,
+            )
         all_results[method] = method_results
 
     payload = {

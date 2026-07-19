@@ -10,13 +10,17 @@ Panel B : off-diagonal cosine similarity distribution (negative entries =
 Writes: figures/S10.png
 """
 import sys as _sys, os as _os
+
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
 from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
-_sys.path.insert(0, SRC_SEARCH); _sys.path.insert(0, SRC_MODELS)
+
+_sys.path.insert(0, SRC_SEARCH)
+_sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
 
 import matplotlib
+
 matplotlib.use("Agg")
 matplotlib.rcParams["font.family"] = "Arial"
 matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
@@ -40,7 +44,7 @@ def main():
     # Hierarchical clustering on the matrix as a similarity → distance
     dist = float(M.max()) - M
     np.fill_diagonal(dist, 0.0)
-    dist = (dist + dist.T) / 2          # symmetrise to silence FP noise
+    dist = (dist + dist.T) / 2  # symmetrise to silence FP noise
     np.clip(dist, 0, None, out=dist)
     cond = squareform(dist, checks=False)
     order = leaves_list(linkage(cond, method="average"))
@@ -54,27 +58,35 @@ def main():
     # --- Panel A : clustered heatmap ---
     ax = fig.add_subplot(gs[0, 0])
     vext = float(np.abs([M.min(), M.max()]).max())
-    im = ax.imshow(M_clust, cmap="RdBu_r", vmin=-vext, vmax=vext,
-                   aspect="equal", interpolation="nearest")
+    im = ax.imshow(
+        M_clust, cmap="RdBu_r", vmin=-vext, vmax=vext, aspect="equal", interpolation="nearest"
+    )
     cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.03)
     cbar.set_label("Substitution score (log-odds)", fontsize=10)
     cbar.ax.tick_params(labelsize=9)
     ax.set_xlabel("Token (clustered)", fontsize=11)
     ax.set_ylabel("Token (clustered)", fontsize=11)
-    ax.set_xticks([]); ax.set_yticks([])
-    ax.set_title(f"{K}×{K} Structure-BLOSUM substitution matrix",
-                 fontsize=11, pad=6)
-    ax.text(-0.10, 1.04, "A", transform=ax.transAxes,
-            fontsize=16, fontweight="bold", va="bottom", ha="right")
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax.set_title(f"{K}×{K} Structure-BLOSUM substitution matrix", fontsize=11, pad=6)
+    ax.text(
+        -0.10,
+        1.04,
+        "A",
+        transform=ax.transAxes,
+        fontsize=16,
+        fontweight="bold",
+        va="bottom",
+        ha="right",
+    )
 
     # --- Panel B : off-diagonal distribution ---
     ax = fig.add_subplot(gs[0, 1])
-    ax.hist(off, bins=70, color="#6C8EBF", edgecolor="none",
-            rwidth=1.0, alpha=0.95)
-    ax.axvline(0, color="#444", linestyle="--", linewidth=1.2,
-               label="score $= 0$")
-    ax.axvline(off.mean(), color="#D62728", linestyle="-", linewidth=1.4,
-               label=f"mean = {off.mean():.3f}")
+    ax.hist(off, bins=70, color="#6C8EBF", edgecolor="none", rwidth=1.0, alpha=0.95)
+    ax.axvline(0, color="#444", linestyle="--", linewidth=1.2, label="score $= 0$")
+    ax.axvline(
+        off.mean(), color="#D62728", linestyle="-", linewidth=1.4, label=f"mean = {off.mean():.3f}"
+    )
     ax.set_xlabel("Substitution score (off-diagonal)", fontsize=11)
     ax.set_ylabel("Token-pair count", fontsize=11)
     _pad = 0.05 * (off.max() - off.min())
@@ -83,16 +95,22 @@ def main():
     ax.grid(False)
     ax.spines[["top", "right"]].set_visible(False)
     ax.legend(frameon=False, fontsize=10, loc="upper left")
-    ax.set_title("Off-diagonal substitution-score distribution",
-                 fontsize=11, pad=6)
-    ax.text(-0.10, 1.04, "B", transform=ax.transAxes,
-            fontsize=16, fontweight="bold", va="bottom", ha="right")
+    ax.set_title("Off-diagonal substitution-score distribution", fontsize=11, pad=6)
+    ax.text(
+        -0.10,
+        1.04,
+        "B",
+        transform=ax.transAxes,
+        fontsize=16,
+        fontweight="bold",
+        va="bottom",
+        ha="right",
+    )
 
     fig.tight_layout()
     OUT.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT, dpi=220, bbox_inches="tight")
-    print(f"wrote {OUT}  ({K}×{K}, off-diag mean {off.mean():.3f}, "
-          f"std {off.std():.3f})")
+    print(f"wrote {OUT}  ({K}×{K}, off-diag mean {off.mean():.3f}, " f"std {off.std():.3f})")
 
 
 if __name__ == "__main__":

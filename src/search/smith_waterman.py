@@ -20,11 +20,11 @@ except Exception:  # pragma: no cover - optional acceleration
 
 
 def smith_waterman(
-        query: np.ndarray,
-        target: np.ndarray,
-        sub_matrix: np.ndarray,
-        gap_open: float = -2.0,
-        gap_extend: float = -0.5,
+    query: np.ndarray,
+    target: np.ndarray,
+    sub_matrix: np.ndarray,
+    gap_open: float = -2.0,
+    gap_extend: float = -0.5,
 ) -> float:
     """Smith-Waterman local alignment score (affine gap).
 
@@ -56,7 +56,7 @@ def smith_waterman(
             tj = target[j - 1]
             E[i, j] = max(H[i, j - 1] + gap_open, E[i, j - 1] + gap_extend)
             F[i, j] = max(H[i - 1, j] + gap_open, F[i - 1, j] + gap_extend)
-            diag    = H[i - 1, j - 1] + float(sub_matrix[qi, tj])
+            diag = H[i - 1, j - 1] + float(sub_matrix[qi, tj])
             H[i, j] = max(0.0, diag, E[i, j], F[i, j])
             if H[i, j] > best:
                 best = H[i, j]
@@ -64,11 +64,11 @@ def smith_waterman(
 
 
 def smith_waterman_fast(
-        query: np.ndarray,
-        target: np.ndarray,
-        sub_matrix: np.ndarray,
-        gap_open: float = -2.0,
-        gap_extend: float = -0.5,
+    query: np.ndarray,
+    target: np.ndarray,
+    sub_matrix: np.ndarray,
+    gap_open: float = -2.0,
+    gap_extend: float = -0.5,
 ) -> float:
     """Vectorized SW with affine gap (row-wise numpy, ~5-10x faster)."""
     Lq, Lt = len(query), len(target)
@@ -80,7 +80,7 @@ def smith_waterman_fast(
 
     H_prev = np.zeros(Lt + 1, dtype=np.float32)
     H_curr = np.zeros(Lt + 1, dtype=np.float32)
-    F      = np.full(Lt + 1, -np.inf, dtype=np.float32)
+    F = np.full(Lt + 1, -np.inf, dtype=np.float32)
     best = 0.0
 
     for i in range(1, Lq + 1):
@@ -103,12 +103,12 @@ def smith_waterman_fast(
 
 
 def smith_waterman_batch(
-        query: np.ndarray,
-        targets_padded: np.ndarray,
-        target_lens: np.ndarray,
-        sub_matrix: np.ndarray,
-        gap_open: float = -2.0,
-        gap_extend: float = -0.5,
+    query: np.ndarray,
+    targets_padded: np.ndarray,
+    target_lens: np.ndarray,
+    sub_matrix: np.ndarray,
+    gap_open: float = -2.0,
+    gap_extend: float = -0.5,
 ) -> np.ndarray:
     """Batched SW: one query vs N targets, returning (N,) scores.
 
@@ -131,20 +131,20 @@ def smith_waterman_batch(
 
     # Valid-cell mask: True iff j <= target_lens[n], j in [1..Lt_max]
     j_range = np.arange(1, Lt_max + 1)
-    valid_j = j_range[None, :] <= target_lens[:, None]      # (N, Lt_max)
+    valid_j = j_range[None, :] <= target_lens[:, None]  # (N, Lt_max)
 
     # H[:, 0] and column 0 stay zero (SW local)
     H_prev = np.zeros((N, Lt_max + 1), dtype=np.float32)
     H_curr = np.zeros((N, Lt_max + 1), dtype=np.float32)
-    F      = np.full((N, Lt_max + 1), -np.inf, dtype=np.float32)
-    best   = np.zeros(N, dtype=np.float32)
+    F = np.full((N, Lt_max + 1), -np.inf, dtype=np.float32)
+    best = np.zeros(N, dtype=np.float32)
 
     for i in range(1, Lq + 1):
         # F column update: F[:, j] = max(H_prev[:, j] + go, F[:, j] + ge)
         F = np.maximum(H_prev + gap_open, F + gap_extend)
 
         # row_scores[n, j-1] = sub_matrix[query[i-1], targets_padded[n, j-1]]
-        row_scores = sub_matrix[query[i - 1], targets_padded]   # (N, Lt_max)
+        row_scores = sub_matrix[query[i - 1], targets_padded]  # (N, Lt_max)
 
         E = np.full(N, -np.inf, dtype=np.float32)
         for j in range(1, Lt_max + 1):
@@ -168,6 +168,7 @@ def smith_waterman_batch(
 
 
 if njit is not None:
+
     @njit(cache=True)
     def _smith_waterman_numba(query, target, sub_matrix, gap_open, gap_extend):
         Lq = len(query)
@@ -216,22 +217,24 @@ if njit is not None:
 
 
 def smith_waterman_numba(
-        query: np.ndarray,
-        target: np.ndarray,
-        sub_matrix: np.ndarray,
-        gap_open: float = -2.0,
-        gap_extend: float = -0.5,
+    query: np.ndarray,
+    target: np.ndarray,
+    sub_matrix: np.ndarray,
+    gap_open: float = -2.0,
+    gap_extend: float = -0.5,
 ) -> float:
     """Numba-JIT affine-gap Smith-Waterman."""
     if njit is None:
         return smith_waterman_fast(query, target, sub_matrix, gap_open, gap_extend)
-    return float(_smith_waterman_numba(
-        query.astype(np.int64, copy=False),
-        target.astype(np.int64, copy=False),
-        sub_matrix.astype(np.float32, copy=False),
-        float(gap_open),
-        float(gap_extend),
-    ))
+    return float(
+        _smith_waterman_numba(
+            query.astype(np.int64, copy=False),
+            target.astype(np.int64, copy=False),
+            sub_matrix.astype(np.float32, copy=False),
+            float(gap_open),
+            float(gap_extend),
+        )
+    )
 
 
 if __name__ == "__main__":
@@ -246,7 +249,7 @@ if __name__ == "__main__":
     np.fill_diagonal(sub, 1.0)
 
     a = rng.randint(0, n_codes, size=50)
-    b = a.copy()                           # identical
+    b = a.copy()  # identical
     c = rng.randint(0, n_codes, size=50)  # random
 
     s_same = smith_waterman_fast(a, b, sub)

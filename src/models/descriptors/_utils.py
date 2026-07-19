@@ -34,10 +34,10 @@ def build_local_frames(coords: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor
 
 
 def compute_rel_transform_10d(
-        rot_src: torch.Tensor,
-        origin_src: torch.Tensor,
-        rot_tgt: torch.Tensor,
-        origin_tgt: torch.Tensor,
+    rot_src: torch.Tensor,
+    origin_src: torch.Tensor,
+    rot_tgt: torch.Tensor,
+    origin_tgt: torch.Tensor,
 ) -> torch.Tensor:
     """10D residue-to-partner rigid transform.
 
@@ -57,5 +57,3 @@ def compute_rel_transform_10d(
     rot6d = R_rel[..., :2].reshape(*R_rel.shape[:-2], 6)
 
     return torch.cat([dist, direction, rot6d], dim=-1)
-
-

@@ -28,12 +28,12 @@ K_NEIGHBORS = 2
 
 
 def compute_descriptor(
-        coords: torch.Tensor,
-        mask: torch.Tensor,
-        pair_idx: torch.Tensor | None = None,
-        stack_idx: torch.Tensor | None = None,
-        pair_orient: torch.Tensor | None = None,
-        min_seq_sep: int = 4,
+    coords: torch.Tensor,
+    mask: torch.Tensor,
+    pair_idx: torch.Tensor | None = None,
+    stack_idx: torch.Tensor | None = None,
+    pair_orient: torch.Tensor | None = None,
+    min_seq_sep: int = 4,
 ) -> tuple[torch.Tensor, dict]:
     """Compute the 49-D descriptor for each residue.
 
@@ -64,7 +64,10 @@ def compute_descriptor(
 
     # ── FRAME · top-2 spatial neighbours (virtual-centre kNN) ──────
     nn_idx_top2 = find_top_k_nn_with_virtual_center(
-        coords, mask, k=K_NEIGHBORS, min_seq_sep=min_seq_sep,
+        coords,
+        mask,
+        k=K_NEIGHBORS,
+        min_seq_sep=min_seq_sep,
     )
     nn1_idx = nn_idx_top2[..., 0]
     nn2_idx = nn_idx_top2[..., 1]
@@ -78,18 +81,19 @@ def compute_descriptor(
     m_st = st_valid.float().unsqueeze(-1)
 
     # ── SCALAR · 7-D context block ─────────────────────────────────
-    g_ctx = torch.cat([
-        seq_sep_feature(nn1_idx, mask),
-        seq_sep_feature(pair_idx, mask),
-        seq_sep_feature(stack_idx, mask),
-        pair_orient_features(pair_orient, bp_valid),
-        contact_density(coords, mask, min_seq_sep=min_seq_sep),
-    ], dim=-1)
+    g_ctx = torch.cat(
+        [
+            seq_sep_feature(nn1_idx, mask),
+            seq_sep_feature(pair_idx, mask),
+            seq_sep_feature(stack_idx, mask),
+            pair_orient_features(pair_orient, bp_valid),
+            contact_density(coords, mask, min_seq_sep=min_seq_sep),
+        ],
+        dim=-1,
+    )
 
     # ── Concatenate into the canonical 49-D layout ─────────────────
-    descriptor = torch.cat(
-        [g_nn1, g_nn2, g_bp, m_bp, g_st, m_st, g_ctx], dim=-1
-    )
+    descriptor = torch.cat([g_nn1, g_nn2, g_bp, m_bp, g_st, m_st, g_ctx], dim=-1)
     descriptor = descriptor * mask.unsqueeze(-1).float()
 
     info = {
@@ -125,9 +129,9 @@ def parse_descriptor(f: torch.Tensor) -> dict[str, torch.Tensor]:
     return {
         "g_nn1": f[..., 0:10],
         "g_nn2": f[..., 10:20],
-        "g_bp":  f[..., 20:30],
-        "m_bp":  f[..., 30:31],
-        "g_st":  f[..., 31:41],
-        "m_st":  f[..., 41:42],
+        "g_bp": f[..., 20:30],
+        "m_bp": f[..., 30:31],
+        "g_st": f[..., 31:41],
+        "m_st": f[..., 41:42],
         "g_ctx": f[..., 42:49],
     }

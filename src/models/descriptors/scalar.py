@@ -30,8 +30,8 @@ def seq_sep_feature(tgt_idx: torch.Tensor, mask: torch.Tensor) -> torch.Tensor:
 
 
 def pair_orient_features(
-        pair_orient: torch.Tensor | None,
-        bp_valid: torch.Tensor,
+    pair_orient: torch.Tensor | None,
+    bp_valid: torch.Tensor,
 ) -> torch.Tensor:
     """One-hot cis (=1) / trans (=2) flags for base-pair orientation.
 
@@ -49,12 +49,12 @@ def pair_orient_features(
 
 
 def contact_density(
-        coords: torch.Tensor,
-        mask: torch.Tensor,
-        min_seq_sep: int = 4,
-        radii: tuple[float, float] = (8.0, 12.0),
-        norm_count: float = 12.0,
-        chunk_size: int = 512,
+    coords: torch.Tensor,
+    mask: torch.Tensor,
+    min_seq_sep: int = 4,
+    radii: tuple[float, float] = (8.0, 12.0),
+    norm_count: float = 12.0,
+    chunk_size: int = 512,
 ) -> torch.Tensor:
     """Non-sequential C4' contact counts at the requested radii, clipped to [0, 1].
 
@@ -70,10 +70,7 @@ def contact_density(
             continue
         pts = C4p[b, valid_pos]
         n = pts.shape[0]
-        counts_by_radius = [
-            torch.zeros(n, device=device, dtype=torch.float32)
-            for _ in radii
-        ]
+        counts_by_radius = [torch.zeros(n, device=device, dtype=torch.float32) for _ in radii]
         for start in range(0, n, chunk_size):
             end = min(start + chunk_size, n)
             chunk = pts[start:end]
@@ -82,9 +79,8 @@ def contact_density(
             allowed = seq_sep >= min_seq_sep
             for r_i, radius in enumerate(radii):
                 counts_by_radius[r_i][start:end] = (
-                    (dist2 <= radius * radius) & allowed
-                ).sum(dim=1).float()
+                    ((dist2 <= radius * radius) & allowed).sum(dim=1).float()
+                )
         for r_i, counts in enumerate(counts_by_radius):
             out[b, valid_pos, r_i] = (counts / norm_count).clamp(max=1.0)
     return out
-

@@ -19,21 +19,23 @@ def _vc_weights():
     Read from environment variables RFS_VC_ALPHA/BETA/GAMMA if set
     (used by the virtual-centre weight ablation), else default 0.5 each.
     """
+
     def _g(name, default=0.5):
         v = os.environ.get(name)
         return float(v) if v is not None else default
+
     return _g("RFS_VC_ALPHA"), _g("RFS_VC_BETA"), _g("RFS_VC_GAMMA")
 
 
 def compute_virtual_center_from_coords(
-        coords: torch.Tensor,
-        mask: torch.Tensor,
-        c4p_idx: int = 1,
-        base_idx: int | None = None,
-        alpha: float = 0.5,
-        beta: float = 0.5,
-        gamma: float = 0.5,
-        eps: float = 1e-8,
+    coords: torch.Tensor,
+    mask: torch.Tensor,
+    c4p_idx: int = 1,
+    base_idx: int | None = None,
+    alpha: float = 0.5,
+    beta: float = 0.5,
+    gamma: float = 0.5,
+    eps: float = 1e-8,
 ) -> torch.Tensor:
     """Virtual center per residue.
 
@@ -52,9 +54,7 @@ def compute_virtual_center_from_coords(
         vc: (B, L, 3) — zero at padded positions.
     """
     if coords.ndim != 4 or coords.shape[-1] != 3:
-        raise ValueError(
-            f"coords should have shape (B, L, A, 3), got {tuple(coords.shape)}"
-        )
+        raise ValueError(f"coords should have shape (B, L, A, 3), got {tuple(coords.shape)}")
 
     B, L, A, _ = coords.shape
     if c4p_idx >= A:
@@ -84,15 +84,15 @@ def compute_virtual_center_from_coords(
 
 
 def find_top_k_nn_with_virtual_center(
-        coords: torch.Tensor,
-        mask: torch.Tensor,
-        k: int = 1,
-        min_seq_sep: int = 4,
-        c4p_idx: int = 1,
-        base_idx: int | None = None,
-        alpha: float | None = None,
-        beta: float | None = None,
-        gamma: float | None = None,
+    coords: torch.Tensor,
+    mask: torch.Tensor,
+    k: int = 1,
+    min_seq_sep: int = 4,
+    c4p_idx: int = 1,
+    base_idx: int | None = None,
+    alpha: float | None = None,
+    beta: float | None = None,
+    gamma: float | None = None,
 ) -> torch.Tensor:
     """Top-k nearest non-sequential virtual-center neighbours.
 
@@ -107,11 +107,16 @@ def find_top_k_nn_with_virtual_center(
     if alpha is None or beta is None or gamma is None:
         a, b, g = _vc_weights()
         alpha = a if alpha is None else alpha
-        beta  = b if beta  is None else beta
+        beta = b if beta is None else beta
         gamma = g if gamma is None else gamma
     vc = compute_virtual_center_from_coords(
-        coords=coords, mask=mask, c4p_idx=c4p_idx, base_idx=base_idx,
-        alpha=alpha, beta=beta, gamma=gamma,
+        coords=coords,
+        mask=mask,
+        c4p_idx=c4p_idx,
+        base_idx=base_idx,
+        alpha=alpha,
+        beta=beta,
+        gamma=gamma,
     )
     B, L, _ = vc.shape
     device = vc.device
@@ -132,5 +137,3 @@ def find_top_k_nn_with_virtual_center(
             has_neighbor = torch.isfinite(best_dist[:, ki])
             nn_idx[b, valid_pos[has_neighbor], ki] = valid_pos[best_j[has_neighbor, ki]]
     return nn_idx
-
-

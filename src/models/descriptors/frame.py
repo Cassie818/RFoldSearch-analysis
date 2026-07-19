@@ -17,9 +17,9 @@ from ._utils import build_local_frames, compute_rel_transform_10d
 
 
 def rel_features_for_pairs(
-        coords: torch.Tensor,
-        mask: torch.Tensor,
-        tgt_idx: torch.Tensor,
+    coords: torch.Tensor,
+    mask: torch.Tensor,
+    tgt_idx: torch.Tensor,
 ) -> tuple[torch.Tensor, torch.Tensor]:
     """10D rigid transform for each residue to its target partner.
 
@@ -48,7 +48,9 @@ def rel_features_for_pairs(
             i = idx.item()
             j = tgt_idx[b, i].item()
             features[b, i] = compute_rel_transform_10d(
-                rot[b, i], origin[b, i],
-                rot[b, j], origin[b, j],
+                rot[b, i],
+                origin[b, i],
+                rot[b, j],
+                origin[b, j],
             )
     return features, valid

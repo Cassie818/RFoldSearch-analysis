@@ -19,11 +19,13 @@ import torch
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 from paths import DATA_ROOT, FIG_DIR, SRC_MODELS  # noqa: E402
+
 REPO = Path(DATA_ROOT)
 sys.path.insert(0, SRC_MODELS)
 
 from descriptors import compute_descriptor  # noqa: E402
 from descriptors._utils import build_local_frames  # noqa: E402
+
 ACTIVE_DIMS = np.r_[0:10, 42:49]
 STATE_COLORS = ["#2A9D8F", "#E76F51", "#457B9D", "#E9C46A", "#B565A7"]
 
@@ -33,7 +35,8 @@ def parse_args():
     p.add_argument("--db", default=str(REPO / "files/production_new/db.pt"))
     p.add_argument("--checkpoint", default=str(REPO / "files/production_new/desc_vqvae_best.pt"))
     p.add_argument(
-        "--data", nargs="+",
+        "--data",
+        nargs="+",
         default=[str(REPO / f"Splits/pdb_out/{s}.json") for s in ("train", "val", "test")],
     )
     p.add_argument(
@@ -43,9 +46,7 @@ def parse_args():
         "--profile",
         default=str(REPO / "files/motifs_v2/token_profile_summary.tsv"),
     )
-    p.add_argument(
-        "--output", default=str(Path(FIG_DIR) / "S11.png")
-    )
+    p.add_argument("--output", default=str(Path(FIG_DIR) / "S11.png"))
     p.add_argument(
         # Companion table listing the chosen representatives. Written next to
         # the figure; note that figures/ is gitignored, so this is a local
@@ -80,8 +81,12 @@ def load_sources(paths, wanted):
 def tensors(entry):
     coords = torch.as_tensor(entry["coords"], dtype=torch.float32).unsqueeze(0)
     mask = torch.as_tensor(entry["mask"], dtype=torch.bool).unsqueeze(0)
-    pair = torch.as_tensor(entry.get("pair_idx", entry.get("pair_edges")), dtype=torch.long).unsqueeze(0)
-    stack = torch.as_tensor(entry.get("stack_idx", entry.get("stack_edges")), dtype=torch.long).unsqueeze(0)
+    pair = torch.as_tensor(
+        entry.get("pair_idx", entry.get("pair_edges")), dtype=torch.long
+    ).unsqueeze(0)
+    stack = torch.as_tensor(
+        entry.get("stack_idx", entry.get("stack_edges")), dtype=torch.long
+    ).unsqueeze(0)
     orient = entry.get("pair_orient")
     if orient is not None:
         orient = torch.as_tensor(orient, dtype=torch.long).unsqueeze(0)
@@ -105,9 +110,7 @@ def descriptor_for_entry(entry, norm_mean, norm_std):
     return active, valid, nn_idx
 
 
-def select_representatives(
-        db_entries, source_entries, norm_mean, norm_std, n_codes, n_examples=5
-):
+def select_representatives(db_entries, source_entries, norm_mean, norm_std, n_codes, n_examples=5):
     sums = np.zeros((n_codes, len(ACTIVE_DIMS)), dtype=np.float64)
     counts = np.zeros(n_codes, dtype=np.int64)
 
@@ -156,9 +159,7 @@ def select_representatives(
 
     representatives = []
     for token in range(n_codes):
-        selected = sorted(
-            candidates[token].values(), key=lambda r: r["centroid_mse"]
-        )[:n_examples]
+        selected = sorted(candidates[token].values(), key=lambda r: r["centroid_mse"])[:n_examples]
         if not selected:
             representatives.append([])
             continue
@@ -190,22 +191,36 @@ def draw_nucleotide(ax, points, color, alpha=1.0, zorder=3):
     if base_ok:
         bonds.append((3, 4))
     for a, b in bonds:
-        ax.plot(p[[a, b], 0], p[[a, b], 1], color=color, lw=1.45,
-                alpha=alpha, solid_capstyle="round", zorder=zorder)
+        ax.plot(
+            p[[a, b], 0],
+            p[[a, b], 1],
+            color=color,
+            lw=1.45,
+            alpha=alpha,
+            solid_capstyle="round",
+            zorder=zorder,
+        )
 
 
 def draw_state(ax, reps, token):
     for rank, rep in enumerate(reps):
         color = STATE_COLORS[rank % len(STATE_COLORS)]
         oi, oj = project(np.stack([rep["local_i"][1], rep["local_j"][1]]))
-        ax.plot([oi[0], oj[0]], [oi[1], oj[1]], color=color, lw=0.8,
-                alpha=0.64, zorder=1)
+        ax.plot([oi[0], oj[0]], [oi[1], oj[1]], color=color, lw=0.8, alpha=0.64, zorder=1)
         draw_nucleotide(ax, rep["local_j"], color, alpha=0.84, zorder=2)
         draw_nucleotide(ax, rep["local_i"], color, alpha=0.94, zorder=3)
 
-    ax.text(0.5, -0.02, str(token), transform=ax.transAxes,
-            ha="center", va="top", fontsize=10.5, color="#111111",
-            fontfamily="Arial")
+    ax.text(
+        0.5,
+        -0.02,
+        str(token),
+        transform=ax.transAxes,
+        ha="center",
+        va="top",
+        fontsize=10.5,
+        color="#111111",
+        fontfamily="Arial",
+    )
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.set_xlim(-13.5, 13.5)
@@ -220,9 +235,17 @@ def write_table(path, reps, profiles, counts):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     fields = [
-        "token", "representative_rank", "n", "frequency", "role",
-        "structure_id", "residue_index_1based", "nucleotide",
-        "neighbour_index_1based", "neighbour_nucleotide", "sequence_separation",
+        "token",
+        "representative_rank",
+        "n",
+        "frequency",
+        "role",
+        "structure_id",
+        "residue_index_1based",
+        "nucleotide",
+        "neighbour_index_1based",
+        "neighbour_nucleotide",
+        "sequence_separation",
         "centroid_mse",
     ]
     with path.open("w", newline="") as f:
@@ -232,20 +255,22 @@ def write_table(path, reps, profiles, counts):
             for rank, rep in enumerate(token_reps, start=1):
                 token = rep["token"]
                 p = profiles[token]
-                w.writerow({
-                    "token": token,
-                    "representative_rank": rank,
-                    "n": int(counts[token]),
-                    "frequency": p["freq"],
-                    "role": p["role"],
-                    "structure_id": Path(rep["id"]).name,
-                    "residue_index_1based": rep["raw_i"] + 1,
-                    "nucleotide": rep["seq_i"],
-                    "neighbour_index_1based": rep["raw_j"] + 1,
-                    "neighbour_nucleotide": rep["seq_j"],
-                    "sequence_separation": rep["seq_sep"],
-                    "centroid_mse": f"{rep['centroid_mse']:.6g}",
-                })
+                w.writerow(
+                    {
+                        "token": token,
+                        "representative_rank": rank,
+                        "n": int(counts[token]),
+                        "frequency": p["freq"],
+                        "role": p["role"],
+                        "structure_id": Path(rep["id"]).name,
+                        "residue_index_1based": rep["raw_i"] + 1,
+                        "nucleotide": rep["seq_i"],
+                        "neighbour_index_1based": rep["raw_j"] + 1,
+                        "neighbour_nucleotide": rep["seq_j"],
+                        "sequence_separation": rep["seq_sep"],
+                        "centroid_mse": f"{rep['centroid_mse']:.6g}",
+                    }
+                )
 
 
 def plot(output, reps):
@@ -253,8 +278,7 @@ def plot(output, reps):
     for token, ax in enumerate(axes.flat):
         draw_state(ax, reps[token], token)
 
-    fig.subplots_adjust(left=0.012, right=0.988, top=0.995, bottom=0.018,
-                        wspace=0.03, hspace=0.16)
+    fig.subplots_adjust(left=0.012, right=0.988, top=0.995, bottom=0.018, wspace=0.03, hspace=0.16)
 
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -277,7 +301,11 @@ def main():
     profiles = load_profiles(args.profile)
 
     reps, counts = select_representatives(
-        db["entries"], sources, norm_mean, norm_std, n_codes,
+        db["entries"],
+        sources,
+        norm_mean,
+        norm_std,
+        n_codes,
         n_examples=args.n_examples,
     )
     if any(not r for r in reps):
