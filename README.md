@@ -124,11 +124,11 @@ similar-k-mer expansion, top-100 candidates, token Smith-Waterman reranking with
 the Structure-BLOSUM matrix (gap open −2.0, extend −0.5).
 
 Similar k-mers in the prefilter are admitted by their Structure-BLOSUM score
-(S >= 0), following Foldseek's 3Di convention. Note that the ablations in
-`scripts/03_ablations/` (Figs S2-S8) predate this change and admitted neighbours
-by codebook cosine instead; the two criteria are compared in Fig S12 and differ
-by less than the fold-to-fold variation. Candidate ties at the top-N cutoff are
-broken deterministically by target index.
+(S >= 0), following Foldseek's 3Di convention. The design ablations that use
+expansion (Figs S2-S8) admitted neighbours by codebook cosine instead; the two
+criteria are compared in Fig S9 and differ by less than the fold-to-fold
+variation. Candidate ties at the top-N cutoff are broken deterministically by
+target index.
 
 ## Baselines
 
