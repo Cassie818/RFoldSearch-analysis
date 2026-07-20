@@ -209,7 +209,7 @@ _seen = set()
 with open(USALIGN_CACHE) as _f:
     for _l in _f:
         _d = json.loads(_l)
-        _tm = max(_d["tm_query"], _d["tm_target"])
+        _tm = 0.5 * (_d["tm_query"] + _d["tm_target"])
         if _tm < STRUCT_TM_THRESH:
             continue
         _a, _b = _d["i"], _d["j"]

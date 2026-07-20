@@ -310,7 +310,9 @@ def build_struct_blosum(tok_by_di, pair_pool, K_):
     return S, n_al
 
 
-def expand_kmer(qk, cos, K_, thresh):
+def expand_kmer(qk, sim, K_, thresh):
+    """Similar-k-mer expansion. `sim` is the K×K matrix whose entries decide
+    which one-substitution neighbours enter the lookup (deployed: Structure-BLOSUM)."""
     k = len(qk)
     powers = np.array([K_ ** (k - 1 - i) for i in range(k)], dtype=np.int64)
     out = {int(np.dot(qk, powers))}
@@ -318,7 +320,7 @@ def expand_kmer(qk, cos, K_, thresh):
         for tok in range(K_):
             if tok == qk[pos]:
                 continue
-            score = (k - 1) * 1.0 + cos[qk[pos], tok]
+            score = (k - 1) * 1.0 + sim[qk[pos], tok]
             if score >= thresh:
                 trial = qk.copy()
                 trial[pos] = tok
@@ -331,7 +333,6 @@ def val_retrieval_sens(m):
     over the full train+val pool. Return fam-Sens + clan-Sens averaged."""
     pool_di = train_dis + val_dis
     toks = {}
-    cb = None
     for di in pool_di:
         X = normed(di)
         if len(X) == 0:
@@ -339,9 +340,6 @@ def val_retrieval_sens(m):
             continue
         c, cb_arr = get_codes(m, X)
         toks[di] = c
-        cb = cb_arr
-    cbn = cb / (np.linalg.norm(cb, axis=1, keepdims=True) + 1e-9)
-    cos = (cbn @ cbn.T).astype(np.float32)
     struct_sub, _ = build_struct_blosum(toks, STRUCT_PAIRS_TRAIN, K)
     order = pool_di
     pos_map = {d: i for i, d in enumerate(order)}

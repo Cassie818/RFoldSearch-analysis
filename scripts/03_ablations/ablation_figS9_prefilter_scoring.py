@@ -1,9 +1,10 @@
 """Prefilter SCORING ablation, K=80 deployed VQ-VAE, PDB-disjoint 5-fold CV.
-All variants use the contiguous 4-mer seed and Structure-BLOSUM SW reranking;
-they differ only in how 1-substitution similar k-mers are selected:
+All variants use the contiguous 4-mer seed and Structure-BLOSUM SW reranking
+(matrix built from mean-normalised TM>=0.5 pairs, as deployed); they differ
+only in how 1-substitution similar k-mers are selected:
   E4          : no expansion (exact match only)
-  cos>=0      : codebook cosine, thresh 3.0  (currently deployed)
-  blosum>=0   : Structure-BLOSUM, thresh 3.0
+  cos>=0      : codebook cosine, thresh 3.0  (earlier exploratory criterion)
+  blosum>=0   : Structure-BLOSUM, thresh 3.0  (deployed)
   blosum>=.25 : Structure-BLOSUM, thresh 3.25
 ORIGINAL HEADER:
 Variants (all use k=4 informative positions, cosine-substitution reranking,
@@ -207,7 +208,10 @@ _seen = set()
 with open(USALIGN_CACHE) as _f:
     for _l in _f:
         _d = json.loads(_l)
-        _tm = max(_d["tm_query"], _d["tm_target"])
+        # Symmetric (mean-normalised) US-align TM, matching the deployed
+        # Structure-BLOSUM construction and the Fig 2C/D ground truth. Used
+        # consistently across all cross-validation ablations (S6-S9).
+        _tm = 0.5 * (_d["tm_query"] + _d["tm_target"])
         if _tm < STRUCT_TM_THRESH:
             continue
         _a, _b = _d["i"], _d["j"]
@@ -522,6 +526,6 @@ for f in range(5):
 print("\n== Summary ==", flush=True)
 for name, v in all_out.items():
     print(
-        f"  {name:8s} [{v['pattern']}]: famSens={v['fam_sens_mean']:.3f}±{v['fam_sens_std']:.3f}  clanSens={v['clan_sens_mean']:.3f}±{v['clan_sens_std']:.3f}"
+        f"  {name:12s}: famSens={v['fam_sens_mean']:.3f}±{v['fam_sens_std']:.3f}  clanSens={v['clan_sens_mean']:.3f}±{v['clan_sens_std']:.3f}"
     )
 print(f"\ntotal: {time.time()-t_all:.0f}s\nDONE", flush=True)
