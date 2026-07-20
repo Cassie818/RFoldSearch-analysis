@@ -1,7 +1,7 @@
 """RiboSeek (real PyPI package riboseek==0.1.0, sa20 alphabet) baseline on
 TEST-only queries (n=106 fam / 79 clan), full 885 db. Uses the package's own
 pdb_to_features + sa20 alphabet + Searcher (contiguous 6-mer prefilter,
-prefilter_candidates=100, NW+SW z-score combined_score). Foldseek hierarchical
+prefilter_candidates=500, NW+SW z-score combined_score). Foldseek hierarchical
 family/clan definitions, matching our other test-only evals."""
 import sys as _sys, os as _os
 
@@ -79,7 +79,7 @@ r1c = []
 clanS = []
 t1 = time.time()
 for qi, q in enumerate(fam_q):
-    res = sr.search(str(q), top_n=100, prefilter=True, prefilter_candidates=100)
+    res = sr.search(str(q), top_n=500, prefilter=True, prefilter_candidates=500)
     ranked = [int(h["chain"]) for h in res if int(h["chain"]) != q]
     r = np.asarray(ranked, dtype=np.int64)
     va = va_all != q

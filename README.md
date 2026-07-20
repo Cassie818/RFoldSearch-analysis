@@ -133,8 +133,9 @@ target index.
 ## Baselines
 
 US-align, RMalign, BLASTN and RiboSeek. RiboSeek uses the released PyPI package
-(`riboseek`, `sa20` alphabet) rather than a reimplementation. BLASTN binaries are
-resolved from `PATH`; override with `RFS_BLAST_BIN`.
+(`riboseek`, `sa20` alphabet) rather than a reimplementation, at its default
+`prefilter_candidates=500`. BLASTN binaries are resolved from `PATH`; override
+with `RFS_BLAST_BIN`.
 
 ## Notes
 

@@ -112,7 +112,7 @@ srr = Searcher(sr0.alphabet, enc, gap_penalty=-2.0, prefilter_k=6)
 
 
 def rank_ribo(q):
-    res = srr.search(str(q), top_n=100, prefilter=True, prefilter_candidates=100)
+    res = srr.search(str(q), top_n=500, prefilter=True, prefilter_candidates=500)
     return np.asarray([int(h["chain"]) for h in res if int(h["chain"]) != q], dtype=np.int64)
 
 

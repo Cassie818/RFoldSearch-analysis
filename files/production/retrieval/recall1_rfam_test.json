@@ -19,8 +19,8 @@
     "n_clan": 79
   },
   "RiboSeek": {
-    "family_recall1": 0.8018867924528302,
-    "clan_recall1": 0.8607594936708861,
+    "family_recall1": 0.7830188679245284,
+    "clan_recall1": 0.8354430379746836,
     "n_family": 106,
     "n_clan": 79
   },
