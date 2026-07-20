@@ -134,11 +134,13 @@ target index.
 
 The **deployed** matrix is the label-free **Structure-BLOSUM**, built inside
 `scripts/01_train/train_final_model.py` (`build_struct_blosum`) from training
-chain pairs whose US-align TM-score reaches 0.5 under **either** length-
-normalisation (the larger of the two scores, `max(tm_query, tm_target)`), and
-shipped as `files/production_new/sub_matrix.pt`. Note this differs from the
-mean-normalised TM criterion used for the Fig 2C/D structural ground truth.
-There is no standalone build script for it — it is produced as part of training.
+chain pairs whose symmetric (mean-normalised) US-align TM-score reaches 0.5
+— `0.5 * (tm_query + tm_target) >= 0.5`, the same TM definition used for the
+Fig 2C/D structural ground truth — and shipped as
+`files/production_new/sub_matrix.pt`. There is no standalone build script for
+it; it is produced as part of training. (The max-normalised variant,
+`max(tm_query, tm_target) >= 0.5`, yields indistinguishable retrieval — family
+Sens@1FP 0.555, clan 0.221 either way — and was the earlier criterion.)
 
 The two scripts under `src/search/` build the **ablation alternatives**, not
 the deployed matrix (do not confuse them):

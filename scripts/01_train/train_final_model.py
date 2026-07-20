@@ -113,12 +113,11 @@ train_set = set(train_dis)
 with open(USALIGN_CACHE) as _f:
     for _l in _f:
         _d = json.loads(_l)
-        # Accept a pair if it is structurally similar under EITHER length-
-        # normalisation (larger of the two US-align TM-scores). This admits
-        # substructure relationships and is deliberately more permissive than
-        # the mean-normalised criterion used for the Fig 2C/D structural
-        # ground truth.
-        _tm = max(_d["tm_query"], _d["tm_target"])
+        # Accept a pair if its symmetric (mean-normalised) US-align TM-score
+        # reaches the threshold. This is the same TM definition used for the
+        # Fig 2C/D structural ground truth, so a single criterion applies
+        # throughout.
+        _tm = 0.5 * (_d["tm_query"] + _d["tm_target"])
         if _tm < STRUCT_TM_THRESH:
             continue
         _a, _b = _d["i"], _d["j"]
