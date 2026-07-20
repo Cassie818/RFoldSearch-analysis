@@ -376,7 +376,10 @@ def val_retrieval_sens(m):
         td = defaultdict(dict)
         for qp in range(len(tt) - k + 1):
             qk = tt[qp : qp + k]
-            for kid in expand_kmer(qk, cos, K, thresh):
+            # Similar-k-mer expansion must use the SAME matrix as the deployed
+            # prefilter (Structure-BLOSUM), not codebook cosine, so seed
+            # selection ranks candidates under the deployed pipeline.
+            for kid in expand_kmer(qk, struct_sub, K, thresh):
                 for ti, tp in idx.get(kid, ()):
                     if ti != q:
                         d = qp - tp
