@@ -1,12 +1,19 @@
 """
-Two-stage Rfam retrieval benchmark: token prefilter + SW reranking.
+Shared Rfam label/metric helpers, plus an early exploratory prefilter benchmark.
 
-This tests the Foldseek-style retrieval idea:
-  1. Use a cheap token composition score to select top-N candidates.
-  2. Run token-space Smith-Waterman only on those candidates.
+Most of the package imports only the helper functions from this module —
+`attach_labels`, `load_labels`, `first_fp_sensitivity`, `evaluable_queries` —
+which define the Rfam family/clan labels and the Sens@1FP metric used
+everywhere.
 
-It reports Recall@1, sensitivity up to the first false positive, timing and the
-number of DP target comparisons avoided.
+WARNING: the standalone benchmark in this file's `main()` is NOT the deployed
+prefilter. Its `prefilter_scores()` ranks candidates by whole-chain token
+*composition* similarity (histogram cosine / intersection / Jaccard), an early
+exploration. The deployed pipeline instead uses a 4-mer inverted-index prefilter
+with Structure-BLOSUM similar-k-mer expansion, implemented inline in the
+`scripts/02_benchmark/` evaluation scripts (see also
+`scripts/03_ablations/ablation_figS9_prefilter_scoring.py`). Running this file
+to reproduce the README's "4-mer + similar-k-mer expansion" will not match.
 """
 from __future__ import annotations
 
@@ -263,7 +270,11 @@ def main():
     parent = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..")
     parser.add_argument("--db", default=os.path.join(parent, "files", "search", "pdb_out", "db.pt"))
     parser.add_argument(
-        "--sub_matrix", default=os.path.join(parent, "files", "codebook", "sub_matrix.pt")
+        "--sub_matrix",
+        default=os.path.join(parent, "files", "codebook", "sub_matrix_codebook_cosine.pt"),
+        help="Substitution matrix for SW reranking. Defaults to the codebook-cosine "
+        "matrix from build_matrix_codebook_cosine.py; pass the deployed "
+        "files/production_new/sub_matrix.pt to rerank with Structure-BLOSUM.",
     )
     parser.add_argument("--labels", default=os.path.join(parent, "Splits", "labels.tsv"))
     parser.add_argument(

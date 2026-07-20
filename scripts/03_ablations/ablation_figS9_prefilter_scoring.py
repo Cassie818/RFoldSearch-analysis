@@ -392,7 +392,7 @@ def retrieval_eval(
                         td[ti][d] = td[ti].get(d, 0) + 1
         sc = [(ti, max((c for c in dm.values() if c >= 2), default=-1)) for ti, dm in td.items()]
         sc = [x for x in sc if x[1] > 0]
-        sc.sort(key=lambda x: -x[1])
+        sc.sort(key=lambda x: (-x[1], x[0]))
         cand = np.array([x[0] for x in sc[:TOPN]], np.int64)
         if len(cand) == 0:
             famS.append(0.0)

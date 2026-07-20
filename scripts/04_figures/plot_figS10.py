@@ -1,11 +1,14 @@
-"""Supplementary figure: the production codebook-cosine substitution matrix.
+"""Supplementary figure: the deployed Structure-BLOSUM substitution matrix.
 
-Panel A : 80x80 token-to-token cosine similarity heatmap, with token order
-          permuted by hierarchical clustering of the matrix itself so that
-          structurally similar tokens form visible block-diagonal groups.
-Panel B : off-diagonal cosine similarity distribution (negative entries =
-          structurally dissimilar pairs; positive entries = structurally
-          equivalent tokens that the matrix lets Smith--Waterman trade).
+Reads the deployed matrix from files/production_new/sub_matrix.pt (log-odds
+scores, not cosine).
+
+Panel A : 80x80 token-to-token log-odds heatmap, with token order permuted by
+          hierarchical clustering of the matrix itself so that structurally
+          similar tokens form visible block-diagonal groups.
+Panel B : off-diagonal log-odds distribution (negative entries = structurally
+          dissimilar pairs; positive entries = structurally equivalent tokens
+          that the matrix lets Smith--Waterman trade).
 
 Writes: figures/S10.png
 """
