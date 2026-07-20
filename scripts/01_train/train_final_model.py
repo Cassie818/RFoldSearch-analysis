@@ -113,6 +113,11 @@ train_set = set(train_dis)
 with open(USALIGN_CACHE) as _f:
     for _l in _f:
         _d = json.loads(_l)
+        # Accept a pair if it is structurally similar under EITHER length-
+        # normalisation (larger of the two US-align TM-scores). This admits
+        # substructure relationships and is deliberately more permissive than
+        # the mean-normalised criterion used for the Fig 2C/D structural
+        # ground truth.
         _tm = max(_d["tm_query"], _d["tm_target"])
         if _tm < STRUCT_TM_THRESH:
             continue

@@ -133,9 +133,12 @@ target index.
 ### Substitution matrices
 
 The **deployed** matrix is the label-free **Structure-BLOSUM**, built inside
-`scripts/01_train/train_final_model.py` (`build_struct_blosum`) from US-align
-TM ≥ 0.5 chain pairs and shipped as `files/production_new/sub_matrix.pt`. There
-is no standalone build script for it — it is produced as part of training.
+`scripts/01_train/train_final_model.py` (`build_struct_blosum`) from training
+chain pairs whose US-align TM-score reaches 0.5 under **either** length-
+normalisation (the larger of the two scores, `max(tm_query, tm_target)`), and
+shipped as `files/production_new/sub_matrix.pt`. Note this differs from the
+mean-normalised TM criterion used for the Fig 2C/D structural ground truth.
+There is no standalone build script for it — it is produced as part of training.
 
 The two scripts under `src/search/` build the **ablation alternatives**, not
 the deployed matrix (do not confuse them):
