@@ -491,8 +491,13 @@ torch.save(
         "n_codes": K,
         "method": "structure-blosum-diagmean1",
         "scale": BLOSUM_SCALE,
-        "gap_open": GO,
-        "gap_extend": GE,
+        # Gaps used to build the matrix (traceback that collects aligned token
+        # pairs from TM>=0.5 chain pairs):
+        "construction_gap_open": BLOSUM_GAP_OPEN,
+        "construction_gap_extend": BLOSUM_GAP_EXTEND,
+        # Gaps to use with this matrix during token Smith-Waterman reranking:
+        "rerank_gap_open": GO,
+        "rerank_gap_extend": GE,
         "n_alignments": n_al,
         "tm_threshold": STRUCT_TM_THRESH,
         "pool": "train-only",

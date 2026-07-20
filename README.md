@@ -130,6 +130,25 @@ criteria are compared in Fig S9 and differ by less than the fold-to-fold
 variation. Candidate ties at the top-N cutoff are broken deterministically by
 target index.
 
+### Substitution matrices
+
+The **deployed** matrix is the label-free **Structure-BLOSUM**, built inside
+`scripts/01_train/train_final_model.py` (`build_struct_blosum`) from US-align
+TM ≥ 0.5 chain pairs and shipped as `files/production_new/sub_matrix.pt`. There
+is no standalone build script for it — it is produced as part of training.
+
+The two scripts under `src/search/` build the **ablation alternatives**, not
+the deployed matrix (do not confuse them):
+
+- `build_matrix_codebook_cosine.py` — unsupervised codebook-cosine matrix.
+- `build_matrix_rfam_blosum.py` — Rfam-family-supervised BLOSUM.
+
+Both write to their own filenames and never overwrite the deployed
+`sub_matrix.pt`. Two affine-gap settings are involved and are recorded
+separately in the deployed matrix's metadata: `construction_gap_*` (−11 / −1,
+the traceback that collects aligned token pairs) and `rerank_gap_*` (−2.0 /
+−0.5, used with the matrix during Smith-Waterman reranking).
+
 ## Baselines
 
 US-align, RMalign, BLASTN and RiboSeek. RiboSeek uses the released PyPI package
