@@ -1,11 +1,12 @@
-"""S6 substitution-matrix ablation (v2, +Structure-BLOSUM), K=80, deployed VQ-VAE.
-Matrices tested (SW reranking; prefilter always uses cosine):
+"""S6 substitution-matrix ablation, K=80, deployed VQ-VAE, PDB-disjoint 5-fold CV.
+Reranking matrices compared (the prefilter always expands by codebook cosine):
   - Identity: +2/-1
-  - Cosine (deployed, unsupervised)
+  - Codebook cosine (unsupervised baseline)
   - Codebook BLOSUM (unsupervised): softmax→log-odds from codebook similarity
   - Rfam-BLOSUM diagmean1 (family-supervised)
-  - Structure-BLOSUM diagmean1 (Foldseek-style; structurally-similar pairs by
-    US-align TM-score ≥ 0.5 in the fold's training subset, no family labels)
+  - Structure-BLOSUM diagmean1 (deployed; Foldseek-style, from structurally-
+    similar pairs with symmetric US-align TM >= 0.5 in the fold's training
+    subset, no family labels)
 """
 import sys as _sys, os as _os
 

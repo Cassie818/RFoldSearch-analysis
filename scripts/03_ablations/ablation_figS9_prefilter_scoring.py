@@ -6,13 +6,6 @@ only in how 1-substitution similar k-mers are selected:
   cos>=0      : codebook cosine, thresh 3.0  (earlier exploratory criterion)
   blosum>=0   : Structure-BLOSUM, thresh 3.0  (deployed)
   blosum>=.25 : Structure-BLOSUM, thresh 3.25
-ORIGINAL HEADER:
-Variants (all use k=4 informative positions, cosine-substitution reranking,
-top-100 candidates, same SW gap penalties):
-  - E4  : exact contiguous 4-mer, pattern 1111 (baseline)
-  - G4  : gapped 4-mer, pattern 11_11 (2+gap+2 over 5 positions)
-  - S4  : spaced 4-mer, pattern 1_1_1_1 (over 7 positions)
-  - SimE4: exact 4-mer + 1-substitution similar-k-mer expansion (deployed)
 """
 import sys, os, json, time, math, copy
 from collections import defaultdict

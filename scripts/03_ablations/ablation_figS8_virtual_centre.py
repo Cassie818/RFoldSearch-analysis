@@ -1,11 +1,12 @@
-"""S6 substitution-matrix ablation (v2, +Structure-BLOSUM), K=20, deployed VQ-VAE.
-Matrices tested (SW reranking; prefilter always uses cosine):
-  - Identity: +2/-1
-  - Cosine (deployed, unsupervised)
-  - Codebook BLOSUM (unsupervised): softmax→log-odds from codebook similarity
-  - Rfam-BLOSUM diagmean1 (family-supervised)
-  - Structure-BLOSUM diagmean1 (Foldseek-style; structurally-similar pairs by
-    US-align TM-score ≥ 0.5 in the fold's training subset, no family labels)
+"""S8 virtual-centre weight ablation, K=80, deployed VQ-VAE, PDB-disjoint 5-fold CV.
+The nearest-neighbour descriptor block g_nn1 depends on the glycosidic
+virtual-centre weights (alpha, beta, gamma) used to place the reference point.
+Three settings are compared:
+  - (0, 0, 0)         : C4'-only (no virtual centre)
+  - (0.5, 0.5, 0.5)   : deployed (untuned symmetric default)
+  - (1, 0.5, 0.25)    : asymmetric alternative
+All variants share the deployed retrieval pipeline: similar-k-mer-expansion
+prefilter, top-100 candidates, and Structure-BLOSUM Smith-Waterman reranking.
 """
 import sys as _sys, os as _os
 

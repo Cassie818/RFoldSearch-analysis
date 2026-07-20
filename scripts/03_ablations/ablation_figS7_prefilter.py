@@ -1,10 +1,13 @@
-"""Prefilter ablation with deployed VQ-VAE (K=20), 5-fold CV.
-Variants (all use k=4 informative positions, cosine-substitution reranking,
+"""S7 prefilter seed-pattern ablation, K=80, deployed VQ-VAE, PDB-disjoint 5-fold CV.
+Variants (all use k=4 informative positions, Structure-BLOSUM SW reranking,
 top-100 candidates, same SW gap penalties):
   - E4  : exact contiguous 4-mer, pattern 1111 (baseline)
   - G4  : gapped 4-mer, pattern 11_11 (2+gap+2 over 5 positions)
   - S4  : spaced 4-mer, pattern 1_1_1_1 (over 7 positions)
-  - SimE4: exact 4-mer + 1-substitution similar-k-mer expansion (deployed)
+  - SimE4: exact 4-mer + 1-substitution similar-k-mer expansion (deployed seed)
+The similar-k-mer expansion admits neighbours by codebook cosine in this
+ablation (the earlier default; equivalent to the deployed Structure-BLOSUM
+expansion, Fig S9).
 """
 import sys as _sys, os as _os
 
