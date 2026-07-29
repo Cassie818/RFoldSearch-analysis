@@ -1,7 +1,6 @@
-# RFoldseek — code for the manuscript Results
+# RFoldseek
 
 Analysis and figure code behind the Results section of the RFoldseek manuscript
-(RNA structural search over a learned discrete *3Dr* alphabet).
 
 Every script here maps to a specific figure. Ablation results are bundled as
 JSON so all figures can be redrawn immediately after cloning; regenerating those
@@ -85,7 +84,6 @@ files/production/chain_sequences.tsv           for the BLASTN baseline
 | Fig S11 | `plot_figS11.py` | — (reads the trained model directly) | needs `RFOLDSEEK_DATA` |
 | Fig S12 | `plot_figS12.py` | `eval_recall1_figS12.py` | `recall1_rfam_test.json` |
 
-Not included: **Fig 1** and **Fig S1**, which are schematics drawn externally.
 
 `plot_figS11.py` also writes a companion `token_state_representatives.tsv`
 into `figures/` listing the chosen representatives. Because `figures/` is
@@ -101,12 +99,12 @@ Retrieval is evaluated Foldseek-style over the full 885-chain database with
 self-hits removed, on the held-out test partition (106 family-evaluable and 79
 clan-evaluable query chains), using two metrics:
 
-- **Sens@1FP** (main text) — fraction of true positives ranked before the first
+- **Sens@1FP** — fraction of true positives ranked before the first
   false positive, macro-averaged. Hierarchical labels: at the *family* level
   same-family targets are true positives and same-clan/different-family targets
   are neutral; at the *clan* level same-clan/different-family targets are true
   positives and same-family targets are neutral.
-- **Recall@1** (Supplementary) — top-ranked non-self target is a true positive,
+- **Recall@1** — top-ranked non-self target is a true positive,
   with **no neutral set**; clan-level true positives include same-family targets.
 
 The two use different label conventions by design; see the manuscript's
@@ -156,16 +154,11 @@ the traceback that collects aligned token pairs) and `rerank_gap_*` (−2.0 /
 
 ## Baselines
 
-US-align, RMalign, BLASTN and RiboSeek. RiboSeek uses the released PyPI package
-(`riboseek`, `sa20` alphabet) rather than a reimplementation, at its default
-`prefilter_candidates=500`. BLASTN binaries are resolved from `PATH`; override
-with `RFS_BLAST_BIN`.
+US-align, RMalign, BLASTN GTalign, RTM-align and RiboSeek. 
 
 ## Notes
 
 - `scripts/01_train/train_final_model.py` trains 30 seeds and selects on
-  validation Sens@1FP; it is the most expensive script here.
+  validation Sens@1FP.
 - `riboseek_baseline.py` needs Python ≥ 3.9 for the `riboseek` package, while the
   rest of the pipeline was run under Python 3.8. Encoded chains are cached.
-- Set `KMP_DUPLICATE_LIB_OK=TRUE` if you hit an OpenMP duplicate-runtime error
-  on macOS.
