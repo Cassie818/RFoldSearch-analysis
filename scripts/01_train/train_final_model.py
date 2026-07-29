@@ -1,4 +1,4 @@
-"""Final deployed VQ-VAE tokenizer training (Foldseek-style):
+"""Final VQ-VAE tokenizer training:
  - 30 independently initialised seeds trained on TRAIN partition (n=610)
  - deployed A4 arch (2-enc, 4-dec, 128/128, L2 normalize, EMA 0.99, β=1.0)
  - descriptor_loss active_blocks={g_ctx, g_nn1}, cosine LR + 200 warmup, clip 1
@@ -90,7 +90,7 @@ for c in idl("Splits/pdb_out/test.json"):
     L = len(ents[di]["tokens"])
     desc_raw[di] = Dtest[off : off + L].astype(np.float32)
     off += L
-# normalisation stats: TRAIN only (deployed convention)
+# normalisation stats: TRAIN only
 _raw_tr = np.vstack([desc_raw[di] for di in train_dis if len(desc_raw[di]) > 0])
 MN = _raw_tr.mean(0)
 SD = _raw_tr.std(0) + 1e-9
@@ -113,7 +113,7 @@ train_set = set(train_dis)
 with open(USALIGN_CACHE) as _f:
     for _l in _f:
         _d = json.loads(_l)
-        # Accept a pair if its symmetric (mean-normalised) US-align TM-score
+        # Accept a pair if its symmetric US-align TM-score
         # reaches the threshold. This is the same TM definition used for the
         # Fig 2C/D structural ground truth, so a single criterion applies
         # throughout.
@@ -320,7 +320,8 @@ def expand_kmer(qk, sim, K_, thresh):
         for tok in range(K_):
             if tok == qk[pos]:
                 continue
-            score = (k - 1) * 1.0 + sim[qk[pos], tok]
+            self_score = sum(sim[qk[i], qk[i]] for i in range(k))
+            score = self_score - sim[qk[pos], qk[pos]] + sim[qk[pos], tok]
             if score >= thresh:
                 trial = qk.copy()
                 trial[pos] = tok
