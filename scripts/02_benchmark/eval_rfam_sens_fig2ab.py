@@ -68,21 +68,28 @@ for ti, tt in enumerate(toks):
         idx[int(np.dot(tt[p : p + KMER_K], powers))].append((ti, p))
 smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), sub, GO, GE)
 thr = THRESH_FRAC * KMER_K
-# Similar k-mers are scored with the Structure-BLOSUM substitution matrix
-# (Foldseek's 3Di prefilter convention). The admissible substitutions depend
-# only on the matrix, so tabulate them once instead of rescanning per k-mer.
-NBR = [np.nonzero(((KMER_K - 1) * 1.0 + sub[t]) >= thr)[0] for t in range(K)]
-NBR = [nb[nb != t].astype(np.int64) for t, nb in enumerate(NBR)]
+# Similar k-mers follow the Foldseek/MMseqs2 convention: a one-substitution
+# variant is admissible iff the FULL k-mer score under Structure-BLOSUM clears
+# `thr`. The k-mer self-score depends on all positions (the matrix is
+# diag-mean-1, not diag == 1 per token), so the threshold is evaluated per
+# k-mer rather than tabulated per token.
+DIAG = np.array([sub[t, t] for t in range(K)], dtype=np.float64)
 
 
 def expand(qk):
     base = int(np.dot(qk, powers))
     out = [base]
+    self_score = float(sum(DIAG[int(qk[i])] for i in range(KMER_K)))
     for pos in range(KMER_K):
         delta = int(powers[pos])
         cur = int(qk[pos])
-        for tok in NBR[cur]:
-            out.append(base + delta * (int(tok) - cur))
+        base_wo = self_score - DIAG[cur]
+        row = sub[cur]
+        for tok in range(K):
+            if tok == cur:
+                continue
+            if base_wo + row[tok] >= thr:
+                out.append(base + delta * (int(tok) - cur))
     return out
 
 
@@ -122,6 +129,28 @@ srr = Searcher(sr0.alphabet, enc, gap_penalty=-2.0, prefilter_k=6)
 def rank_ribo(q):
     res = srr.search(str(q), top_n=500, prefilter=True, prefilter_candidates=500)
     return np.asarray([int(h["chain"]) for h in res if int(h["chain"]) != q], dtype=np.int64)
+
+
+# US-align ranked by the symmetric TM-score (mean of the two length-
+# normalisations), consistent with GTalign/RTM-align and the structural
+# ground truth. (The all-query per_query_sens.json historically ranked
+# US-align by the query-length normalisation only; we recompute it here so
+# every method uses one convention.)
+_us = defaultdict(dict)
+for _line in open("files/production/retrieval/usalign_full.cache.jsonl"):
+    if not _line.strip():
+        continue
+    _r = json.loads(_line)
+    _i, _j = _r["i"], _r["j"]
+    _a = 0.5 * (_r["tm_query"] + _r["tm_target"])
+    _us[_i][_j] = _a
+    _us[_j][_i] = _a
+
+
+def rank_us(q):
+    d = _us.get(q, {})
+    order = sorted(((t, s) for t, s in d.items() if t != q), key=lambda x: (-x[1], x[0]))
+    return np.array([t for t, _ in order], dtype=np.int64)
 
 
 def per_query_sens(rank_fn):
@@ -168,15 +197,27 @@ def pack(fam_map, clan_map):
 
 out["RFoldseek"] = pack(nf, nc)
 out["RiboSeek"] = pack(rf, rc)
-# subset existing tools to test positions
-for t in ["US-align", "RMalign", "BLASTN"]:
+# US-align is recomputed here with the symmetric-TM convention (see rank_us)
+print("computing US-align per-query (symmetric TM)...", flush=True)
+out["US-align"] = pack(*per_query_sens(rank_us))
+# RMalign / BLASTN are already symmetric in the all-query file; subset them
+for t in ["RMalign", "BLASTN"]:
     fs = [pq[t]["family"]["sens"][i] for i in fam_test_idx]
     cs = [pq[t]["clan"]["sens"][i] for i in clan_test_idx]
     out[t] = {
         "family": {"sens": fs, "n": len(fs), "mean": float(np.mean(fs))},
         "clan": {"sens": cs, "n": len(cs), "mean": float(np.mean(cs))},
     }
-json.dump(out, open("files/production/retrieval/per_query_sens_test.json", "w"), indent=2)
+# GTalign and RTM-align are coordinate near-oracles scored separately
+# (score_gtalign.py / score_rtm.py); carry over any existing entries so a
+# re-run of this script does not drop them.
+_dst = "files/production/retrieval/per_query_sens_test.json"
+if os.path.exists(_dst):
+    _prev = json.load(open(_dst))
+    for _m in ("GTalign", "RTM-align"):
+        if _m in _prev:
+            out[_m] = _prev[_m]
+json.dump(out, open(_dst, "w"), indent=2)
 print("\n=== TEST-ONLY per-query means ===", flush=True)
 for t in ["RFoldseek", "US-align", "RMalign", "RiboSeek", "BLASTN"]:
     print(

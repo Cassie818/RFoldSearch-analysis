@@ -35,17 +35,28 @@ SRC = Path(resolve("files/production/retrieval/per_query_sens_test.json"))
 TM = Path(resolve("files/production/retrieval/structural_tmscore_metrics_test.json"))
 OUT = Path(FIG_DIR) / "fig2.png"
 
-METHODS = ["RFoldseek", "US-align", "RMalign", "RiboSeek", "BLASTN"]
+METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
     "RFoldseek": "#1F9BD8",  # sky blue    — ours
+    "GTalign": "#8C564B",  # brown       — GPU coordinate aligner
+    "RTM-align": "#17BECF",  # teal        — RNA-tuned TM-align variant
     "US-align": "#D62728",  # vivid red   — TM-score oracle
     "RMalign": "#2CA02C",  # forest green
     "RiboSeek": "#9467BD",  # purple      — fixed alphabet
     "BLASTN": "#FFB000",  # amber       — sequence baseline
 }
-LINESTYLE = {"RFoldseek": "-", "US-align": "-", "RMalign": "-", "RiboSeek": "-", "BLASTN": "--"}
-MARKER = {"RFoldseek": "o", "US-align": "s", "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}
-BAR_METHODS = ["RFoldseek", "RMalign", "RiboSeek", "BLASTN"]  # US-align is the ceiling
+LINESTYLE = {
+    "RFoldseek": "-", "GTalign": "-", "RTM-align": "-", "US-align": "-",
+    "RMalign": "-", "RiboSeek": "-", "BLASTN": "--",
+}
+MARKER = {
+    "RFoldseek": "o", "GTalign": "P", "RTM-align": "X", "US-align": "s",
+    "RMalign": "^", "RiboSeek": "v", "BLASTN": "D",
+}
+# C/D bars: GTalign and RTM-align, like US-align, rank by a TM-score (the
+# truth-defining quantity), so they are near-oracles in the structural-truth
+# panels and are not shown there.
+BAR_METHODS = ["RFoldseek", "RMalign", "RiboSeek", "BLASTN"]
 
 
 def sorted_curve(arr):

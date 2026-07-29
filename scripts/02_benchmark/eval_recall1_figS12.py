@@ -61,21 +61,28 @@ for ti, tt in enumerate(toks):
         idx[int(np.dot(tt[p : p + KMER_K], powers))].append((ti, p))
 smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), sub, GO, GE)
 thr = THRESH_FRAC * KMER_K
-# Similar k-mers are scored with the Structure-BLOSUM substitution matrix
-# (Foldseek's 3Di prefilter convention). The admissible substitutions depend
-# only on the matrix, so tabulate them once instead of rescanning per k-mer.
-NBR = [np.nonzero(((KMER_K - 1) * 1.0 + sub[t]) >= thr)[0] for t in range(K)]
-NBR = [nb[nb != t].astype(np.int64) for t, nb in enumerate(NBR)]
+# Similar k-mers follow the Foldseek/MMseqs2 convention: a one-substitution
+# variant is admissible iff the FULL k-mer score under Structure-BLOSUM clears
+# `thr`. The k-mer self-score depends on all positions (the matrix is
+# diag-mean-1, not diag == 1 per token), so the threshold is evaluated per
+# k-mer rather than tabulated per token.
+DIAG = np.array([sub[t, t] for t in range(K)], dtype=np.float64)
 
 
 def expand(qk):
     base = int(np.dot(qk, powers))
     out = [base]
+    self_score = float(sum(DIAG[int(qk[i])] for i in range(KMER_K)))
     for pos in range(KMER_K):
         delta = int(powers[pos])
         cur = int(qk[pos])
-        for tok in NBR[cur]:
-            out.append(base + delta * (int(tok) - cur))
+        base_wo = self_score - DIAG[cur]
+        row = sub[cur]
+        for tok in range(K):
+            if tok == cur:
+                continue
+            if base_wo + row[tok] >= thr:
+                out.append(base + delta * (int(tok) - cur))
     return out
 
 
