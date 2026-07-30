@@ -1,5 +1,7 @@
-"""Rfam family- and clan-level Recall@1 for the 5 benchmark methods on the
+"""Rfam family- and clan-level Recall@1 for the benchmark methods on the
 TEST partition, matching the Fig 2A/B query sets and label conventions.
+The same seven methods as Fig 2A/B; GTalign / RTM-align are ranked from their
+all-vs-database outputs (RFS_GT_OUT / RFS_RTM_OUT) and folded in here.
 Recall@1: first non-neutral retrieved hit (excluding self) is a true positive.
   family: TP=same family;  neutral=same clan, diff family
   clan  : TP=same clan & diff family;  neutral=same family (restricted to
@@ -229,6 +231,68 @@ def rank_blastn_all():
 print("running BLASTN...", flush=True)
 blast = rank_blastn_all()
 rank_bl = rank_from(blast)
+
+# ---- GTalign / RTM-align rankings from their all-vs-database outputs ----
+# Coordinate aligners ranked by symmetric TM (mean of the two length-
+# normalisations); output files come from running the tools externally.
+import re, glob
+
+base2i = {os.path.basename(str(e["id"])).replace(".cif", ""): i for i, e in enumerate(ents)}
+GT_OUT = os.environ.get("RFS_GT_OUT", "/tmp/gt_final")
+RTM_OUT = os.environ.get("RFS_RTM_OUT", "/tmp/rtm_out")
+_row_re = re.compile(r"PDB_[0-9A-Za-z_]+\.cif")
+
+
+def _parse_gtalign(path):
+    rows = []
+    for line in open(path):
+        m = _row_re.search(line)
+        if not m:
+            continue
+        nums = re.findall(r"\d+\.\d+", line)
+        if len(nums) < 2:
+            continue
+        ti = base2i.get(m.group(0).replace(".cif", ""))
+        if ti is not None:
+            rows.append((ti, 0.5 * (float(nums[0]) + float(nums[1]))))
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    return [ti for ti, _ in rows]
+
+
+def _parse_rtm(path):
+    rows = []
+    for line in open(path):
+        if line.startswith("#") or not line.strip():
+            continue
+        p = line.split()
+        if len(p) < 4:
+            continue
+        ti = base2i.get(os.path.basename(p[1]).replace(".cif", ""))
+        if ti is None:
+            continue
+        try:
+            rows.append((ti, 0.5 * (float(p[2]) + float(p[3]))))
+        except ValueError:
+            continue
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    return [ti for ti, _ in rows]
+
+
+def _collect(pattern, parse, keyfn):
+    r = {}
+    for f in glob.glob(pattern):
+        qi = keyfn(f)
+        if qi is None:
+            continue
+        r[qi] = np.asarray([t for t in parse(f) if t != qi], dtype=np.int64)
+    return r
+
+
+gt_ranks = _collect(f"{GT_OUT}/*.out", _parse_gtalign,
+                    lambda f: base2i.get(os.path.basename(f).split("__")[0]))
+rtm_ranks = _collect(f"{RTM_OUT}/*.tab", _parse_rtm,
+                     lambda f: base2i.get(os.path.basename(f).replace(".tab", "")))
+
 RANKERS = {
     "RFoldseek": rank_new,
     "US-align": rank_us,
@@ -236,6 +300,11 @@ RANKERS = {
     "RiboSeek": rank_ribo,
     "BLASTN": rank_bl,
 }
+# GTalign / RTM-align: added when their outputs are present
+if gt_ranks:
+    RANKERS["GTalign"] = lambda q: gt_ranks.get(q, np.zeros(0, np.int64))
+if rtm_ranks:
+    RANKERS["RTM-align"] = lambda q: rtm_ranks.get(q, np.zeros(0, np.int64))
 
 
 def r1_family(r, q):
@@ -261,6 +330,11 @@ def r1_clan(r, q):
 out = {
     "_note": "Rfam family/clan Recall@1, test queries. Paper definition (Methods 'Evaluation on the RNAsolo benchmark'): top-ranked non-self target is a TP, no neutral set; family TP=same family, clan TP=same clan including same family."
 }
+# carry over GTalign / RTM-align from any existing file when their outputs are absent
+_prev = json.load(open(RET / "recall1_rfam_test.json")) if os.path.exists(RET / "recall1_rfam_test.json") else {}
+for _m in ("GTalign", "RTM-align"):
+    if _m not in RANKERS and _m in _prev:
+        out[_m] = _prev[_m]
 for m in RANKERS:
     fq = {q: RANKERS[m](q) for q in set(fam_q) | set(clan_q)}
     fr = np.mean([r1_family(fq[q], q) for q in fam_q])
