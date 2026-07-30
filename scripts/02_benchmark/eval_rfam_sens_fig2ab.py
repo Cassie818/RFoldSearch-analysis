@@ -1,7 +1,13 @@
-"""Assemble a TEST-ONLY per_query_sens.json for Fig 2:
-per-query family & clan Sens@1FP for NEW RFoldseek (production_new deployed
-pipeline) + real RiboSeek (sa20) + US-align/RMalign/BLASTN (subset from the
-existing all-query per_query_sens.json). Same 106 fam / 79 clan test query set."""
+"""Assemble a TEST-ONLY per_query_sens.json for Fig 2A/B: per-query family &
+clan Sens@1FP for all seven methods on the same 106 fam / 79 clan test query set.
+
+Ranked here directly: RFoldseek (deployed pipeline), RiboSeek (sa20), and the
+three coordinate aligners US-align / GTalign / RTM-align (all by symmetric
+TM-score, the mean of the two length-normalisations). RMalign and BLASTN are
+subset from the existing all-query per_query_sens.json. The GTalign / RTM-align
+per-query output files are produced by running those tools externally and are
+read from RFS_GT_OUT / RFS_RTM_OUT (default /tmp/gt_final, /tmp/rtm_out); if a
+directory is absent the method is carried over from any existing output file."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
@@ -153,6 +159,78 @@ def rank_us(q):
     return np.array([t for t, _ in order], dtype=np.int64)
 
 
+# ---- GTalign and RTM-align rankings from their all-vs-database outputs ----
+# Both are coordinate aligners ranked by the symmetric TM-score (mean of the two
+# length-normalisations), consistent with US-align. Their per-query output files
+# come from running the tools externally; point RFS_GT_OUT / RFS_RTM_OUT at the
+# directories of *.out / *.tab files.
+import re, glob
+
+base2i = {os.path.basename(str(e["id"])).replace(".cif", ""): i for i, e in enumerate(ents)}
+GT_OUT = os.environ.get("RFS_GT_OUT", "/tmp/gt_final")
+RTM_OUT = os.environ.get("RFS_RTM_OUT", "/tmp/rtm_out")
+_row_re = re.compile(r"PDB_[0-9A-Za-z_]+\.cif")
+
+
+def _parse_gtalign(path):  # ranked db indices by symmetric TM = mean(refTM, queryTM)
+    rows = []
+    for line in open(path):
+        m = _row_re.search(line)
+        if not m:
+            continue
+        nums = re.findall(r"\d+\.\d+", line)
+        if len(nums) < 2:
+            continue
+        ti = base2i.get(m.group(0).replace(".cif", ""))
+        if ti is not None:
+            rows.append((ti, 0.5 * (float(nums[0]) + float(nums[1]))))
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    return [ti for ti, _ in rows]
+
+
+def _parse_rtm(path):  # tabular: PDBchain1 PDBchain2 TM1 TM2 ...  -> mean(TM1, TM2)
+    rows = []
+    for line in open(path):
+        if line.startswith("#") or not line.strip():
+            continue
+        p = line.split()
+        if len(p) < 4:
+            continue
+        ti = base2i.get(os.path.basename(p[1]).replace(".cif", ""))
+        if ti is None:
+            continue
+        try:
+            rows.append((ti, 0.5 * (float(p[2]) + float(p[3]))))
+        except ValueError:
+            continue
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    return [ti for ti, _ in rows]
+
+
+def _collect(pattern, parse, keyfn):
+    ranks = {}
+    for f in glob.glob(pattern):
+        qi = keyfn(f)
+        if qi is None:
+            continue
+        ranks[qi] = np.asarray([t for t in parse(f) if t != qi], dtype=np.int64)
+    return ranks
+
+
+gt_ranks = _collect(f"{GT_OUT}/*.out", _parse_gtalign,
+                    lambda f: base2i.get(os.path.basename(f).split("__")[0]))
+rtm_ranks = _collect(f"{RTM_OUT}/*.tab", _parse_rtm,
+                     lambda f: base2i.get(os.path.basename(f).replace(".tab", "")))
+
+
+def rank_gtalign(q):
+    return gt_ranks.get(q, np.zeros(0, dtype=np.int64))
+
+
+def rank_rtm(q):
+    return rtm_ranks.get(q, np.zeros(0, dtype=np.int64))
+
+
 def per_query_sens(rank_fn):
     fam_sens = {}
     clan_sens = {}
@@ -200,6 +278,21 @@ out["RiboSeek"] = pack(rf, rc)
 # US-align is recomputed here with the symmetric-TM convention (see rank_us)
 print("computing US-align per-query (symmetric TM)...", flush=True)
 out["US-align"] = pack(*per_query_sens(rank_us))
+# GTalign / RTM-align: coordinate aligners scored from their external outputs.
+# Computed here when the outputs are present; otherwise carried over from any
+# existing per_query_sens_test.json so a partial re-run does not drop them.
+_dst = "files/production/retrieval/per_query_sens_test.json"
+_prev = json.load(open(_dst)) if os.path.exists(_dst) else {}
+for _m, _rankfn, _ranks in (("GTalign", rank_gtalign, gt_ranks),
+                            ("RTM-align", rank_rtm, rtm_ranks)):
+    if _ranks:
+        print(f"computing {_m} per-query (symmetric TM, {len(_ranks)} query outputs)...", flush=True)
+        out[_m] = pack(*per_query_sens(_rankfn))
+    elif _m in _prev:
+        print(f"{_m}: no outputs under RFS_*_OUT, carrying over the existing entry", flush=True)
+        out[_m] = _prev[_m]
+    else:
+        print(f"{_m}: no outputs and no existing entry, skipping", flush=True)
 # RMalign / BLASTN are already symmetric in the all-query file; subset them
 for t in ["RMalign", "BLASTN"]:
     fs = [pq[t]["family"]["sens"][i] for i in fam_test_idx]
@@ -208,20 +301,12 @@ for t in ["RMalign", "BLASTN"]:
         "family": {"sens": fs, "n": len(fs), "mean": float(np.mean(fs))},
         "clan": {"sens": cs, "n": len(cs), "mean": float(np.mean(cs))},
     }
-# GTalign and RTM-align are coordinate near-oracles scored separately
-# (score_gtalign.py / score_rtm.py); carry over any existing entries so a
-# re-run of this script does not drop them.
-_dst = "files/production/retrieval/per_query_sens_test.json"
-if os.path.exists(_dst):
-    _prev = json.load(open(_dst))
-    for _m in ("GTalign", "RTM-align"):
-        if _m in _prev:
-            out[_m] = _prev[_m]
 json.dump(out, open(_dst, "w"), indent=2)
 print("\n=== TEST-ONLY per-query means ===", flush=True)
-for t in ["RFoldseek", "US-align", "RMalign", "RiboSeek", "BLASTN"]:
-    print(
-        f"  {t:12s} famSens={out[t]['family']['mean']:.3f}  clanSens={out[t]['clan']['mean']:.3f}",
-        flush=True,
-    )
+for t in ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]:
+    if t in out:
+        print(
+            f"  {t:12s} famSens={out[t]['family']['mean']:.3f}  clanSens={out[t]['clan']['mean']:.3f}",
+            flush=True,
+        )
 print("\nwrote files/production/retrieval/per_query_sens_test.json\nDONE", flush=True)
