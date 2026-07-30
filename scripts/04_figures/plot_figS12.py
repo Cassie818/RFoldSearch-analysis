@@ -22,8 +22,8 @@ METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek
 xs = np.arange(len(METHODS))
 fam = np.array([d[m]["family_recall1"] for m in METHODS])
 clan = np.array([d[m]["clan_recall1"] for m in METHODS])
-C1 = "#1F9BD8"
-C2 = "#B08D5C"  # family / clan
+C1 = "#2a78d6"  # family level (categorical slot 1, blue)
+C2 = "#eb6834"  # clan level   (categorical slot 2, orange)
 fig, ax = plt.subplots(figsize=(7.2, 4.4))
 w = 0.38
 b1 = ax.bar(xs - w / 2, fam, w, color=C1, edgecolor="none", label="Family level", zorder=3)
