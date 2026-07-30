@@ -226,13 +226,13 @@ __marimo__/
 figures/
 
 # Large data artifacts live outside the repo (see README "Data")
-files/production_new/*
+files/models/*
 files/production/retrieval/*.cache.jsonl
 Splits/
 *.pt
 
 # Exception: the small deployed RFoldseek model, tracked so search runs
 # straight after cloning (tokenizer + Structure-BLOSUM + tokenised 885-chain db)
-!files/production_new/desc_vqvae_best.pt
-!files/production_new/sub_matrix.pt
-!files/production_new/db.pt
+!files/models/desc_vqvae_best.pt
+!files/models/sub_matrix.pt
+!files/models/db.pt

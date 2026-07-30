@@ -32,8 +32,8 @@ STATE_COLORS = ["#2A9D8F", "#E76F51", "#457B9D", "#E9C46A", "#B565A7"]
 
 def parse_args():
     p = argparse.ArgumentParser()
-    p.add_argument("--db", default=str(REPO / "files/production_new/db.pt"))
-    p.add_argument("--checkpoint", default=str(REPO / "files/production_new/desc_vqvae_best.pt"))
+    p.add_argument("--db", default=str(REPO / "files/models/db.pt"))
+    p.add_argument("--checkpoint", default=str(REPO / "files/models/desc_vqvae_best.pt"))
     p.add_argument(
         "--data",
         nargs="+",

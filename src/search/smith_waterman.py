@@ -2,7 +2,7 @@
 Smith-Waterman local alignment for VQ-VAE token sequences.
 
 Given two token sequences and a substitution matrix (the deployed
-Structure-BLOSUM in `files/production_new/sub_matrix.pt`), compute the optimal
+Structure-BLOSUM in `files/models/sub_matrix.pt`), compute the optimal
 local alignment score. Used as the scoring function for structure search.
 
 Usage

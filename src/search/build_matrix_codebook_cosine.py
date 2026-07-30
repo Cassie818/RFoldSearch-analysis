@@ -5,7 +5,7 @@ NOTE: This is NOT the deployed matrix. It is the unsupervised codebook-cosine
 alternative from the substitution-matrix ablation (Fig S6). The deployed
 matrix is the Structure-BLOSUM built inside
 `scripts/01_train/train_final_model.py` (`build_struct_blosum`, from US-align
-TM>=0.5 chain pairs) and shipped as `files/production_new/sub_matrix.pt`.
+TM>=0.5 chain pairs) and shipped as `files/models/sub_matrix.pt`.
 
 The substitution score between token i and token j is the cosine similarity
 of their codebook embedding vectors.  No alignment data required.
@@ -18,7 +18,7 @@ Outputs
 
 Usage
 -----
-  python build_matrix_codebook_cosine.py --checkpoint ../../files/production_new/desc_vqvae_best.pt
+  python build_matrix_codebook_cosine.py --checkpoint ../../files/models/desc_vqvae_best.pt
 """
 
 from __future__ import annotations

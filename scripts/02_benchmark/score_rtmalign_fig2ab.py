@@ -28,7 +28,7 @@ from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_l
 
 RET = "files/production/retrieval"
 RTM_OUT = _os.environ.get("RFS_RTM_OUT", "/tmp/rtm_out")
-db = torch.load("files/production_new/db.pt", map_location="cpu", weights_only=False)
+db = torch.load("files/models/db.pt", map_location="cpu", weights_only=False)
 ents = db["entries"]
 n = len(ents)
 base2i = {_os.path.basename(str(e["id"])).replace(".cif", ""): i for i, e in enumerate(ents)}

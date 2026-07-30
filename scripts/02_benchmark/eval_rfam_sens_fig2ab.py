@@ -26,7 +26,7 @@ KMER_K = 4
 THRESH_FRAC = 0.75
 GO = -2.0
 GE = -0.5
-ND = "files/production_new"
+ND = "files/models"
 db = torch.load(f"{ND}/db.pt", map_location="cpu", weights_only=False)
 ents = db["entries"]
 N = len(ents)

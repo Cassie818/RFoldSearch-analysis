@@ -31,7 +31,7 @@ THRESH_FRAC = 0.75
 GO = -2.0
 GE = -0.5
 RET = Path("files/production/retrieval")
-ND = "files/production_new"
+ND = "files/models"
 db = torch.load(f"{ND}/db.pt", map_location="cpu", weights_only=False)
 ents = db["entries"]
 n = len(ents)

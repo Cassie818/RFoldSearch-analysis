@@ -7,7 +7,7 @@
    Structure-BLOSUM diagmean-1 reranker built from train US-align TM>=0.5 pairs)
  - retokenise all 885 db chains with best seed
  - build final Structure-BLOSUM from TRAIN US-align pairs only
- - save files/production_new/{db.pt, sub_matrix.pt, checkpoint.pt}
+ - save files/models/{db.pt, sub_matrix.pt, checkpoint.pt}
 """
 import sys as _sys, os as _os
 
@@ -51,7 +51,7 @@ USALIGN_CACHE = "files/production/retrieval/usalign_full.cache.jsonl"
 BLOSUM_SCALE = 2.0
 BLOSUM_GAP_OPEN = -11.0
 BLOSUM_GAP_EXTEND = -1.0
-OUT_DIR = "files/production_new"
+OUT_DIR = "files/models"
 os.makedirs(OUT_DIR, exist_ok=True)
 db = torch.load("files/production/db.pt", map_location="cpu", weights_only=False)
 ents = db["entries"]

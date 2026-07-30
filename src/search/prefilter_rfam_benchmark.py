@@ -274,7 +274,7 @@ def main():
         default=os.path.join(parent, "files", "codebook", "sub_matrix_codebook_cosine.pt"),
         help="Substitution matrix for SW reranking. Defaults to the codebook-cosine "
         "matrix from build_matrix_codebook_cosine.py; pass the deployed "
-        "files/production_new/sub_matrix.pt to rerank with Structure-BLOSUM.",
+        "files/models/sub_matrix.pt to rerank with Structure-BLOSUM.",
     )
     parser.add_argument("--labels", default=os.path.join(parent, "Splits", "labels.tsv"))
     parser.add_argument(

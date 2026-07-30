@@ -6,7 +6,7 @@ alternative from the substitution-matrix ablation (Fig S6), estimated from
 intra-family pairs. The deployed matrix is the label-free Structure-BLOSUM
 built inside `scripts/01_train/train_final_model.py` (`build_struct_blosum`,
 from US-align TM>=0.5 structural pairs) and shipped as
-`files/production_new/sub_matrix.pt`. This script writes a separate file
+`files/models/sub_matrix.pt`. This script writes a separate file
 (`files/production/sub_matrix_blosum.pt`) and never overwrites the deployed one.
 
 Method

@@ -16,7 +16,7 @@ Examples
 
   # search a preprocessed query structure (JSON with coords/mask/pair_idx/...)
   # encoded on the fly with the deployed tokenizer
-  python RFoldseek --query my_rna.json --db files/production_new/db.pt
+  python RFoldseek --query my_rna.json --db files/models/db.pt
 
   # search against a database you built yourself with src/search/build_database.py
   python RFoldseek --query my_query_db.pt --query_id chainA --db my_targets.pt
@@ -135,11 +135,11 @@ def main():
                          "JSON to encode, OR a query database .pt (with --query_id)")
     ap.add_argument("--query_id", default=None,
                     help="chain id to use when --query is a .pt database")
-    ap.add_argument("--db", default=resolve("files/model/db.pt"),
+    ap.add_argument("--db", default=resolve("files/models/db.pt"),
                     help="target token database (.pt)")
-    ap.add_argument("--model", default=resolve("files/model/desc_vqvae_best.pt"),
+    ap.add_argument("--model", default=resolve("files/models/desc_vqvae_best.pt"),
                     help="tokenizer checkpoint (only needed to encode a JSON query)")
-    ap.add_argument("--matrix", default=resolve("files/model/sub_matrix.pt"),
+    ap.add_argument("--matrix", default=resolve("files/models/sub_matrix.pt"),
                     help="Structure-BLOSUM substitution matrix (.pt)")
     ap.add_argument("--top_k", type=int, default=10, help="number of hits to report")
     ap.add_argument("--top_n", type=int, default=DEFAULT_TOP_N, help="prefilter candidate-pool size")

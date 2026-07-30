@@ -21,7 +21,7 @@ from prefilter_rfam_benchmark import first_fp_sensitivity
 from smith_waterman import smith_waterman_numba
 
 RET = Path("files/production/retrieval")
-ND = "files/production_new"
+ND = "files/models"
 K = 80
 TOPN = 100
 KMER_K = 4

@@ -1,6 +1,6 @@
 """Supplementary figure: the deployed Structure-BLOSUM substitution matrix.
 
-Reads the deployed matrix from files/production_new/sub_matrix.pt (log-odds
+Reads the deployed matrix from files/models/sub_matrix.pt (log-odds
 scores, not cosine).
 
 Panel A : 80x80 token-to-token log-odds heatmap, with token order permuted by
@@ -34,7 +34,7 @@ from scipy.cluster.hierarchy import linkage, leaves_list
 from scipy.spatial.distance import squareform
 
 REPO = Path(__file__).resolve().parent.parent
-SRC = Path(resolve("files/production_new/sub_matrix.pt"))
+SRC = Path(resolve("files/models/sub_matrix.pt"))
 OUT = Path(FIG_DIR) / "S10.png"
 
 

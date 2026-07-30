@@ -55,7 +55,7 @@ top-k hits by alignment score.
 python RFoldseek --query PDB_00001FFZ_1_A --top_k 10
 
 # encode a preprocessed query structure JSON on the fly, then search
-python RFoldseek --query my_rna.json --db files/production_new/db.pt
+python RFoldseek --query my_rna.json --db files/models/db.pt
 
 # search against a database you built with src/search/build_database.py
 python RFoldseek --query my_query_db.pt --query_id chainA --db my_targets.pt
@@ -66,7 +66,7 @@ python RFoldseek --query my_query_db.pt --query_id chainA --db my_targets.pt
 
 ## Data
 
-The deployed model is bundled in the repo under `files/production_new/`
+The deployed model is bundled in the repo under `files/models/`
 (tokenizer, Structure-BLOSUM matrix, and tokenised 885-chain database), so
 [search](#search) runs straight after cloning. The remaining large inputs —
 descriptor tensors and the US-align / RMalign pairwise caches, needed only to
@@ -85,9 +85,9 @@ Required layout under `$RFOLDSEEK_DATA`:
 Splits/labels.tsv                              Rfam family / clan annotation
 Splits/pdb_out/{train,val,test}.json           PDB-disjoint split
 Splits/pdb_out/{train,val}_desc.pt             descriptor tensors
-files/production_new/db.pt                     tokenized 885-chain database (bundled)
-files/production_new/sub_matrix.pt             Structure-BLOSUM matrix (bundled)
-files/production_new/desc_vqvae_best.pt        trained tokenizer (bundled)
+files/models/db.pt                     tokenized 885-chain database (bundled)
+files/models/sub_matrix.pt             Structure-BLOSUM matrix (bundled)
+files/models/desc_vqvae_best.pt        trained tokenizer (bundled)
 files/production/retrieval/usalign_full.cache.jsonl
 files/production/retrieval/rmalign_full.cache.jsonl
 files/production/chain_sequences.tsv           for the BLASTN baseline
@@ -165,7 +165,7 @@ The **deployed** matrix is the **Structure-BLOSUM**, built inside
 chain pairs whose symmetric (mean-normalised) US-align TM-score reaches 0.5
 — `0.5 * (tm_query + tm_target) >= 0.5`, the same TM definition used for the
 Fig 2C/D structural ground truth — and shipped as
-`files/production_new/sub_matrix.pt`. There is no standalone build script for
+`files/models/sub_matrix.pt`. There is no standalone build script for
 it; it is produced as part of training. (The max-normalised variant,
 `max(tm_query, tm_target) >= 0.5`, yields indistinguishable retrieval — family
 Sens@1FP 0.548, clan 0.223 either way — and was the earlier criterion.)
