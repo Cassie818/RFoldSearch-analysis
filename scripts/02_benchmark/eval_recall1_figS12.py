@@ -1,7 +1,6 @@
 """Rfam family- and clan-level Recall@1 for the benchmark methods on the
-TEST partition, matching the Fig 2A/B query sets and label conventions.
-The same seven methods as Fig 2A/B; GTalign / RTM-align are ranked from their
-all-vs-database outputs (RFS_GT_OUT / RFS_RTM_OUT) and folded in here.
+TEST partition.
+
 Recall@1: first non-neutral retrieved hit (excluding self) is a true positive.
   family: TP=same family;  neutral=same clan, diff family
   clan  : TP=same clan & diff family;  neutral=same family (restricted to
@@ -16,7 +15,7 @@ from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
 _sys.path.insert(0, SRC_SEARCH)
 _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
-import os, sys, json
+import os, sys, json, re, glob, csv, subprocess, tempfile
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from collections import defaultdict
@@ -43,19 +42,15 @@ fams = attach_labels(ents, load_labels("Splits/labels.tsv"))
 clans = attach_labels(ents, load_labels("Splits/labels.tsv", label_column="clan_acc"))
 fam = np.array(fams, dtype=object)
 clan = np.array(clans, dtype=object)
-# canonical test query sets (same as Fig 2)
+
 pq = json.load(open(RET / "per_query_sens_test.json"))
 fam_q = [i for i in pq["_query_ids"]["family"]]
 clan_q = [i for i in pq["_query_ids"]["clan"]]
 print(f"fam queries={len(fam_q)}  clan queries={len(clan_q)}", flush=True)
-# ---- rankers (from cd_tmscore_new.py) ----
+# ===== RFoldseek: token pipeline (k-mer prefilter + SW rerank) =====
 toks = [np.asarray(e["tokens"], dtype=np.int64) for e in ents]
 sm = torch.load(f"{ND}/sub_matrix.pt", map_location="cpu", weights_only=False)
-sub = np.asarray(sm["matrix"].numpy(), dtype=np.float32)
-ck = torch.load(f"{ND}/desc_vqvae_best.pt", map_location="cpu", weights_only=False)
-cb = ck["model"]["codebook.embeddings"].numpy()
-cb = cb / (np.linalg.norm(cb, axis=1, keepdims=True) + 1e-9)
-cos = (cb @ cb.T).astype(np.float32)
+sub = np.asarray(sm["matrix"].numpy(), dtype=np.float32)  # Structure-BLOSUM
 powers = np.array([K ** (KMER_K - 1 - i) for i in range(KMER_K)], dtype=np.int64)
 idx = defaultdict(list)
 for ti, tt in enumerate(toks):
@@ -63,11 +58,9 @@ for ti, tt in enumerate(toks):
         idx[int(np.dot(tt[p : p + KMER_K], powers))].append((ti, p))
 smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), sub, GO, GE)
 thr = THRESH_FRAC * KMER_K
-# Similar k-mers follow the Foldseek/MMseqs2 convention: a one-substitution
+# Similar k-mers follow the Foldseek/MMseqs2: a one-substitution
 # variant is admissible iff the FULL k-mer score under Structure-BLOSUM clears
-# `thr`. The k-mer self-score depends on all positions (the matrix is
-# diag-mean-1, not diag == 1 per token), so the threshold is evaluated per
-# k-mer rather than tabulated per token.
+# `thr`. 
 DIAG = np.array([sub[t, t] for t in range(K)], dtype=np.float64)
 
 
@@ -89,6 +82,9 @@ def expand(qk):
 
 
 def rank_new(q):
+    """RFoldseek ranking for query q: similar-k-mer-expansion prefilter over the
+    inverted index (double-match on a common diagonal), top-N candidates, then
+    token Smith-Waterman reranking; returns db indices by descending score."""
     tt = toks[q]
     td = defaultdict(dict)
     for qp in range(len(tt) - KMER_K + 1):
@@ -163,12 +159,10 @@ def rank_from(d):
 
 rank_us = rank_from(us)
 rank_rm = rank_from(rm)
-# BLASTN
-import csv, subprocess, tempfile
 
 
 def rank_blastn_all():
-    BIN = Path(os.environ.get("RFS_BLAST_BIN", ""))  # empty -> resolve makeblastdb/blastn from PATH
+    BIN = Path(os.environ.get("RFS_BLAST_BIN", ""))  
     seqs = {}
     for r in csv.DictReader(open("files/production/chain_sequences.tsv"), delimiter="\t"):
         seqs[r["chain_id"]] = r["sequence"]
@@ -232,10 +226,6 @@ print("running BLASTN...", flush=True)
 blast = rank_blastn_all()
 rank_bl = rank_from(blast)
 
-# ---- GTalign / RTM-align rankings from their all-vs-database outputs ----
-# Coordinate aligners ranked by symmetric TM (mean of the two length-
-# normalisations); output files come from running the tools externally.
-import re, glob
 
 base2i = {os.path.basename(str(e["id"])).replace(".cif", ""): i for i, e in enumerate(ents)}
 GT_OUT = os.environ.get("RFS_GT_OUT", "/tmp/gt_final")
@@ -293,6 +283,14 @@ gt_ranks = _collect(f"{GT_OUT}/*.out", _parse_gtalign,
 rtm_ranks = _collect(f"{RTM_OUT}/*.tab", _parse_rtm,
                      lambda f: base2i.get(os.path.basename(f).replace(".tab", "")))
 
+def rank_gtalign(q):
+    return gt_ranks.get(q, np.zeros(0, dtype=np.int64))
+
+
+def rank_rtm(q):
+    return rtm_ranks.get(q, np.zeros(0, dtype=np.int64))
+
+
 RANKERS = {
     "RFoldseek": rank_new,
     "US-align": rank_us,
@@ -300,11 +298,11 @@ RANKERS = {
     "RiboSeek": rank_ribo,
     "BLASTN": rank_bl,
 }
-# GTalign / RTM-align: added when their outputs are present
+# GTalign / RTM-align: added when their all-vs-database outputs are present
 if gt_ranks:
-    RANKERS["GTalign"] = lambda q: gt_ranks.get(q, np.zeros(0, np.int64))
+    RANKERS["GTalign"] = rank_gtalign
 if rtm_ranks:
-    RANKERS["RTM-align"] = lambda q: rtm_ranks.get(q, np.zeros(0, np.int64))
+    RANKERS["RTM-align"] = rank_rtm
 
 
 def r1_family(r, q):

@@ -1,13 +1,6 @@
 """Assemble a TEST-ONLY per_query_sens.json for Fig 2A/B: per-query family &
 clan Sens@1FP for all seven methods on the same 106 fam / 79 clan test query set.
-
-Ranked here directly: RFoldseek (deployed pipeline), RiboSeek (sa20), and the
-three coordinate aligners US-align / GTalign / RTM-align (all by symmetric
-TM-score, the mean of the two length-normalisations). RMalign and BLASTN are
-subset from the existing all-query per_query_sens.json. The GTalign / RTM-align
-per-query output files are produced by running those tools externally and are
-read from RFS_GT_OUT / RFS_RTM_OUT (default /tmp/gt_final, /tmp/rtm_out); if a
-directory is absent the method is carried over from any existing output file."""
+"""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
@@ -17,7 +10,7 @@ _sys.path.insert(0, SRC_SEARCH)
 _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
-import os, sys, json
+import os, sys, json, re, glob
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from collections import defaultdict
@@ -41,7 +34,7 @@ fams = attach_labels(ents, load_labels("Splits/labels.tsv"))
 clans = attach_labels(ents, load_labels("Splits/labels.tsv", label_column="clan_acc"))
 fam_pool = np.array(fams, dtype=object)
 clan_pool = np.array(clans, dtype=object)
-# existing all-query per-query file provides the canonical query id ordering
+
 pq = json.load(open("files/production/retrieval/per_query_sens.json"))
 fam_qids = pq["_query_ids"]["family"]
 clan_qids = pq["_query_ids"]["clan"]
@@ -59,14 +52,10 @@ clan_test_idx = [i for i, q in enumerate(clan_qids) if q in test_dis]
 fam_test_q = [fam_qids[i] for i in fam_test_idx]  # db indices of the 106 test fam queries
 clan_test_q = [clan_qids[i] for i in clan_test_idx]
 print(f"test fam queries={len(fam_test_q)}  clan queries={len(clan_test_q)}", flush=True)
-# ---- NEW RFoldseek deployed pipeline rankings ----
+# ===== RFoldseek: deployed token pipeline (k-mer prefilter + SW rerank) =====
 toks = [np.asarray(e["tokens"], dtype=np.int64) for e in ents]
 sm = torch.load(f"{ND}/sub_matrix.pt", map_location="cpu", weights_only=False)
-sub = np.asarray(sm["matrix"].numpy(), dtype=np.float32)
-ck = torch.load(f"{ND}/desc_vqvae_best.pt", map_location="cpu", weights_only=False)
-cb = ck["model"]["codebook.embeddings"].numpy()
-cb = cb / (np.linalg.norm(cb, axis=1, keepdims=True) + 1e-9)
-cos = (cb @ cb.T).astype(np.float32)
+sub = np.asarray(sm["matrix"].numpy(), dtype=np.float32)  # Structure-BLOSUM
 powers = np.array([K ** (KMER_K - 1 - i) for i in range(KMER_K)], dtype=np.int64)
 idx = defaultdict(list)
 for ti, tt in enumerate(toks):
@@ -100,6 +89,9 @@ def expand(qk):
 
 
 def rank_new(q):
+    """RFoldseek ranking for query q: similar-k-mer-expansion prefilter over the
+    inverted index (double-match on a common diagonal), top-N candidates, then
+    token Smith-Waterman reranking; returns db indices by descending score."""
     tt = toks[q]
     td = defaultdict(dict)
     for qp in range(len(tt) - KMER_K + 1):
@@ -121,7 +113,7 @@ def rank_new(q):
     ]
 
 
-# ---- real RiboSeek rankings from cached encodings ----
+# ---- RiboSeek rankings from cached encodings ----
 from riboseek import Searcher
 import importlib.resources as R
 
@@ -159,13 +151,6 @@ def rank_us(q):
     return np.array([t for t, _ in order], dtype=np.int64)
 
 
-# ---- GTalign and RTM-align rankings from their all-vs-database outputs ----
-# Both are coordinate aligners ranked by the symmetric TM-score (mean of the two
-# length-normalisations), consistent with US-align. Their per-query output files
-# come from running the tools externally; point RFS_GT_OUT / RFS_RTM_OUT at the
-# directories of *.out / *.tab files.
-import re, glob
-
 base2i = {os.path.basename(str(e["id"])).replace(".cif", ""): i for i, e in enumerate(ents)}
 GT_OUT = os.environ.get("RFS_GT_OUT", "/tmp/gt_final")
 RTM_OUT = os.environ.get("RFS_RTM_OUT", "/tmp/rtm_out")
@@ -188,7 +173,7 @@ def _parse_gtalign(path):  # ranked db indices by symmetric TM = mean(refTM, que
     return [ti for ti, _ in rows]
 
 
-def _parse_rtm(path):  # tabular: PDBchain1 PDBchain2 TM1 TM2 ...  -> mean(TM1, TM2)
+def _parse_rtm(path):  
     rows = []
     for line in open(path):
         if line.startswith("#") or not line.strip():

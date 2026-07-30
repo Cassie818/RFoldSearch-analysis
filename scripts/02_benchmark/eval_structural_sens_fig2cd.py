@@ -1,7 +1,6 @@
-"""Fig 2 panels C/D: structure-defined (US-align TM-score) ground-truth retrieval,
-TEST-only covered queries, NEW deployed RFoldseek + real RiboSeek + RMalign +
-BLASTN, US-align as ceiling. Thresholds TM>=0.40/0.45/0.50.
-Writes files/production/retrieval/structural_tmscore_metrics_test.json."""
+"""Fig 2 panels C/D: structure-defined (US-align TM-score) ground-truth retrieval
+on the TEST-only covered queries.
+"""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
@@ -17,7 +16,7 @@ from collections import defaultdict
 from pathlib import Path
 import numpy as np, torch
 
-from prefilter_rfam_benchmark import first_fp_sensitivity
+from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
 from smith_waterman import smith_waterman_numba
 
 RET = Path("files/production/retrieval")
@@ -56,14 +55,10 @@ for line in open(RET / "usalign_full.cache.jsonl"):
     cov[j] += 1
 queries = sorted(q for q in range(n) if cov[q] >= n - 5 and q in test_dis)
 print(f"test covered queries: {len(queries)}", flush=True)
-# ---- rankings ----
+# ===== RFoldseek: deployed token pipeline (k-mer prefilter + SW rerank) =====
 toks = [np.asarray(e["tokens"], dtype=np.int64) for e in ents]
 sm = torch.load(f"{ND}/sub_matrix.pt", map_location="cpu", weights_only=False)
-sub = np.asarray(sm["matrix"].numpy(), dtype=np.float32)
-ck = torch.load(f"{ND}/desc_vqvae_best.pt", map_location="cpu", weights_only=False)
-cb = ck["model"]["codebook.embeddings"].numpy()
-cb = cb / (np.linalg.norm(cb, axis=1, keepdims=True) + 1e-9)
-cos = (cb @ cb.T).astype(np.float32)
+sub = np.asarray(sm["matrix"].numpy(), dtype=np.float32)  # Structure-BLOSUM
 powers = np.array([K ** (KMER_K - 1 - i) for i in range(KMER_K)], dtype=np.int64)
 idx = defaultdict(list)
 for ti, tt in enumerate(toks):
@@ -97,6 +92,9 @@ def expand(qk):
 
 
 def rank_new(q):
+    """RFoldseek ranking for query q: similar-k-mer-expansion prefilter over the
+    inverted index (double-match on a common diagonal), top-N candidates, then
+    token Smith-Waterman reranking; returns db indices by descending score."""
     tt = toks[q]
     td = defaultdict(dict)
     for qp in range(len(tt) - KMER_K + 1):
@@ -107,7 +105,7 @@ def rank_new(q):
                     td[ti][d] = td[ti].get(d, 0) + 1
     sc = [(ti, max((c for c in dm.values() if c >= 2), default=-1)) for ti, dm in td.items()]
     sc = [x for x in sc if x[1] > 0]
-    sc.sort(key=lambda x: (-x[1], x[0]))  # deterministic tie-break: score, then target index
+    sc.sort(key=lambda x: (-x[1], x[0]))  
     cand = np.array([x[0] for x in sc[:TOPN]], np.int64)
     if len(cand) == 0:
         return np.zeros(0, np.int64)
@@ -159,8 +157,6 @@ def rank_us(q):
     return np.asarray([t for t, _ in sorted(cand, key=lambda kv: -kv[1])], dtype=np.int64)
 
 
-# BLASTN
-# simpler blastn ranking via tag mapping
 def rank_blastn_all():
     BIN = Path(os.environ.get("RFS_BLAST_BIN", ""))  # empty -> resolve makeblastdb/blastn from PATH
     seqs = {}
@@ -245,13 +241,9 @@ print("computing rankings...", flush=True)
 RANKS = {m: {q: RANKERS[m](q) for q in queries} for m in RANKERS}
 out = {"_note": "test-only covered queries; US-align* is the TM ceiling.", "thresholds": {}}
 va_all = np.arange(n)
-# Rfam family labels for clan-level structural positives (TM-similar AND different family)
-famlab = [str(e.get("id", "")) for e in ents]
-
-from prefilter_rfam_benchmark import attach_labels, load_labels
-
-fams = attach_labels(ents, load_labels("Splits/labels.tsv"))
-fam_arr = np.array(fams, dtype=object)
+# Rfam family labels: at the clan level a structural positive is TM-similar but
+# from a *different* Rfam family (same-family hits are treated as neutral).
+fam_arr = np.array(attach_labels(ents, load_labels("Splits/labels.tsv")), dtype=object)
 for th in THRESHOLDS:
     res = {}
     for m in RANKERS:
