@@ -22,12 +22,14 @@ METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek
 xs = np.arange(len(METHODS))
 fam = np.array([d[m]["family_recall1"] for m in METHODS])
 clan = np.array([d[m]["clan_recall1"] for m in METHODS])
-C1 = "#2a78d6"  # family level (categorical slot 1, blue)
-C2 = "#eb6834"  # clan level   (categorical slot 2, orange)
+C1 = "#9EB6C6"  # family level — Morandi muted blue
+C2 = "#DFCE95"  # clan level   — Morandi muted yellow
+E1 = "#7E97A8"  # muted-blue edge (defines the pale fill on a white surface)
+E2 = "#C4B274"  # muted-yellow edge
 fig, ax = plt.subplots(figsize=(7.2, 4.4))
 w = 0.38
-b1 = ax.bar(xs - w / 2, fam, w, color=C1, edgecolor="none", label="Family level", zorder=3)
-b2 = ax.bar(xs + w / 2, clan, w, color=C2, edgecolor="none", label="Clan level", zorder=3)
+b1 = ax.bar(xs - w / 2, fam, w, color=C1, edgecolor=E1, linewidth=0.8, label="Family level", zorder=3)
+b2 = ax.bar(xs + w / 2, clan, w, color=C2, edgecolor=E2, linewidth=0.8, label="Clan level", zorder=3)
 for bars, vals in ((b1, fam), (b2, clan)):
     for b, v in zip(bars, vals):
         ax.text(
