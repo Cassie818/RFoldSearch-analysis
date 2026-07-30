@@ -1,4 +1,4 @@
-"""Fig S11: Rfam family- and clan-level Recall@1 for the five benchmark methods
+"""Fig S12: Rfam family- and clan-level Recall@1 for the benchmark methods
 on the held-out test partition (same query sets as Fig 2A/B). Grouped bars."""
 import sys as _sys, os as _os
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 REPO = Path(DATA_ROOT)
 d = json.load(open(REPO / "files/production/retrieval/recall1_rfam_test.json"))
-METHODS = ["RFoldseek", "US-align", "RMalign", "RiboSeek", "BLASTN"]
+METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 xs = np.arange(len(METHODS))
 fam = np.array([d[m]["family_recall1"] for m in METHODS])
 clan = np.array([d[m]["clan_recall1"] for m in METHODS])

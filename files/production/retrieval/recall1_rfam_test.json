@@ -29,5 +29,17 @@
     "clan_recall1": 0.5316455696202531,
     "n_family": 106,
     "n_clan": 79
+  },
+  "GTalign": {
+    "family_recall1": 0.9339622641509434,
+    "clan_recall1": 0.9620253164556962,
+    "n_family": 106,
+    "n_clan": 79
+  },
+  "RTM-align": {
+    "family_recall1": 0.8490566037735849,
+    "clan_recall1": 0.9493670886075949,
+    "n_family": 106,
+    "n_clan": 79
   }
 }
