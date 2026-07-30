@@ -1,6 +1,6 @@
 # RFoldseek
 
-Analysis and figure code behind the Results section of the RFoldseek manuscript
+Analysis and figure code behind the Results section of the RFoldseek manuscript.
 
 Every script here maps to a specific figure. Ablation results are bundled as
 JSON so all figures can be redrawn immediately after cloning; regenerating those
@@ -10,6 +10,7 @@ under [Data](#data).
 ## Layout
 
 ```
+RFoldseek                 fast RNA structural search CLI
 paths.py                  path resolution (RFOLDSEEK_DATA / RFOLDSEEK_FIGURES)
 src/models/               VQ-VAE tokenizer, codebook, descriptors
 src/search/               k-mer prefilter, token Smith-Waterman, substitution matrices
@@ -40,11 +41,37 @@ at a working tree cannot silently substitute in-progress numbers for the
 published ones. Set `RFOLDSEEK_PREFER_EXTERNAL=1` to read results from
 `RFOLDSEEK_DATA` instead.
 
+## Search
+
+`RFoldseek` runs the search pipeline:
+encode the query to VQ-VAE tokens, run the similar-k-mer-expansion prefilter over
+an inverted k-mer index of the target database using the Structure-BLOSUM matrix
+(exact per-k-mer self-score threshold, keeping targets with ≥2 hits on a common
+diagonal), rerank the candidate pool with token Smith-Waterman, and report the
+top-k hits by alignment score.
+
+```bash
+# search a chain already in the bundled 885-chain database against that database
+python RFoldseek --query PDB_00001FFZ_1_A --top_k 10
+
+# encode a preprocessed query structure JSON on the fly, then search
+python RFoldseek --query my_rna.json --db files/production_new/db.pt
+
+# search against a database you built with src/search/build_database.py
+python RFoldseek --query my_query_db.pt --query_id chainA --db my_targets.pt
+```
+
+`python RFoldseek -h` lists all options (`--db`, `--model`, `--matrix`,
+`--top_k`, `--top_n`, `--min_diag`).
+
 ## Data
 
-Large inputs are not bundled: the tokenized database, descriptor tensors, the
-trained model, and the US-align / RMalign pairwise caches. Point `RFOLDSEEK_DATA`
-at the directory containing `files/` and `Splits/`:
+The deployed model is bundled in the repo under `files/production_new/`
+(tokenizer, Structure-BLOSUM matrix, and tokenised 885-chain database), so
+[search](#search) runs straight after cloning. The remaining large inputs —
+descriptor tensors and the US-align / RMalign pairwise caches, needed only to
+regenerate results from scratch — are not bundled. Point `RFOLDSEEK_DATA` at the
+directory containing `files/` and `Splits/`:
 
 ```bash
 export RFOLDSEEK_DATA=/path/to/RFoldSeek
@@ -58,9 +85,9 @@ Required layout under `$RFOLDSEEK_DATA`:
 Splits/labels.tsv                              Rfam family / clan annotation
 Splits/pdb_out/{train,val,test}.json           PDB-disjoint split
 Splits/pdb_out/{train,val}_desc.pt             descriptor tensors
-files/production_new/db.pt                     tokenized 885-chain database
-files/production_new/sub_matrix.pt             Structure-BLOSUM matrix
-files/production_new/desc_vqvae_best.pt        trained tokenizer
+files/production_new/db.pt                     tokenized 885-chain database (bundled)
+files/production_new/sub_matrix.pt             Structure-BLOSUM matrix (bundled)
+files/production_new/desc_vqvae_best.pt        trained tokenizer (bundled)
 files/production/retrieval/usalign_full.cache.jsonl
 files/production/retrieval/rmalign_full.cache.jsonl
 files/production/chain_sequences.tsv           for the BLASTN baseline
@@ -121,16 +148,19 @@ and 4-layer decoder, exact 4-mer inverted-index prefilter with 1-substitution
 similar-k-mer expansion, top-100 candidates, token Smith-Waterman reranking with
 the Structure-BLOSUM matrix (gap open −2.0, extend −0.5).
 
-Similar k-mers in the prefilter are admitted by their Structure-BLOSUM score
-(S >= 0), following Foldseek's 3Di convention. The design ablations that use
-expansion (Figs S2-S8) admitted neighbours by codebook cosine instead; the two
-criteria are compared in Fig S9 and differ by less than the fold-to-fold
+Similar k-mers in the prefilter are admitted when the full one-substitution
+k-mer score under Structure-BLOSUM clears the threshold (0.75·k), the
+Foldseek/MMseqs2 convention. The threshold is evaluated per k-mer from the
+query k-mer's own self-score rather than from a per-token cutoff, because the
+matrix is diagonal-mean-1 rather than unit-diagonal. The design ablations that
+use expansion (Figs S2-S8) admitted neighbours by codebook cosine instead; the
+two matrices are compared in Fig S9 and differ by less than the fold-to-fold
 variation. Candidate ties at the top-N cutoff are broken deterministically by
 target index.
 
 ### Substitution matrices
 
-The **deployed** matrix is the label-free **Structure-BLOSUM**, built inside
+The **deployed** matrix is the **Structure-BLOSUM**, built inside
 `scripts/01_train/train_final_model.py` (`build_struct_blosum`) from training
 chain pairs whose symmetric (mean-normalised) US-align TM-score reaches 0.5
 — `0.5 * (tm_query + tm_target) >= 0.5`, the same TM definition used for the
@@ -138,12 +168,12 @@ Fig 2C/D structural ground truth — and shipped as
 `files/production_new/sub_matrix.pt`. There is no standalone build script for
 it; it is produced as part of training. (The max-normalised variant,
 `max(tm_query, tm_target) >= 0.5`, yields indistinguishable retrieval — family
-Sens@1FP 0.555, clan 0.221 either way — and was the earlier criterion.)
+Sens@1FP 0.548, clan 0.223 either way — and was the earlier criterion.)
 
 The two scripts under `src/search/` build the **ablation alternatives**, not
-the deployed matrix (do not confuse them):
+the deployed matrix:
 
-- `build_matrix_codebook_cosine.py` — unsupervised codebook-cosine matrix.
+- `build_matrix_codebook_cosine.py` — codebook-cosine matrix.
 - `build_matrix_rfam_blosum.py` — Rfam-family-supervised BLOSUM.
 
 Both write to their own filenames and never overwrite the deployed
@@ -154,7 +184,7 @@ the traceback that collects aligned token pairs) and `rerank_gap_*` (−2.0 /
 
 ## Baselines
 
-US-align, RMalign, BLASTN GTalign, RTM-align and RiboSeek. 
+US-align, RMalign, BLASTN, GTalign, RTM-align and RiboSeek. 
 
 ## Notes
 

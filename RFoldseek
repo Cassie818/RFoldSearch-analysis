@@ -1,0 +1,208 @@
+#!/usr/bin/env python3
+"""RFoldseek: fast RNA structural search over a token database.
+
+Deployed pipeline:
+  1. Represent the query as a VQ-VAE token sequence.
+  2. Similar-k-mer-expansion prefilter over an inverted k-mer index of the
+     target database, using the Structure-BLOSUM substitution matrix,
+     keeping targets with >=2 hits on a common diagonal.
+  3. Token Smith-Waterman reranking of the candidate pool with Structure-BLOSUM.
+  4. Report the top-k hits by alignment score.
+
+Examples
+--------
+  # search a chain already in the bundled database against that database
+  python RFoldseek --query PDB_00001FFZ_1_A --top_k 10
+
+  # search a preprocessed query structure (JSON with coords/mask/pair_idx/...)
+  # encoded on the fly with the deployed tokenizer
+  python RFoldseek --query my_rna.json --db files/production_new/db.pt
+
+  # search against a database you built yourself with src/search/build_database.py
+  python RFoldseek --query my_query_db.pt --query_id chainA --db my_targets.pt
+
+"""
+import argparse
+import json
+import os
+import sys
+from collections import defaultdict
+
+import numpy as np
+import torch
+
+_HERE = os.path.dirname(os.path.abspath(__file__))
+sys.path.insert(0, _HERE)
+from paths import SRC_MODELS, SRC_SEARCH, resolve 
+
+sys.path.insert(0, SRC_SEARCH)
+sys.path.insert(0, SRC_MODELS)
+from smith_waterman import smith_waterman_numba 
+
+KMER_K = 4
+THRESH_FRAC = 0.75
+GAP_OPEN = -2.0
+GAP_EXTEND = -0.5
+DEFAULT_TOP_N = 100     # candidate-pool size after the prefilter
+DEFAULT_MIN_DIAG = 2    # Foldseek double-match rule
+
+
+def short_id(raw, fallback):
+    """Chain name without directory or .cif extension (e.g. PDB_00001FFZ_1_A)."""
+    if raw is None:
+        return str(fallback)
+    return os.path.splitext(os.path.basename(str(raw)))[0]
+
+
+def load_tokens(db_path):
+    db = torch.load(db_path, map_location="cpu", weights_only=False)
+    ents = db["entries"]
+    toks = [np.asarray(e["tokens"], dtype=np.int64) for e in ents]
+    ids = [short_id(e.get("id"), i) for i, e in enumerate(ents)]
+    return db, ents, toks, ids, int(db.get("n_codes", 80))
+
+
+def encode_query_json(json_path, checkpoint):
+    """Encode a preprocessed structure JSON (coords/mask/pair_idx/stack_idx/...)
+    with the deployed tokenizer, returning its token sequence."""
+    from build_database import load_model, encode_entry
+
+    model, ckpt, _n_codes, _d = load_model(checkpoint, torch.device("cpu"))
+    with open(json_path) as f:
+        entry = json.loads(next(line for line in f if line.strip()))
+    out = encode_entry(model, entry, torch.device("cpu"),
+                        ckpt.get("norm_mean"), ckpt.get("norm_std"))
+    if out is None:
+        raise SystemExit(f"could not encode query from {json_path}")
+    return np.asarray(out["tokens"], dtype=np.int64), str(entry.get("id", json_path))
+
+
+def build_index(toks, K):
+    powers = np.array([K ** (KMER_K - 1 - i) for i in range(KMER_K)], dtype=np.int64)
+    idx = defaultdict(list)
+    for ti, tt in enumerate(toks):
+        for p in range(len(tt) - KMER_K + 1):
+            idx[int(np.dot(tt[p:p + KMER_K], powers))].append((ti, p))
+    return idx, powers
+
+
+def make_expander(sub, K, powers, thr):
+    diag = np.array([sub[t, t] for t in range(K)], dtype=np.float64)
+
+    def expand(qk):
+        base = int(np.dot(qk, powers))
+        out = [base]
+        self_score = float(sum(diag[int(qk[i])] for i in range(KMER_K)))
+        for pos in range(KMER_K):
+            d = int(powers[pos])
+            cur = int(qk[pos])
+            base_wo = self_score - diag[cur]
+            row = sub[cur]
+            for tok in range(K):
+                if tok != cur and base_wo + row[tok] >= thr:
+                    out.append(base + d * (tok - cur))
+        return out
+
+    return expand
+
+
+def search(qtok, toks, idx, expand, sub, top_n, min_diag, self_idx):
+    """Return candidate db indices reranked by Smith-Waterman score (desc)."""
+    per_target = defaultdict(dict)  # target -> {diagonal: hit count}
+    for qp in range(len(qtok) - KMER_K + 1):
+        for kid in expand(qtok[qp:qp + KMER_K]):
+            for ti, tp in idx.get(kid, ()):
+                if ti == self_idx:
+                    continue
+                d = qp - tp
+                per_target[ti][d] = per_target[ti].get(d, 0) + 1
+    scored = [(ti, max((c for c in dm.values() if c >= min_diag), default=-1))
+              for ti, dm in per_target.items()]
+    scored = [x for x in scored if x[1] > 0]
+    scored.sort(key=lambda x: (-x[1], x[0]))
+    cand = np.array([ti for ti, _ in scored[:top_n]], dtype=np.int64)
+    if len(cand) == 0:
+        return cand, np.zeros(0, dtype=np.float32)
+    sw = np.array([smith_waterman_numba(qtok, toks[t], sub, GAP_OPEN, GAP_EXTEND) for t in cand])
+    order = np.argsort(-sw, kind="stable")
+    return cand[order], sw[order]
+
+
+def main():
+    ap = argparse.ArgumentParser(description="RFoldseek: fast RNA structural search")
+    ap.add_argument("--query", required=True,
+                    help="a chain id present in --db, OR a preprocessed structure "
+                         "JSON to encode, OR a query database .pt (with --query_id)")
+    ap.add_argument("--query_id", default=None,
+                    help="chain id to use when --query is a .pt database")
+    ap.add_argument("--db", default=resolve("files/model/db.pt"),
+                    help="target token database (.pt)")
+    ap.add_argument("--model", default=resolve("files/model/desc_vqvae_best.pt"),
+                    help="tokenizer checkpoint (only needed to encode a JSON query)")
+    ap.add_argument("--matrix", default=resolve("files/model/sub_matrix.pt"),
+                    help="Structure-BLOSUM substitution matrix (.pt)")
+    ap.add_argument("--top_k", type=int, default=10, help="number of hits to report")
+    ap.add_argument("--top_n", type=int, default=DEFAULT_TOP_N, help="prefilter candidate-pool size")
+    ap.add_argument("--min_diag", type=int, default=DEFAULT_MIN_DIAG,
+                    help="minimum k-mer hits on a common diagonal (Foldseek double-match)")
+    args = ap.parse_args()
+
+    db, ents, toks, ids, K = load_tokens(args.db)
+    id2i = {cid: i for i, cid in enumerate(ids)}
+    sub = torch.load(args.matrix, map_location="cpu", weights_only=False)
+    sub = np.asarray(sub["matrix"].numpy() if isinstance(sub, dict) else sub, dtype=np.float32)
+
+    # ── resolve the query token sequence ─────────────────────────────────
+    self_idx = -1
+    if args.query in id2i:                       # a chain already in the target db
+        self_idx = id2i[args.query]
+        qtok, qname = toks[self_idx], args.query
+    elif args.query.endswith(".json"):           # encode a preprocessed structure
+        qtok, qname = encode_query_json(args.query, args.model)
+    elif args.query.endswith(".pt"):             # a chain from a separate query db
+        if not args.query_id:
+            raise SystemExit("--query is a .pt database; pass --query_id CHAIN_ID")
+        _q = torch.load(args.query, map_location="cpu", weights_only=False)
+        qmap = {short_id(e.get("id"), i): i for i, e in enumerate(_q["entries"])}
+        if args.query_id not in qmap:
+            raise SystemExit(f"query id {args.query_id!r} not found in {args.query}")
+        qtok = np.asarray(_q["entries"][qmap[args.query_id]]["tokens"], dtype=np.int64)
+        qname = args.query_id
+    else:
+        raise SystemExit(f"query {args.query!r} is not a chain id in --db, a .json, or a .pt")
+
+    if len(qtok) < KMER_K:
+        raise SystemExit(f"query {qname} has < {KMER_K} tokens; too short to search")
+
+    # ── prefilter + rerank ──────────────────────────────────────
+    idx, powers = build_index(toks, K)
+    expand = make_expander(sub, K, powers, THRESH_FRAC * KMER_K)
+    ranked, scores = search(qtok, toks, idx, expand, sub, args.top_n, args.min_diag, self_idx)
+
+    # optional Rfam labels for readability
+    fam = None
+    try:
+        from prefilter_rfam_benchmark import attach_labels, load_labels
+        lab_path = resolve("Splits/labels.tsv")
+        if os.path.exists(lab_path):
+            fam = np.array(attach_labels(ents, load_labels(lab_path)), dtype=object)
+    except Exception:
+        fam = None
+
+    print(f"# query: {qname}  ({len(qtok)} tokens)   database: {args.db}  ({len(toks)} chains)")
+    if len(ranked) == 0:
+        print("# no candidates passed the prefilter (try lowering --min_diag)")
+        return
+    header = f"{'rank':>4}  {'target':<24}{'SW_score':>10}  {'len':>5}"
+    if fam is not None:
+        header += "  family"
+    print(header)
+    for r, (ti, sc) in enumerate(zip(ranked[:args.top_k], scores[:args.top_k]), 1):
+        line = f"{r:>4}  {ids[ti]:<24}{sc:>10.2f}  {len(toks[ti]):>5}"
+        if fam is not None:
+            line += f"  {fam[ti]}"
+        print(line)
+
+
+if __name__ == "__main__":
+    main()
