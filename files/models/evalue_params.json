@@ -1,0 +1,15 @@
+{
+  "lambda": 2.8537900576588484,
+  "K": 0.09830385781193875,
+  "gap_open": -2.0,
+  "gap_extend": -0.5,
+  "calib_length": 300,
+  "n_pairs": 4000,
+  "seed": 0,
+  "null_score_mean": 3.38675530141592,
+  "null_score_std": 0.4494198256524953,
+  "null_score_min": 2.4770472049713135,
+  "note": "Karlin-Altschul Gumbel parameters (method-of-moments) for the token Smith-Waterman score under Structure-BLOSUM. Database E-value for a hit scoring S is E = K * m * N * exp(-lambda * S), with m the query length and N the total token count of the target database.",
+  "n_db_tokens": 352759,
+  "n_chains": 885
+}

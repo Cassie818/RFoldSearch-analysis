@@ -48,7 +48,7 @@ encode the query to VQ-VAE tokens, run the similar-k-mer-expansion prefilter ove
 an inverted k-mer index of the target database using the Structure-BLOSUM matrix
 (exact per-k-mer self-score threshold, keeping targets with ≥2 hits on a common
 diagonal), rerank the candidate pool with token Smith-Waterman, and report the
-top-k hits by alignment score.
+top-k hits by alignment score, each with a Karlin-Altschul database E-value.
 
 ```bash
 # search a chain already in the bundled 885-chain database against that database
@@ -63,6 +63,29 @@ python RFoldseek --query my_query_db.pt --query_id chainA --db my_targets.pt
 
 `python RFoldseek -h` lists all options (`--db`, `--model`, `--matrix`,
 `--top_k`, `--top_n`, `--min_diag`).
+
+Each hit is reported with its Smith-Waterman score and a **database E-value**
+(`E = K·m·N·e^(−λS)`: the expected number of chance hits scoring this high in a
+target database of `N` tokens, `m` the query length). The E-value length-
+normalizes the raw score so significance is comparable across queries of very
+different sizes:
+
+```
+rank  target                    SW_score    E-value    len
+   1  PDB_00001FFK_1_0            203.54   9.4e-246   2706
+   2  PDB_00005AN9_1_N            180.02   1.3e-216   1162
+   3  PDB_00004V9F_1_0            168.13   7.1e-202   2803
+```
+
+The Karlin-Altschul parameters λ, K are calibrated once (random token-pair
+Smith-Waterman under the deployed matrix and gap penalties) and bundled in
+`files/models/evalue_params.json`, so E-values are available straight after
+cloning. Recalibrate — e.g. after changing the substitution matrix or database —
+with:
+
+```bash
+python src/search/build_evalue_params.py
+```
 
 ## Data
 
@@ -85,9 +108,10 @@ Required layout under `$RFOLDSEEK_DATA`:
 Splits/labels.tsv                              Rfam family / clan annotation
 Splits/pdb_out/{train,val,test}.json           PDB-disjoint split
 Splits/pdb_out/{train,val}_desc.pt             descriptor tensors
-files/models/db.pt                     tokenized 885-chain database (bundled)
-files/models/sub_matrix.pt             Structure-BLOSUM matrix (bundled)
-files/models/desc_vqvae_best.pt        trained tokenizer (bundled)
+files/models/db.pt                     tokenized 885-chain database
+files/models/sub_matrix.pt             Structure-BLOSUM matrix
+files/models/desc_vqvae_best.pt        trained tokenizer
+files/models/evalue_params.json        Karlin-Altschul E-value params
 files/production/retrieval/usalign_full.cache.jsonl
 files/production/retrieval/rmalign_full.cache.jsonl
 files/production/chain_sequences.tsv           for the BLASTN baseline
@@ -111,84 +135,6 @@ files/production/chain_sequences.tsv           for the BLASTN baseline
 | Fig S11 | `plot_figS11.py` | — (reads the trained model directly) | needs `RFOLDSEEK_DATA` |
 | Fig S12 | `plot_figS12.py` | `eval_recall1_figS12.py` | `recall1_rfam_test.json` |
 
-
-`plot_figS11.py` also writes a companion `token_state_representatives.tsv`
-into `figures/` listing the chosen representatives. Because `figures/` is
-gitignored it is a local artifact, not a bundled result. Its `frequency` and
-`role` columns come from `--profile`
-(`files/motifs_v2/token_profile_summary.tsv`), a table that predates the final
-retrain, so those two columns refer to the earlier codebook's token indices.
-The figure itself does not use the profile and is unaffected.
-
-## Evaluation protocol
-
-Retrieval is evaluated Foldseek-style over the full 885-chain database with
-self-hits removed, on the held-out test partition (106 family-evaluable and 79
-clan-evaluable query chains), using two metrics:
-
-- **Sens@1FP** — fraction of true positives ranked before the first
-  false positive, macro-averaged. Hierarchical labels: at the *family* level
-  same-family targets are true positives and same-clan/different-family targets
-  are neutral; at the *clan* level same-clan/different-family targets are true
-  positives and same-family targets are neutral.
-- **Recall@1** — top-ranked non-self target is a true positive,
-  with **no neutral set**; clan-level true positives include same-family targets.
-
-The two use different label conventions by design; see the manuscript's
-Supplementary Methods.
-
 All design ablations (Figs S2–S9) use PDB-disjoint 5-fold cross-validation on the
 train+validation partition only, reporting mean ± SD across folds. The test split
 is untouched throughout model selection.
-
-## Deployed configuration
-
-K = 80 codebook, 17-D descriptor (`g_ctx` + `g_nn1`), VQ-VAE with 2-layer encoder
-and 4-layer decoder, exact 4-mer inverted-index prefilter with 1-substitution
-similar-k-mer expansion, top-100 candidates, token Smith-Waterman reranking with
-the Structure-BLOSUM matrix (gap open −2.0, extend −0.5).
-
-Similar k-mers in the prefilter are admitted when the full one-substitution
-k-mer score under Structure-BLOSUM clears the threshold (0.75·k), the
-Foldseek/MMseqs2 convention. The threshold is evaluated per k-mer from the
-query k-mer's own self-score rather than from a per-token cutoff, because the
-matrix is diagonal-mean-1 rather than unit-diagonal. The design ablations that
-use expansion (Figs S2-S8) admitted neighbours by codebook cosine instead; the
-two matrices are compared in Fig S9 and differ by less than the fold-to-fold
-variation. Candidate ties at the top-N cutoff are broken deterministically by
-target index.
-
-### Substitution matrices
-
-The **deployed** matrix is the **Structure-BLOSUM**, built inside
-`scripts/01_train/train_final_model.py` (`build_struct_blosum`) from training
-chain pairs whose symmetric (mean-normalised) US-align TM-score reaches 0.5
-— `0.5 * (tm_query + tm_target) >= 0.5`, the same TM definition used for the
-Fig 2C/D structural ground truth — and shipped as
-`files/models/sub_matrix.pt`. There is no standalone build script for
-it; it is produced as part of training. (The max-normalised variant,
-`max(tm_query, tm_target) >= 0.5`, yields indistinguishable retrieval — family
-Sens@1FP 0.548, clan 0.223 either way — and was the earlier criterion.)
-
-The two scripts under `src/search/` build the **ablation alternatives**, not
-the deployed matrix:
-
-- `build_matrix_codebook_cosine.py` — codebook-cosine matrix.
-- `build_matrix_rfam_blosum.py` — Rfam-family-supervised BLOSUM.
-
-Both write to their own filenames and never overwrite the deployed
-`sub_matrix.pt`. Two affine-gap settings are involved and are recorded
-separately in the deployed matrix's metadata: `construction_gap_*` (−11 / −1,
-the traceback that collects aligned token pairs) and `rerank_gap_*` (−2.0 /
-−0.5, used with the matrix during Smith-Waterman reranking).
-
-## Baselines
-
-US-align, RMalign, BLASTN, GTalign, RTM-align and RiboSeek. 
-
-## Notes
-
-- `scripts/01_train/train_final_model.py` trains 30 seeds and selects on
-  validation Sens@1FP.
-- `riboseek_baseline.py` needs Python ≥ 3.9 for the `riboseek` package, while the
-  rest of the pipeline was run under Python 3.8. Encoded chains are cached.

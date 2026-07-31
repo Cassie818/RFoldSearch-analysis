@@ -232,7 +232,9 @@ Splits/
 *.pt
 
 # Exception: the small deployed RFoldseek model, tracked so search runs
-# straight after cloning (tokenizer + Structure-BLOSUM + tokenised 885-chain db)
+# straight after cloning (tokenizer + Structure-BLOSUM + tokenised 885-chain db
+# + Karlin-Altschul E-value parameters for per-hit database E-values)
 !files/models/desc_vqvae_best.pt
 !files/models/sub_matrix.pt
 !files/models/db.pt
+!files/models/evalue_params.json

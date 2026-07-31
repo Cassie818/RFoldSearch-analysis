@@ -37,7 +37,8 @@ from paths import SRC_MODELS, SRC_SEARCH, resolve
 
 sys.path.insert(0, SRC_SEARCH)
 sys.path.insert(0, SRC_MODELS)
-from smith_waterman import smith_waterman_numba 
+from smith_waterman import smith_waterman_numba
+import evalue as _evalue
 
 KMER_K = 4
 THRESH_FRAC = 0.75
@@ -152,6 +153,19 @@ def main():
     sub = torch.load(args.matrix, map_location="cpu", weights_only=False)
     sub = np.asarray(sub["matrix"].numpy() if isinstance(sub, dict) else sub, dtype=np.float32)
 
+    # Karlin-Altschul parameters for a per-hit database E-value (optional). The
+    # lambda/K are a property of the matrix + gaps (calibrated by
+    # build_evalue_params.py); N is sized from the actual --db in use, so the
+    # E-value is correct even for a custom target database.
+    ev_par = None
+    ev_path = resolve("files/models/evalue_params.json")
+    if os.path.exists(ev_path):
+        try:
+            ev_par = json.load(open(ev_path))
+        except Exception:
+            ev_par = None
+    n_db_tokens = int(sum(len(t) for t in toks))
+
     # ── resolve the query token sequence ─────────────────────────────────
     self_idx = -1
     if args.query in id2i:                       # a chain already in the target db
@@ -193,12 +207,19 @@ def main():
     if len(ranked) == 0:
         print("# no candidates passed the prefilter (try lowering --min_diag)")
         return
-    header = f"{'rank':>4}  {'target':<24}{'SW_score':>10}  {'len':>5}"
+    header = f"{'rank':>4}  {'target':<24}{'SW_score':>10}"
+    if ev_par is not None:
+        header += f"{'E-value':>11}"
+    header += f"  {'len':>5}"
     if fam is not None:
         header += "  family"
     print(header)
     for r, (ti, sc) in enumerate(zip(ranked[:args.top_k], scores[:args.top_k]), 1):
-        line = f"{r:>4}  {ids[ti]:<24}{sc:>10.2f}  {len(toks[ti]):>5}"
+        line = f"{r:>4}  {ids[ti]:<24}{sc:>10.2f}"
+        if ev_par is not None:
+            e = float(_evalue.evalue(sc, len(qtok), n_db_tokens, ev_par["lambda"], ev_par["K"]))
+            line += f"{e:>11.1e}"
+        line += f"  {len(toks[ti]):>5}"
         if fam is not None:
             line += f"  {fam[ti]}"
         print(line)
