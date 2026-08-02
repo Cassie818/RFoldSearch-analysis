@@ -129,7 +129,7 @@ def bar_panel(ax, tm, metric, title, ylabel):
     ax.text(
         len(thr) - 0.52,
         ceil - 0.03,
-        "US-align (ceiling)",
+        "US-align",
         ha="right",
         va="top",
         fontsize=8.5,
