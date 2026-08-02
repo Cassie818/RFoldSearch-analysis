@@ -22,7 +22,7 @@ from smith_waterman import smith_waterman_numba
 RET = Path("files/production/retrieval")
 ND = "files/models"
 K = 80
-TOPN = 100
+TOPN = 200  # candidate-pool depth selected on the validation split (see Table 9)
 KMER_K = 4
 THRESH_FRAC = 0.75
 GO = -2.0

@@ -89,6 +89,138 @@ def evaluable_queries(fams: np.ndarray) -> np.ndarray:
     )
 
 
+def rfam_relevance_masks(
+    q_idx: int, fams: np.ndarray, clans: np.ndarray, level: str
+) -> tuple[np.ndarray, np.ndarray]:
+    """Return Rfam TP and neutral masks for the Foldseek-style hierarchy.
+
+    family:
+        TP = same Rfam family; neutral = same clan but different family.
+    clan:
+        TP = same clan but different family; neutral = same family.
+
+    Cross-clan labeled and unlabeled targets are false positives. Self-hits are
+    always neutral so callers can pass rankings that have not removed them.
+    """
+    valid = np.ones(len(fams), dtype=bool)
+    valid[q_idx] = False
+    rel = np.zeros(len(fams), dtype=bool)
+    neu = ~valid
+
+    if level == "family":
+        if fams[q_idx]:
+            rel = (fams == fams[q_idx]) & valid
+            if clans[q_idx]:
+                neu |= (clans == clans[q_idx]) & (fams != fams[q_idx]) & valid
+        return rel, neu
+
+    if level == "clan":
+        if clans[q_idx]:
+            rel = (clans == clans[q_idx]) & (fams != fams[q_idx]) & valid
+            if fams[q_idx]:
+                neu |= (fams == fams[q_idx]) & valid
+        return rel, neu
+
+    raise ValueError("level must be 'family' or 'clan', got %r" % (level,))
+
+
+def per_query_average_precision(
+    ranked: np.ndarray,
+    relevant: np.ndarray,
+    neutral: np.ndarray,
+    recall_grid: np.ndarray,
+) -> tuple[float, np.ndarray] | None:
+    """Average precision and interpolated PR curve for one query's ranking.
+
+    Walks the ranked target list (skipping neutral targets); a relevant target
+    is a TP, anything else a FP. AP is the mean precision at the ranks where a
+    TP is retrieved, normalized by the total number of relevant targets -- so
+    relevant targets missing from the list (a prefilter returns only its top
+    hits) lower AP. The curve is the standard right-interpolated precision on a
+    fixed recall grid so that per-query curves can be averaged. Returns ``None``
+    when the query has no relevant targets.
+    """
+    n_rel = int(relevant.sum())
+    if n_rel == 0:
+        return None
+    tp_flags = []
+    for t in ranked:
+        t = int(t)
+        if t < 0 or t >= len(relevant) or neutral[t]:
+            continue
+        tp_flags.append(1.0 if relevant[t] else 0.0)
+    if not tp_flags:
+        return 0.0, np.zeros(len(recall_grid))
+    tp_flags = np.asarray(tp_flags, dtype=np.float64)
+    cum_tp = np.cumsum(tp_flags)
+    ranks = np.arange(1, len(tp_flags) + 1)
+    precision = cum_tp / ranks
+    recall = cum_tp / n_rel
+    ap = float((precision * tp_flags).sum() / n_rel)
+    interp = np.array(
+        [precision[recall >= r].max() if (recall >= r).any() else 0.0 for r in recall_grid]
+    )
+    return ap, interp
+
+
+def rfam_per_query_pr_curve(
+    query_ids,
+    ranked_targets,
+    fams: np.ndarray,
+    clans: np.ndarray,
+    level: str,
+    n_recall_points: int = 101,
+) -> dict:
+    """Per-query-averaged PR curve and mean AP for Rfam family/clan retrieval.
+
+    Each query contributes one average-precision value and one interpolated PR
+    curve, weighted equally regardless of family size or query length. This is
+    deliberately *not* a pooled curve: RNA query lengths span two orders of
+    magnitude and long rRNAs share real local structure motifs with non-
+    homologs, so a pooled curve (threshold swept across all queries at once) is
+    dominated by the longest queries. Equal-per-query weighting removes that
+    bias and matches the Sens@1FP metric (within-query comparison, across-query
+    averaging). Ranking is taken directly from each method's own hit order, so
+    no cross-query-comparable score is required.
+    """
+    grid = np.linspace(0.0, 1.0, n_recall_points)
+    aps = []
+    curves = []
+    for q in query_ids:
+        q = int(q)
+        rel, neu = rfam_relevance_masks(q, fams, clans, level)
+        if not rel.any():
+            continue
+        ranked = np.asarray(ranked_targets.get(q, np.zeros(0, dtype=np.int64)), dtype=np.int64)
+        res = per_query_average_precision(ranked, rel, neu, grid)
+        if res is None:
+            continue
+        ap, interp = res
+        aps.append(ap)
+        curves.append(interp)
+    if not aps:
+        return {
+            "recall": grid.tolist(),
+            "precision": [0.0] * n_recall_points,
+            "aupr": 0.0,
+            "aupr_std": 0.0,
+            "per_query_ap": [],
+            "n_queries": 0,
+            "level": level,
+            "weighting": "per-query mean average precision (each query weighted equally)",
+        }
+    return {
+        "recall": grid.tolist(),
+        "precision": np.mean(np.asarray(curves), axis=0).tolist(),
+        "aupr": float(np.mean(aps)),  # mean average precision, length/size-equal
+        "aupr_std": float(np.std(aps)),
+        "per_query_ap": [float(a) for a in aps],
+        "n_queries": int(len(aps)),
+        "level": level,
+        "weighting": "per-query mean average precision (each query weighted equally)",
+    }
+
+
 def parse_ints(text: str) -> list[int]:
     return [int(x) for x in text.split(",") if x.strip()]
 

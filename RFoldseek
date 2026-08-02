@@ -44,7 +44,7 @@ KMER_K = 4
 THRESH_FRAC = 0.75
 GAP_OPEN = -2.0
 GAP_EXTEND = -0.5
-DEFAULT_TOP_N = 100     # candidate-pool size after the prefilter
+DEFAULT_TOP_N = 200     # candidate-pool size after the prefilter (validation-selected)
 DEFAULT_MIN_DIAG = 2    # Foldseek double-match rule
 
 

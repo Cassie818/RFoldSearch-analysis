@@ -1,11 +1,17 @@
-"""Rfam family- and clan-level Recall@1 for the benchmark methods on the
-TEST partition.
+"""Rfam family- and clan-level Recall@1 and per-query-averaged AUPR for the
+benchmark methods on the TEST partition (both supplementary retrieval metrics).
 
 Recall@1: first non-neutral retrieved hit (excluding self) is a true positive.
   family: TP=same family;  neutral=same clan, diff family
   clan  : TP=same clan & diff family;  neutral=same family (restricted to
           queries that have >=1 such target)
-Writes files/production/retrieval/recall1_rfam_test.json.
+
+Per-query AUPR: mean average precision over queries (each query weighted
+equally, using each method's own hit order); see rfam_per_query_pr_curve.
+
+Both reuse the same per-method rankings. Writes:
+  files/production/retrieval/recall1_rfam_test.json
+  files/production/retrieval/weighted_pr_rfam_test.json
 """
 import sys as _sys, os as _os
 
@@ -22,11 +28,11 @@ from collections import defaultdict
 from pathlib import Path
 import numpy as np, torch
 
-from prefilter_rfam_benchmark import attach_labels, load_labels
+from prefilter_rfam_benchmark import attach_labels, load_labels, rfam_per_query_pr_curve
 from smith_waterman import smith_waterman_numba
 
 K = 80
-TOPN = 100
+TOPN = 200  # candidate-pool depth selected on the validation split (see Table 9)
 KMER_K = 4
 THRESH_FRAC = 0.75
 GO = -2.0
@@ -328,11 +334,30 @@ def r1_clan(r, q):
 out = {
     "_note": "Rfam family/clan Recall@1, test queries. Paper definition (Methods 'Evaluation on the RNAsolo benchmark'): top-ranked non-self target is a TP, no neutral set; family TP=same family, clan TP=same clan including same family."
 }
-# carry over GTalign / RTM-align from any existing file when their outputs are absent
+pr_out = {
+    "_note": (
+        "Per-query-averaged precision-recall for the test queries. Each query "
+        "contributes one average precision (AP) and one interpolated PR curve, "
+        "weighted equally regardless of family/clan size or query length, using "
+        "each method's own hit order (no cross-query score comparison needed). "
+        "This avoids the length bias of a pooled curve, important because RNA "
+        "query lengths span two orders of magnitude. 'aupr' is the mean AP over "
+        "queries; 'precision' is the mean interpolated PR curve on the 'recall' "
+        "grid. Family: TP=same Rfam family, neutral=same clan/different family. "
+        "Clan: TP=same clan/different family, neutral=same family. Unretrieved "
+        "relevant targets remain false negatives."
+    ),
+    "_query_ids": {"family": fam_q, "clan": clan_q},
+}
+# carry over GTalign / RTM-align from any existing files when their outputs are absent
 _prev = json.load(open(RET / "recall1_rfam_test.json")) if os.path.exists(RET / "recall1_rfam_test.json") else {}
+_pr_prev = json.load(open(RET / "weighted_pr_rfam_test.json")) if os.path.exists(RET / "weighted_pr_rfam_test.json") else {}
 for _m in ("GTalign", "RTM-align"):
-    if _m not in RANKERS and _m in _prev:
-        out[_m] = _prev[_m]
+    if _m not in RANKERS:
+        if _m in _prev:
+            out[_m] = _prev[_m]
+        if _m in _pr_prev:
+            pr_out[_m] = _pr_prev[_m]
 for m in RANKERS:
     fq = {q: RANKERS[m](q) for q in set(fam_q) | set(clan_q)}
     fr = np.mean([r1_family(fq[q], q) for q in fam_q])
@@ -344,6 +369,12 @@ for m in RANKERS:
         "n_family": len(fam_q),
         "n_clan": len(cq),
     }
-    print(f"  {m:12s} famR@1={fr:.3f}  clanR@1={cr:.3f}  (n_clan={len(cq)})", flush=True)
+    pr_out[m] = {
+        "family": rfam_per_query_pr_curve(fam_q, fq, fam, clan, "family"),
+        "clan": rfam_per_query_pr_curve(clan_q, fq, fam, clan, "clan"),
+    }
+    print(f"  {m:12s} famR@1={fr:.3f} clanR@1={cr:.3f}  "
+          f"famAUPR={pr_out[m]['family']['aupr']:.3f} clanAUPR={pr_out[m]['clan']['aupr']:.3f}", flush=True)
 json.dump(out, open(RET / "recall1_rfam_test.json", "w"), indent=2)
-print("wrote recall1_rfam_test.json\nDONE", flush=True)
+json.dump(pr_out, open(RET / "weighted_pr_rfam_test.json", "w"), indent=2)
+print("wrote recall1_rfam_test.json and weighted_pr_rfam_test.json\nDONE", flush=True)

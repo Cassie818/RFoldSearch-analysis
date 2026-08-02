@@ -1,5 +1,8 @@
-"""Assemble a TEST-ONLY per_query_sens.json for Fig 2A/B: per-query family &
-clan Sens@1FP for all seven methods on the same 106 fam / 79 clan test query set.
+"""Assemble the TEST-ONLY per_query_sens_test.json for Fig 2A/B: per-query
+family and clan Sens@1FP for all benchmark methods.
+
+The per-query-averaged AUPR (a supplementary retrieval metric) is computed
+alongside Recall@1 in eval_recall1_figS12.py, which reuses the same rankings.
 """
 import sys as _sys, os as _os
 
@@ -11,6 +14,7 @@ _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 from pathlib import Path
 import os, sys, json, re, glob
+import csv, subprocess, tempfile
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from collections import defaultdict
@@ -20,16 +24,18 @@ from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_l
 from smith_waterman import smith_waterman_numba
 
 K = 80
-TOPN = 100
+TOPN = 200  # candidate-pool depth selected on the validation split (see Table 9)
 KMER_K = 4
 THRESH_FRAC = 0.75
 GO = -2.0
 GE = -0.5
 ND = "files/models"
+RET = Path("files/production/retrieval")
 db = torch.load(f"{ND}/db.pt", map_location="cpu", weights_only=False)
 ents = db["entries"]
 N = len(ents)
 id2i = {str(e["id"]): i for i, e in enumerate(ents)}
+tags = [os.path.splitext(os.path.basename(str(e["id"])))[0] for e in ents]
 fams = attach_labels(ents, load_labels("Splits/labels.tsv"))
 clans = attach_labels(ents, load_labels("Splits/labels.tsv", label_column="clan_acc"))
 fam_pool = np.array(fams, dtype=object)
@@ -91,7 +97,7 @@ def expand(qk):
 def rank_new(q):
     """RFoldseek ranking for query q: similar-k-mer-expansion prefilter over the
     inverted index (double-match on a common diagonal), top-N candidates, then
-    token Smith-Waterman reranking; returns db indices by descending score."""
+    token Smith-Waterman reranking; returns db indices by descending SW score."""
     tt = toks[q]
     td = defaultdict(dict)
     for qp in range(len(tt) - KMER_K + 1):
@@ -106,11 +112,8 @@ def rank_new(q):
     cand = np.array([x[0] for x in sc[:TOPN]], np.int64)
     if len(cand) == 0:
         return np.zeros(0, np.int64)
-    return cand[
-        np.argsort(
-            -np.array([smith_waterman_numba(tt, toks[t], sub, GO, GE) for t in cand]), kind="stable"
-        )
-    ]
+    sw = np.array([smith_waterman_numba(tt, toks[t], sub, GO, GE) for t in cand], dtype=np.float64)
+    return cand[np.argsort(-sw, kind="stable")]
 
 
 # ---- RiboSeek rankings from cached encodings ----
@@ -148,7 +151,109 @@ for _line in open("files/production/retrieval/usalign_full.cache.jsonl"):
 def rank_us(q):
     d = _us.get(q, {})
     order = sorted(((t, s) for t, s in d.items() if t != q), key=lambda x: (-x[1], x[0]))
-    return np.array([t for t, _ in order], dtype=np.int64)
+    return np.asarray([t for t, _ in order], dtype=np.int64)
+
+
+def _load_pair_scores(path, key):
+    d = defaultdict(dict)
+    if not os.path.exists(path):
+        return d
+    for line in open(path):
+        if not line.strip():
+            continue
+        r = json.loads(line)
+        if key not in r:
+            continue
+        i, j = r["i"], r["j"]
+        d[i][j] = float(r[key])
+        d[j][i] = float(r[key])
+    return d
+
+
+_rm = _load_pair_scores(RET / "rmalign_full.cache.jsonl", "rmscore")
+
+
+def _rank_from_pair_dict(d, q):
+    order = sorted(((t, s) for t, s in d.get(q, {}).items() if t != q), key=lambda x: (-x[1], x[0]))
+    return np.asarray([t for t, _ in order], dtype=np.int64)
+
+
+def rank_rm(q):
+    return _rank_from_pair_dict(_rm, q)
+
+
+def _run_blastn_scores():
+    BIN = Path(os.environ.get("RFS_BLAST_BIN", ""))
+    seq_path = Path("files/production/chain_sequences.tsv")
+    if not seq_path.exists():
+        return defaultdict(dict)
+    seqs = {}
+    for r in csv.DictReader(open(seq_path), delimiter="\t"):
+        seqs[r["chain_id"]] = r["sequence"]
+    tag2i = {t: k for k, t in enumerate(tags)}
+    work = Path(tempfile.mkdtemp())
+    fasta = work / "db.fasta"
+    with open(fasta, "w") as f:
+        for t in tags:
+            s = seqs.get(t, "")
+            if s:
+                f.write(f">{t}\n{s}\n")
+    subprocess.run(
+        [
+            str(BIN / "makeblastdb") if str(BIN) else "makeblastdb",
+            "-in",
+            str(fasta),
+            "-dbtype",
+            "nucl",
+            "-out",
+            str(work / "db"),
+        ],
+        check=True,
+        capture_output=True,
+    )
+    out = work / "hits.tsv"
+    subprocess.run(
+        [
+            str(BIN / "blastn") if str(BIN) else "blastn",
+            "-query",
+            str(fasta),
+            "-db",
+            str(work / "db"),
+            "-evalue",
+            "10",
+            "-out",
+            str(out),
+            "-outfmt",
+            "6 qseqid sseqid bitscore evalue",
+            "-num_threads",
+            "8",
+            "-max_target_seqs",
+            str(N),
+        ],
+        check=True,
+        capture_output=True,
+    )
+    best = defaultdict(dict)
+    for line in open(out):
+        q, t, bs, _ = line.rstrip("\n").split("\t")
+        if q == t or q not in tag2i or t not in tag2i:
+            continue
+        qi = tag2i[q]
+        ti = tag2i[t]
+        bs = float(bs)
+        if ti not in best[qi] or bs > best[qi][ti]:
+            best[qi][ti] = bs
+    return best
+
+
+_blast = defaultdict(dict)
+if os.environ.get("RFS_RUN_BLASTN_PR", "0") == "1":
+    print("running BLASTN for weighted PR...", flush=True)
+    _blast = _run_blastn_scores()
+
+
+def rank_blastn(q):
+    return _rank_from_pair_dict(_blast, q)
 
 
 base2i = {os.path.basename(str(e["id"])).replace(".cif", ""): i for i, e in enumerate(ents)}
@@ -170,7 +275,7 @@ def _parse_gtalign(path):  # ranked db indices by symmetric TM = mean(refTM, que
         if ti is not None:
             rows.append((ti, 0.5 * (float(nums[0]) + float(nums[1]))))
     rows.sort(key=lambda x: (-x[1], x[0]))
-    return [ti for ti, _ in rows]
+    return rows
 
 
 def _parse_rtm(path):  
@@ -189,7 +294,7 @@ def _parse_rtm(path):
         except ValueError:
             continue
     rows.sort(key=lambda x: (-x[1], x[0]))
-    return [ti for ti, _ in rows]
+    return rows
 
 
 def _collect(pattern, parse, keyfn):
@@ -198,7 +303,7 @@ def _collect(pattern, parse, keyfn):
         qi = keyfn(f)
         if qi is None:
             continue
-        ranks[qi] = np.asarray([t for t in parse(f) if t != qi], dtype=np.int64)
+        ranks[qi] = np.asarray([t for t, _ in parse(f) if t != qi], dtype=np.int64)
     return ranks
 
 
@@ -216,14 +321,14 @@ def rank_rtm(q):
     return rtm_ranks.get(q, np.zeros(0, dtype=np.int64))
 
 
+ALL_TEST_Q = sorted(set(fam_test_q) | set(clan_test_q))
+
+
 def per_query_sens(rank_fn):
     fam_sens = {}
     clan_sens = {}
     va_all = np.arange(N)
-    allq = set(fam_test_q) | set(clan_test_q)
-    ranks = {}
-    for q in sorted(allq):
-        ranks[q] = rank_fn(q)
+    ranks = {q: rank_fn(q) for q in ALL_TEST_Q}
     for q in fam_test_q:
         r = ranks[q]
         va = va_all != q
@@ -278,14 +383,22 @@ for _m, _rankfn, _ranks in (("GTalign", rank_gtalign, gt_ranks),
         out[_m] = _prev[_m]
     else:
         print(f"{_m}: no outputs and no existing entry, skipping", flush=True)
-# RMalign / BLASTN are already symmetric in the all-query file; subset them
-for t in ["RMalign", "BLASTN"]:
-    fs = [pq[t]["family"]["sens"][i] for i in fam_test_idx]
-    cs = [pq[t]["clan"]["sens"][i] for i in clan_test_idx]
-    out[t] = {
-        "family": {"sens": fs, "n": len(fs), "mean": float(np.mean(fs))},
-        "clan": {"sens": cs, "n": len(cs), "mean": float(np.mean(cs))},
-    }
+if _rm:
+    print("computing RMalign per-query...", flush=True)
+    out["RMalign"] = pack(*per_query_sens(rank_rm))
+elif "RMalign" in _prev:
+    print("RMalign: no cache, carrying over the existing Sens@1FP entry", flush=True)
+    out["RMalign"] = _prev["RMalign"]
+if _blast:
+    print("computing BLASTN per-query...", flush=True)
+    out["BLASTN"] = pack(*per_query_sens(rank_blastn))
+elif "BLASTN" in _prev:
+    print(
+        "BLASTN: set RFS_RUN_BLASTN_PR=1 to recompute score-aware rankings; "
+        "carrying over the existing Sens@1FP entry",
+        flush=True,
+    )
+    out["BLASTN"] = _prev["BLASTN"]
 json.dump(out, open(_dst, "w"), indent=2)
 print("\n=== TEST-ONLY per-query means ===", flush=True)
 for t in ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]:
