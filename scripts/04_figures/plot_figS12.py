@@ -39,7 +39,7 @@ MARKER = {"RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
 # Morandi bar palette (panel A)
 C1, C2, E1, E2 = "#9EB6C6", "#DFCE95", "#7E97A8", "#C4B274"
 
-fig = plt.figure(figsize=(15.5, 4.6))
+fig = plt.figure(figsize=(15.5, 5.3))
 gs = fig.add_gridspec(1, 3, width_ratios=[1.35, 1.0, 1.0], wspace=0.28)
 axA, axB, axC = (fig.add_subplot(gs[i]) for i in range(3))
 
@@ -62,8 +62,8 @@ axA.set_yticks(np.arange(0, 1.01, 0.2))
 axA.set_xlim(-0.6, len(METHODS) - 0.4)
 axA.spines[["top", "right"]].set_visible(False)
 axA.tick_params(axis="both", labelsize=10)
-axA.legend(loc="lower center", frameon=False, fontsize=10, ncol=2,
-           bbox_to_anchor=(0.5, -0.42), handlelength=1.6, columnspacing=2.0)
+axA.legend(loc="upper right", frameon=True, framealpha=0.9, edgecolor="none",
+           fontsize=9.5, handlelength=1.4, borderpad=0.4)
 
 # ---- (B,C) per-query PR curves ----
 def pr_panel(ax, level, title):
@@ -75,7 +75,7 @@ def pr_panel(ax, level, title):
         ax.plot(rec, prec, "-", color=METHOD_COLOR[m], linewidth=2.0,
                 marker=MARKER[m], markevery=step, markersize=5.5,
                 markeredgecolor="white", markeredgewidth=0.6,
-                label=f"{m} ({ap:.2f})", zorder=3)
+                label=m, zorder=3)
     ax.set_xlabel("Recall", fontsize=12)
     ax.set_ylabel("Precision", fontsize=12)
     ax.set_xlim(0, 1.0)
@@ -83,8 +83,7 @@ def pr_panel(ax, level, title):
     ax.set_title(title, fontsize=12)
     ax.spines[["top", "right"]].set_visible(False)
     ax.tick_params(axis="both", labelsize=10)
-    ax.legend(loc="lower left", frameon=False, fontsize=8.2, title="Method (AP)",
-              title_fontsize=8.5, handlelength=1.4, labelspacing=0.3)
+    # per-panel legend removed; a single shared method legend sits at the figure bottom
 
 pr_panel(axB, "family", "Family level")
 pr_panel(axC, "clan", "Clan level")
@@ -93,7 +92,11 @@ pr_panel(axC, "clan", "Clan level")
 for ax, lab in ((axA, "A"), (axB, "B"), (axC, "C")):
     ax.text(-0.12, 1.06, lab, transform=ax.transAxes, fontsize=15, fontweight="bold", va="top")
 
-fig.tight_layout(rect=(0, 0.02, 1, 1))
+# single shared method legend, centred below all panels
+h, l = axB.get_legend_handles_labels()
+fig.subplots_adjust(left=0.05, right=0.985, top=0.91, bottom=0.26, wspace=0.28)
+fig.legend(h, l, loc="lower center", ncol=7, frameon=False, fontsize=11,
+           bbox_to_anchor=(0.5, 0.015), handlelength=1.6, columnspacing=1.8)
 OUT = str(Path(FIG_DIR) / "S12.png")
 fig.savefig(OUT, dpi=200, bbox_inches="tight")
 print(f"wrote {OUT}")
