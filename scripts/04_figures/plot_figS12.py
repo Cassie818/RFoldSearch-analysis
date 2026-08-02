@@ -31,11 +31,11 @@ wp = json.load(open(RET / "weighted_pr_rfam_test.json"))
 
 METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
-    "RFoldseek": "#1F9BD8", "GTalign": "#8C564B", "RTM-align": "#17BECF",
-    "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#9467BD", "BLASTN": "#FFB000",
+    "RFoldseek": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#8C564B",
+    "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "BLASTN": "#FFB000",
 }
-MARKER = {"RFoldseek": "o", "GTalign": "P", "RTM-align": "X", "US-align": "s",
-          "RMalign": "^", "RiboSeek": "D", "BLASTN": "v"}
+MARKER = {"RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
+          "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}
 # Morandi bar palette (panel A)
 C1, C2, E1, E2 = "#9EB6C6", "#DFCE95", "#7E97A8", "#C4B274"
 

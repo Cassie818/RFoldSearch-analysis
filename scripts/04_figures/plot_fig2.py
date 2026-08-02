@@ -38,11 +38,11 @@ OUT = Path(FIG_DIR) / "fig2.png"
 METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
     "RFoldseek": "#1F9BD8",  # sky blue    — ours
-    "GTalign": "#8C564B",  # brown       — GPU coordinate aligner
-    "RTM-align": "#17BECF",  # teal        — RNA-tuned TM-align variant
+    "GTalign": "#9467BD",  # purple      — GPU coordinate aligner
+    "RTM-align": "#8C564B",  # brown       — RNA-tuned TM-align variant
     "US-align": "#D62728",  # vivid red   — TM-score oracle
     "RMalign": "#2CA02C",  # forest green
-    "RiboSeek": "#9467BD",  # purple      — fixed alphabet
+    "RiboSeek": "#E377C2",  # pink        — fixed alphabet
     "BLASTN": "#FFB000",  # amber       — sequence baseline
 }
 LINESTYLE = {
@@ -50,7 +50,7 @@ LINESTYLE = {
     "RMalign": "-", "RiboSeek": "-", "BLASTN": "--",
 }
 MARKER = {
-    "RFoldseek": "o", "GTalign": "P", "RTM-align": "X", "US-align": "s",
+    "RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
     "RMalign": "^", "RiboSeek": "v", "BLASTN": "D",
 }
 # C/D bars: GTalign and RTM-align, like US-align, rank by a TM-score (the
