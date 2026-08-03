@@ -31,8 +31,8 @@ wp = json.load(open(RET / "weighted_pr_rfam_test.json"))
 
 METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
-    "RFoldseek": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#8C564B",
-    "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "BLASTN": "#FFB000",
+    "RFoldseek": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
+    "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "BLASTN": "#7F7F7F",
 }
 MARKER = {"RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
           "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}

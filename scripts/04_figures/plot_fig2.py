@@ -39,11 +39,11 @@ METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek
 METHOD_COLOR = {
     "RFoldseek": "#1F9BD8",  # sky blue    — ours
     "GTalign": "#9467BD",  # purple      — GPU coordinate aligner
-    "RTM-align": "#8C564B",  # brown       — RNA-tuned TM-align variant
+    "RTM-align": "#FF7F0E",  # orange      — RNA-tuned TM-align variant
     "US-align": "#D62728",  # vivid red   — TM-score oracle
     "RMalign": "#2CA02C",  # forest green
     "RiboSeek": "#E377C2",  # pink        — fixed alphabet
-    "BLASTN": "#FFB000",  # amber       — sequence baseline
+    "BLASTN": "#7F7F7F",  # grey        — sequence baseline
 }
 LINESTYLE = {
     "RFoldseek": "-", "GTalign": "-", "RTM-align": "-", "US-align": "-",
