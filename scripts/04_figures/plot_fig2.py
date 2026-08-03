@@ -1,13 +1,13 @@
 """Full retrieval comparison figure (Fig. 2), 2x2 panels.
 
 Top row - Foldseek-style sorted-sensitivity ROC1 under the Rfam ground truth:
-    A: Family Sens@1FP (468 queries)
-    B: Clan Sens@1FP, excluding same-family hits (361 queries)
+    A: Family Sens@1FP 
+    B: Clan Sens@1FP
 Bottom row - retrieval under a structure-defined (US-align TM-score) ground
 truth, grouped bars by TM-score threshold:
     C: Recall@1               D: Sens@1FP
 US-align ranks by the truth-defining quantity in C/D, so it is shown as a
-dashed ceiling (by construction) rather than a competing bar.
+dashed ceiling rather than a competing bar.
 
 Writes figures/fig2.png.
 """
@@ -37,7 +37,7 @@ OUT = Path(FIG_DIR) / "fig2.png"
 
 METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
-    "RFoldseek": "#1F9BD8",  # sky blue    — ours
+    "RFoldseek": "#1F9BD8",  # sky blue    
     "GTalign": "#9467BD",  # purple      — GPU coordinate aligner
     "RTM-align": "#FF7F0E",  # orange      — RNA-tuned TM-align variant
     "US-align": "#D62728",  # vivid red   — TM-score oracle
@@ -152,8 +152,8 @@ def main():
     fig, axes = plt.subplots(2, 2, figsize=(10.5, 9.6))
     curve_panel(axes[0, 0], data, "family", "Family (AUROC1)")
     curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)")
-    bar_panel(axes[1, 0], tm, "Sens@1FP", "Structural ground truth, family level", "Sens@1FP")
-    bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Structural ground truth, clan level", "Sens@1FP")
+    bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP")
+    bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP")
     for ax, lab in zip(axes.flat, "ABCD"):
         ax.text(
             -0.10,
