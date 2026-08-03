@@ -43,7 +43,7 @@ METHOD_COLOR = {
     "US-align": "#D62728",  # vivid red   — TM-score oracle
     "RMalign": "#2CA02C",  # forest green
     "RiboSeek": "#E377C2",  # pink        — fixed alphabet
-    "BLASTN": "#7F7F7F",  # grey        — sequence baseline
+    "BLASTN": "#FFC107",  # yellow      — sequence baseline
 }
 LINESTYLE = {
     "RFoldseek": "-", "GTalign": "-", "RTM-align": "-", "US-align": "-",
