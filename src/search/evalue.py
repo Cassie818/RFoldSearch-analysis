@@ -97,6 +97,98 @@ def calibrate(
     }
 
 
+def _isotonic_nonincreasing(y) -> np.ndarray:
+    """Least-squares non-increasing fit (pool-adjacent-violators).
+
+    lambda and K are both physically non-increasing in sequence length; PAVA
+    removes the finite-sample wobble of the method-of-moments estimates (e.g. a
+    single length whose random draw happens to score high) while staying as
+    close as possible to the raw values.
+    """
+    y = np.asarray(y, dtype=np.float64)
+    vals, wts, cnts = [], [], []
+    for v in y:
+        w, c = 1.0, 1
+        while vals and vals[-1] < v:  # violates non-increasing -> pool
+            pv, pw, pc = vals.pop(), wts.pop(), cnts.pop()
+            v = (v * w + pv * pw) / (w + pw)
+            w += pw
+            c += pc
+        vals.append(v); wts.append(w); cnts.append(c)
+    out = []
+    for v, c in zip(vals, cnts):
+        out.extend([v] * c)
+    return np.asarray(out, dtype=np.float64)
+
+
+def calibrate_length_dependent(
+    sub_matrix: np.ndarray,
+    background: np.ndarray,
+    gap_open: float = -2.0,
+    gap_extend: float = -0.5,
+    lengths=(20, 30, 40, 60, 80, 120, 160, 220, 300, 500, 1000, 2000),
+    n_pairs: int = 4000,
+    long_n_pairs: int = 800,
+    long_thresh: int = 300,
+    seed: int = 0,
+    monotone: bool = True,
+) -> list:
+    """Calibrate lambda/K on a grid of sequence lengths.
+
+    Asymptotic Karlin-Altschul theory is length-independent, but at finite
+    length the random local-alignment score distribution has an edge effect:
+    short sequences give a *larger* lambda/K and long sequences a smaller one,
+    so a single fixed calibration over-estimates significance for long chains
+    (rRNA) and under-estimates it for short ones. Since ~two thirds of the
+    database chains are < 100 nt, we calibrate lambda/K at several lengths and
+    let the caller interpolate to the actual query length. Long lengths
+    (> ``long_thresh``) use fewer random pairs: lambda/K are essentially
+    converged there and the O(L^2) alignment is expensive. With
+    ``monotone=True`` the lambda and log-K grids are smoothed to be
+    non-increasing (both are physically monotone in length), removing
+    method-of-moments wobble; raw values are retained as ``lambda_raw``/``K_raw``.
+    """
+    table = []
+    for L in lengths:
+        npair = n_pairs if L <= long_thresh else long_n_pairs
+        par = calibrate(sub_matrix, background, gap_open, gap_extend, int(L), npair, seed)
+        table.append({
+            "length": int(L),
+            "lambda": par["lambda"],
+            "K": par["K"],
+            "n_pairs": npair,
+            "null_score_mean": par["null_score_mean"],
+            "null_score_std": par["null_score_std"],
+        })
+    if monotone and len(table) > 1:
+        lam_s = _isotonic_nonincreasing([r["lambda"] for r in table])
+        k_s = np.exp(_isotonic_nonincreasing(np.log([r["K"] for r in table])))
+        for r, lam, kk in zip(table, lam_s, k_s):
+            r["lambda_raw"], r["K_raw"] = r["lambda"], r["K"]
+            r["lambda"], r["K"] = float(lam), float(kk)
+    return table
+
+
+def params_for_length(params: dict, m: float):
+    """Interpolate (lambda, K) for a query of length ``m`` from a length table.
+
+    Falls back to the scalar ``lambda``/``K`` when the params dict has no
+    ``length_table`` (backward compatible with the fixed-length calibration).
+    K is interpolated in log space (it spans orders of magnitude); both are
+    clamped to the calibration-grid endpoints.
+    """
+    tbl = params.get("length_table")
+    if not tbl:
+        return float(params["lambda"]), float(params["K"])
+    Ls = np.array([r["length"] for r in tbl], dtype=np.float64)
+    lams = np.array([r["lambda"] for r in tbl], dtype=np.float64)
+    logK = np.log(np.array([r["K"] for r in tbl], dtype=np.float64))
+    mm = float(np.clip(m, Ls[0], Ls[-1]))
+    lam = float(np.interp(mm, Ls, lams))
+    kk = float(np.exp(np.interp(mm, Ls, logK)))
+    return lam, kk
+
+
 def evalue(score, m, n, lam: float, k_param: float):
     """Karlin-Altschul E-value E = K*m*n*exp(-lambda*S).
 
@@ -106,6 +198,19 @@ def evalue(score, m, n, lam: float, k_param: float):
     """
     s = np.asarray(score, dtype=np.float64)
     return k_param * float(m) * float(n) * np.exp(-lam * s)
+
+
+def bit_score(score, m_unused, lam: float, k_param: float):
+    """Structural bit score S' = (lambda*S - ln K) / ln 2.
+
+    Normalises the raw token Smith-Waterman score to bits, independent of the
+    Structure-BLOSUM matrix scale, so it is comparable across queries (the
+    structural analogue of a BLAST/Foldseek bit score). Related to the E-value
+    by E = m * N * 2**(-S'). ``m_unused`` is accepted for a uniform call
+    signature with ``evalue`` but does not enter the bit score itself.
+    """
+    s = np.asarray(score, dtype=np.float64)
+    return (lam * s - np.log(k_param)) / np.log(2.0)
 
 
 def neg_log10_evalue(score, m, n, lam: float, k_param: float):

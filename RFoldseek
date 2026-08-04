@@ -209,7 +209,7 @@ def main():
         return
     header = f"{'rank':>4}  {'target':<24}{'SW_score':>10}"
     if ev_par is not None:
-        header += f"{'E-value':>11}"
+        header += f"{'bits':>8}{'E-value':>11}"
     header += f"  {'len':>5}"
     if fam is not None:
         header += "  family"
@@ -217,8 +217,10 @@ def main():
     for r, (ti, sc) in enumerate(zip(ranked[:args.top_k], scores[:args.top_k]), 1):
         line = f"{r:>4}  {ids[ti]:<24}{sc:>10.2f}"
         if ev_par is not None:
-            e = float(_evalue.evalue(sc, len(qtok), n_db_tokens, ev_par["lambda"], ev_par["K"]))
-            line += f"{e:>11.1e}"
+            lam_m, k_m = _evalue.params_for_length(ev_par, len(qtok))
+            bits = float(_evalue.bit_score(sc, len(qtok), lam_m, k_m))
+            e = float(_evalue.evalue(sc, len(qtok), n_db_tokens, lam_m, k_m))
+            line += f"{bits:>8.1f}{e:>11.1e}"
         line += f"  {len(toks[ti]):>5}"
         if fam is not None:
             line += f"  {fam[ti]}"
