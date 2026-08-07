@@ -18,6 +18,7 @@ scripts/01_train/         final deployed model training
 scripts/02_benchmark/     retrieval evaluation and baselines
 scripts/03_ablations/     5-fold cross-validated design ablations
 scripts/04_figures/       figure generation
+scripts/05_motif/         Section 2.4 motif-core analysis (Fig 4)
 files/                    bundled ablation + retrieval results (JSON)
 figures/                  output
 ```
@@ -35,6 +36,17 @@ Figures land in `figures/`. All figures except two redraw from the bundled
 results with no extra data. `plot_figS10.py` (substitution matrix) and
 `plot_figS11.py` (alphabet states) read the trained model directly and need
 `RFOLDSEEK_DATA` (see below).
+
+Fig 4 (Section 2.4 motif-core analysis) redraws from its own bundled tables:
+
+```bash
+python scripts/05_motif/plot_known_motif_cores.py
+```
+
+It reads `files/motifs_v2/` and the deployed token database `files/models/db.pt`
+(the same `production_new` tokenizer as Fig 2 and the CLI). The upstream analysis
+scripts in `scripts/05_motif/` (k-mer mining, BGSU overlap, DSSR annotation,
+sequence-matched control) regenerate those tables from `files/models/db.pt`.
 
 Bundled results take precedence over `RFOLDSEEK_DATA`, so pointing that variable
 at a working tree cannot silently substitute in-progress numbers for the
@@ -123,6 +135,7 @@ files/production/chain_sequences.tsv           for the BLASTN baseline
 |---|---|---|---|
 | Fig 2A,B | `plot_fig2.py` | `eval_rfam_sens_fig2ab.py` | `per_query_sens_test.json` |
 | Fig 2C,D | `plot_fig2.py` | `eval_structural_sens_fig2cd.py` | `structural_tmscore_metrics_test.json` |
+| Fig 4 | `05_motif/plot_known_motif_cores.py` | `05_motif/cross_family_kmer_mining.py`, `bgsu_overlap.py`, `known_motif_core_dssr_annotation.py`, `sequence_matched_control_44_48_62_71.py` | `files/motifs_v2/`, `files/models/db.pt` |
 | Fig S2 | `plot_figS2.py` | `ablation_figS2_descriptor_blocks.py` | `cv_s2_clan_5fold.json` |
 | Fig S3 | `plot_figS3.py` | `ablation_figS3_descriptor_blocks2.py` | `cv_s3_clan_5fold.json` |
 | Fig S4 | `plot_figS4.py` | `ablation_figS4_codebook_size.py` | `cv_s4_clan_5fold.json` |
