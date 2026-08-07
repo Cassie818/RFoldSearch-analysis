@@ -14,6 +14,7 @@ RFoldseek                 fast RNA structural search CLI
 paths.py                  path resolution (RFOLDSEEK_DATA / RFOLDSEEK_FIGURES)
 src/models/               VQ-VAE tokenizer, codebook, descriptors
 src/search/               k-mer prefilter, token Smith-Waterman, substitution matrices
+preprocessing/            structure -> backbone coordinates (extract_backbone.py)
 scripts/01_train/         final deployed model training
 scripts/02_benchmark/     retrieval evaluation and baselines
 scripts/03_ablations/     5-fold cross-validated design ablations
