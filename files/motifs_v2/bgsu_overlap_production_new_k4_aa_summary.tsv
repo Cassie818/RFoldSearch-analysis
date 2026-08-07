@@ -1,0 +1,18 @@
+metric	value
+source_il_url	https://rna.bgsu.edu/rna3dhub/motifs/release/il/current/csv
+source_hl_url	https://rna.bgsu.edu/rna3dhub/motifs/release/hl/current/csv
+download_date	2026-08-03
+n_candidates	1807
+n_candidates_with_bgsu_annotated_occurrences	846
+frac_ge_0.50	512
+frac_ge_0.25	590
+frac_gt_0	614
+median_frac_in_bgsu	0.6666666666666666
+target_kmer	20-22-48-53
+target_n_occ_db	10
+target_n_occ_in_bgsu	10
+target_frac_in_bgsu	1.0
+target_top_bgsu_motif	HL_34789.6 (10)
+target_cross_med_rmsd	0.3803173899650574
+target_n_fam	9
+target_n_clan	5

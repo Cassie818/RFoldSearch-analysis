@@ -1,0 +1,110 @@
+kmer	entry_id	pdb_chain	family	clan	token_start_1based	raw_indices_1based	author_residues	sequence	pair_sep_pattern	pair_orient_pattern	stack_sep_pattern	n_external_pair	n_internal_pair
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004V8P_1_B3.cif	PDB_00004V8P_1_B3	RF00001	CL00113	88	88,89,90,91	88,89,90,91	GGAC	.,.,-3,-5	.,.,trans,cis	.,.,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004Y1I_1_A.cif	PDB_00004Y1I_1_A			50	50,51,52,53	52,53,54,55	AAAC	.,.,-3,-5	.,.,trans,cis	.,1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004Y1I_1_A.cif	PDB_00004Y1I_1_A			76	76,77,78,79	78,79,80,81	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008R3V_1_W1.cif	PDB_00008R3V_1_W1	RF00005	CL00001	20	20,21,22,23	34,35,36,38	GAAA	.,.,-3,-5	.,.,trans,cis	.,.,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005V3I_1_A.cif	PDB_00005V3I_1_A			138	138,139,140,141	737,738,739,740	UAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008T5O_1_A.cif	PDB_00008T5O_1_A	RF00163	CL00010	77	77,78,79,80	81,82,83,84	AAAG	.,.,-3,.	.,.,trans,.	1,-1,-1,-1	1	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004RUM_1_A.cif	PDB_00004RUM_1_A	RF02683	CL00122	47	47,48,49,50	53,54,55,56	AAAG	.,.,-3,-5	.,.,trans,cis	1,1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004Y1M_1_B.cif	PDB_00004Y1M_1_B			25	25,26,27,28	26,27,28,29	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004Y1M_1_B.cif	PDB_00004Y1M_1_B			82	82,83,84,85	83,84,85,86	AAAU	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008G5Y_1_S2.cif	PDB_00008G5Y_1_S2	RF01960	CL00111	446	454,455,456,457	541,542,543,544	UUCG	.,.,-3,-5	.,.,trans,cis	1,-1,1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008RXH_1_L8.cif	PDB_00008RXH_1_L8	RF00001	CL00113	88	88,89,90,91	92,93,94,95	UGAU	.,.,-3,-5	.,.,trans,cis	.,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003V7E_1_C.cif	PDB_00003V7E_1_C	RF00162	CL00012	107	107,108,109,110	107,108,109,110	AAAC	.,.,-3,-5	.,.,trans,cis	.,.,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00002PXV_1_B.cif	PDB_00002PXV_1_B			26	26,27,28,29	155,156,157,158	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005MMJ_1_a.cif	PDB_00005MMJ_1_a	RF01959	CL00111	171	171,172,173,174	171,172,173,174	AGAA	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005M0I_1_E.cif	PDB_00005M0I_1_E			14	14,15,16,17	14,15,16,17	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006VWL_1_4.cif	PDB_00006VWL_1_4	RF00480		27	27,28,29,30	76,77,78,79	CAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008CSQ_1_A.cif	PDB_00008CSQ_1_A	RF00177	CL00111	122	122,123,124,125	770,771,772,773	CAAU	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00002YGH_1_A.cif	PDB_00002YGH_1_A	RF00162	CL00012	51	51,52,53,54	51,52,53,54	AAAU	.,.,-3,-5	.,.,trans,cis	.,1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00002YGH_1_A.cif	PDB_00002YGH_1_A	RF00162	CL00012	75	75,76,77,78	75,76,77,78	AAAC	.,.,-3,-5	.,.,trans,cis	.,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005IMQ_1_E.cif	PDB_00005IMQ_1_E	RF00001	CL00113	90	90,91,92,93	88,89,89,90	CGAC	.,.,-3,-5	.,.,trans,cis	.,.,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008FMW_1_AA.cif	PDB_00008FMW_1_AA	RF02540	CL00112	1249	1249,1250,1251,1252	1252,1253,1254,1255	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006CU1_1_A.cif	PDB_00006CU1_1_A			42	42,43,44,45	44,45,46,47	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004PCJ_1_A.cif	PDB_00004PCJ_1_A			17	17,18,19,20	18,19,20,21	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007ELP_1_A.cif	PDB_00007ELP_1_A	RF03054		23	23,24,25,26	24,25,26,27	AAAG	.,.,-3,-5	.,.,trans,cis	1,1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007PO4_1_A.cif	PDB_00007PO4_1_A	RF02541	CL00112	1044	1044,1045,1046,1047	3128,3129,3130,3131	AAAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003BWP_1_A.cif	PDB_00003BWP_1_A	RF02001	CL00102	247	247,248,249,250	276,277,278,279	AAAC	.,.,-3,-5	.,.,trans,cis	1,1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007NAF_1_1.cif	PDB_00007NAF_1_1	RF02543	CL00112	19	19,20,21,22	846,847,848,849	AAAC	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003NVI_1_E.cif	PDB_00003NVI_1_E			10	10,11,12,13	11,12,13,14	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006RM3_1_S60.cif	PDB_00006RM3_1_S60	RF02542	CL00111	1154	1154,1155,1156,1157	1165,1166,1167,1168	AAAA	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008HKU_1_A23S.cif	PDB_00008HKU_1_A23S	RF02540	CL00112	2952	2952,2953,2954,2955	2978,2979,2980,2981	UAAG	.,.,-3,-5	.,.,trans,cis	1,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008HKU_1_A5S.cif	PDB_00008HKU_1_A5S	RF00001	CL00113	91	91,92,93,94	91,92,93,94	AGAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003W3S_1_B.cif	PDB_00003W3S_1_B	RF01852	CL00001	58	58,59,60,61	47,47,47,47	CAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007QI4_1_A.cif	PDB_00007QI4_1_A	RF02541	CL00112	1099	1099,1100,1101,1102	2773,2774,2775,2776	ACAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008PPL_1_A2.cif	PDB_00008PPL_1_A2	RF01960	CL00111	176	176,177,178,179	199,200,201,202	CGCG	.,.,-3,-5	.,.,trans,cis	1,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008PPL_1_A2.cif	PDB_00008PPL_1_A2	RF01960	CL00111	472	472,473,474,475	541,542,543,544	UUCG	.,.,-3,-5	.,.,trans,cis	1,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005ON2_1_B.cif	PDB_00005ON2_1_B	RF00005	CL00001	35	35,36,37,38	34,35,36,37	UAAA	.,.,-3,.	.,.,trans,.	.,.,1,-1	1	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006YXX_1_AA.cif	PDB_00006YXX_1_AA	RF02546	CL00112	776	776,777,778,779	1136,1137,1138,1139	CAAG	.,.,-3,-5	.,.,trans,cis	.,.,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005U3G_1_B.cif	PDB_00005U3G_1_B	RF00442		48	48,49,50,51	49,50,51,52	AAAG	.,.,-3,-5	.,.,trans,cis	1,1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008ZMI_1_C.cif	PDB_00008ZMI_1_C	RF01084		139	139,140,141,142	140,141,142,143	AAAA	.,.,-3,-5	.,.,trans,cis	.,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005XXB_1_3.cif	PDB_00005XXB_1_3	RF00001	CL00113	87	87,88,89,90	88,89,90,91	GGAC	.,.,-3,-5	.,.,trans,cis	1,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008RDW_1_Z2.cif	PDB_00008RDW_1_Z2	RF02540	CL00112	1809	1809,1810,1811,1812	1856,1857,1858,1859	UAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004C7O_1_E.cif	PDB_00004C7O_1_E			22	22,23,24,25	21,22,23,24	GAAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004OQU_1_A.cif	PDB_00004OQU_1_A	RF01725	CL00012	78	78,79,80,81	78,79,80,81	AGAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006MJ0_1_A.cif	PDB_00006MJ0_1_A	RF00233		50	50,51,52,53	51,52,53,54	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008JOZ_1_B.cif	PDB_00008JOZ_1_B	RF00005	CL00001	45	45,46,47,48	47,47,47,47	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005TPY_1_A.cif	PDB_00005TPY_1_A			15	15,16,17,18	15,16,17,18	AAAG	.,.,-3,-5	.,.,trans,cis	1,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005TPY_1_A.cif	PDB_00005TPY_1_A			64	64,65,66,67	64,65,66,67	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,.,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003CUL_1_D.cif	PDB_00003CUL_1_D			9	9,10,11,12	109,110,111,112	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003NPQ_1_A.cif	PDB_00003NPQ_1_A	RF01057		22	22,23,24,25	22,23,24,25	AGAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007LYJ_1_A.cif	PDB_00007LYJ_1_A			42	42,43,44,45	42,43,44,45	AAAC	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005MMI_1_B.cif	PDB_00005MMI_1_B	RF00001	CL00113	89	89,90,91,92	89,90,91,92	AGGU	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00009E71_1_1.cif	PDB_00009E71_1_1	RF02540	CL00112	827	827,828,829,830	832,833,834,835	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007PWG_1_3.cif	PDB_00007PWG_1_3	RF00001	CL00113	88	88,89,90,91	89,90,91,92	AGAC	.,.,-3,-5	.,.,trans,cis	1,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006ZJ3_1_LJ.cif	PDB_00006ZJ3_1_LJ	RF02543	CL00112	31	31,32,33,34	3617,3618,3619,3620	AGAG	.,.,-3,-5	.,.,trans,cis	1,1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007OZQ_1_E.cif	PDB_00007OZQ_1_E			16	16,17,18,19	16,17,18,19	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00001X8W_1_B.cif	PDB_00001X8W_1_B	RF00028		140	140,141,142,143	236,237,238,240	AGAC	.,.,-3,-5	.,.,trans,cis	.,1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00001Q93_1_A.cif	PDB_00001Q93_1_A			13	13,14,15,16	15,16,17,18	AGAC	.,.,-3,-5	.,.,trans,cis	1,-1,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004WFL_1_A.cif	PDB_00004WFL_1_A	RF01854	CL00003	80	80,81,82,83	83,84,85,86	UAAC	.,.,-3,-5	.,.,trans,cis	1,1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006SVS_1_A.cif	PDB_00006SVS_1_A			27	27,28,29,30	28,29,30,31	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007NAD_1_1.cif	PDB_00007NAD_1_1	RF02543	CL00112	27	27,28,29,30	846,847,848,849	AAAC	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004V9F_1_0.cif	PDB_00004V9F_1_0	RF02540	CL00112	798	798,799,800,801	806,807,808,809	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004V9F_1_0.cif	PDB_00004V9F_1_0	RF02540	CL00112	2140	2140,2141,2142,2143	2250,2251,2252,2253	GGAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008OIN_1_B8.cif	PDB_00008OIN_1_B8	RF02541	CL00112	1104	1104,1105,1106,1107	1105,1106,1107,1108	ACAA	.,.,-3,-5	.,.,trans,cis	.,.,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007QEP_1_1.cif	PDB_00007QEP_1_1	RF02540	CL00112	575	575,576,577,578	582,583,584,585	AAAG	.,.,-3,-5	.,.,trans,cis	1,1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007QEP_1_2.cif	PDB_00007QEP_1_2	RF00001	CL00113	88	88,89,90,91	88,89,90,91	AGAC	.,.,-3,-5	.,.,trans,cis	1,-1,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007QEP_1_3.cif	PDB_00007QEP_1_3	RF02542	CL00111	1216	1216,1217,1218,1219	1221,1222,1223,1224	GAAG	.,.,-3,-5	.,.,trans,cis	1,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004GMA_1_Z.cif	PDB_00004GMA_1_Z	RF00174	CL00101	108	108,109,110,111	121,122,123,124	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005H1S_1_C.cif	PDB_00005H1S_1_C			58	58,59,60,61	62,63,64,65	UGAU	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007R81_1_B1.cif	PDB_00007R81_1_B1	RF00001	CL00113	89	89,90,91,92	89,90,91,92	UGAC	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004JF2_1_A.cif	PDB_00004JF2_1_A			9	9,10,11,12	10,11,12,13	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006SKF_1_BB.cif	PDB_00006SKF_1_BB	RF00001	CL00113	92	92,93,94,95	92,93,94,95	AGAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008OVA_1_BD.cif	PDB_00008OVA_1_BD	RF00001	CL00113	88	88,89,90,91	88,89,90,91	UGAU	.,.,-3,-5	.,.,trans,cis	1,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008OVA_1_BG.cif	PDB_00008OVA_1_BG	RF02543	CL00112	55	55,56,57,58	55,56,57,58	AGAG	.,.,-3,-5	.,.,trans,cis	1,1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007K16_1_P.cif	PDB_00007K16_1_P			14	14,15,16,17	15,16,17,18	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005M0H_1_A.cif	PDB_00005M0H_1_A			23	23,24,25,26	23,24,25,26	AAAG	.,.,-3,-5	.,.,trans,cis	1,1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004WZJ_1_V.cif	PDB_00004WZJ_1_V			52	52,53,54,55	52,53,54,55	UAAC	.,.,-3,-5	.,.,trans,cis	.,.,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006DMC_1_A.cif	PDB_00006DMC_1_A			26	26,27,28,29	27,28,29,30	AGAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003RW6_1_F.cif	PDB_00003RW6_1_F			28	28,29,30,31	29,30,31,32	AAAC	.,.,-3,-5	.,.,trans,cis	.,.,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00001FFK_1_0.cif	PDB_00001FFK_1_0	RF02540	CL00112	793	793,794,795,796	806,807,808,809	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00001FFK_1_0.cif	PDB_00001FFK_1_0	RF02540	CL00112	2050	2050,2051,2052,2053	2250,2251,2252,2253	GGAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00001MZP_1_B.cif	PDB_00001MZP_1_B			27	27,28,29,30	27,28,29,30	CAAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007QIW_1_5.cif	PDB_00007QIW_1_5	RF00001	CL00113	88	88,89,90,91	88,89,90,91	UGAC	.,.,-3,-5	.,.,trans,cis	.,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006U8D_1_A.cif	PDB_00006U8D_1_A			38	38,39,40,41	199,200,201,219	AAAC	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007AOI_1_AA.cif	PDB_00007AOI_1_AA	RF02546	CL00112	718	718,719,720,721	1136,1137,1138,1139	CAAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00009DE5_1_B.cif	PDB_00009DE5_1_B	RF00250		30	30,31,32,33	32,33,34,35	AAAA	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004PQV_1_A.cif	PDB_00004PQV_1_A	RF01415		15	15,16,17,18	15,16,17,18	AAAG	.,.,-3,-5	.,.,trans,cis	1,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008TOC_1_R.cif	PDB_00008TOC_1_R			2094	2094,2095,2096,2097	2094,2095,2096,2097	GAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008TOC_1_R.cif	PDB_00008TOC_1_R			4181	4181,4182,4183,4184	4181,4182,4183,4184	UACG	.,.,-4,-6	.,.,trans,cis	.,.,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006N2V_1_A.cif	PDB_00006N2V_1_A			77	77,78,79,80	78,79,80,81	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,.,-4	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003E5C_1_A.cif	PDB_00003E5C_1_A			19	19,20,21,22	20,21,22,23	AAAC	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008CGK_1_a.cif	PDB_00008CGK_1_a	RF02540	CL00112	1784	1784,1785,1786,1787	1870,1871,1872,1873	CAAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_S2.cif	PDB_00006XA1_1_S2	RF01960	CL00111	173	173,174,175,176	199,200,201,202	CGCG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003MOJ_1_A.cif	PDB_00003MOJ_1_A	RF02541	CL00112	24	24,25,26,27	2531,2532,2533,2534	AAAC	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif	PDB_00003J7O_1_7	RF00001	CL00113	88	88,89,90,91	88,89,90,91	AGAC	.,.,-3,-5	.,.,trans,cis	1,1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif	PDB_00006G18_1_2	RF01960	CL00111	465	465,466,467,468	541,542,543,544	UUCG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008EUG_1_9.cif	PDB_00008EUG_1_9	RF00001	CL00113	88	88,89,90,91	138,139,140,141	AGAC	.,.,-3,-5	.,.,trans,cis	.,.,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007JIL_1_2.cif	PDB_00007JIL_1_2	RF01959	CL00111	810	810,811,812,813	828,829,830,831	CAAG	.,.,-3,-5	.,.,trans,cis	.,.,.,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00007QCA_1_S60.cif	PDB_00007QCA_1_S60	RF02542	CL00111	1278	1278,1279,1280,1281	1281,1282,1283,1284	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00004BW0_1_A.cif	PDB_00004BW0_1_A			11	11,12,13,14	11,12,13,14	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008P6P_1_5.cif	PDB_00008P6P_1_5	RF00177	CL00111	203	203,204,205,206	207,208,209,210	CAAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00009LMF_1_A.cif	PDB_00009LMF_1_A	RF02032		112	112,113,114,115	495,496,497,498	CAAG	.,.,-4,-6	.,.,trans,cis	.,.,.,-5	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00009LMF_1_A.cif	PDB_00009LMF_1_A	RF02032		156	156,157,158,159	539,540,541,542	AGCG	.,.,-3,-5	.,.,trans,cis	.,1,-1,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00009LMF_1_A.cif	PDB_00009LMF_1_A	RF02032		247	247,248,249,250	630,631,632,633	GGAU	.,.,-3,-5	.,.,trans,cis	1,1,-1,1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00005O60_1_B.cif	PDB_00005O60_1_B	RF00001	CL00113	87	87,88,89,90	87,88,89,90	UCCG	.,.,-3,-5	.,.,trans,cis	.,.,.,.	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006ZOK_1_2.cif	PDB_00006ZOK_1_2	RF01960	CL00111	190	190,191,192,193	199,200,201,202	CGCG	.,.,-3,-5	.,.,trans,cis	1,-1,1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00008HZD_1_A.cif	PDB_00008HZD_1_A			21	21,22,23,24	21,22,23,24	AAAG	.,.,-3,-5	.,.,trans,cis	.,1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00009G7C_5_A.cif	PDB_00009G7C_5_A	RF03072		122	122,123,124,125	122,123,124,125	AAUC	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00002IL9_1_A.cif	PDB_00002IL9_1_A	RF00458		106	106,107,108,109	6119,6119,6119,6119	AAAG	.,.,-3,-5	.,.,trans,cis	1,-1,-1,-1	2	0
+62-71-66-12	/Users/cassie/Desktop/NR80_local/PDB_00006ZU5_1_L50.cif	PDB_00006ZU5_1_L50	RF02540	CL00112	597	597,598,599,600	600,601,602,603	AAAC	.,.,-3,-5	.,.,trans,cis	1,-1,-1,.	2	0

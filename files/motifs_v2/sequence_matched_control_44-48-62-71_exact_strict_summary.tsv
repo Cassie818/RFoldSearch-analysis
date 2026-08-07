@@ -1,0 +1,14 @@
+metric	value
+kmer	44-48-62-71
+n_observed_occurrences	70
+observed_sequence_counts	CGAA:15;GGAA:9;AUAA:6;CGAG:4;GGAG:4;AGUG:3;UGAA:3;CGGA:3;GGGG:2;AGCA:2;CGCA:2;GGUG:2;CGUA:1;AGAA:1;UGAG:1;CACA:1;CUUU:1;UGUG:1;AGUA:1;CCUA:1;GGCA:1;CCAC:1;GUUU:1;CUUC:1;GGCG:1;UUAG:1;UUCG:1
+observed_all_pair_median_rmsd	0.3719354946520195
+observed_all_pair_p90_rmsd	0.9447555164361329
+observed_n_pairs	2415
+n_replicates	2000
+control_median_of_medians	2.528467347187659
+control_p10_median_rmsd	2.3597256289168023
+control_p90_median_rmsd	2.679116301358264
+empirical_one_sided_p_le_observed	0.0
+n_replicates_le_observed	0
+random_seed	260807
