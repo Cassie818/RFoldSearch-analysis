@@ -33,6 +33,8 @@ import numpy as np
 REPO = Path(DATA_ROOT)
 SRC = Path(resolve("files/production/retrieval/per_query_sens_test.json"))
 TM = Path(resolve("files/production/retrieval/structural_tmscore_metrics_test.json"))
+BOOT = Path(resolve("files/production/retrieval/bootstrap_fig2cd_results.json"))
+BAND = Path(resolve("files/production/retrieval/bootstrap_fig2ab_band.json"))
 OUT = Path(FIG_DIR) / "fig2.png"
 
 METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
@@ -65,8 +67,13 @@ def sorted_curve(arr):
     return x, a
 
 
-def curve_panel(ax, data, level, title):
+def curve_panel(ax, data, level, title, band):
     for m in METHODS:
+        # CI band only for RFoldseek (7 overlapping bands are unreadable)
+        b = band.get(m, {}).get(level)
+        if b and m == "RFoldseek":
+            ax.fill_between(b["grid"], b["lo"], b["hi"], color=METHOD_COLOR[m],
+                            alpha=0.18, linewidth=0, zorder=1)
         x, y = sorted_curve(data[m][level]["sens"])
         step = max(1, len(x) // 18)
         ax.plot(
@@ -92,7 +99,7 @@ def curve_panel(ax, data, level, title):
     ax.spines[["top", "right"]].set_visible(False)
 
 
-def bar_panel(ax, tm, metric, title, ylabel):
+def bar_panel(ax, tm, metric, title, ylabel, boot, level):
     thr = sorted(float(t) for t in tm["thresholds"])
     keys = [str(t) for t in thr]
     x = np.arange(len(thr))
@@ -100,14 +107,27 @@ def bar_panel(ax, tm, metric, title, ylabel):
     for i, m in enumerate(BAR_METHODS):
         off = (i - 1.5) * width
         vals = [tm["thresholds"][k][m][metric] for k in keys]
+        # 95% family/clan block-bootstrap CI as asymmetric error bars; a method
+        # without a CI entry (e.g. BLASTN) simply gets no error bar.
+        yerr = None
+        if all(m in boot.get(k, {}).get(level, {}) for k in keys):
+            yerr = [
+                [vals[j] - boot[keys[j]][level][m]["ci_lower"] for j in range(len(keys))],
+                [boot[keys[j]][level][m]["ci_upper"] - vals[j] for j in range(len(keys))],
+            ]
         bars = ax.bar(
-            x + off, vals, width, color=METHOD_COLOR[m], edgecolor="none", label=m, zorder=3
+            x + off, vals, width, color=METHOD_COLOR[m], edgecolor="none", label=m, zorder=3,
+            yerr=yerr, capsize=2.5, error_kw={"elinewidth": 0.9, "ecolor": "#555555"},
         )
-        for b, v in zip(bars, vals):
+        for j, (b, v) in enumerate(zip(bars, vals)):
+            # value, plus a '*' when the paired bootstrap difference vs
+            # RFoldseek is significant; placed just above the error bar
+            top = v + (yerr[1][j] if yerr else 0.0) + 0.012
+            sig = boot.get(keys[j], {}).get(level, {}).get(m, {}).get("sig_vs_rf")
             ax.text(
                 b.get_x() + b.get_width() / 2,
-                v + 0.012,
-                f"{v:.2f}",
+                top,
+                f"{v:.2f}" + ("*" if sig else ""),
                 ha="center",
                 va="bottom",
                 fontsize=7.0,
@@ -149,11 +169,13 @@ def bar_panel(ax, tm, metric, title, ylabel):
 def main():
     data = json.load(open(SRC))
     tm = json.load(open(TM))
+    boot = json.load(open(BOOT))
+    band = json.load(open(BAND))
     fig, axes = plt.subplots(2, 2, figsize=(10.5, 9.6))
-    curve_panel(axes[0, 0], data, "family", "Family (AUROC1)")
-    curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)")
-    bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP")
-    bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP")
+    curve_panel(axes[0, 0], data, "family", "Family (AUROC1)", band)
+    curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
+    bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
+    bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
     for ax, lab in zip(axes.flat, "ABCD"):
         ax.text(
             -0.10,

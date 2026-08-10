@@ -219,7 +219,11 @@ def rank_blastn_all():
 
 
 print("running BLASTN...", flush=True)
-blast = rank_blastn_all()
+try:
+    blast = rank_blastn_all()
+except FileNotFoundError:
+    blast = {}
+    print("BLASTN skipped (no blastn binary on PATH)", flush=True)
 
 
 def rank_bl(q):
@@ -234,8 +238,9 @@ RANKERS = {
     "US-align*": rank_us,
     "RMalign": rank_rm,
     "RiboSeek": rank_ribo,
-    "BLASTN": rank_bl,
 }
+if blast:
+    RANKERS["BLASTN"] = rank_bl
 # precompute rankings for test queries
 print("computing rankings...", flush=True)
 RANKS = {m: {q: RANKERS[m](q) for q in queries} for m in RANKERS}
@@ -244,12 +249,14 @@ va_all = np.arange(n)
 # Rfam family labels: at the clan level a structural positive is TM-similar but
 # from a *different* Rfam family (same-family hits are treated as neutral).
 fam_arr = np.array(attach_labels(ents, load_labels("Splits/labels.tsv")), dtype=object)
+per_query_out = {}
 for th in THRESHOLDS:
     res = {}
+    res_pq = {}
     for m in RANKERS:
         r1 = []
-        sn = []
-        sn_clan = []
+        sn = []; sn_q = []
+        sn_clan = []; sn_clan_q = []
         for q in queries:
             va = va_all != q
             pos = (~np.isnan(tm[q])) & (tm[q] >= th) & va
@@ -257,10 +264,10 @@ for th in THRESHOLDS:
             if pos.any():
                 if len(r) == 0:
                     r1.append(0)
-                    sn.append(0.0)
+                    sn.append(0.0); sn_q.append(int(q))
                 else:
                     r1.append(int(pos[r[0]]))
-                    sn.append(first_fp_sensitivity(r, pos, None))
+                    sn.append(first_fp_sensitivity(r, pos, None)); sn_q.append(int(q))
             # clan-level structural: TM-similar AND different family; same-family = neutral
             if fam_arr[q]:
                 rel_c = pos & (fam_arr != fam_arr[q])
@@ -270,7 +277,7 @@ for th in THRESHOLDS:
                         first_fp_sensitivity(
                             r if len(r) > 0 else np.zeros(0, np.int64), rel_c, neu_c
                         )
-                    )
+                    ); sn_clan_q.append(int(q))
         res[m] = {
             "Recall@1": float(np.mean(r1)) if r1 else 0.0,
             "Sens@1FP": float(np.mean(sn)) if sn else 0.0,
@@ -278,7 +285,11 @@ for th in THRESHOLDS:
             "n_queries": len(r1),
             "n_clan": len(sn_clan),
         }
+        # per-query values keyed by query index (for family/clan block bootstrap)
+        res_pq[m] = {"family": dict(zip(sn_q, sn)),
+                     "clan": dict(zip(sn_clan_q, sn_clan))}
     out["thresholds"][f"{th}"] = res
+    per_query_out[f"{th}"] = res_pq
     print(
         f"  TM>={th}: fam["
         + " ".join(f"{m}={res[m]['Sens@1FP']:.3f}" for m in RANKERS)
@@ -288,4 +299,5 @@ for th in THRESHOLDS:
         flush=True,
     )
 json.dump(out, open(RET / "structural_tmscore_metrics_test.json", "w"), indent=2)
+json.dump(per_query_out, open(RET / "structural_tmscore_per_query_test.json", "w"), indent=2)
 print("wrote structural_tmscore_metrics_test.json\nDONE", flush=True)
