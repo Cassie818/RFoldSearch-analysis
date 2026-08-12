@@ -1,0 +1,61 @@
+{
+  "_provenance": {
+    "python": "/Users/cassie/opt/anaconda3/bin/python",
+    "python_version": "3.9.13 (main, Aug 25 2022, 18:29:29) \n[Clang 12.0.0 ]",
+    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
+    "prefer_external": false,
+    "matrix_mode": "identity",
+    "resolved_paths": {
+      "files/models/db.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/db.pt",
+      "files/models/sub_matrix.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/sub_matrix.pt",
+      "files/ablation/riboseek_real_encoded.json": "/Users/cassie/Desktop/RFoldseek-paper-code/files/ablation/riboseek_real_encoded.json",
+      "Splits/pdb_out/test.json": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/test.json",
+      "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv"
+    },
+    "input_hashes_md5": {
+      "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
+      "files/models/sub_matrix.pt": "bdb3f7128969775022e4a0952828140d",
+      "files/ablation/riboseek_real_encoded.json": "3ce8d27fc42c9b8f69d443b2a5c11b1b",
+      "Splits/pdb_out/test.json": "7b4b5249e36d02078476def61c536555",
+      "Splits/labels.tsv": "464e932db7b4b38a656a642a9007c1e6"
+    }
+  },
+  "RFoldseek_tokens_same_pipeline": {
+    "family_recall1": 0.7641509433962265,
+    "family_sens_1fp": 0.3720412376174956,
+    "clan_recall1": 0.8481012658227848,
+    "clan_sens_1fp": 0.1351255568472868,
+    "n_family_queries": 106,
+    "n_clan_queries": 79,
+    "time_sec": 796.1064558029175,
+    "alphabet_size": 80,
+    "kmer_k": 4,
+    "top_n": 200,
+    "threshold_fraction": 0.75,
+    "gap_open": -2.0,
+    "gap_extend": -0.5,
+    "matrix_mode": "identity",
+    "matrix_rule": "match=+1,mismatch=-1",
+    "matrix_diag_mean_after_scaling": 1.0,
+    "n_empty_or_short_sequences": 0
+  },
+  "RiboSeek_sa20_same_pipeline": {
+    "family_recall1": 0.7735849056603774,
+    "family_sens_1fp": 0.3615281744435308,
+    "clan_recall1": 0.8607594936708861,
+    "clan_sens_1fp": 0.1306842857125348,
+    "n_family_queries": 106,
+    "n_clan_queries": 79,
+    "time_sec": 185.26439905166626,
+    "alphabet_size": 20,
+    "kmer_k": 4,
+    "top_n": 200,
+    "threshold_fraction": 0.75,
+    "gap_open": -2.0,
+    "gap_extend": -0.5,
+    "matrix_mode": "identity",
+    "matrix_rule": "match=+1,mismatch=-1",
+    "matrix_diag_mean_after_scaling": 1.0,
+    "n_empty_or_short_sequences": 0
+  }
+}

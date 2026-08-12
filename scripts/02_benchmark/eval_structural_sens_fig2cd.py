@@ -9,7 +9,7 @@ from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
 _sys.path.insert(0, SRC_SEARCH)
 _sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
-import os, sys, json, csv, subprocess, tempfile
+import os, sys, json, csv, subprocess, tempfile, re, glob
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 from collections import defaultdict
@@ -233,12 +233,87 @@ def rank_bl(q):
     )
 
 
+# ===== GTalign / RTM-align: rank by their own symmetric TM-score =====
+# These aligners rank candidates by a TM-score, the same quantity that defines
+# the structural ground truth here, so in C/D they are near-oracles (they hug
+# the US-align ceiling). Parsed from raw tool output (RFS_GT_OUT/*.out,
+# RFS_RTM_OUT/*.tab); skipped gracefully if the output dirs are absent.
+base2i = {t: i for i, t in enumerate(tags)}
+GT_OUT = os.environ.get("RFS_GT_OUT", "/tmp/gt_final")
+RTM_OUT = os.environ.get("RFS_RTM_OUT", "/tmp/rtm_out")
+_row_re = re.compile(r"PDB_[0-9A-Za-z_]+\.cif")
+
+
+def _parse_gtalign(path):  # ranked db indices by symmetric TM = mean(refTM, queryTM)
+    rows = []
+    for line in open(path):
+        m = _row_re.search(line)
+        if not m:
+            continue
+        nums = re.findall(r"\d+\.\d+", line)
+        if len(nums) < 2:
+            continue
+        ti = base2i.get(m.group(0).replace(".cif", ""))
+        if ti is not None:
+            rows.append((ti, 0.5 * (float(nums[0]) + float(nums[1]))))
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    return rows
+
+
+def _parse_rtm(path):
+    rows = []
+    for line in open(path):
+        if line.startswith("#") or not line.strip():
+            continue
+        p = line.split()
+        if len(p) < 4:
+            continue
+        ti = base2i.get(os.path.basename(p[1]).replace(".cif", ""))
+        if ti is None:
+            continue
+        try:
+            rows.append((ti, 0.5 * (float(p[2]) + float(p[3]))))
+        except ValueError:
+            continue
+    rows.sort(key=lambda x: (-x[1], x[0]))
+    return rows
+
+
+def _collect(pattern, parse, keyfn):
+    ranks = {}
+    for f in glob.glob(pattern):
+        qi = keyfn(f)
+        if qi is None:
+            continue
+        ranks[qi] = np.asarray([t for t, _ in parse(f) if t != qi], dtype=np.int64)
+    return ranks
+
+
+gt_ranks = _collect(f"{GT_OUT}/*.out", _parse_gtalign,
+                    lambda f: base2i.get(os.path.basename(f).split("__")[0]))
+rtm_ranks = _collect(f"{RTM_OUT}/*.tab", _parse_rtm,
+                     lambda f: base2i.get(os.path.basename(f).replace(".tab", "")))
+print(f"GTalign queries: {len(gt_ranks)}   RTM-align queries: {len(rtm_ranks)}", flush=True)
+
+
+def rank_gtalign(q):
+    return gt_ranks.get(q, np.zeros(0, dtype=np.int64))
+
+
+def rank_rtm(q):
+    return rtm_ranks.get(q, np.zeros(0, dtype=np.int64))
+
+
 RANKERS = {
     "RFoldseek": rank_new,
     "US-align*": rank_us,
     "RMalign": rank_rm,
     "RiboSeek": rank_ribo,
 }
+if gt_ranks:
+    RANKERS["GTalign"] = rank_gtalign
+if rtm_ranks:
+    RANKERS["RTM-align"] = rank_rtm
 if blast:
     RANKERS["BLASTN"] = rank_bl
 # precompute rankings for test queries

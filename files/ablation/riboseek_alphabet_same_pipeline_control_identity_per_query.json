@@ -1,0 +1,1885 @@
+{
+  "_provenance": {
+    "python": "/Users/cassie/opt/anaconda3/bin/python",
+    "python_version": "3.9.13 (main, Aug 25 2022, 18:29:29) \n[Clang 12.0.0 ]",
+    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
+    "prefer_external": false,
+    "matrix_mode": "identity",
+    "resolved_paths": {
+      "files/models/db.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/db.pt",
+      "files/models/sub_matrix.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/sub_matrix.pt",
+      "files/ablation/riboseek_real_encoded.json": "/Users/cassie/Desktop/RFoldseek-paper-code/files/ablation/riboseek_real_encoded.json",
+      "Splits/pdb_out/test.json": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/test.json",
+      "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv"
+    },
+    "input_hashes_md5": {
+      "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
+      "files/models/sub_matrix.pt": "bdb3f7128969775022e4a0952828140d",
+      "files/ablation/riboseek_real_encoded.json": "3ce8d27fc42c9b8f69d443b2a5c11b1b",
+      "Splits/pdb_out/test.json": "7b4b5249e36d02078476def61c536555",
+      "Splits/labels.tsv": "464e932db7b4b38a656a642a9007c1e6"
+    }
+  },
+  "RFoldseek_tokens_same_pipeline": {
+    "family": [
+      {
+        "query": 708,
+        "recall1": 0,
+        "sens": 0.08029197080291971
+      },
+      {
+        "query": 710,
+        "recall1": 1,
+        "sens": 0.9672131147540983
+      },
+      {
+        "query": 713,
+        "recall1": 1,
+        "sens": 0.08759124087591241
+      },
+      {
+        "query": 716,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 719,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 722,
+        "recall1": 0,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 724,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 725,
+        "recall1": 1,
+        "sens": 0.7333333333333333
+      },
+      {
+        "query": 726,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 728,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 734,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 735,
+        "recall1": 1,
+        "sens": 0.2857142857142857
+      },
+      {
+        "query": 736,
+        "recall1": 1,
+        "sens": 0.7674418604651163
+      },
+      {
+        "query": 737,
+        "recall1": 1,
+        "sens": 0.42857142857142855
+      },
+      {
+        "query": 740,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 741,
+        "recall1": 1,
+        "sens": 0.021897810218978103
+      },
+      {
+        "query": 743,
+        "recall1": 1,
+        "sens": 0.014598540145985401
+      },
+      {
+        "query": 750,
+        "recall1": 1,
+        "sens": 0.072992700729927
+      },
+      {
+        "query": 752,
+        "recall1": 1,
+        "sens": 0.058394160583941604
+      },
+      {
+        "query": 753,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 754,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 757,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 758,
+        "recall1": 1,
+        "sens": 0.029197080291970802
+      },
+      {
+        "query": 761,
+        "recall1": 0,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 762,
+        "recall1": 1,
+        "sens": 0.6111111111111112
+      },
+      {
+        "query": 764,
+        "recall1": 1,
+        "sens": 0.08029197080291971
+      },
+      {
+        "query": 765,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 767,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 769,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 770,
+        "recall1": 1,
+        "sens": 0.3488372093023256
+      },
+      {
+        "query": 774,
+        "recall1": 1,
+        "sens": 0.7222222222222222
+      },
+      {
+        "query": 775,
+        "recall1": 1,
+        "sens": 0.7906976744186046
+      },
+      {
+        "query": 776,
+        "recall1": 1,
+        "sens": 0.072992700729927
+      },
+      {
+        "query": 777,
+        "recall1": 1,
+        "sens": 0.08759124087591241
+      },
+      {
+        "query": 778,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 780,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 781,
+        "recall1": 1,
+        "sens": 0.08333333333333333
+      },
+      {
+        "query": 783,
+        "recall1": 1,
+        "sens": 0.4
+      },
+      {
+        "query": 785,
+        "recall1": 1,
+        "sens": 0.014598540145985401
+      },
+      {
+        "query": 786,
+        "recall1": 1,
+        "sens": 0.8372093023255814
+      },
+      {
+        "query": 787,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 788,
+        "recall1": 1,
+        "sens": 0.8372093023255814
+      },
+      {
+        "query": 790,
+        "recall1": 1,
+        "sens": 0.6666666666666666
+      },
+      {
+        "query": 791,
+        "recall1": 1,
+        "sens": 0.3611111111111111
+      },
+      {
+        "query": 793,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 794,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 796,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 797,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 799,
+        "recall1": 1,
+        "sens": 0.021897810218978103
+      },
+      {
+        "query": 801,
+        "recall1": 1,
+        "sens": 0.12408759124087591
+      },
+      {
+        "query": 803,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 804,
+        "recall1": 1,
+        "sens": 0.08759124087591241
+      },
+      {
+        "query": 805,
+        "recall1": 1,
+        "sens": 0.3333333333333333
+      },
+      {
+        "query": 806,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 807,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 808,
+        "recall1": 1,
+        "sens": 0.3333333333333333
+      },
+      {
+        "query": 811,
+        "recall1": 1,
+        "sens": 0.7906976744186046
+      },
+      {
+        "query": 814,
+        "recall1": 1,
+        "sens": 0.051094890510948905
+      },
+      {
+        "query": 816,
+        "recall1": 1,
+        "sens": 0.9016393442622951
+      },
+      {
+        "query": 817,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 818,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 819,
+        "recall1": 1,
+        "sens": 0.5116279069767442
+      },
+      {
+        "query": 821,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 822,
+        "recall1": 1,
+        "sens": 0.7868852459016393
+      },
+      {
+        "query": 823,
+        "recall1": 1,
+        "sens": 0.6944444444444444
+      },
+      {
+        "query": 824,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 825,
+        "recall1": 0,
+        "sens": 0.08333333333333333
+      },
+      {
+        "query": 826,
+        "recall1": 1,
+        "sens": 0.2777777777777778
+      },
+      {
+        "query": 827,
+        "recall1": 1,
+        "sens": 0.36065573770491804
+      },
+      {
+        "query": 830,
+        "recall1": 1,
+        "sens": 0.9180327868852459
+      },
+      {
+        "query": 831,
+        "recall1": 1,
+        "sens": 0.6666666666666666
+      },
+      {
+        "query": 832,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 834,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 835,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 837,
+        "recall1": 1,
+        "sens": 0.6666666666666666
+      },
+      {
+        "query": 838,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 839,
+        "recall1": 1,
+        "sens": 0.06666666666666667
+      },
+      {
+        "query": 840,
+        "recall1": 1,
+        "sens": 0.819672131147541
+      },
+      {
+        "query": 841,
+        "recall1": 1,
+        "sens": 0.3055555555555556
+      },
+      {
+        "query": 842,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 843,
+        "recall1": 1,
+        "sens": 0.06569343065693431
+      },
+      {
+        "query": 845,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 851,
+        "recall1": 0,
+        "sens": 0.18181818181818182
+      },
+      {
+        "query": 852,
+        "recall1": 1,
+        "sens": 0.0364963503649635
+      },
+      {
+        "query": 853,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 854,
+        "recall1": 1,
+        "sens": 0.25
+      },
+      {
+        "query": 855,
+        "recall1": 0,
+        "sens": 0.25
+      },
+      {
+        "query": 856,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 857,
+        "recall1": 1,
+        "sens": 0.45454545454545453
+      },
+      {
+        "query": 859,
+        "recall1": 1,
+        "sens": 0.9180327868852459
+      },
+      {
+        "query": 861,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 862,
+        "recall1": 1,
+        "sens": 0.3888888888888889
+      },
+      {
+        "query": 863,
+        "recall1": 1,
+        "sens": 0.7906976744186046
+      },
+      {
+        "query": 866,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 869,
+        "recall1": 1,
+        "sens": 0.021897810218978103
+      },
+      {
+        "query": 870,
+        "recall1": 1,
+        "sens": 0.0364963503649635
+      },
+      {
+        "query": 871,
+        "recall1": 1,
+        "sens": 0.6666666666666666
+      },
+      {
+        "query": 873,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 874,
+        "recall1": 1,
+        "sens": 0.0948905109489051
+      },
+      {
+        "query": 875,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 878,
+        "recall1": 1,
+        "sens": 0.9180327868852459
+      },
+      {
+        "query": 879,
+        "recall1": 1,
+        "sens": 0.6111111111111112
+      },
+      {
+        "query": 880,
+        "recall1": 0,
+        "sens": 0.5
+      },
+      {
+        "query": 882,
+        "recall1": 1,
+        "sens": 0.043795620437956206
+      },
+      {
+        "query": 883,
+        "recall1": 1,
+        "sens": 0.8032786885245902
+      },
+      {
+        "query": 884,
+        "recall1": 0,
+        "sens": 0.0
+      }
+    ],
+    "clan": [
+      {
+        "query": 708,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 710,
+        "recall1": 1,
+        "sens": 0.41379310344827586
+      },
+      {
+        "query": 713,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 716,
+        "recall1": 1,
+        "sens": 0.011627906976744186
+      },
+      {
+        "query": 722,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 724,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 725,
+        "recall1": 1,
+        "sens": 0.6933333333333334
+      },
+      {
+        "query": 726,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 728,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 734,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 736,
+        "recall1": 1,
+        "sens": 0.45652173913043476
+      },
+      {
+        "query": 741,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 743,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 750,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 752,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 753,
+        "recall1": 1,
+        "sens": 0.3103448275862069
+      },
+      {
+        "query": 754,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 757,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 758,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 761,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 764,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 765,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 767,
+        "recall1": 1,
+        "sens": 0.3448275862068966
+      },
+      {
+        "query": 770,
+        "recall1": 1,
+        "sens": 0.1956521739130435
+      },
+      {
+        "query": 775,
+        "recall1": 1,
+        "sens": 0.17391304347826086
+      },
+      {
+        "query": 776,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 777,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 780,
+        "recall1": 1,
+        "sens": 0.3793103448275862
+      },
+      {
+        "query": 783,
+        "recall1": 1,
+        "sens": 0.7066666666666667
+      },
+      {
+        "query": 785,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 786,
+        "recall1": 1,
+        "sens": 0.2826086956521739
+      },
+      {
+        "query": 787,
+        "recall1": 1,
+        "sens": 0.013333333333333334
+      },
+      {
+        "query": 788,
+        "recall1": 1,
+        "sens": 0.3695652173913043
+      },
+      {
+        "query": 793,
+        "recall1": 1,
+        "sens": 0.2
+      },
+      {
+        "query": 797,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 799,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 801,
+        "recall1": 1,
+        "sens": 0.2727272727272727
+      },
+      {
+        "query": 803,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 804,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 805,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 807,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 811,
+        "recall1": 1,
+        "sens": 0.3695652173913043
+      },
+      {
+        "query": 814,
+        "recall1": 1,
+        "sens": 0.18181818181818182
+      },
+      {
+        "query": 816,
+        "recall1": 1,
+        "sens": 0.3103448275862069
+      },
+      {
+        "query": 817,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 819,
+        "recall1": 1,
+        "sens": 0.13043478260869565
+      },
+      {
+        "query": 821,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 822,
+        "recall1": 1,
+        "sens": 0.20689655172413793
+      },
+      {
+        "query": 824,
+        "recall1": 1,
+        "sens": 0.41379310344827586
+      },
+      {
+        "query": 825,
+        "recall1": 1,
+        "sens": 0.03076923076923077
+      },
+      {
+        "query": 827,
+        "recall1": 1,
+        "sens": 0.06896551724137931
+      },
+      {
+        "query": 830,
+        "recall1": 1,
+        "sens": 0.3103448275862069
+      },
+      {
+        "query": 832,
+        "recall1": 1,
+        "sens": 0.1411764705882353
+      },
+      {
+        "query": 834,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 835,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 838,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 839,
+        "recall1": 1,
+        "sens": 0.02666666666666667
+      },
+      {
+        "query": 840,
+        "recall1": 1,
+        "sens": 0.06896551724137931
+      },
+      {
+        "query": 843,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 845,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 851,
+        "recall1": 1,
+        "sens": 0.0641025641025641
+      },
+      {
+        "query": 852,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 853,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 854,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 855,
+        "recall1": 1,
+        "sens": 0.006944444444444444
+      },
+      {
+        "query": 856,
+        "recall1": 1,
+        "sens": 0.3793103448275862
+      },
+      {
+        "query": 857,
+        "recall1": 1,
+        "sens": 0.20512820512820512
+      },
+      {
+        "query": 859,
+        "recall1": 1,
+        "sens": 0.3103448275862069
+      },
+      {
+        "query": 861,
+        "recall1": 1,
+        "sens": 0.3103448275862069
+      },
+      {
+        "query": 863,
+        "recall1": 1,
+        "sens": 0.15217391304347827
+      },
+      {
+        "query": 866,
+        "recall1": 1,
+        "sens": 0.3103448275862069
+      },
+      {
+        "query": 869,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 870,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 871,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 874,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 878,
+        "recall1": 1,
+        "sens": 0.27586206896551724
+      },
+      {
+        "query": 880,
+        "recall1": 1,
+        "sens": 0.4823529411764706
+      },
+      {
+        "query": 882,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 883,
+        "recall1": 1,
+        "sens": 0.27586206896551724
+      }
+    ]
+  },
+  "RiboSeek_sa20_same_pipeline": {
+    "family": [
+      {
+        "query": 708,
+        "recall1": 1,
+        "sens": 0.16058394160583941
+      },
+      {
+        "query": 710,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 713,
+        "recall1": 1,
+        "sens": 0.10218978102189781
+      },
+      {
+        "query": 716,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 719,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 722,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 724,
+        "recall1": 1,
+        "sens": 0.051094890510948905
+      },
+      {
+        "query": 725,
+        "recall1": 1,
+        "sens": 0.7333333333333333
+      },
+      {
+        "query": 726,
+        "recall1": 1,
+        "sens": 0.021897810218978103
+      },
+      {
+        "query": 728,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 734,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 735,
+        "recall1": 1,
+        "sens": 0.42857142857142855
+      },
+      {
+        "query": 736,
+        "recall1": 1,
+        "sens": 0.7674418604651163
+      },
+      {
+        "query": 737,
+        "recall1": 1,
+        "sens": 0.2857142857142857
+      },
+      {
+        "query": 740,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 741,
+        "recall1": 1,
+        "sens": 0.08759124087591241
+      },
+      {
+        "query": 743,
+        "recall1": 1,
+        "sens": 0.08759124087591241
+      },
+      {
+        "query": 750,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 752,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 753,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 754,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 757,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 758,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 761,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 762,
+        "recall1": 1,
+        "sens": 0.1388888888888889
+      },
+      {
+        "query": 764,
+        "recall1": 1,
+        "sens": 0.17518248175182483
+      },
+      {
+        "query": 765,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 767,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 769,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 770,
+        "recall1": 1,
+        "sens": 0.6511627906976745
+      },
+      {
+        "query": 774,
+        "recall1": 1,
+        "sens": 0.2222222222222222
+      },
+      {
+        "query": 775,
+        "recall1": 1,
+        "sens": 0.8837209302325582
+      },
+      {
+        "query": 776,
+        "recall1": 1,
+        "sens": 0.12408759124087591
+      },
+      {
+        "query": 777,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 778,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 780,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 781,
+        "recall1": 1,
+        "sens": 0.16666666666666666
+      },
+      {
+        "query": 783,
+        "recall1": 1,
+        "sens": 0.6666666666666666
+      },
+      {
+        "query": 785,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 786,
+        "recall1": 1,
+        "sens": 0.8372093023255814
+      },
+      {
+        "query": 787,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 788,
+        "recall1": 1,
+        "sens": 0.8372093023255814
+      },
+      {
+        "query": 790,
+        "recall1": 1,
+        "sens": 0.3333333333333333
+      },
+      {
+        "query": 791,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
+        "query": 793,
+        "recall1": 1,
+        "sens": 0.3333333333333333
+      },
+      {
+        "query": 794,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 796,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 797,
+        "recall1": 1,
+        "sens": 0.3333333333333333
+      },
+      {
+        "query": 799,
+        "recall1": 1,
+        "sens": 0.051094890510948905
+      },
+      {
+        "query": 801,
+        "recall1": 1,
+        "sens": 0.0364963503649635
+      },
+      {
+        "query": 803,
+        "recall1": 1,
+        "sens": 0.014598540145985401
+      },
+      {
+        "query": 804,
+        "recall1": 1,
+        "sens": 0.014598540145985401
+      },
+      {
+        "query": 805,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 806,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 807,
+        "recall1": 1,
+        "sens": 0.043795620437956206
+      },
+      {
+        "query": 808,
+        "recall1": 1,
+        "sens": 0.4444444444444444
+      },
+      {
+        "query": 811,
+        "recall1": 1,
+        "sens": 0.5116279069767442
+      },
+      {
+        "query": 814,
+        "recall1": 1,
+        "sens": 0.0364963503649635
+      },
+      {
+        "query": 816,
+        "recall1": 1,
+        "sens": 0.9016393442622951
+      },
+      {
+        "query": 817,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 818,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 819,
+        "recall1": 1,
+        "sens": 0.8837209302325582
+      },
+      {
+        "query": 821,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 822,
+        "recall1": 1,
+        "sens": 0.8688524590163934
+      },
+      {
+        "query": 823,
+        "recall1": 1,
+        "sens": 0.6666666666666666
+      },
+      {
+        "query": 824,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 825,
+        "recall1": 0,
+        "sens": 0.08333333333333333
+      },
+      {
+        "query": 826,
+        "recall1": 1,
+        "sens": 0.4444444444444444
+      },
+      {
+        "query": 827,
+        "recall1": 1,
+        "sens": 0.4918032786885246
+      },
+      {
+        "query": 830,
+        "recall1": 1,
+        "sens": 0.9016393442622951
+      },
+      {
+        "query": 831,
+        "recall1": 1,
+        "sens": 0.6388888888888888
+      },
+      {
+        "query": 832,
+        "recall1": 1,
+        "sens": 0.75
+      },
+      {
+        "query": 834,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 835,
+        "recall1": 1,
+        "sens": 0.023255813953488372
+      },
+      {
+        "query": 837,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 838,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 839,
+        "recall1": 1,
+        "sens": 0.4666666666666667
+      },
+      {
+        "query": 840,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 841,
+        "recall1": 1,
+        "sens": 0.4444444444444444
+      },
+      {
+        "query": 842,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 843,
+        "recall1": 1,
+        "sens": 0.029197080291970802
+      },
+      {
+        "query": 845,
+        "recall1": 0,
+        "sens": 0.08029197080291971
+      },
+      {
+        "query": 851,
+        "recall1": 0,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 852,
+        "recall1": 1,
+        "sens": 0.014598540145985401
+      },
+      {
+        "query": 853,
+        "recall1": 1,
+        "sens": 0.0072992700729927005
+      },
+      {
+        "query": 854,
+        "recall1": 1,
+        "sens": 0.25
+      },
+      {
+        "query": 855,
+        "recall1": 1,
+        "sens": 0.25
+      },
+      {
+        "query": 856,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 857,
+        "recall1": 1,
+        "sens": 0.6363636363636364
+      },
+      {
+        "query": 859,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 861,
+        "recall1": 1,
+        "sens": 0.9344262295081968
+      },
+      {
+        "query": 862,
+        "recall1": 1,
+        "sens": 0.1111111111111111
+      },
+      {
+        "query": 863,
+        "recall1": 1,
+        "sens": 0.8604651162790697
+      },
+      {
+        "query": 866,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 869,
+        "recall1": 1,
+        "sens": 0.10948905109489052
+      },
+      {
+        "query": 870,
+        "recall1": 1,
+        "sens": 0.029197080291970802
+      },
+      {
+        "query": 871,
+        "recall1": 1,
+        "sens": 0.6666666666666666
+      },
+      {
+        "query": 873,
+        "recall1": 1,
+        "sens": 1.0
+      },
+      {
+        "query": 874,
+        "recall1": 1,
+        "sens": 0.1386861313868613
+      },
+      {
+        "query": 875,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 878,
+        "recall1": 1,
+        "sens": 0.9508196721311475
+      },
+      {
+        "query": 879,
+        "recall1": 1,
+        "sens": 0.5555555555555556
+      },
+      {
+        "query": 880,
+        "recall1": 0,
+        "sens": 0.5
+      },
+      {
+        "query": 882,
+        "recall1": 1,
+        "sens": 0.15328467153284672
+      },
+      {
+        "query": 883,
+        "recall1": 1,
+        "sens": 0.7540983606557377
+      },
+      {
+        "query": 884,
+        "recall1": 0,
+        "sens": 0.0
+      }
+    ],
+    "clan": [
+      {
+        "query": 708,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 710,
+        "recall1": 1,
+        "sens": 0.41379310344827586
+      },
+      {
+        "query": 713,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 716,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 722,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 724,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 725,
+        "recall1": 1,
+        "sens": 0.5866666666666667
+      },
+      {
+        "query": 726,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 728,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 734,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 736,
+        "recall1": 1,
+        "sens": 0.1956521739130435
+      },
+      {
+        "query": 741,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 743,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 750,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 752,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 753,
+        "recall1": 1,
+        "sens": 0.3793103448275862
+      },
+      {
+        "query": 754,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 757,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 758,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 761,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 764,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 765,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 767,
+        "recall1": 1,
+        "sens": 0.41379310344827586
+      },
+      {
+        "query": 770,
+        "recall1": 1,
+        "sens": 0.17391304347826086
+      },
+      {
+        "query": 775,
+        "recall1": 1,
+        "sens": 0.2826086956521739
+      },
+      {
+        "query": 776,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 777,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 780,
+        "recall1": 1,
+        "sens": 0.41379310344827586
+      },
+      {
+        "query": 783,
+        "recall1": 1,
+        "sens": 0.7333333333333333
+      },
+      {
+        "query": 785,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 786,
+        "recall1": 1,
+        "sens": 0.17391304347826086
+      },
+      {
+        "query": 787,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 788,
+        "recall1": 1,
+        "sens": 0.3695652173913043
+      },
+      {
+        "query": 793,
+        "recall1": 1,
+        "sens": 0.09230769230769231
+      },
+      {
+        "query": 797,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 799,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 801,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 803,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 804,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 805,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 807,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 811,
+        "recall1": 1,
+        "sens": 0.043478260869565216
+      },
+      {
+        "query": 814,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 816,
+        "recall1": 1,
+        "sens": 0.13793103448275862
+      },
+      {
+        "query": 817,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 819,
+        "recall1": 1,
+        "sens": 0.3695652173913043
+      },
+      {
+        "query": 821,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 822,
+        "recall1": 1,
+        "sens": 0.10344827586206896
+      },
+      {
+        "query": 824,
+        "recall1": 1,
+        "sens": 0.3103448275862069
+      },
+      {
+        "query": 825,
+        "recall1": 1,
+        "sens": 0.046153846153846156
+      },
+      {
+        "query": 827,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 830,
+        "recall1": 1,
+        "sens": 0.3793103448275862
+      },
+      {
+        "query": 832,
+        "recall1": 1,
+        "sens": 0.4117647058823529
+      },
+      {
+        "query": 834,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
+        "query": 835,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 838,
+        "recall1": 1,
+        "sens": 0.013333333333333334
+      },
+      {
+        "query": 839,
+        "recall1": 1,
+        "sens": 0.16
+      },
+      {
+        "query": 840,
+        "recall1": 1,
+        "sens": 0.3793103448275862
+      },
+      {
+        "query": 843,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 845,
+        "recall1": 1,
+        "sens": 0.18181818181818182
+      },
+      {
+        "query": 851,
+        "recall1": 1,
+        "sens": 0.02564102564102564
+      },
+      {
+        "query": 852,
+        "recall1": 1,
+        "sens": 0.09090909090909091
+      },
+      {
+        "query": 853,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 854,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 855,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 856,
+        "recall1": 1,
+        "sens": 0.41379310344827586
+      },
+      {
+        "query": 857,
+        "recall1": 1,
+        "sens": 0.5256410256410257
+      },
+      {
+        "query": 859,
+        "recall1": 1,
+        "sens": 0.3793103448275862
+      },
+      {
+        "query": 861,
+        "recall1": 1,
+        "sens": 0.3448275862068966
+      },
+      {
+        "query": 863,
+        "recall1": 1,
+        "sens": 0.2826086956521739
+      },
+      {
+        "query": 866,
+        "recall1": 1,
+        "sens": 0.3793103448275862
+      },
+      {
+        "query": 869,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 870,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 871,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 874,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 878,
+        "recall1": 1,
+        "sens": 0.41379310344827586
+      },
+      {
+        "query": 880,
+        "recall1": 1,
+        "sens": 0.17647058823529413
+      },
+      {
+        "query": 882,
+        "recall1": 1,
+        "sens": 0.0
+      },
+      {
+        "query": 883,
+        "recall1": 1,
+        "sens": 0.3448275862068966
+      }
+    ]
+  }
+}

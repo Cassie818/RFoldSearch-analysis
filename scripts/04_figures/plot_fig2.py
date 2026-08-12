@@ -1,23 +1,26 @@
-"""Full retrieval comparison figure (Fig. 2), 2x2 panels.
+"""Integrated Fig. 2: retrieval comparison + alphabet-control ablation, 3x2 grid.
 
-Top row - Foldseek-style sorted-sensitivity ROC1 under the Rfam ground truth:
-    A: Family Sens@1FP 
-    B: Clan Sens@1FP
-Bottom row - retrieval under a structure-defined (US-align TM-score) ground
-truth, grouped bars by TM-score threshold:
-    C: Recall@1               D: Sens@1FP
-US-align ranks by the truth-defining quantity in C/D, so it is shown as a
-dashed ceiling rather than a competing bar.
+Rows are three progressively stricter views of the same test library, columns are
+the two ground-truth levels (left Family, right Clan). Colour is shared across
+all six panels: RFoldseek is sky blue and RiboSeek is pink throughout, so the
+alphabet control (row 3) reads against the same legend as the main benchmark.
 
-Writes figures/fig2.png.
+    A/B  Rfam AUROC1 sorted-sensitivity curves (all methods; RFoldseek 95% band)
+    C/D  Structure-defined (US-align TM-score) Sens@1FP bars, by TM threshold
+    E/F  Alphabet control: RFoldseek vs RiboSeek under one matched pipeline, three
+         scoring regimes (Native / Identity / Self-BLOSUM). The blue-over-pink gap
+         is wide under native scoring, collapses under identity scoring, and
+         re-opens under matched self-BLOSUM -- the sensitivity gain comes from
+         learned substitution geometry, not the pipeline or exact symbol matching.
+
+Writes figures/fig2.{png,pdf}.
 """
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH, resolve
+from paths import DATA_ROOT, FIG_DIR, SRC_SEARCH, resolve
 
 _sys.path.insert(0, SRC_SEARCH)
-_sys.path.insert(0, SRC_MODELS)
 _os.chdir(DATA_ROOT)
 import json
 from pathlib import Path
@@ -30,179 +33,179 @@ matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
 import matplotlib.pyplot as plt
 import numpy as np
 
-REPO = Path(DATA_ROOT)
-SRC = Path(resolve("files/production/retrieval/per_query_sens_test.json"))
-TM = Path(resolve("files/production/retrieval/structural_tmscore_metrics_test.json"))
-BOOT = Path(resolve("files/production/retrieval/bootstrap_fig2cd_results.json"))
-BAND = Path(resolve("files/production/retrieval/bootstrap_fig2ab_band.json"))
-OUT = Path(FIG_DIR) / "fig2.png"
-
+# ---- shared style (identical to plot_fig2.py) --------------------------------
 METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
-    "RFoldseek": "#1F9BD8",  # sky blue    
-    "GTalign": "#9467BD",  # purple      — GPU coordinate aligner
-    "RTM-align": "#FF7F0E",  # orange      — RNA-tuned TM-align variant
-    "US-align": "#D62728",  # vivid red   — TM-score oracle
-    "RMalign": "#2CA02C",  # forest green
-    "RiboSeek": "#E377C2",  # pink        — fixed alphabet
-    "BLASTN": "#FFC107",  # yellow      — sequence baseline
+    "RFoldseek": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
+    "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "BLASTN": "#FFC107",
 }
-LINESTYLE = {
-    "RFoldseek": "-", "GTalign": "-", "RTM-align": "-", "US-align": "-",
-    "RMalign": "-", "RiboSeek": "-", "BLASTN": "--",
-}
-MARKER = {
-    "RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
-    "RMalign": "^", "RiboSeek": "v", "BLASTN": "D",
-}
-# C/D bars: GTalign and RTM-align, like US-align, rank by a TM-score (the
-# truth-defining quantity), so they are near-oracles in the structural-truth
-# panels and are not shown there.
-BAR_METHODS = ["RFoldseek", "RMalign", "RiboSeek", "BLASTN"]
+
+
+def _lighten(h, f=0.24):
+    """Blend a hex colour toward white by fraction f (softer, lighter tone)."""
+    h = h.lstrip("#")
+    r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return "#%02x%02x%02x" % tuple(round(c + (255 - c) * f) for c in (r, g, b))
+
+
+METHOD_COLOR = {k: _lighten(v) for k, v in METHOD_COLOR.items()}
+LINESTYLE = {m: "-" for m in METHODS}
+LINESTYLE["BLASTN"] = "--"
+MARKER = {"RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
+          "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}
+# C/D bars now include GTalign and RTM-align; both rank by a TM-score, the same
+# quantity that defines the structural ground truth, so they are near-oracles
+# here (they hug the US-align ceiling) and are shown for completeness.
+BAR_METHODS = ["RFoldseek", "GTalign", "RTM-align", "RMalign", "RiboSeek", "BLASTN"]
+
+# ---- alphabet-control constants ----------------------------------------------
+RF = "RFoldseek_tokens_same_pipeline"
+RB = "RiboSeek_sa20_same_pipeline"
+REGIMES = [("", "Native"), ("_identity", "Identity"), ("_self_blosum", "Self-BLOSUM")]
+CTRL_WHO = [("RFoldseek", RF), ("RiboSeek", RB)]
 
 
 def sorted_curve(arr):
     a = np.sort(np.asarray(arr))[::-1]
-    x = np.arange(1, len(a) + 1) / len(a)
-    return x, a
+    return np.arange(1, len(a) + 1) / len(a), a
 
 
+# ---- row 1: AUROC1 curves ----------------------------------------------------
 def curve_panel(ax, data, level, title, band):
     for m in METHODS:
-        # CI band only for RFoldseek (7 overlapping bands are unreadable)
         b = band.get(m, {}).get(level)
         if b and m == "RFoldseek":
             ax.fill_between(b["grid"], b["lo"], b["hi"], color=METHOD_COLOR[m],
                             alpha=0.18, linewidth=0, zorder=1)
         x, y = sorted_curve(data[m][level]["sens"])
         step = max(1, len(x) // 18)
-        ax.plot(
-            x,
-            y,
-            LINESTYLE[m],
-            color=METHOD_COLOR[m],
-            linewidth=2,
-            marker=MARKER[m],
-            markevery=step,
-            markersize=7,
-            markeredgecolor="white",
-            markeredgewidth=0.9,
-            label=m,
-            zorder=3,
-        )
+        ax.plot(x, y, LINESTYLE[m], color=METHOD_COLOR[m], linewidth=2, marker=MARKER[m],
+                markevery=step, markersize=7, markeredgecolor="white", markeredgewidth=0.9,
+                label=m, zorder=3)
     ax.set_xlabel("Fraction of queries", fontsize=12)
     ax.set_ylabel("Sensitivity up to the 1st FP", fontsize=12)
-    ax.set_xlim(0, 1)
-    ax.set_ylim(0, 1.02)
+    ax.set_xlim(0, 1); ax.set_ylim(0, 1.02)
     ax.set_title(title, fontsize=13, pad=8)
     ax.tick_params(axis="both", labelsize=10)
     ax.spines[["top", "right"]].set_visible(False)
 
 
+# ---- row 2: structural Sens@1FP bars -----------------------------------------
 def bar_panel(ax, tm, metric, title, ylabel, boot, level):
-    thr = sorted(float(t) for t in tm["thresholds"])
-    keys = [str(t) for t in thr]
-    x = np.arange(len(thr))
-    width = 0.21  # four adjacent bars per threshold group
+    thr = sorted(float(t) for t in tm["thresholds"]); keys = [str(t) for t in thr]
+    x = np.arange(len(thr)); width = 0.82 / len(BAR_METHODS)
     for i, m in enumerate(BAR_METHODS):
-        off = (i - 1.5) * width
+        off = (i - (len(BAR_METHODS) - 1) / 2) * width
         vals = [tm["thresholds"][k][m][metric] for k in keys]
-        # 95% family/clan block-bootstrap CI as asymmetric error bars; a method
-        # without a CI entry (e.g. BLASTN) simply gets no error bar.
         yerr = None
         if all(m in boot.get(k, {}).get(level, {}) for k in keys):
-            yerr = [
-                [vals[j] - boot[keys[j]][level][m]["ci_lower"] for j in range(len(keys))],
-                [boot[keys[j]][level][m]["ci_upper"] - vals[j] for j in range(len(keys))],
-            ]
-        bars = ax.bar(
-            x + off, vals, width, color=METHOD_COLOR[m], edgecolor="none", label=m, zorder=3,
-            yerr=yerr, capsize=2.5, error_kw={"elinewidth": 0.9, "ecolor": "#555555"},
-        )
+            yerr = [[vals[j] - boot[keys[j]][level][m]["ci_lower"] for j in range(len(keys))],
+                    [boot[keys[j]][level][m]["ci_upper"] - vals[j] for j in range(len(keys))]]
+        bars = ax.bar(x + off, vals, width, color=METHOD_COLOR[m], edgecolor="#666666",
+                      linewidth=0.6, label=m, zorder=3, yerr=yerr, capsize=2.5,
+                      error_kw={"elinewidth": 0.9, "ecolor": "#555555"})
         for j, (b, v) in enumerate(zip(bars, vals)):
-            # value, plus a '*' when the paired bootstrap difference vs
-            # RFoldseek is significant; placed just above the error bar
             top = v + (yerr[1][j] if yerr else 0.0) + 0.012
             sig = boot.get(keys[j], {}).get(level, {}).get(m, {}).get("sig_vs_rf")
-            ax.text(
-                b.get_x() + b.get_width() / 2,
-                top,
-                f"{v:.2f}" + ("*" if sig else ""),
-                ha="center",
-                va="bottom",
-                fontsize=7.0,
-                color="#333333",
-            )
-    ceil = (
-        tm["thresholds"][keys[0]]["US-align"][metric]
-        if "US-align" in tm["thresholds"][keys[0]]
-        else tm["thresholds"][keys[0]]["US-align*"][metric]
-    )
-    ax.plot(
-        [-0.5, len(thr) - 0.5],
-        [ceil, ceil],
-        ls="--",
-        color=METHOD_COLOR["US-align"],
-        lw=1.5,
-        zorder=2,
-    )
-    ax.text(
-        len(thr) - 0.52,
-        ceil - 0.03,
-        "US-align",
-        ha="right",
-        va="top",
-        fontsize=8.5,
-        color=METHOD_COLOR["US-align"],
-    )
+            ax.text(b.get_x() + b.get_width() / 2, top, f"{v:.2f}" + ("*" if sig else ""),
+                    ha="center", va="bottom", fontsize=5.6, color="#333333", rotation=90)
+    ceil = tm["thresholds"][keys[0]].get("US-align", tm["thresholds"][keys[0]].get("US-align*"))[metric]
+    ax.plot([-0.5, len(thr) - 0.5], [ceil, ceil], ls="--", color=METHOD_COLOR["US-align"],
+            lw=1.5, zorder=2)
+    ax.text(len(thr) - 0.52, ceil - 0.03, "US-align", ha="right", va="top", fontsize=8.5,
+            color=METHOD_COLOR["US-align"])
     ax.set_xticks(x, [f"{t:.2f}" for t in thr])
     ax.set_xlabel("TM-score similarity threshold", fontsize=12)
     ax.set_ylabel(ylabel, fontsize=12)
-    ax.set_xlim(-0.5, len(thr) - 0.5)
-    ax.set_ylim(0, 1.08)
+    ax.set_xlim(-0.5, len(thr) - 0.5); ax.set_ylim(0, 1.08)
     ax.set_yticks(np.arange(0, 1.01, 0.2))
     ax.set_title(title, fontsize=13, pad=8)
     ax.tick_params(axis="both", labelsize=10)
     ax.spines[["top", "right"]].set_visible(False)
 
 
+# ---- row 3: alphabet-control bars --------------------------------------------
+def load_ctrl(suffix):
+    return json.load(open(resolve(
+        f"files/ablation/riboseek_alphabet_same_pipeline_control{suffix}.json")))
+
+
+def load_ctrl_pq(suffix):
+    return json.load(open(resolve(
+        f"files/ablation/riboseek_alphabet_same_pipeline_control{suffix}_per_query.json")))
+
+
+def signflip_stars(pq, level, n=2_000_000, seed=0):
+    a = {r["query"]: r["sens"] for r in pq[RF][level]}
+    b = {r["query"]: r["sens"] for r in pq[RB][level]}
+    q = sorted(set(a) & set(b))
+    d = np.array([a[k] - b[k] for k in q]); obs = d.mean()
+    rng = np.random.default_rng(seed)
+    perm = (rng.choice([1.0, -1.0], size=(n, len(d))) * d).mean(1)
+    p = (np.sum(perm >= obs) + 1) / (n + 1)
+    return "***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 5e-2 else "n.s."
+
+
+def control_panel(ax, level, key, title):
+    data = {s: load_ctrl(s) for s, _ in REGIMES}
+    pqs = {s: load_ctrl_pq(s) for s, _ in REGIMES}
+    x = np.arange(len(REGIMES)); width = 0.36
+    vals = {"RFoldseek": [], "RiboSeek": []}
+    for suffix, _ in REGIMES:
+        vals["RFoldseek"].append(data[suffix][RF][key])
+        vals["RiboSeek"].append(data[suffix][RB][key])
+    for who, off in (("RFoldseek", -width / 2), ("RiboSeek", width / 2)):
+        bars = ax.bar(x + off, vals[who], width, color=METHOD_COLOR[who], edgecolor="#666666",
+                      linewidth=0.6, label=who, zorder=3)
+        for b, v in zip(bars, vals[who]):
+            ax.text(b.get_x() + b.get_width() / 2, v + 0.010, f"{v:.2f}", ha="center",
+                    va="bottom", fontsize=7.2, color="#333333")
+    for i, (suffix, _) in enumerate(REGIMES):
+        s = signflip_stars(pqs[suffix], level)
+        top = max(vals["RFoldseek"][i], vals["RiboSeek"][i])
+        y = top + 0.050
+        ax.plot([x[i] - width / 2, x[i] - width / 2, x[i] + width / 2, x[i] + width / 2],
+                [y, y + 0.013, y + 0.013, y], lw=0.9, color="#777777", zorder=4)
+        ax.text(x[i], y + 0.010, s, ha="center", va="bottom",
+                fontsize=9 if s != "n.s." else 7.5, color="#333333",
+                fontweight="bold" if s not in ("n.s.",) else "normal")
+    ax.set_xticks(x, [lab for _, lab in REGIMES])
+    ax.set_xlabel("Scoring regime", fontsize=12)
+    ax.set_ylabel("Sens@1FP", fontsize=12)
+    ax.set_xlim(-0.5, len(REGIMES) - 0.5); ax.set_ylim(0, 0.74)
+    ax.set_title(title, fontsize=13, pad=8)
+    ax.tick_params(axis="both", labelsize=10)
+    ax.spines[["top", "right"]].set_visible(False)
+
+
 def main():
-    data = json.load(open(SRC))
-    tm = json.load(open(TM))
-    boot = json.load(open(BOOT))
-    band = json.load(open(BAND))
-    fig, axes = plt.subplots(2, 2, figsize=(10.5, 9.6))
+    data = json.load(open(resolve("files/production/retrieval/per_query_sens_test.json")))
+    tm = json.load(open(resolve("files/production/retrieval/structural_tmscore_metrics_test.json")))
+    boot = json.load(open(resolve("files/production/retrieval/bootstrap_fig2cd_results.json")))
+    band = json.load(open(resolve("files/production/retrieval/bootstrap_fig2ab_band.json")))
+
+    fig, axes = plt.subplots(3, 2, figsize=(14.0, 12.0))
     curve_panel(axes[0, 0], data, "family", "Family (AUROC1)", band)
     curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
     bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
     bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
-    for ax, lab in zip(axes.flat, "ABCD"):
-        ax.text(
-            -0.10,
-            1.04,
-            lab,
-            transform=ax.transAxes,
-            fontsize=16,
-            fontweight="bold",
-            va="bottom",
-            ha="right",
-        )
+    control_panel(axes[2, 0], "family", "family_sens_1fp", "Family")
+    control_panel(axes[2, 1], "clan", "clan_sens_1fp", "Clan")
+
+    for ax, lab in zip(axes.flat, "ABCDEF"):
+        ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
+                va="bottom", ha="right")
+
     handles, labels = axes[0, 0].get_legend_handles_labels()
-    fig.legend(
-        handles,
-        labels,
-        loc="lower center",
-        ncol=4,
-        frameon=False,
-        fontsize=12,
-        bbox_to_anchor=(0.5, -0.01),
-        handlelength=2.6,
-        columnspacing=2.4,
-    )
-    fig.tight_layout(rect=(0, 0.045, 1, 1))
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT, dpi=200, bbox_inches="tight")
-    print(f"Wrote {OUT}")
+    fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False, fontsize=12,
+               bbox_to_anchor=(0.5, -0.006), handlelength=2.6, columnspacing=2.4)
+    fig.tight_layout(rect=(0, 0.035, 1, 1))
+    out_png = Path(FIG_DIR) / "fig2.png"
+    out_pdf = Path(FIG_DIR) / "fig2.pdf"
+    out_png.parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_png, dpi=200, bbox_inches="tight")
+    fig.savefig(out_pdf, bbox_inches="tight")
+    print(f"Wrote {out_png}\nWrote {out_pdf}")
 
 
 if __name__ == "__main__":

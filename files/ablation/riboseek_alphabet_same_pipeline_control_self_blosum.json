@@ -1,0 +1,113 @@
+{
+  "_provenance": {
+    "python": "/Users/cassie/opt/anaconda3/bin/python",
+    "python_version": "3.9.13 (main, Aug 25 2022, 18:29:29) \n[Clang 12.0.0 ]",
+    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
+    "prefer_external": false,
+    "matrix_mode": "self_blosum",
+    "resolved_paths": {
+      "files/models/db.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/db.pt",
+      "files/models/sub_matrix.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/sub_matrix.pt",
+      "files/ablation/riboseek_real_encoded.json": "/Users/cassie/Desktop/RFoldseek-paper-code/files/ablation/riboseek_real_encoded.json",
+      "Splits/pdb_out/test.json": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/test.json",
+      "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv",
+      "RFS_TRAIN_SPLIT": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
+      "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldSeek/files/production/retrieval/usalign_full.cache.jsonl"
+    },
+    "input_hashes_md5": {
+      "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
+      "files/models/sub_matrix.pt": "bdb3f7128969775022e4a0952828140d",
+      "files/ablation/riboseek_real_encoded.json": "3ce8d27fc42c9b8f69d443b2a5c11b1b",
+      "Splits/pdb_out/test.json": "7b4b5249e36d02078476def61c536555",
+      "Splits/labels.tsv": "464e932db7b4b38a656a642a9007c1e6",
+      "RFS_TRAIN_SPLIT": "bfd22e3fd5a3f075c529dd24bc060477",
+      "RFS_USALIGN_CACHE": "6e9e08d41f58ef0115a44a319298d6ce"
+    },
+    "self_blosum": {
+      "train_pair_pool": {
+        "train_split": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
+        "usalign_cache": "/Users/cassie/Desktop/RFoldSeek/files/production/retrieval/usalign_full.cache.jsonl",
+        "train_ids_in_db": 610,
+        "cache_records": 361244,
+        "tm_threshold": 0.5,
+        "n_train_pairs": 6251,
+        "construction_gap_open": -11.0,
+        "construction_gap_extend": -1.0
+      },
+      "RFoldseek_tokens_same_pipeline": {
+        "alphabet_size": 80,
+        "n_input_train_pairs": 6251,
+        "n_aligned_train_pairs": 6251,
+        "n_aligned_columns": 4188879,
+        "scale": 2.0,
+        "diag_mean_before_rescale": 8.227203369140625,
+        "diag_mean_after_rescale": 1.0000001192092896
+      },
+      "RiboSeek_sa20_same_pipeline": {
+        "alphabet_size": 20,
+        "n_input_train_pairs": 6251,
+        "n_aligned_train_pairs": 6251,
+        "n_aligned_columns": 4393972,
+        "scale": 2.0,
+        "diag_mean_before_rescale": 4.724895000457764,
+        "diag_mean_after_rescale": 0.9999998807907104
+      }
+    }
+  },
+  "RFoldseek_tokens_same_pipeline": {
+    "family_recall1": 0.8867924528301887,
+    "family_sens_1fp": 0.5844170444830004,
+    "clan_recall1": 0.9240506329113924,
+    "clan_sens_1fp": 0.2241689612941292,
+    "n_family_queries": 106,
+    "n_clan_queries": 79,
+    "time_sec": 167.15232682228088,
+    "alphabet_size": 80,
+    "kmer_k": 4,
+    "top_n": 200,
+    "threshold_fraction": 0.75,
+    "gap_open": -2.0,
+    "gap_extend": -0.5,
+    "matrix_mode": "self_blosum",
+    "matrix_rule": "alphabet-specific Structure-BLOSUM learned from the same train US-align pairs",
+    "matrix_diag_mean_after_scaling": 1.0000001192092896,
+    "n_empty_or_short_sequences": 0,
+    "self_blosum": {
+      "alphabet_size": 80,
+      "n_input_train_pairs": 6251,
+      "n_aligned_train_pairs": 6251,
+      "n_aligned_columns": 4188879,
+      "scale": 2.0,
+      "diag_mean_before_rescale": 8.227203369140625,
+      "diag_mean_after_rescale": 1.0000001192092896
+    }
+  },
+  "RiboSeek_sa20_same_pipeline": {
+    "family_recall1": 0.8773584905660378,
+    "family_sens_1fp": 0.4745530563496697,
+    "clan_recall1": 0.9493670886075949,
+    "clan_sens_1fp": 0.16884079753885264,
+    "n_family_queries": 106,
+    "n_clan_queries": 79,
+    "time_sec": 202.31263875961304,
+    "alphabet_size": 20,
+    "kmer_k": 4,
+    "top_n": 200,
+    "threshold_fraction": 0.75,
+    "gap_open": -2.0,
+    "gap_extend": -0.5,
+    "matrix_mode": "self_blosum",
+    "matrix_rule": "alphabet-specific Structure-BLOSUM learned from the same train US-align pairs",
+    "matrix_diag_mean_after_scaling": 0.9999998807907104,
+    "n_empty_or_short_sequences": 0,
+    "self_blosum": {
+      "alphabet_size": 20,
+      "n_input_train_pairs": 6251,
+      "n_aligned_train_pairs": 6251,
+      "n_aligned_columns": 4393972,
+      "scale": 2.0,
+      "diag_mean_before_rescale": 4.724895000457764,
+      "diag_mean_after_rescale": 0.9999998807907104
+    }
+  }
+}

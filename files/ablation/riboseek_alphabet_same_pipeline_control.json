@@ -1,0 +1,61 @@
+{
+  "_provenance": {
+    "python": "/Users/cassie/opt/anaconda3/bin/python",
+    "python_version": "3.9.13 (main, Aug 25 2022, 18:29:29) \n[Clang 12.0.0 ]",
+    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
+    "prefer_external": false,
+    "matrix_mode": "native",
+    "resolved_paths": {
+      "files/models/db.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/db.pt",
+      "files/models/sub_matrix.pt": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/sub_matrix.pt",
+      "files/ablation/riboseek_real_encoded.json": "/Users/cassie/Desktop/RFoldseek-paper-code/files/ablation/riboseek_real_encoded.json",
+      "Splits/pdb_out/test.json": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/test.json",
+      "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv"
+    },
+    "input_hashes_md5": {
+      "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
+      "files/models/sub_matrix.pt": "bdb3f7128969775022e4a0952828140d",
+      "files/ablation/riboseek_real_encoded.json": "3ce8d27fc42c9b8f69d443b2a5c11b1b",
+      "Splits/pdb_out/test.json": "7b4b5249e36d02078476def61c536555",
+      "Splits/labels.tsv": "464e932db7b4b38a656a642a9007c1e6"
+    }
+  },
+  "RFoldseek_tokens_same_pipeline": {
+    "family_recall1": 0.8867924528301887,
+    "family_sens_1fp": 0.5844170444830004,
+    "clan_recall1": 0.9240506329113924,
+    "clan_sens_1fp": 0.2241689612941292,
+    "n_family_queries": 106,
+    "n_clan_queries": 79,
+    "time_sec": 182.18858981132507,
+    "alphabet_size": 80,
+    "kmer_k": 4,
+    "top_n": 200,
+    "threshold_fraction": 0.75,
+    "gap_open": -2.0,
+    "gap_extend": -0.5,
+    "matrix_mode": "native",
+    "matrix_rule": "native matrix scaled to RFoldseek diagonal mean",
+    "matrix_diag_mean_after_scaling": 1.0000001192092896,
+    "n_empty_or_short_sequences": 0
+  },
+  "RiboSeek_sa20_same_pipeline": {
+    "family_recall1": 0.8584905660377359,
+    "family_sens_1fp": 0.4497388237721748,
+    "clan_recall1": 0.9240506329113924,
+    "clan_sens_1fp": 0.0848038600135597,
+    "n_family_queries": 106,
+    "n_clan_queries": 79,
+    "time_sec": 2129.531550884247,
+    "alphabet_size": 20,
+    "kmer_k": 4,
+    "top_n": 200,
+    "threshold_fraction": 0.75,
+    "gap_open": -2.0,
+    "gap_extend": -0.5,
+    "matrix_mode": "native",
+    "matrix_rule": "native matrix scaled to RFoldseek diagonal mean",
+    "matrix_diag_mean_after_scaling": 1.0,
+    "n_empty_or_short_sequences": 0
+  }
+}
