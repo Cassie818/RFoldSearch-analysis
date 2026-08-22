@@ -12,7 +12,7 @@
       "Splits/pdb_out/test.json": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/test.json",
       "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv",
       "RFS_TRAIN_SPLIT": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
-      "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldSeek/files/production/retrieval/usalign_full.cache.jsonl"
+      "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl"
     },
     "input_hashes_md5": {
       "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
@@ -26,7 +26,7 @@
     "self_blosum": {
       "train_pair_pool": {
         "train_split": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
-        "usalign_cache": "/Users/cassie/Desktop/RFoldSeek/files/production/retrieval/usalign_full.cache.jsonl",
+        "usalign_cache": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl",
         "train_ids_in_db": 610,
         "cache_records": 361244,
         "tm_threshold": 0.5,
@@ -57,11 +57,11 @@
   "RFoldseek_tokens_same_pipeline": {
     "family_recall1": 0.8867924528301887,
     "family_sens_1fp": 0.5844170444830004,
-    "clan_recall1": 0.9240506329113924,
-    "clan_sens_1fp": 0.2241689612941292,
+    "clan_recall1": 0.9012345679012346,
+    "clan_sens_1fp": 0.21863392521279268,
     "n_family_queries": 106,
-    "n_clan_queries": 79,
-    "time_sec": 167.15232682228088,
+    "n_clan_queries": 81,
+    "time_sec": 135.77118492126465,
     "alphabet_size": 80,
     "kmer_k": 4,
     "top_n": 200,
@@ -85,11 +85,11 @@
   "RiboSeek_sa20_same_pipeline": {
     "family_recall1": 0.8773584905660378,
     "family_sens_1fp": 0.4745530563496697,
-    "clan_recall1": 0.9493670886075949,
-    "clan_sens_1fp": 0.16884079753885264,
+    "clan_recall1": 0.9382716049382716,
+    "clan_sens_1fp": 0.17084472846381923,
     "n_family_queries": 106,
-    "n_clan_queries": 79,
-    "time_sec": 202.31263875961304,
+    "n_clan_queries": 81,
+    "time_sec": 166.23414015769958,
     "alphabet_size": 20,
     "kmer_k": 4,
     "top_n": 200,

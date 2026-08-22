@@ -73,10 +73,6 @@ def sorted_curve(arr):
 # ---- row 1: AUROC1 curves ----------------------------------------------------
 def curve_panel(ax, data, level, title, band):
     for m in METHODS:
-        b = band.get(m, {}).get(level)
-        if b and m == "RFoldseek":
-            ax.fill_between(b["grid"], b["lo"], b["hi"], color=METHOD_COLOR[m],
-                            alpha=0.18, linewidth=0, zorder=1)
         x, y = sorted_curve(data[m][level]["sens"])
         step = max(1, len(x) // 18)
         ax.plot(x, y, LINESTYLE[m], color=METHOD_COLOR[m], linewidth=2, marker=MARKER[m],
@@ -107,13 +103,22 @@ def bar_panel(ax, tm, metric, title, ylabel, boot, level):
         for j, (b, v) in enumerate(zip(bars, vals)):
             top = v + (yerr[1][j] if yerr else 0.0) + 0.012
             sig = boot.get(keys[j], {}).get(level, {}).get(m, {}).get("sig_vs_rf")
-            ax.text(b.get_x() + b.get_width() / 2, top, f"{v:.2f}" + ("*" if sig else ""),
-                    ha="center", va="bottom", fontsize=5.6, color="#333333", rotation=90)
+            # Only annotate RFoldseek numerically (others read from the y-axis);
+            # significance stars sit on non-RFoldseek bars, visually detached,
+            # and the "* vs RFoldseek" note in the corner disambiguates them.
+            if m == "RFoldseek":
+                ax.text(b.get_x() + b.get_width() / 2, top, f"{v:.2f}",
+                        ha="center", va="bottom", fontsize=8.5, color="#222222",
+                        fontweight="bold")
+            elif sig:
+                ax.text(b.get_x() + b.get_width() / 2, top, "*",
+                        ha="center", va="bottom", fontsize=10, color="#555555",
+                        fontweight="bold")
     ceil = tm["thresholds"][keys[0]].get("US-align", tm["thresholds"][keys[0]].get("US-align*"))[metric]
     ax.plot([-0.5, len(thr) - 0.5], [ceil, ceil], ls="--", color=METHOD_COLOR["US-align"],
             lw=1.5, zorder=2)
-    ax.text(len(thr) - 0.52, ceil - 0.03, "US-align", ha="right", va="top", fontsize=8.5,
-            color=METHOD_COLOR["US-align"])
+    ax.text(len(thr) - 0.52, ceil - 0.03, "US-align (oracle ceiling)", ha="right", va="top",
+            fontsize=8.5, color=METHOD_COLOR["US-align"])
     ax.set_xticks(x, [f"{t:.2f}" for t in thr])
     ax.set_xlabel("TM-score similarity threshold", fontsize=12)
     ax.set_ylabel(ylabel, fontsize=12)
@@ -189,8 +194,8 @@ def main():
     curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
     bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
     bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
-    control_panel(axes[2, 0], "family", "family_sens_1fp", "Family")
-    control_panel(axes[2, 1], "clan", "clan_sens_1fp", "Clan")
+    control_panel(axes[2, 0], "family", "family_sens_1fp", "Family (alphabet control)")
+    control_panel(axes[2, 1], "clan", "clan_sens_1fp", "Clan (alphabet control)")
 
     for ax, lab in zip(axes.flat, "ABCDEF"):
         ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",

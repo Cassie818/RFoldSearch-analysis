@@ -125,11 +125,9 @@ def load_query_sets(entries: list[dict], families: list[str], clans: list[str]) 
             clan_counts[clan] += 1
     fam_q = [q for q in sorted(test_dis) if families[q] and fam_counts[families[q]] >= 2]
     # The clan-evaluable set is taken from the main benchmark's stored clan query
-    # list (per_query_sens_test.json, used by Fig 2A/B) intersected with the test
-    # partition, so panels A/B and E/F share an identical 79-query clan set. The
-    # purely local rule below (clan-count >= 2 and a same-clan/different-family
-    # positive exists) would additionally admit db indices 772 and 868, which
-    # shift clan Sens@1FP by < 0.006; it is kept here only as a fallback.
+    # list (per_query_sens_test.json, used by Fig. 2A/B) intersected with the test
+    # partition, so panels A/B and E/F use the same clan query set. The local
+    # rule below is kept only as a fallback when the benchmark file is absent.
     ab_path = resolve("files/production/retrieval/per_query_sens_test.json")
     if os.path.exists(ab_path):
         ab_clan = set(int(x) for x in json.load(open(ab_path))["_query_ids"]["clan"])

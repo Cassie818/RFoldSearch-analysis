@@ -41,22 +41,20 @@ clans = attach_labels(ents, load_labels("Splits/labels.tsv", label_column="clan_
 fam_pool = np.array(fams, dtype=object)
 clan_pool = np.array(clans, dtype=object)
 
-pq = json.load(open("files/production/retrieval/per_query_sens.json"))
-fam_qids = pq["_query_ids"]["family"]
-clan_qids = pq["_query_ids"]["clan"]
-
-
 def idl(p):
     return [str(json.loads(l)["id"]) for l in open(p) if l.strip()]
 
 
 test_dis = set(id2i[c] for c in idl("Splits/pdb_out/test.json") if c in id2i)
-fam_test_idx = [
-    i for i, q in enumerate(fam_qids) if q in test_dis
-]  # positions within the 468 arrays
-clan_test_idx = [i for i, q in enumerate(clan_qids) if q in test_dis]
-fam_test_q = [fam_qids[i] for i in fam_test_idx]  # db indices of the 106 test fam queries
-clan_test_q = [clan_qids[i] for i in clan_test_idx]
+va_all = np.arange(N)
+fam_test_q = []
+clan_test_q = []
+for q in sorted(test_dis):
+    va = va_all != q
+    if fam_pool[q] and np.any((fam_pool == fam_pool[q]) & va):
+        fam_test_q.append(q)
+    if clan_pool[q] and np.any((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va):
+        clan_test_q.append(q)
 print(f"test fam queries={len(fam_test_q)}  clan queries={len(clan_test_q)}", flush=True)
 # ===== RFoldseek: deployed token pipeline (k-mer prefilter + SW rerank) =====
 toks = [np.asarray(e["tokens"], dtype=np.int64) for e in ents]
@@ -138,14 +136,18 @@ def rank_ribo(q):
 # US-align by the query-length normalisation only; we recompute it here so
 # every method uses one convention.)
 _us = defaultdict(dict)
-for _line in open("files/production/retrieval/usalign_full.cache.jsonl"):
-    if not _line.strip():
-        continue
-    _r = json.loads(_line)
-    _i, _j = _r["i"], _r["j"]
-    _a = 0.5 * (_r["tm_query"] + _r["tm_target"])
-    _us[_i][_j] = _a
-    _us[_j][_i] = _a
+_us_cache = "files/production/retrieval/usalign_full.cache.jsonl"
+if os.path.exists(_us_cache):
+    for _line in open(_us_cache):
+        if not _line.strip():
+            continue
+        _r = json.loads(_line)
+        _i, _j = _r["i"], _r["j"]
+        _a = 0.5 * (_r["tm_query"] + _r["tm_target"])
+        _us[_i][_j] = _a
+        _us[_j][_i] = _a
+else:
+    print(f"US-align: cache not found at {_us_cache}; skipping", flush=True)
 
 
 def rank_us(q):
@@ -366,39 +368,59 @@ def pack(fam_map, clan_map):
 out["RFoldseek"] = pack(nf, nc)
 out["RiboSeek"] = pack(rf, rc)
 # US-align is recomputed here with the symmetric-TM convention (see rank_us)
-print("computing US-align per-query (symmetric TM)...", flush=True)
-out["US-align"] = pack(*per_query_sens(rank_us))
+if _us:
+    print("computing US-align per-query (symmetric TM)...", flush=True)
+    out["US-align"] = pack(*per_query_sens(rank_us))
 # GTalign / RTM-align: coordinate aligners scored from their external outputs.
 # Computed here when the outputs are present; otherwise carried over from any
 # existing per_query_sens_test.json so a partial re-run does not drop them.
 _dst = "files/production/retrieval/per_query_sens_test.json"
 _prev = json.load(open(_dst)) if os.path.exists(_dst) else {}
+
+
+def _same_query_counts(entry):
+    try:
+        return entry["family"]["n"] == len(fam_test_q) and entry["clan"]["n"] == len(clan_test_q)
+    except Exception:
+        return False
+
+
 for _m, _rankfn, _ranks in (("GTalign", rank_gtalign, gt_ranks),
                             ("RTM-align", rank_rtm, rtm_ranks)):
     if _ranks:
         print(f"computing {_m} per-query (symmetric TM, {len(_ranks)} query outputs)...", flush=True)
         out[_m] = pack(*per_query_sens(_rankfn))
-    elif _m in _prev:
+    elif _m in _prev and _same_query_counts(_prev[_m]):
         print(f"{_m}: no outputs under RFS_*_OUT, carrying over the existing entry", flush=True)
         out[_m] = _prev[_m]
+    elif _m in _prev:
+        print(f"{_m}: existing entry has old query counts; skipping", flush=True)
     else:
         print(f"{_m}: no outputs and no existing entry, skipping", flush=True)
 if _rm:
     print("computing RMalign per-query...", flush=True)
     out["RMalign"] = pack(*per_query_sens(rank_rm))
-elif "RMalign" in _prev:
+elif "RMalign" in _prev and _same_query_counts(_prev["RMalign"]):
     print("RMalign: no cache, carrying over the existing Sens@1FP entry", flush=True)
     out["RMalign"] = _prev["RMalign"]
+elif "RMalign" in _prev:
+    print("RMalign: existing entry has old query counts; skipping", flush=True)
 if _blast:
     print("computing BLASTN per-query...", flush=True)
     out["BLASTN"] = pack(*per_query_sens(rank_blastn))
-elif "BLASTN" in _prev:
+elif "BLASTN" in _prev and _same_query_counts(_prev["BLASTN"]):
     print(
         "BLASTN: set RFS_RUN_BLASTN_PR=1 to recompute score-aware rankings; "
         "carrying over the existing Sens@1FP entry",
         flush=True,
     )
     out["BLASTN"] = _prev["BLASTN"]
+elif "BLASTN" in _prev:
+    print(
+        "BLASTN: set RFS_RUN_BLASTN_PR=1 to recompute score-aware rankings; "
+        "existing entry has old query counts, skipping",
+        flush=True,
+    )
 json.dump(out, open(_dst, "w"), indent=2)
 print("\n=== TEST-ONLY per-query means ===", flush=True)
 for t in ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]:

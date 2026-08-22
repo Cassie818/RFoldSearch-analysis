@@ -12,7 +12,7 @@
       "Splits/pdb_out/test.json": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/test.json",
       "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv",
       "RFS_TRAIN_SPLIT": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
-      "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldSeek/files/production/retrieval/usalign_full.cache.jsonl"
+      "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl"
     },
     "input_hashes_md5": {
       "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
@@ -26,7 +26,7 @@
     "self_blosum": {
       "train_pair_pool": {
         "train_split": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
-        "usalign_cache": "/Users/cassie/Desktop/RFoldSeek/files/production/retrieval/usalign_full.cache.jsonl",
+        "usalign_cache": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl",
         "train_ids_in_db": 610,
         "cache_records": 361244,
         "tm_threshold": 0.5,
@@ -709,6 +709,11 @@
         "sens": 0.3695652173913043
       },
       {
+        "query": 772,
+        "recall1": 0,
+        "sens": 0.0
+      },
+      {
         "query": 775,
         "recall1": 1,
         "sens": 0.3695652173913043
@@ -942,6 +947,11 @@
         "query": 866,
         "recall1": 1,
         "sens": 0.4827586206896552
+      },
+      {
+        "query": 868,
+        "recall1": 0,
+        "sens": 0.0
       },
       {
         "query": 869,
@@ -1640,6 +1650,11 @@
         "sens": 0.2608695652173913
       },
       {
+        "query": 772,
+        "recall1": 1,
+        "sens": 0.5
+      },
+      {
         "query": 775,
         "recall1": 1,
         "sens": 0.34782608695652173
@@ -1873,6 +1888,11 @@
         "query": 866,
         "recall1": 1,
         "sens": 0.5172413793103449
+      },
+      {
+        "query": 868,
+        "recall1": 0,
+        "sens": 0.0
       },
       {
         "query": 869,
