@@ -10,10 +10,9 @@ under [Data](#data).
 ## Layout
 
 ```
-RFoldseek                 fast RNA structural search CLI
 paths.py                  path resolution (RFOLDSEEK_DATA / RFOLDSEEK_FIGURES)
 src/models/               VQ-VAE tokenizer, codebook, descriptors
-src/search/               k-mer prefilter, token Smith-Waterman, substitution matrices
+src/search/               retrieval-evaluation helpers used by analysis scripts
 preprocessing/            structure -> backbone coordinates (extract_backbone.py)
 scripts/01_train/         final deployed model training
 scripts/02_benchmark/     retrieval evaluation and baselines
@@ -41,12 +40,12 @@ results with no extra data. `plot_figS10.py` (substitution matrix) and
 Fig 4 (Section 2.4 motif-core analysis) redraws from its own bundled tables:
 
 ```bash
-python scripts/05_motif/plot_known_motif_cores.py
+python scripts/04_figures/plot_fig4.py
 ```
 
-It reads `files/motifs_v2/` and the deployed token database `files/models/db.pt`
-(the same `production_new` tokenizer as Fig 2 and the CLI). The upstream analysis
-scripts in `scripts/05_motif/` (k-mer mining, BGSU overlap, DSSR annotation,
+It reads `files/motifs/` and the deployed token database `files/models/db.pt`
+(the same `production_new` tokenizer as Fig 2). The upstream analysis scripts in
+`scripts/05_motif/` (k-mer mining, BGSU overlap, DSSR annotation,
 sequence-matched control) regenerate those tables from `files/models/db.pt`.
 
 Bundled results take precedence over `RFOLDSEEK_DATA`, so pointing that variable
@@ -54,60 +53,13 @@ at a working tree cannot silently substitute in-progress numbers for the
 published ones. Set `RFOLDSEEK_PREFER_EXTERNAL=1` to read results from
 `RFOLDSEEK_DATA` instead.
 
-## Search
-
-`RFoldseek` runs the search pipeline:
-encode the query to VQ-VAE tokens, run the similar-k-mer-expansion prefilter over
-an inverted k-mer index of the target database using the Structure-BLOSUM matrix
-(exact per-k-mer self-score threshold, keeping targets with ≥2 hits on a common
-diagonal), rerank the candidate pool with token Smith-Waterman, and report the
-top-k hits by alignment score, each with a Karlin-Altschul database E-value.
-
-```bash
-# search a chain already in the bundled 885-chain database against that database
-python RFoldseek --query PDB_00001FFZ_1_A --top_k 10
-
-# encode a preprocessed query structure JSON on the fly, then search
-python RFoldseek --query my_rna.json --db files/models/db.pt
-
-# search against a database you built with src/search/build_database.py
-python RFoldseek --query my_query_db.pt --query_id chainA --db my_targets.pt
-```
-
-`python RFoldseek -h` lists all options (`--db`, `--model`, `--matrix`,
-`--top_k`, `--top_n`, `--min_diag`).
-
-Each hit is reported with its Smith-Waterman score and a **database E-value**
-(`E = K·m·N·e^(−λS)`: the expected number of chance hits scoring this high in a
-target database of `N` tokens, `m` the query length). The E-value length-
-normalizes the raw score so significance is comparable across queries of very
-different sizes:
-
-```
-rank  target                    SW_score    E-value    len
-   1  PDB_00001FFK_1_0            203.54   9.4e-246   2706
-   2  PDB_00005AN9_1_N            180.02   1.3e-216   1162
-   3  PDB_00004V9F_1_0            168.13   7.1e-202   2803
-```
-
-The Karlin-Altschul parameters λ, K are calibrated once (random token-pair
-Smith-Waterman under the deployed matrix and gap penalties) and bundled in
-`files/models/evalue_params.json`, so E-values are available straight after
-cloning. Recalibrate — e.g. after changing the substitution matrix or database —
-with:
-
-```bash
-python src/search/build_evalue_params.py
-```
-
 ## Data
 
-The deployed model is bundled in the repo under `files/models/`
-(tokenizer, Structure-BLOSUM matrix, and tokenised 885-chain database), so
-[search](#search) runs straight after cloning. The remaining large inputs —
-descriptor tensors and the US-align / RMalign pairwise caches, needed only to
-regenerate results from scratch — are not bundled. Point `RFOLDSEEK_DATA` at the
-directory containing `files/` and `Splits/`:
+The deployed analysis artifacts are bundled in the repo under `files/models/`
+(tokenizer, Structure-BLOSUM matrix, and tokenised 885-chain database). The
+remaining large inputs -- descriptor tensors and the US-align / RMalign pairwise
+caches, needed only to regenerate results from scratch -- are not bundled. Point
+`RFOLDSEEK_DATA` at the directory containing `files/` and `Splits/`:
 
 ```bash
 export RFOLDSEEK_DATA=/path/to/RFoldSeek
@@ -124,7 +76,6 @@ Splits/pdb_out/{train,val}_desc.pt             descriptor tensors
 files/models/db.pt                     tokenized 885-chain database
 files/models/sub_matrix.pt             Structure-BLOSUM matrix
 files/models/desc_vqvae_best.pt        trained tokenizer
-files/models/evalue_params.json        Karlin-Altschul E-value params
 files/production/retrieval/usalign_full.cache.jsonl
 files/production/retrieval/rmalign_full.cache.jsonl
 files/production/chain_sequences.tsv           for the BLASTN baseline
@@ -136,7 +87,7 @@ files/production/chain_sequences.tsv           for the BLASTN baseline
 |---|---|---|---|
 | Fig 2A,B | `plot_fig2.py` | `eval_rfam_sens_fig2ab.py` | `per_query_sens_test.json` |
 | Fig 2C,D | `plot_fig2.py` | `eval_structural_sens_fig2cd.py` | `structural_tmscore_metrics_test.json` |
-| Fig 4 | `05_motif/plot_known_motif_cores.py` | `05_motif/cross_family_kmer_mining.py`, `bgsu_overlap.py`, `known_motif_core_dssr_annotation.py`, `sequence_matched_control_44_48_62_71.py` | `files/motifs_v2/`, `files/models/db.pt` |
+| Fig 4 | `plot_fig4.py` | `05_motif/cross_family_kmer_mining.py`, `bgsu_overlap.py`, `known_motif_core_dssr_annotation.py`, `sequence_matched_control_44_48_62_71.py` | `files/motifs/`, `files/models/db.pt` |
 | Fig S2 | `plot_figS2.py` | `ablation_figS2_descriptor_blocks.py` | `cv_s2_clan_5fold.json` |
 | Fig S3 | `plot_figS3.py` | `ablation_figS3_descriptor_blocks2.py` | `cv_s3_clan_5fold.json` |
 | Fig S4 | `plot_figS4.py` | `ablation_figS4_codebook_size.py` | `cv_s4_clan_5fold.json` |
