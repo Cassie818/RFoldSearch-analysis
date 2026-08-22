@@ -20,10 +20,10 @@ from pathlib import Path
 
 
 REPO = Path(__file__).resolve().parents[2]
-MOTIF_DIR = REPO / "files" / "motifs_v2"
-DEFAULT_MANIFEST = MOTIF_DIR / "known_motif_core_matches_strict_clean_manifest.tsv"
-DEFAULT_INSTANCES = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_instances_strict_clean.tsv"
-DEFAULT_SUMMARY = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_summary_strict_clean.tsv"
+MOTIF_DIR = REPO / "files" / "motifs"
+DEFAULT_MANIFEST = MOTIF_DIR / "known_motif_core_matches_production_new_relabel_manifest.tsv"
+DEFAULT_INSTANCES = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_instances_production_new.tsv"
+DEFAULT_SUMMARY = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_summary_production_new.tsv"
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:

@@ -44,7 +44,7 @@ def parse_args():
         # figure itself does not use it. The bundled table predates the
         # final retrain, so its token indices refer to the earlier codebook.
         "--profile",
-        default=str(REPO / "files/motifs_v2/token_profile_summary.tsv"),
+        default=str(REPO / "files/motifs/token_profile_summary.tsv"),
     )
     p.add_argument("--output", default=str(Path(FIG_DIR) / "S11.png"))
     p.add_argument(

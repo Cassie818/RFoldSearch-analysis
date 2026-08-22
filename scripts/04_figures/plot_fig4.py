@@ -12,19 +12,23 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import torch
-from matplotlib.patches import Circle, FancyBboxPatch, Rectangle
+from matplotlib.lines import Line2D
+from matplotlib.patches import Circle, FancyBboxPatch, Patch, Rectangle
+from mpl_toolkits.mplot3d import proj3d
+import math
 from scipy.stats import beta
 
 
 REPO = Path(__file__).resolve().parents[2]
 DATA_ROOT = Path(os.environ.get("RFOLDSEEK_DATA", "/Users/cassie/Desktop/RFoldSeek"))
-MOTIF_DIR = REPO / "files" / "motifs_v2"
+MOTIF_DIR = REPO / "files" / "motifs"
 FIG_DIR = REPO / "figures" / "motifs"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
 DB_PATH = REPO / "files" / "models" / "db.pt"
 KMER_CANDIDATES = MOTIF_DIR / "kmer_candidates_production_new_k4_aa.tsv"
 RANDOM_CONTROL = MOTIF_DIR / "random_control_rmsd_production_new_k4_aa.tsv"
+GLOBAL_SEQ_CONTROL = MOTIF_DIR / "global_sequence_matched_control_production_new_k4_aa.tsv"
 DSSR_SUMMARY = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_summary_production_new.tsv"
 STRICT_CLEAN_MANIFEST = MOTIF_DIR / "known_motif_core_matches_production_new_relabel_manifest.tsv"
 SEQ_CONTROL = MOTIF_DIR / "sequence_matched_control_44-48-62-71_exact_strict.tsv"
@@ -293,18 +297,24 @@ def set_panel_label(ax, label: str) -> None:
 def panel_a(ax) -> None:
     token_rmsd = read_column(KMER_CANDIDATES, "cross_med_rmsd")
     random_rmsd = read_column(RANDOM_CONTROL, "rmsd")
+    seq_rmsd = read_column(GLOBAL_SEQ_CONTROL, "control_median_of_medians")
+    seq_rmsd = seq_rmsd[np.isfinite(seq_rmsd)]
     rng = np.random.default_rng(7)
     random_sample = rng.choice(random_rmsd, size=min(30000, len(random_rmsd)), replace=False)
     bins = np.linspace(0, 4.5, 70)
     blue = KMER_COLORS[PRIMARY_KMER]
+    seq_color = "#A9685E"
     ax.hist(random_sample, bins=bins, density=True, color=GREY_FILL, alpha=0.9, label="length-matched random")
-    ax.hist(token_rmsd, bins=bins, density=True, histtype="step", linewidth=1.3, color=blue, label="token words")
+    ax.hist(seq_rmsd, bins=bins, density=True, histtype="step", linewidth=1.3, color=seq_color, label="sequence-matched non-target")
+    ax.hist(token_rmsd, bins=bins, density=True, histtype="step", linewidth=1.4, color=blue, label="token words")
     ax.axvline(np.median(token_rmsd), color=blue, linewidth=1.0)
     ax.axvline(np.median(random_rmsd), color=GREY_LINE, linewidth=1.0, linestyle=(0, (4, 3)))
+    ax.axvline(np.median(seq_rmsd), color=seq_color, linewidth=1.0, linestyle=(0, (2, 2)))
     ax.text(np.median(token_rmsd) + 0.05, ax.get_ylim()[1] * 0.86, rf"{np.median(token_rmsd):.2f} $\AA$", color=blue, fontsize=9)
     ax.text(np.median(random_rmsd) + 0.05, ax.get_ylim()[1] * 0.76, rf"{np.median(random_rmsd):.2f} $\AA$", color=GREY_LINE, fontsize=9)
+    ax.text(np.median(seq_rmsd) + 0.05, ax.get_ylim()[1] * 0.66, rf"{np.median(seq_rmsd):.2f} $\AA$", color=seq_color, fontsize=9)
     ax.set_xlim(0, 4.5)
-    ax.set_xlabel(r"cross-family RMSD ($\AA$)")
+    ax.set_xlabel(r"median RMSD ($\AA$)")
     ax.set_ylabel("density")
     ax.legend(frameon=False, fontsize=8, loc="upper right")
     for spine in ("top", "right"):
@@ -324,6 +334,64 @@ def draw_superposition(ax, ax_txt, frags: list[np.ndarray], tag: str, note: str)
     ax_txt.axis("off")
     ax_txt.text(0.0, 0.62, tag, transform=ax_txt.transAxes, fontsize=9.2, color=KMER_COLORS[tag], fontweight="bold", va="center", ha="left")
     ax_txt.text(0.0, 0.34, note, transform=ax_txt.transAxes, fontsize=8.0, va="center", ha="left", linespacing=1.35)
+
+
+def add_horizontal_scale_bar(ax, length_ang: float = 2.0) -> None:
+    """Draw a horizontal 2D scale bar at the bottom-left of a 3D axes.
+
+    Length is chosen so the bar spans `length_ang` in world units along the
+    world axis that projects most strongly to the screen for the current
+    view — this keeps the bar horizontal on screen while still faithfully
+    representing length_ang angstroms in the plot's visible plane.
+    """
+    xlim = ax.get_xlim3d(); ylim = ax.get_ylim3d(); zlim = ax.get_zlim3d()
+    cx = 0.5 * (xlim[0] + xlim[1])
+    cy = 0.5 * (ylim[0] + ylim[1])
+    cz = 0.5 * (zlim[0] + zlim[1])
+    M = ax.get_proj()
+    p0 = proj3d.proj_transform(cx, cy, cz, M)
+    d_center = ax.transData.transform((p0[0], p0[1]))
+    pixel_lengths = []
+    for vx, vy, vz in [(length_ang, 0, 0), (0, length_ang, 0), (0, 0, length_ang)]:
+        p1 = proj3d.proj_transform(cx + vx, cy + vy, cz + vz, M)
+        d_end = ax.transData.transform((p1[0], p1[1]))
+        pixel_lengths.append(math.hypot(d_end[0] - d_center[0], d_end[1] - d_center[1]))
+    pixel_length = max(pixel_lengths)
+    bbox = ax.get_window_extent()
+    frac_length = pixel_length / bbox.width if bbox.width > 0 else 0.15
+    x0, y0 = 0.06, 0.10
+    ax.add_line(Line2D(
+        [x0, x0 + frac_length], [y0, y0],
+        transform=ax.transAxes, color=INK, linewidth=2.2,
+        solid_capstyle="butt", clip_on=False, zorder=10,
+    ))
+    text_fn = ax.text2D if hasattr(ax, "text2D") else ax.text
+    text_fn(
+        x0 + frac_length / 2, y0 - 0.045,
+        rf"{length_ang:g} $\AA$",
+        transform=ax.transAxes, color=INK, fontsize=7.5,
+        ha="center", va="top", clip_on=False, zorder=10,
+    )
+
+
+def add_lw_color_legend(ax_e) -> None:
+    """Base-pair geometry color legend, placed below panel E."""
+    handles = [
+        Patch(facecolor=LW_COLORS[k], edgecolor="white", label=k)
+        for k in ("cWW", "tSH", "tWH", "tWS")
+    ]
+    ax_e.legend(
+        handles=handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.12),
+        ncol=4,
+        frameon=False,
+        fontsize=8.0,
+        handlelength=1.2,
+        handleheight=0.9,
+        columnspacing=1.8,
+        borderpad=0.0,
+    )
 
 
 def panel_b(rows, entries, entries_by_stem, sources) -> None:
@@ -357,7 +425,7 @@ def panel_c(ax) -> None:
     color = KMER_COLORS[PRIMARY_KMER]
     ax.scatter([1], [observed], s=56, color=color, zorder=5, edgecolors="white", linewidths=0.6)
     ax.plot([1, 1], [observed + 0.08, med - 0.08], color=color, linewidth=1.0, linestyle=(0, (3, 3)), alpha=0.8)
-    ax.text(1.05, observed, "observed\n" + PRIMARY_KMER, color=color, fontsize=8.5, va="center", ha="left", linespacing=0.95)
+    ax.text(1.05, observed, PRIMARY_KMER, color=color, fontsize=8.5, va="center", ha="left")
     ax.set_xlim(0.45, 1.55)
     ax.set_xticks([1])
     ax.set_xticklabels(["non-target windows\nsame 4-nt sequence"])
@@ -374,7 +442,7 @@ def draw_motif_core(ax, y: float, label: str, core_start: int, motif_len: int, s
     for i in range(motif_len):
         x = x0 + i * spacing
         face = color if core_start <= i < core_start + 4 else "white"
-        edge = color if core_start <= i < core_start + 4 else "#9aa3ad"
+        edge = color if core_start <= i < core_start + 4 else "#5b6470"
         circ = Circle((x, y), radius, facecolor=face, edgecolor=edge, linewidth=1.3)
         ax.add_patch(circ)
         ax.text(x, y, str(i + 1), ha="center", va="center", fontsize=8, color="white" if face != "white" else "#4b5563")
@@ -388,6 +456,27 @@ def panel_d(ax) -> None:
     ax.set_xlim(0, 9.6)
     ax.set_ylim(0, 4.1)
     ax.axis("off")
+    # symbol legend: filled circle / open circle / rounded box, spacing handled by legend layout
+    open_edge = "#5b6470"
+    legend_handles = [
+        Line2D([], [], marker="o", markerfacecolor=INK, markeredgecolor=INK,
+               markersize=7, linestyle="None", label="token-covered residue"),
+        Line2D([], [], marker="o", markerfacecolor="white", markeredgecolor=open_edge,
+               markeredgewidth=1.4, markersize=7, linestyle="None", label="other motif residue"),
+        Patch(facecolor="none", edgecolor=INK, linewidth=1.2, label="recovered core"),
+    ]
+    ax.legend(
+        handles=legend_handles,
+        loc="upper center",
+        bbox_to_anchor=(0.5, -0.02),
+        ncol=3,
+        frameon=False,
+        fontsize=7.8,
+        handlelength=1.1,
+        handletextpad=0.5,
+        columnspacing=2.6,
+        borderpad=0.0,
+    )
     ax.text(0.02, 3.65, "HL_34789.6 annotated motif (6 nt)", fontsize=9)
     draw_motif_core(ax, 2.95, PRIMARY_KMER, 0, 6, "PPUU | cWW,tSH,.,.", KMER_COLORS[PRIMARY_KMER])
     draw_motif_core(ax, 2.15, "62-71-66-12", 2, 6, "UUPP | .,.,tSH,cWW", KMER_COLORS["62-71-66-12"])
@@ -433,8 +522,6 @@ def panel_f(ax) -> None:
     ax.set_yticklabels([f"{row['kmer']}\n{row['bgsu']}" for row in rows], fontsize=7.7)
     ax.invert_yaxis()
     ax.set_xlabel("dominant signature frequency")
-    ax.grid(axis="x", color="#e6e8eb", linewidth=0.8)
-    ax.set_axisbelow(True)
     for spine in ["top", "right", "left"]:
         ax.spines[spine].set_visible(False)
     set_panel_label(ax, "F")
@@ -470,6 +557,13 @@ def main() -> None:
     panel_d(ax_d)
     panel_e(ax_e)
     panel_f(ax_f)
+    # LW color legend below panel E
+    add_lw_color_legend(ax_e)
+    # horizontal 2 Å scale bars for the three Kabsch superpositions in panel B
+    # (needs a first draw so axes bboxes are final)
+    fig.canvas.draw()
+    for ax3d, _ in b_rows:
+        add_horizontal_scale_bar(ax3d, 2.0)
     out_png = FIG_DIR / "known_motif_interaction_cores.png"
     out_pdf = FIG_DIR / "known_motif_interaction_cores.pdf"
     fig.savefig(out_png, dpi=350, bbox_inches="tight")

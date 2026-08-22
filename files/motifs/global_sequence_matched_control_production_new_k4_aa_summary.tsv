@@ -1,0 +1,16 @@
+metric	value
+n_candidates_total	2052
+n_candidates_evaluated	2052
+n_candidates_skipped	0
+candidate_cross_median_rmsd_all	0.5862810909748077
+candidate_cross_median_rmsd_evaluated	0.5862810909748077
+length_matched_random_median_rmsd	2.3119
+global_sequence_matched_control_median_rmsd	2.247175988412295
+global_sequence_matched_control_p10_rmsd	1.8052436690187939
+global_sequence_matched_control_p90_rmsd	2.6055628752005604
+fraction_candidates_below_own_sequence_matched_control	0.9707602339181286
+median_sequence_matched_minus_candidate_rmsd	1.5765428664173993
+n_replicates_per_candidate	25
+max_pairs_per_replicate	400
+random_seed	260810
+sampling_rule	for each observed target occurrence, sample one non-target 4-nt window with the same exact 4-nt sequence

@@ -21,7 +21,7 @@ import torch
 
 REPO = Path(__file__).resolve().parents[2]
 DB_PATH = REPO / "files" / "models" / "db.pt"
-MOTIF_DIR = REPO / "files" / "motifs_v2"
+MOTIF_DIR = REPO / "files" / "motifs"
 KMER = "44-48-62-71"
 KMER_TUPLE = tuple(int(value) for value in KMER.split("-"))
 

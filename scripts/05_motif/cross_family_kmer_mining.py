@@ -6,12 +6,10 @@ For each token k-mer that occurs in >= MIN_FAM distinct Rfam families,
 occurrence, perform Kabsch alignment, and report the pairwise-RMSD
 distribution. A length-matched random-window control is also produced.
 
-Outputs (written to files/motifs_v2/):
-  kmer_candidates.tsv          all k-mers passing the frequency filter
-  motif_rmsd_validation.tsv    per-candidate within-/cross-family RMSD stats
-  case_study_top.tsv           top-N candidates for 3D visualisation
-  random_control_rmsd.tsv      RMSD distribution from random length-matched
-                               k-mer windows (background)
+Outputs (written to files/motifs/):
+  kmer_candidates{suffix}.tsv        all k-mers passing the frequency filter
+  motif_rmsd_validation{suffix}.tsv  per-candidate RMSD statistics
+  random_control_rmsd{suffix}.tsv    random length-matched window control
 
 Usage:
     python evaluation/motif/cross_family_kmer_mining.py --out_suffix _production_new_k4_aa
@@ -30,7 +28,7 @@ import torch
 REPO = Path(__file__).resolve().parents[2]
 DB = REPO / "files" / "models" / "db.pt"
 LABELS = REPO / "Splits" / "labels.tsv"
-OUT = REPO / "files" / "motifs_v2"
+OUT = REPO / "files" / "motifs"
 OUT.mkdir(parents=True, exist_ok=True)
 
 # coords axis layout: [C3', C4', O4', C1', base_anchor]
@@ -112,6 +110,10 @@ def main():
     ap.add_argument("--exclude_clans_diverse", default="CL00111,CL00112",
                     help="comma-separated clans to exclude in the 'diverse' "
                          "case-study tier only (default: rRNA clans)")
+    ap.add_argument("--exclude_clans_index", default="",
+                    help="comma-separated Rfam clans to exclude before k-mer "
+                         "enumeration; use this for discovery screens that "
+                         "must remove rRNA/tRNA occurrences before counting")
     atom_group = ap.add_mutually_exclusive_group()
     atom_group.add_argument("--use_all_atoms", dest="use_all_atoms", action="store_true",
                             help="use all 5 RFoldseek anchor atoms for Kabsch "
@@ -135,12 +137,17 @@ def main():
     # ── Step 1: build k-mer occurrence index ────────────────────────────
     # kmer (tuple) -> list of (entry_idx, position, family, clan, chain_stem)
     index = defaultdict(list)
+    exclude_index = {c.strip() for c in args.exclude_clans_index.split(",") if c.strip()}
+    skipped_by_index_clan = 0
     for e_idx, e in enumerate(entries):
         toks = np.asarray(e["tokens"], dtype=np.int32)
         _valid_coords(e)  # validate compact token-to-coordinate alignment
         L = len(toks)
         fam = fam_lut.get(e["id"])
         clan = clan_lut.get(e["id"])
+        if exclude_index and clan in exclude_index:
+            skipped_by_index_clan += 1
+            continue
         chain_stem = Path(e["id"]).stem
         if L < args.k or fam is None:
             continue
@@ -149,6 +156,9 @@ def main():
             index[kmer].append((e_idx, p, fam, clan, chain_stem))
 
     print(f"distinct k-mers (k={args.k}): {len(index)}")
+    if exclude_index:
+        print(f"excluded chains before indexing: {skipped_by_index_clan} "
+              f"(clans={','.join(sorted(exclude_index))})")
 
     # ── Step 2: filter ──────────────────────────────────────────────────
     candidates = []
@@ -234,8 +244,11 @@ def main():
     # ── Step 4: random length-matched control ───────────────────────────
     control_rmsd = []
     n_ctrl_kmers = min(2000, len(candidates) * 2)
-    entries_with_fam = [(i, e) for i, e in enumerate(entries)
-                        if fam_lut.get(e["id"]) and len(e["tokens"]) >= args.k]
+    entries_with_fam = [
+        (i, e) for i, e in enumerate(entries)
+        if fam_lut.get(e["id"]) and len(e["tokens"]) >= args.k
+        and (not exclude_index or clan_lut.get(e["id"]) not in exclude_index)
+    ]
     for _ in range(n_ctrl_kmers):
         # sample ~20 fragments from random chain positions
         frags = []

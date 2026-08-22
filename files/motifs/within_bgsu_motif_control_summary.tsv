@@ -1,0 +1,4 @@
+target_kmer	motif_id	motif_len_min	n_windows_scanned	rfoldseek_window	n_instances	median_rmsd	p90_rmsd	rank_median_rmsd	rank_lw_conservation	rank_pairmask_conservation	rank_combined	dssr_lw_dominant	dssr_lw_dominant_fraction	dssr_pair_mask_dominant	dssr_pair_mask_dominant_fraction
+44-48-62-71	HL_34789.6	6	3	1-4	14	0.35149404298463854	0.5583592274416157	1	1	1	1	cWW,tSH,.,.	0.9285714285714286	PPUU	1.0
+48-24-39-39	HL_33597.6	9	6	2-5	10	0.27381361022606554	0.3606730955006137	3	1	1	1	tWH,tWS,cWW,.	1.0	PPPU	1.0
+62-71-66-12	HL_34789.6	6	3	3-6	28	0.3793180804539327	0.5639899260115357	3	1	1	3	.,.,tSH,cWW	0.9285714285714286	UUPP	1.0

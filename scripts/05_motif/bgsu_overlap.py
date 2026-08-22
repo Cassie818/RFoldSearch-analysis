@@ -6,12 +6,13 @@ internal-loop (IL_*) or hairpin-loop (HL_*) motif from the BGSU 3D
 Motif Atlas. Report per-candidate overlap rate and aggregate statistics.
 
 Inputs:
-    /tmp/bgsu_il.csv, /tmp/bgsu_hl.csv  (downloaded BGSU motif lists)
-    files/motifs_v2/kmer_candidates.tsv
+    files/motifs/bgsu_il_current_2026-08-03.csv
+    files/motifs/bgsu_hl_current_2026-08-03.csv
+    files/motifs/kmer_candidates_production_new_k4_aa.tsv
 
 Outputs:
-    files/motifs_v2/kmer_bgsu_overlap.tsv  per-candidate overlap stats
-    files/motifs_v2/chain_residue_map.json residue-number cache
+    files/motifs/kmer_bgsu_overlap_production_new_k4_aa.tsv
+    files/motifs/chain_residue_map.json residue-number cache
     Console: summary statistics
 """
 from __future__ import annotations
@@ -25,12 +26,12 @@ import gemmi
 
 REPO = Path(__file__).resolve().parents[2]
 DB = REPO / "files" / "models" / "db.pt"
-IL_CSV = Path("/tmp/bgsu_il.csv")
-HL_CSV = Path("/tmp/bgsu_hl.csv")
+IL_CSV = REPO / "files" / "motifs" / "bgsu_il_current_2026-08-03.csv"
+HL_CSV = REPO / "files" / "motifs" / "bgsu_hl_current_2026-08-03.csv"
 CIF_DIR = Path("/Users/cassie/Desktop/NR80_local")
-CAND_TSV = REPO / "files" / "motifs_v2" / "kmer_candidates.tsv"
-OUT_TSV = REPO / "files" / "motifs_v2" / "kmer_bgsu_overlap.tsv"
-CACHE_JSON = REPO / "files" / "motifs_v2" / "chain_residue_map.json"
+CAND_TSV = REPO / "files" / "motifs" / "kmer_candidates_production_new_k4_aa.tsv"
+OUT_TSV = REPO / "files" / "motifs" / "kmer_bgsu_overlap_production_new_k4_aa.tsv"
+CACHE_JSON = REPO / "files" / "motifs" / "chain_residue_map.json"
 
 RNA = {"A","C","G","U","PSU","5MU","4SU","H2U","UR3","5MC","OMC","5BU",
        "OMG","1MG","2MG","M2G","7MG","YG","YYG","1MA","6MZ","MA6","I"}
