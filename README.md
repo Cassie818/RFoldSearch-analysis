@@ -1,105 +1,103 @@
-# RFoldseek
+# RFoldseek manuscript analysis
 
-Analysis and figure code behind the Results section of the RFoldseek manuscript.
+This repository contains the analysis and figure-generation code used for the
+RFoldseek manuscript. It is intentionally scoped to the paper analyses: model
+training/evaluation scripts, bundled result tables, plotting scripts, and the
+small helper modules needed to reproduce the reported figures.
 
-Every script here maps to a specific figure. Ablation results are bundled as
-JSON so all figures can be redrawn immediately after cloning; regenerating those
-JSONs from scratch additionally requires the large data artifacts described
-under [Data](#data).
+This is not the standalone RFoldseek search package. Generated figure outputs
+and local split files are ignored by Git.
 
-## Layout
+## Repository layout
 
 ```
-paths.py                  path resolution (RFOLDSEEK_DATA / RFOLDSEEK_FIGURES)
-src/models/               VQ-VAE tokenizer, codebook, descriptors
-src/search/               retrieval-evaluation helpers used by analysis scripts
-preprocessing/            structure -> backbone coordinates (extract_backbone.py)
-scripts/01_train/         final deployed model training
-scripts/02_benchmark/     retrieval evaluation and baselines
-scripts/03_ablations/     5-fold cross-validated design ablations
-scripts/04_figures/       figure generation
-scripts/05_motif/         Section 2.4 motif-core analysis (Fig 4)
-files/                    bundled ablation + retrieval results (JSON)
-figures/                  output
+paths.py                  shared path resolution
+preprocessing/            RNA structure preprocessing helpers
+src/models/               tokenizer model, descriptors, and training utilities
+src/search/               evaluation metrics and Smith-Waterman helper code
+scripts/01_train/         final tokenizer training script
+scripts/02_benchmark/     RNAsolo retrieval evaluations and baselines
+scripts/03_ablations/     model-design and alphabet-control analyses
+scripts/04_figures/       manuscript and supplementary figure plotting scripts
+scripts/05_motif/         recurrent token-word and motif-core analyses
+files/models/             deployed model artifacts used by analyses
+files/production/         bundled retrieval results for Fig. 2 and Fig. S12
+files/ablation/           bundled ablation and alphabet-control results
+files/motifs/             bundled motif-analysis tables for Fig. 4
 ```
+
+The local directories `figures/` and `Splits/` are ignored. Plotting scripts
+write regenerated figures to `figures/`; split files should be supplied through
+the external data directory described below.
 
 ## Quick start
 
 ```bash
 pip install -r requirements.txt
 
-# Redraw every figure from the bundled results (no large data needed)
+# Redraw figures from bundled result files
 for f in scripts/04_figures/plot_fig*.py; do python "$f"; done
 ```
 
-Figures land in `figures/`. All figures except two redraw from the bundled
-results with no extra data. `plot_figS10.py` (substitution matrix) and
-`plot_figS11.py` (alphabet states) read the trained model directly and need
-`RFOLDSEEK_DATA` (see below).
+Most figures redraw directly from bundled JSON/TSV/PT artifacts. Two
+supplementary plots read the deployed tokenizer directly:
 
-Fig 4 (Section 2.4 motif-core analysis) redraws from its own bundled tables:
+```bash
+python scripts/04_figures/plot_figS10.py
+python scripts/04_figures/plot_figS11.py
+```
+
+Fig. 4 can be redrawn from the bundled motif tables with:
 
 ```bash
 python scripts/04_figures/plot_fig4.py
 ```
 
-It reads `files/motifs/` and the deployed token database `files/models/db.pt`
-(the same `production_new` tokenizer as Fig 2). The upstream analysis scripts in
-`scripts/05_motif/` (k-mer mining, BGSU overlap, DSSR annotation,
-sequence-matched control) regenerate those tables from `files/models/db.pt`.
-
-Bundled results take precedence over `RFOLDSEEK_DATA`, so pointing that variable
-at a working tree cannot silently substitute in-progress numbers for the
-published ones. Set `RFOLDSEEK_PREFER_EXTERNAL=1` to read results from
-`RFOLDSEEK_DATA` instead.
-
 ## Data
 
-The deployed analysis artifacts are bundled in the repo under `files/models/`
-(tokenizer, Structure-BLOSUM matrix, and tokenised 885-chain database). The
-remaining large inputs -- descriptor tensors and the US-align / RMalign pairwise
-caches, needed only to regenerate results from scratch -- are not bundled. Point
-`RFOLDSEEK_DATA` at the directory containing `files/` and `Splits/`:
+Small analysis artifacts needed for plotting are bundled under `files/`. Larger
+intermediate inputs, such as descriptor tensors, split files, and full pairwise
+alignment caches used to regenerate benchmark outputs from scratch, are not
+tracked. To rerun those analyses, point `RFOLDSEEK_DATA` to a local data tree:
 
 ```bash
 export RFOLDSEEK_DATA=/path/to/RFoldSeek
 ```
 
-Scripts that need it fail with a clear `FileNotFoundError` if it is unset.
-
-Required layout under `$RFOLDSEEK_DATA`:
+Expected external layout:
 
 ```
-Splits/labels.tsv                              Rfam family / clan annotation
-Splits/pdb_out/{train,val,test}.json           PDB-disjoint split
-Splits/pdb_out/{train,val}_desc.pt             descriptor tensors
-files/models/db.pt                     tokenized 885-chain database
-files/models/sub_matrix.pt             Structure-BLOSUM matrix
-files/models/desc_vqvae_best.pt        trained tokenizer
+Splits/labels.tsv
+Splits/pdb_out/{train,val,test}.json
+Splits/pdb_out/{train,val}_desc.pt
 files/production/retrieval/usalign_full.cache.jsonl
 files/production/retrieval/rmalign_full.cache.jsonl
-files/production/chain_sequences.tsv           for the BLASTN baseline
+files/production/chain_sequences.tsv
 ```
+
+Bundled files in this repository are preferred by default for reproducible
+plotting. Set `RFOLDSEEK_PREFER_EXTERNAL=1` only when you explicitly want a
+script to read matching results from `RFOLDSEEK_DATA`.
 
 ## Figure map
 
-| Manuscript figure | Plot script | Computed by | Bundled result |
+| Figure | Plot script | Analysis script(s) | Bundled result |
 |---|---|---|---|
-| Fig 2A,B | `plot_fig2.py` | `eval_rfam_sens_fig2ab.py` | `per_query_sens_test.json` |
-| Fig 2C,D | `plot_fig2.py` | `eval_structural_sens_fig2cd.py` | `structural_tmscore_metrics_test.json` |
-| Fig 4 | `plot_fig4.py` | `05_motif/cross_family_kmer_mining.py`, `bgsu_overlap.py`, `known_motif_core_dssr_annotation.py`, `sequence_matched_control_44_48_62_71.py` | `files/motifs/`, `files/models/db.pt` |
-| Fig S2 | `plot_figS2.py` | `ablation_figS2_descriptor_blocks.py` | `cv_s2_clan_5fold.json` |
-| Fig S3 | `plot_figS3.py` | `ablation_figS3_descriptor_blocks2.py` | `cv_s3_clan_5fold.json` |
-| Fig S4 | `plot_figS4.py` | `ablation_figS4_codebook_size.py` | `cv_s4_clan_5fold.json` |
-| Fig S5 | `plot_figS5.py` | `ablation_figS5_vqvae_arch.py` | `cv_s5_clan_5fold.json` |
-| Fig S6 | `plot_figS6.py` | `ablation_figS6_substitution_matrix.py` | `cv_s6_clan_5fold.json` |
-| Fig S7 | `plot_figS7.py` | `ablation_figS7_prefilter.py` | `cv_s7_clan_5fold.json` |
-| Fig S8 | `plot_figS8.py` | `ablation_figS8_virtual_centre.py` | `cv_vc_clan_5fold.json` |
-| Fig S9 | `plot_figS9.py` | `ablation_figS9_prefilter_scoring.py` | `cv_prefilter_score_5fold.json` |
-| Fig S10 | `plot_figS10.py` | `scripts/01_train/train_final_model.py` | needs `RFOLDSEEK_DATA` |
-| Fig S11 | `plot_figS11.py` | — (reads the trained model directly) | needs `RFOLDSEEK_DATA` |
-| Fig S12 | `plot_figS12.py` | `eval_recall1_figS12.py` | `recall1_rfam_test.json` |
+| Fig. 2A,B | `scripts/04_figures/plot_fig2.py` | `scripts/02_benchmark/eval_rfam_sens_fig2ab.py` | `files/production/retrieval/per_query_sens_test.json`, `bootstrap_fig2ab_band.json` |
+| Fig. 2C,D | `scripts/04_figures/plot_fig2.py` | `scripts/02_benchmark/eval_structural_sens_fig2cd.py` | `files/production/retrieval/structural_tmscore_metrics_test.json`, `bootstrap_fig2cd_results.json` |
+| Fig. 4 | `scripts/04_figures/plot_fig4.py` | `scripts/05_motif/*.py` | `files/motifs/` |
+| Fig. S2 | `scripts/04_figures/plot_figS2.py` | `scripts/03_ablations/ablation_figS2_descriptor_blocks.py` | `files/ablation/cv_s2_clan_5fold.json` |
+| Fig. S3 | `scripts/04_figures/plot_figS3.py` | `scripts/03_ablations/ablation_figS3_descriptor_blocks2.py` | `files/ablation/cv_s3_clan_5fold.json` |
+| Fig. S4 | `scripts/04_figures/plot_figS4.py` | `scripts/03_ablations/ablation_figS4_codebook_size.py` | `files/ablation/cv_s4_clan_5fold.json` |
+| Fig. S5 | `scripts/04_figures/plot_figS5.py` | `scripts/03_ablations/ablation_figS5_vqvae_arch.py` | `files/ablation/cv_s5_clan_5fold.json` |
+| Fig. S6 | `scripts/04_figures/plot_figS6.py` | `scripts/03_ablations/ablation_figS6_substitution_matrix.py` | `files/ablation/cv_s6_clan_5fold.json` |
+| Fig. S7 | `scripts/04_figures/plot_figS7.py` | `scripts/03_ablations/ablation_figS7_prefilter.py` | `files/ablation/cv_s7_clan_5fold.json` |
+| Fig. S8 | `scripts/04_figures/plot_figS8.py` | `scripts/03_ablations/ablation_figS8_virtual_centre.py` | `files/ablation/cv_vc_clan_5fold.json` |
+| Fig. S9 | `scripts/04_figures/plot_figS9.py` | `scripts/03_ablations/ablation_figS9_prefilter_scoring.py` | `files/ablation/cv_prefilter_score_5fold.json` |
+| Fig. S10 | `scripts/04_figures/plot_figS10.py` | `scripts/01_train/train_final_model.py` | reads `files/models/desc_vqvae_best.pt` |
+| Fig. S11 | `scripts/04_figures/plot_figS11.py` | direct model/codebook inspection | reads `files/models/desc_vqvae_best.pt` and `files/models/db.pt` |
+| Fig. S12 | `scripts/04_figures/plot_figS12.py` | `scripts/02_benchmark/eval_recall1_figS12.py` | `files/production/retrieval/recall1_rfam_test.json` |
 
-All design ablations (Figs S2–S9) use PDB-disjoint 5-fold cross-validation on the
-train+validation partition only, reporting mean ± SD across folds. The test split
-is untouched throughout model selection.
+All design ablations use PDB-disjoint five-fold cross-validation on the
+train-plus-validation partition. The held-out test partition is used only for
+the final retrieval evaluations.
