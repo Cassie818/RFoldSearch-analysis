@@ -1,5 +1,5 @@
 """RiboSeek (real PyPI package riboseek==0.1.0, sa20 alphabet) baseline on
-TEST-only queries (n=106 fam / 79 clan), full 885 db. Uses the package's own
+TEST-only queries (n=106 fam / 81 clan), full 885 db. Uses the package's own
 pdb_to_features + sa20 alphabet + Searcher (contiguous 6-mer prefilter,
 prefilter_candidates=500, NW+SW z-score combined_score). Foldseek hierarchical
 family/clan definitions, matching our other test-only evals."""

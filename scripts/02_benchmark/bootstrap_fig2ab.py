@@ -5,20 +5,6 @@ Same-family (and same-clan) queries are not independent, so the bootstrap
 resamples Rfam *family* (panel A) or *clan* (panel B) blocks with replacement
 rather than individual queries.
 
-Two things are produced per method x level:
-1. A CI band on the sorted Sens@1FP curve, obtained by interpolating each
-   resampled curve onto a common fraction grid and taking per-fraction 2.5 /
-   97.5 percentiles. plot_fig2.py used to shade the RFoldseek band; the
-   current figure keeps the band precomputed but does not draw it.
-2. The Rfam-side paired-difference significance the Results text quotes
-   ("RFoldseek did not differ significantly from GTalign", "significantly
-   outperformed RMalign", ...). For each competitor M != RFoldseek, the
-   scalar mean Sens@1FP of RFoldseek and of M are recomputed on the *same*
-   resampled blocks in every replicate; the 95 percentile CI of the
-   difference (RFoldseek - M) is reported, with `sig_vs_rf` = True when
-   that CI excludes zero. This mirrors bootstrap_fig2cd.py's logic on the
-   Rfam side and is what Methods 4.6 promises.
-
 Input : files/production/retrieval/per_query_sens_test.json, files/models/db.pt,
         Splits/labels.tsv
 Output: files/production/retrieval/bootstrap_fig2ab_band.json (CI band)
