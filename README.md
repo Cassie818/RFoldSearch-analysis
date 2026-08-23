@@ -1,4 +1,4 @@
-# RFoldseek manuscript analysis
+# RFoldseek
 
 This repository contains the analysis and figure-generation code used for the
 RFoldseek manuscript. It is intentionally scoped to the paper analyses: model
@@ -26,8 +26,7 @@ files/ablation/           bundled ablation and alphabet-control results
 files/motifs/             bundled motif-analysis tables for Fig. 4
 ```
 
-The local directories `figures/` and `Splits/` are ignored. Plotting scripts
-write regenerated figures to `figures/`; split files should be supplied through
+Plotting scripts write regenerated figures to `figures/`; split files should be supplied through
 the external data directory described below.
 
 ## Quick start
