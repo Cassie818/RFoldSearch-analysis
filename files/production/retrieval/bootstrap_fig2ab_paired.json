@@ -1,0 +1,105 @@
+{
+  "_anchor": "RFoldseek",
+  "_n_replicates": 2000,
+  "_seed": 123,
+  "family": {
+    "GTalign": {
+      "anchor_mean": 0.5844170444830004,
+      "method_mean": 0.6315247141072045,
+      "diff_mean": -0.047107669624204096,
+      "diff_ci_lo": -0.16481287210120166,
+      "diff_ci_hi": 0.004765773726129797,
+      "sig_vs_rf": false
+    },
+    "RTM-align": {
+      "anchor_mean": 0.5844170444830004,
+      "method_mean": 0.6281209838762964,
+      "diff_mean": -0.04370393939329609,
+      "diff_ci_lo": -0.15620682410875616,
+      "diff_ci_hi": 0.009361585398630773,
+      "sig_vs_rf": false
+    },
+    "US-align": {
+      "anchor_mean": 0.5844170444830004,
+      "method_mean": 0.641009271574963,
+      "diff_mean": -0.056592227091962655,
+      "diff_ci_lo": -0.16004162298258973,
+      "diff_ci_hi": -0.009657612818766273,
+      "sig_vs_rf": true
+    },
+    "RMalign": {
+      "anchor_mean": 0.5844170444830004,
+      "method_mean": 0.42424551011260103,
+      "diff_mean": 0.16017153437039933,
+      "diff_ci_lo": 0.08307618896883831,
+      "diff_ci_hi": 0.22431953415062175,
+      "sig_vs_rf": true
+    },
+    "RiboSeek": {
+      "anchor_mean": 0.5844170444830004,
+      "method_mean": 0.3308216294400185,
+      "diff_mean": 0.25359541504298183,
+      "diff_ci_lo": 0.1826376847426779,
+      "diff_ci_hi": 0.32665486481093137,
+      "sig_vs_rf": true
+    },
+    "BLASTN": {
+      "anchor_mean": 0.5844170444830004,
+      "method_mean": 0.2105329058167733,
+      "diff_mean": 0.37388413866622705,
+      "diff_ci_lo": 0.24550517149887044,
+      "diff_ci_hi": 0.5200423468850122,
+      "sig_vs_rf": true
+    }
+  },
+  "clan": {
+    "GTalign": {
+      "anchor_mean": 0.21863392521279268,
+      "method_mean": 0.3180773184131584,
+      "diff_mean": -0.09944339320036572,
+      "diff_ci_lo": -0.5270631748708191,
+      "diff_ci_hi": 0.07646794220868294,
+      "sig_vs_rf": false
+    },
+    "RTM-align": {
+      "anchor_mean": 0.21863392521279268,
+      "method_mean": 0.32142341179553535,
+      "diff_mean": -0.10278948658274267,
+      "diff_ci_lo": -0.47961910052862744,
+      "diff_ci_hi": 0.07631874298540965,
+      "sig_vs_rf": false
+    },
+    "US-align": {
+      "anchor_mean": 0.21863392521279268,
+      "method_mean": 0.32350838691925576,
+      "diff_mean": -0.10487446170646308,
+      "diff_ci_lo": -0.47058458165875056,
+      "diff_ci_hi": 0.07208849754712011,
+      "sig_vs_rf": false
+    },
+    "RMalign": {
+      "anchor_mean": 0.21863392521279268,
+      "method_mean": 0.11058956156737407,
+      "diff_mean": 0.10804436364541861,
+      "diff_ci_lo": -0.02839820418303133,
+      "diff_ci_hi": 0.1818269487796352,
+      "sig_vs_rf": false
+    },
+    "RiboSeek": {
+      "anchor_mean": 0.21863392521279268,
+      "method_mean": 0.026330453565463513,
+      "diff_mean": 0.19230347164732917,
+      "diff_ci_lo": 0.07272727272727274,
+      "diff_ci_hi": 0.3515368241805023,
+      "sig_vs_rf": true
+    },
+    "BLASTN": {
+      "anchor_mean": 0.21863392521279268,
+      "method_mean": 0.007399517938366162,
+      "diff_mean": 0.21123440727442652,
+      "diff_ci_lo": 0.10000000000000002,
+      "diff_ci_hi": 0.3477811526157941,
+      "sig_vs_rf": true
+    }
+  }
+}

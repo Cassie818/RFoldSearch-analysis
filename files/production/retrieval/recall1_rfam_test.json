@@ -1,35 +1,5 @@
 {
   "_note": "Rfam family/clan Recall@1, test queries. Paper definition (Methods 'Evaluation on the RNAsolo benchmark'): top-ranked non-self target is a TP, no neutral set; family TP=same family, clan TP=same clan including same family.",
-  "RFoldseek": {
-    "family_recall1": 0.8867924528301887,
-    "clan_recall1": 0.9240506329113924,
-    "n_family": 106,
-    "n_clan": 79
-  },
-  "US-align": {
-    "family_recall1": 0.9339622641509434,
-    "clan_recall1": 0.9620253164556962,
-    "n_family": 106,
-    "n_clan": 79
-  },
-  "RMalign": {
-    "family_recall1": 0.8207547169811321,
-    "clan_recall1": 0.9240506329113924,
-    "n_family": 106,
-    "n_clan": 79
-  },
-  "RiboSeek": {
-    "family_recall1": 0.7830188679245284,
-    "clan_recall1": 0.8354430379746836,
-    "n_family": 106,
-    "n_clan": 79
-  },
-  "BLASTN": {
-    "family_recall1": 0.4056603773584906,
-    "clan_recall1": 0.5316455696202531,
-    "n_family": 106,
-    "n_clan": 79
-  },
   "GTalign": {
     "family_recall1": 0.9339622641509434,
     "clan_recall1": 0.9620253164556962,
@@ -41,5 +11,35 @@
     "clan_recall1": 0.9493670886075949,
     "n_family": 106,
     "n_clan": 79
+  },
+  "RFoldseek": {
+    "family_recall1": 0.8867924528301887,
+    "clan_recall1": 0.9012345679012346,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "US-align": {
+    "family_recall1": 0.9339622641509434,
+    "clan_recall1": 0.9506172839506173,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "RMalign": {
+    "family_recall1": 0.8207547169811321,
+    "clan_recall1": 0.9012345679012346,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "RiboSeek": {
+    "family_recall1": 0.7830188679245284,
+    "clan_recall1": 0.8148148148148148,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "BLASTN": {
+    "family_recall1": 0.4056603773584906,
+    "clan_recall1": 0.5185185185185185,
+    "n_family": 106,
+    "n_clan": 81
   }
 }

@@ -1,10 +1,9 @@
 """Rfam family- and clan-level Recall@1 and per-query-averaged AUPR for the
 benchmark methods on the TEST partition (both supplementary retrieval metrics).
 
-Recall@1: first non-neutral retrieved hit (excluding self) is a true positive.
-  family: TP=same family;  neutral=same clan, diff family
-  clan  : TP=same clan & diff family;  neutral=same family (restricted to
-          queries that have >=1 such target)
+Recall@1: the top-ranked non-self target is a true positive.
+  family: TP=same Rfam family
+  clan  : TP=same Rfam clan, including same-family targets
 
 Per-query AUPR: mean average precision over queries (each query weighted
 equally, using each method's own hit order); see rfam_per_query_pr_curve.
