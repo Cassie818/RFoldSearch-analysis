@@ -14,8 +14,8 @@ and swaps only the discrete alphabet:
 By default, each alphabet uses its native substitution matrix scaled to the same
 diagonal mean. For the stricter alphabet-only control, set
 ``RFS_ALPHABET_CONTROL_MATRIX=identity``; both alphabets then use the same
-symbolic scoring rule (match=+1, mismatch=-1), with only matrix dimensionality
-following alphabet size. For the fairest learned-matrix control, set
+symbolic scoring rule (match=+2, mismatch=-1, rescaled to unit mean diagonal),
+with only matrix dimensionality following alphabet size. For the fairest learned-matrix control, set
 ``RFS_ALPHABET_CONTROL_MATRIX=self_blosum``; each alphabet learns its own
 Structure-BLOSUM from the same training-partition US-align pairs.
 """
@@ -152,8 +152,11 @@ def normalize_matrix(matrix: np.ndarray, target_diag_mean: float) -> np.ndarray:
 
 
 def identity_matrix(size: int) -> np.ndarray:
+    # match=+2, mismatch=-1 (see Supplementary Methods, substitution-matrix
+    # convention). Rescaled to unit mean diagonal by the caller so the k-mer
+    # prefilter threshold (0.75*k) keeps its exact-match operating point.
     matrix = np.full((size, size), -1.0, dtype=np.float32)
-    np.fill_diagonal(matrix, 1.0)
+    np.fill_diagonal(matrix, 2.0)
     return matrix
 
 
@@ -460,8 +463,8 @@ def main() -> None:
     rf_matrix_raw = torch.load(resolve("files/models/sub_matrix.pt"), map_location="cpu", weights_only=False)["matrix"].numpy()
     self_blosum_meta = {}
     if MATRIX_MODE == "identity":
-        rf_matrix = identity_matrix(80)
-        ribo_matrix = identity_matrix(int(ribo_matrix_raw.shape[0]))
+        rf_matrix = normalize_matrix(identity_matrix(80), 1.0)
+        ribo_matrix = normalize_matrix(identity_matrix(int(ribo_matrix_raw.shape[0])), 1.0)
     elif MATRIX_MODE == "self_blosum":
         train_pairs, pair_meta = load_train_pairs(entries)
         print(
@@ -505,7 +508,7 @@ def main() -> None:
                 "gap_extend": GAP_EXTEND,
                 "matrix_mode": MATRIX_MODE,
                 "matrix_rule": (
-                    "match=+1,mismatch=-1"
+                    "match=+2,mismatch=-1 (rescaled to unit mean diagonal -> +1/-0.5)"
                     if MATRIX_MODE == "identity"
                     else (
                         "alphabet-specific Structure-BLOSUM learned from the same train US-align pairs"

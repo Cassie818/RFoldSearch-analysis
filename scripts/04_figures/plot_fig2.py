@@ -206,11 +206,9 @@ def main():
                bbox_to_anchor=(0.5, -0.006), handlelength=2.6, columnspacing=2.4)
     fig.tight_layout(rect=(0, 0.035, 1, 1))
     out_png = Path(FIG_DIR) / "fig2.png"
-    out_pdf = Path(FIG_DIR) / "fig2.pdf"
     out_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=200, bbox_inches="tight")
-    fig.savefig(out_pdf, bbox_inches="tight")
-    print(f"Wrote {out_png}\nWrote {out_pdf}")
+    print(f"Wrote {out_png}")
 
 
 if __name__ == "__main__":
