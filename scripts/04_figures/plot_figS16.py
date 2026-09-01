@@ -54,14 +54,14 @@ def main():
     ]:
         km = [summ[f"KMeans_K{K}"][key] for K in KS]
         vq = summ["VQ-VAE_K80_deployed"][key]
-        ax.axhline(vq, color=C_VQ, linestyle="--", linewidth=2, zorder=2,
-                   label="VQ-VAE, $K$=80 (deployed)")
+        ax.axhline(vq, color=C_VQ, linestyle="-", linewidth=2, zorder=2,
+                   label="VQ-VAE")
         ax.annotate(f"{vq:.3f}", (0.995, vq), xycoords=("axes fraction", "data"),
                     textcoords="offset points", xytext=(0, 5), ha="right",
                     fontsize=9, color=C_VQ, fontweight="bold")
         ax.plot(KS, km, "o-", color=C_KM, linewidth=2, markersize=8, zorder=3,
                 markerfacecolor=C_KM, markeredgecolor="white", markeredgewidth=1.2,
-                label="$k$-means on the same descriptor")
+                label="K-means")
         for K, v in zip(KS, km):
             s = stars(signflip(pq, f"KMeans_K{K}", level, rng))
             ax.annotate(s, (K, v), textcoords="offset points", xytext=(0, -17),
