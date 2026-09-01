@@ -47,7 +47,7 @@ def signflip(pq, other, level, rng):
 def main():
     summ, pq = load()
     rng = np.random.default_rng(0)
-    fig, axes = plt.subplots(2, 1, figsize=(5.6, 8.2))
+    fig, axes = plt.subplots(2, 1, figsize=(4.6, 7.6))
     for ax, level, key, title in [
         (axes[0], "family", "family_sens_1fp", "Family"),
         (axes[1], "clan", "clan_sens_1fp", "Clan"),
