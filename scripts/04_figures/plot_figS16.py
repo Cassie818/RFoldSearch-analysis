@@ -17,8 +17,8 @@ matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
 import matplotlib.pyplot as plt
 
 KS = [10, 20, 40, 80]
-C_KM = "#B08D5C"   # k-means
-C_VQ = "#1F9BD8"   # deployed VQ-VAE
+C_KM = "#E07A5F"   # k-means (terracotta)
+C_VQ = "#1F9BD8"   # deployed VQ-VAE (RFoldseek blue, as in Fig. 2)
 N_PERM = 500_000
 
 
@@ -47,7 +47,7 @@ def signflip(pq, other, level, rng):
 def main():
     summ, pq = load()
     rng = np.random.default_rng(0)
-    fig, axes = plt.subplots(1, 2, figsize=(11, 4.4))
+    fig, axes = plt.subplots(2, 1, figsize=(5.6, 8.2))
     for ax, level, key, title in [
         (axes[0], "family", "family_sens_1fp", "Family"),
         (axes[1], "clan", "clan_sens_1fp", "Clan"),
@@ -55,7 +55,10 @@ def main():
         km = [summ[f"KMeans_K{K}"][key] for K in KS]
         vq = summ["VQ-VAE_K80_deployed"][key]
         ax.axhline(vq, color=C_VQ, linestyle="--", linewidth=2, zorder=2,
-                   label=f"VQ-VAE, $K$=80 (deployed) = {vq:.3f}")
+                   label="VQ-VAE, $K$=80 (deployed)")
+        ax.annotate(f"{vq:.3f}", (0.995, vq), xycoords=("axes fraction", "data"),
+                    textcoords="offset points", xytext=(0, 5), ha="right",
+                    fontsize=9, color=C_VQ, fontweight="bold")
         ax.plot(KS, km, "o-", color=C_KM, linewidth=2, markersize=8, zorder=3,
                 markerfacecolor=C_KM, markeredgecolor="white", markeredgewidth=1.2,
                 label="$k$-means on the same descriptor")
@@ -76,13 +79,16 @@ def main():
         pad = (hi - lo) * 0.55 + 0.01
         ax.set_ylim(lo - pad, hi + pad)
         ax.set_xlim(8, 100)
-        ax.grid(axis="y", alpha=0.25, linewidth=0.7)
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
-        ax.legend(frameon=False, fontsize=9.5, loc="lower left")
     for ax, lab in zip(axes, "AB"):
         ax.text(-0.10, 1.06, lab, transform=ax.transAxes, fontsize=15, fontweight="bold", va="top")
-    fig.tight_layout()
+    h, l = axes[0].get_legend_handles_labels()
+    order = [1, 0] if "means" in l[1] else [0, 1]
+    fig.legend([h[i] for i in order], [l[i] for i in order], loc="lower center",
+               ncol=2, frameon=False, fontsize=10.5, bbox_to_anchor=(0.5, -0.005),
+               handlelength=2.6, columnspacing=2.2)
+    fig.tight_layout(rect=(0, 0.045, 1, 1))
     out = Path(FIG_DIR) / "S16.png"
     out.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out, dpi=200, bbox_inches="tight")
