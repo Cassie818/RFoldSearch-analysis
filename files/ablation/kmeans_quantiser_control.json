@@ -1,0 +1,98 @@
+{
+  "_provenance": {
+    "pair_pool": {
+      "train_split": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
+      "usalign_cache": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl",
+      "train_ids_in_db": 610,
+      "cache_records": 361244,
+      "tm_threshold": 0.5,
+      "n_train_pairs": 6251,
+      "construction_gap_open": -11.0,
+      "construction_gap_extend": -1.0
+    },
+    "kmeans_seed": 42,
+    "active_dims": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48
+    ],
+    "zscore": "train-split residues only"
+  },
+  "VQ-VAE_K80_deployed": {
+    "family_recall1": 0.8867924528301887,
+    "family_sens_1fp": 0.5844170444830004,
+    "clan_recall1": 0.9012345679012346,
+    "clan_sens_1fp": 0.21863392521279268,
+    "n_family_queries": 106,
+    "n_clan_queries": 81,
+    "time_sec": 131.2776439189911,
+    "alphabet_size": 80,
+    "quantiser": "vq-vae",
+    "matrix": "self-BLOSUM (train pairs, TM>=0.5)",
+    "self_blosum": {
+      "alphabet_size": 80,
+      "n_input_train_pairs": 6251,
+      "n_aligned_train_pairs": 6251,
+      "n_aligned_columns": 4188879,
+      "scale": 2.0,
+      "diag_mean_before_rescale": 8.227203369140625,
+      "diag_mean_after_rescale": 1.0000001192092896
+    }
+  },
+  "KMeans_K80": {
+    "family_recall1": 0.8867924528301887,
+    "family_sens_1fp": 0.5222603574346848,
+    "clan_recall1": 0.9259259259259259,
+    "clan_sens_1fp": 0.17625047997841325,
+    "n_family_queries": 106,
+    "n_clan_queries": 81,
+    "time_sec": 157.15401792526245,
+    "alphabet_size": 80,
+    "quantiser": "k-means",
+    "matrix": "self-BLOSUM (train pairs, TM>=0.5)",
+    "self_blosum": {
+      "alphabet_size": 80,
+      "n_input_train_pairs": 6251,
+      "n_aligned_train_pairs": 6251,
+      "n_aligned_columns": 4227934,
+      "scale": 2.0,
+      "diag_mean_before_rescale": 8.8313627243042,
+      "diag_mean_after_rescale": 1.0
+    }
+  },
+  "KMeans_K20": {
+    "family_recall1": 0.8773584905660378,
+    "family_sens_1fp": 0.5679629871006819,
+    "clan_recall1": 0.9259259259259259,
+    "clan_sens_1fp": 0.19202248035235134,
+    "n_family_queries": 106,
+    "n_clan_queries": 81,
+    "time_sec": 160.55955529212952,
+    "alphabet_size": 20,
+    "quantiser": "k-means",
+    "matrix": "self-BLOSUM (train pairs, TM>=0.5)",
+    "self_blosum": {
+      "alphabet_size": 20,
+      "n_input_train_pairs": 6251,
+      "n_aligned_train_pairs": 6251,
+      "n_aligned_columns": 4398465,
+      "scale": 2.0,
+      "diag_mean_before_rescale": 5.573121070861816,
+      "diag_mean_after_rescale": 1.0
+    }
+  }
+}
