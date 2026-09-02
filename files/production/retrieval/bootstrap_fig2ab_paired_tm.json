@@ -1,0 +1,73 @@
+{
+  "_anchor": "RFoldseek-TM",
+  "_n_replicates": 2000,
+  "_seed": 123,
+  "family": {
+    "US-align": {
+      "anchor_mean": 0.6599678532819807,
+      "method_mean": 0.641009271574963,
+      "diff_mean": 0.01274472784275556,
+      "diff_ci_lo": -0.03990691427643177,
+      "diff_ci_hi": 0.06195572357127633,
+      "sig": false
+    },
+    "GTalign": {
+      "anchor_mean": 0.6599678532819807,
+      "method_mean": 0.6315247141072045,
+      "diff_mean": 0.021924281662329178,
+      "diff_ci_lo": -0.04270749073137837,
+      "diff_ci_hi": 0.0702054488214422,
+      "sig": false
+    },
+    "RTM-align": {
+      "anchor_mean": 0.6599678532819807,
+      "method_mean": 0.6281209838762964,
+      "diff_mean": 0.024417973761992378,
+      "diff_ci_lo": -0.03432700241606529,
+      "diff_ci_hi": 0.08178035158731918,
+      "sig": false
+    },
+    "RFoldseek": {
+      "anchor_mean": 0.6599678532819807,
+      "method_mean": 0.5844170444830004,
+      "diff_mean": 0.07863369507038559,
+      "diff_ci_lo": 0.03376891305564394,
+      "diff_ci_hi": 0.13596288447023178,
+      "sig": true
+    }
+  },
+  "clan": {
+    "US-align": {
+      "anchor_mean": 0.2968257822726099,
+      "method_mean": 0.32350838691925576,
+      "diff_mean": -0.037601581053095884,
+      "diff_ci_lo": -0.14440299218123478,
+      "diff_ci_hi": 0.03952178786270974,
+      "sig": false
+    },
+    "GTalign": {
+      "anchor_mean": 0.2968257822726099,
+      "method_mean": 0.3180773184131584,
+      "diff_mean": -0.0324130173401702,
+      "diff_ci_lo": -0.11310555395513831,
+      "diff_ci_hi": 0.03839157952669232,
+      "sig": false
+    },
+    "RTM-align": {
+      "anchor_mean": 0.2968257822726099,
+      "method_mean": 0.32142341179553535,
+      "diff_mean": -0.03717492601030875,
+      "diff_ci_lo": -0.14959126395712688,
+      "diff_ci_hi": 0.04420580183910146,
+      "sig": false
+    },
+    "RFoldseek": {
+      "anchor_mean": 0.2968257822726099,
+      "method_mean": 0.21863392521279268,
+      "diff_mean": 0.09926102841862967,
+      "diff_ci_lo": -0.03991190565264639,
+      "diff_ci_hi": 0.41744752706574595,
+      "sig": false
+    }
+  }
+}
