@@ -1,0 +1,43 @@
+{
+  "_config": {
+    "null": "real unrelated chains (diff family+clan, TM<0.30)",
+    "B": 200,
+    "seed": 0,
+    "queries_used": 106,
+    "mean_heldout_per_query": 573.8962264150944,
+    "scorer": "token-only Structure-BLOSUM (w_nt=0)",
+    "note": "calibration and evaluation sets are disjoint"
+  },
+  "calibration": {
+    "0.001": {
+      "nominal": 0.001,
+      "observed_fp_per_query": 0.0,
+      "ratio_obs_over_nominal": 0.0
+    },
+    "0.01": {
+      "nominal": 0.01,
+      "observed_fp_per_query": 0.0,
+      "ratio_obs_over_nominal": 0.0
+    },
+    "0.1": {
+      "nominal": 0.1,
+      "observed_fp_per_query": 0.0,
+      "ratio_obs_over_nominal": 0.0
+    },
+    "1.0": {
+      "nominal": 1.0,
+      "observed_fp_per_query": 0.0949680045968345,
+      "ratio_obs_over_nominal": 0.0949680045968345
+    },
+    "10.0": {
+      "nominal": 10.0,
+      "observed_fp_per_query": 3.1555287448829104,
+      "ratio_obs_over_nominal": 0.31555287448829106
+    },
+    "100.0": {
+      "nominal": 100.0,
+      "observed_fp_per_query": 73.44551970740812,
+      "ratio_obs_over_nominal": 0.7344551970740812
+    }
+  }
+}

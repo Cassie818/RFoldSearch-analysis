@@ -1,0 +1,60 @@
+{
+  "block_sweep": {
+    "1": {
+      "mu_mean": 3.1933298689799043,
+      "beta_mean": 0.8441035699788177,
+      "null_score_mean": 3.647049841682116,
+      "n_queries": 40,
+      "sec": 9.4
+    },
+    "2": {
+      "mu_mean": 3.9037772098478514,
+      "beta_mean": 1.0934550095431548,
+      "null_score_mean": 4.483690470444659,
+      "n_queries": 40,
+      "sec": 9.8
+    },
+    "4": {
+      "mu_mean": 4.68127167737417,
+      "beta_mean": 1.454690092740614,
+      "null_score_mean": 5.457310119979083,
+      "n_queries": 40,
+      "sec": 10.6
+    },
+    "8": {
+      "mu_mean": 5.421153905884468,
+      "beta_mean": 1.8957039833214915,
+      "null_score_mean": 6.450139056680103,
+      "n_queries": 40,
+      "sec": 8.9
+    },
+    "16": {
+      "mu_mean": 5.9854865787362455,
+      "beta_mean": 2.312851006579696,
+      "null_score_mean": 7.305685451837877,
+      "n_queries": 40,
+      "sec": 9.9
+    }
+  },
+  "B_convergence": {
+    "50": {
+      "rel_sd_tail_quantile": 0.056896911353289996
+    },
+    "100": {
+      "rel_sd_tail_quantile": 0.0413566597223287
+    },
+    "200": {
+      "rel_sd_tail_quantile": 0.025581036355081622
+    },
+    "300": {
+      "rel_sd_tail_quantile": 0.0227055897862438
+    }
+  },
+  "_config": {
+    "gap_open": -2.0,
+    "gap_extend": -0.5,
+    "B_max": 300,
+    "seed": 0,
+    "scorer": "token-only Structure-BLOSUM (w_nt = 0)"
+  }
+}
