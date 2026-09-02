@@ -57,13 +57,13 @@ for bars, vals in ((b1, fam), (b2, clan)):
 axA.set_ylabel("Recall@1", fontsize=12)
 axA.set_xticks(xs)
 axA.set_xticklabels(METHODS, fontsize=9.5, rotation=30, ha="right")
-axA.set_ylim(0, 1.05)
+axA.set_ylim(0, 1.16)
 axA.set_yticks(np.arange(0, 1.01, 0.2))
 axA.set_xlim(-0.6, len(METHODS) - 0.4)
 axA.spines[["top", "right"]].set_visible(False)
 axA.tick_params(axis="both", labelsize=10)
-axA.legend(loc="upper right", frameon=True, framealpha=0.9, edgecolor="none",
-           fontsize=9.5, handlelength=1.4, borderpad=0.4)
+axA.legend(loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2, frameon=False,
+           fontsize=9.5, handlelength=1.4, columnspacing=2.0, borderpad=0.2)
 
 # ---- (B,C) per-query PR curves ----
 def pr_panel(ax, level, title):
