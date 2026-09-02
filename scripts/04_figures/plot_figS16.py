@@ -32,21 +32,21 @@ def load():
     return s, p
 
 
-def stars(pv):
-    return "***" if pv < 1e-3 else "**" if pv < 1e-2 else "*" if pv < 5e-2 else "n.s."
+CTRL_BOOT = json.load(open(resolve("files/production/retrieval/bootstrap_controls.json")))
 
 
-def signflip(pq, other, level, rng):
-    a = {x["query"]: x["sens"] for x in pq["VQ-VAE_K80_deployed"][level]}
-    b = {x["query"]: x["sens"] for x in pq[other][level]}
-    d = np.array([a[q] - b[q] for q in a], float)
-    perm = (rng.choice([-1, 1], size=(N_PERM, len(d))) * np.abs(d)).mean(1)
-    return (np.sum(perm >= d.mean()) + 1) / (N_PERM + 1)
+def annotation(K, level):
+    """Family level carries a significance mark (27 Rfam blocks); the clan level
+    has only 8, too few for a dependable binary call, so the paired effect size
+    and its interval are shown instead."""
+    e = CTRL_BOOT["quantiser_control"][f"KMeans_K{K}"][level]
+    if level == "family":
+        return ("*" if e["sig"] else "n.s."), e["sig"]
+    return f"{e['diff_mean']:+.2f}\n[{e['diff_ci_lo']:+.2f}, {e['diff_ci_hi']:+.2f}]", False
 
 
 def main():
-    summ, pq = load()
-    rng = np.random.default_rng(0)
+    summ, _ = load()
     fig, axes = plt.subplots(2, 1, figsize=(4.6, 7.6))
     for ax, level, key, title in [
         (axes[0], "family", "family_sens_1fp", "Family"),
@@ -63,9 +63,10 @@ def main():
                 markerfacecolor=C_KM, markeredgecolor="white", markeredgewidth=1.2,
                 label="K-means")
         for K, v in zip(KS, km):
-            s = stars(signflip(pq, f"KMeans_K{K}", level, rng))
-            ax.annotate(s, (K, v), textcoords="offset points", xytext=(0, -17),
-                        ha="center", fontsize=10, color="#333333")
+            txt, is_sig = annotation(K, level)
+            ax.annotate(txt, (K, v), textcoords="offset points",
+                        xytext=(0, -17 if is_sig else -30), ha="center",
+                        fontsize=10 if is_sig else 7.0, color="#333333", linespacing=1.15)
             ax.annotate(f"{v:.3f}", (K, v), textcoords="offset points", xytext=(0, 10),
                         ha="center", fontsize=9, color="#555555")
         ax.set_xscale("log")
@@ -76,9 +77,9 @@ def main():
         ax.set_ylabel("Sens@1FP", fontsize=12)
         ax.set_title(title, fontsize=13)
         lo, hi = min(km + [vq]), max(km + [vq])
-        pad = (hi - lo) * 0.55 + 0.01
+        pad = (hi - lo) * 0.75 + 0.012
         ax.set_ylim(lo - pad, hi + pad)
-        ax.set_xlim(8, 100)
+        ax.set_xlim(7.5, 115)
         for sp in ("top", "right"):
             ax.spines[sp].set_visible(False)
     for ax, lab in zip(axes, "AB"):

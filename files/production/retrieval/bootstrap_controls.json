@@ -1,0 +1,121 @@
+{
+  "_n_replicates": 2000,
+  "_seed": 123,
+  "_test": "paired block bootstrap over Rfam families (family) or clans (clan)",
+  "alphabet_control": {
+    "native": {
+      "family": {
+        "diff_mean": 0.13467822071082558,
+        "diff_ci_lo": 0.08116254856591944,
+        "diff_ci_hi": 0.17715537085130512,
+        "n_blocks": 27,
+        "sig": true
+      },
+      "clan": {
+        "diff_mean": 0.13592398766870356,
+        "diff_ci_lo": 0.045125783784056454,
+        "diff_ci_hi": 0.23031077054065557,
+        "n_blocks": 8,
+        "sig": true
+      }
+    },
+    "identity": {
+      "family": {
+        "diff_mean": 0.028374398866933288,
+        "diff_ci_lo": -0.027798454900521373,
+        "diff_ci_hi": 0.10398093337526568,
+        "n_blocks": 27,
+        "sig": false
+      },
+      "clan": {
+        "diff_mean": 0.005996347295023079,
+        "diff_ci_lo": -0.036737510973913555,
+        "diff_ci_hi": 0.045454545454545456,
+        "n_blocks": 8,
+        "sig": false
+      }
+    },
+    "self_blosum": {
+      "family": {
+        "diff_mean": 0.10986398813333068,
+        "diff_ci_lo": 0.010713966322003046,
+        "diff_ci_hi": 0.18517174275598045,
+        "n_blocks": 27,
+        "sig": true
+      },
+      "clan": {
+        "diff_mean": 0.047789196748973396,
+        "diff_ci_lo": -0.03361496740807085,
+        "diff_ci_hi": 0.0919242255951779,
+        "n_blocks": 8,
+        "sig": false
+      }
+    }
+  },
+  "quantiser_control": {
+    "KMeans_K10": {
+      "family": {
+        "diff_mean": 0.049597345829992666,
+        "diff_ci_lo": 0.00013862238442749052,
+        "diff_ci_hi": 0.08743938714013476,
+        "n_blocks": 27,
+        "sig": true
+      },
+      "clan": {
+        "diff_mean": 0.04501018134296266,
+        "diff_ci_lo": -0.0009522152748024367,
+        "diff_ci_hi": 0.06261379224342187,
+        "n_blocks": 8,
+        "sig": false
+      }
+    },
+    "KMeans_K20": {
+      "family": {
+        "diff_mean": 0.016454057382318494,
+        "diff_ci_lo": -0.00958384743582126,
+        "diff_ci_hi": 0.03888379068673955,
+        "n_blocks": 27,
+        "sig": false
+      },
+      "clan": {
+        "diff_mean": 0.026611444860441275,
+        "diff_ci_lo": -0.04262493668593414,
+        "diff_ci_hi": 0.05464200391048461,
+        "n_blocks": 8,
+        "sig": false
+      }
+    },
+    "KMeans_K40": {
+      "family": {
+        "diff_mean": 0.03594275616700294,
+        "diff_ci_lo": -0.01458495082815735,
+        "diff_ci_hi": 0.07295977809004071,
+        "n_blocks": 27,
+        "sig": false
+      },
+      "clan": {
+        "diff_mean": 0.045282289329424255,
+        "diff_ci_lo": 0.009891872502662697,
+        "diff_ci_hi": 0.07876461988304093,
+        "n_blocks": 8,
+        "sig": true
+      }
+    },
+    "KMeans_K80": {
+      "family": {
+        "diff_mean": 0.062156687048315576,
+        "diff_ci_lo": -0.018538736486140853,
+        "diff_ci_hi": 0.11945878454061665,
+        "n_blocks": 27,
+        "sig": false
+      },
+      "clan": {
+        "diff_mean": 0.04238344523437937,
+        "diff_ci_lo": -0.012030098618145219,
+        "diff_ci_hi": 0.08994058777522948,
+        "n_blocks": 8,
+        "sig": false
+      }
+    }
+  }
+}

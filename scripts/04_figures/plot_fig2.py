@@ -34,10 +34,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ---- shared style (identical to plot_fig2.py) --------------------------------
-METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
+METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
     "RFoldseek": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
-    "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "BLASTN": "#FFC107",
+    "RFoldseek-TM": "#009E9E", "US-align": "#D62728", "RMalign": "#2CA02C",
+    "RiboSeek": "#E377C2", "BLASTN": "#FFC107",
 }
 
 
@@ -51,18 +52,20 @@ def _lighten(h, f=0.24):
 METHOD_COLOR = {k: _lighten(v) for k, v in METHOD_COLOR.items()}
 LINESTYLE = {m: "-" for m in METHODS}
 LINESTYLE["BLASTN"] = "--"
-MARKER = {"RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
+MARKER = {"RFoldseek": "o", "RFoldseek-TM": "*", "GTalign": "X", "RTM-align": "P", "US-align": "s",
           "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}
 # C/D bars now include GTalign and RTM-align; both rank by a TM-score, the same
 # quantity that defines the structural ground truth, so they are near-oracles
 # here (they hug the US-align ceiling) and are shown for completeness.
-BAR_METHODS = ["RFoldseek", "GTalign", "RTM-align", "RMalign", "RiboSeek", "BLASTN"]
+BAR_METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "RMalign", "RiboSeek", "BLASTN"]
 
 # ---- alphabet-control constants ----------------------------------------------
 RF = "RFoldseek_tokens_same_pipeline"
 RB = "RiboSeek_sa20_same_pipeline"
 REGIMES = [("", "Native"), ("_identity", "Identity"), ("_self_blosum", "Self-BLOSUM")]
+REGIME_KEY = {"": "native", "_identity": "identity", "_self_blosum": "self_blosum"}
 CTRL_WHO = [("RFoldseek", RF), ("RiboSeek", RB)]
+CTRL_BOOT = json.load(open(resolve("files/production/retrieval/bootstrap_controls.json")))
 
 
 def sorted_curve(arr):
@@ -75,8 +78,9 @@ def curve_panel(ax, data, level, title, band):
     for m in METHODS:
         x, y = sorted_curve(data[m][level]["sens"])
         step = max(1, len(x) // 18)
-        ax.plot(x, y, LINESTYLE[m], color=METHOD_COLOR[m], linewidth=2, marker=MARKER[m],
-                markevery=step, markersize=7, markeredgecolor="white", markeredgewidth=0.9,
+        marker_size = 11 if m == "RFoldseek-TM" else 7
+        ax.plot(x, y, LINESTYLE[m], color=METHOD_COLOR[m], linewidth=2.4, marker=MARKER[m],
+                markevery=step, markersize=marker_size, markeredgecolor="white", markeredgewidth=0.9,
                 label=m, zorder=3)
     ax.set_xlabel("Fraction of queries", fontsize=12)
     ax.set_ylabel("Sensitivity up to the 1st FP", fontsize=12)
@@ -140,15 +144,17 @@ def load_ctrl_pq(suffix):
         f"files/ablation/riboseek_alphabet_same_pipeline_control{suffix}_per_query.json")))
 
 
-def signflip_stars(pq, level, n=2_000_000, seed=0):
-    a = {r["query"]: r["sens"] for r in pq[RF][level]}
-    b = {r["query"]: r["sens"] for r in pq[RB][level]}
-    q = sorted(set(a) & set(b))
-    d = np.array([a[k] - b[k] for k in q]); obs = d.mean()
-    rng = np.random.default_rng(seed)
-    perm = (rng.choice([1.0, -1.0], size=(n, len(d))) * d).mean(1)
-    p = (np.sum(perm >= obs) + 1) / (n + 1)
-    return "***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 5e-2 else "n.s."
+def control_annotation(regime_key, level):
+    """Block-bootstrap annotation for a control panel.
+
+    Family level has 27 Rfam blocks and carries a significance mark; the clan
+    level has only 8, too few for a dependable binary call, so the effect size
+    and its interval are shown instead.
+    """
+    e = CTRL_BOOT["alphabet_control"][regime_key][level]
+    if level == "family":
+        return ("*" if e["sig"] else "n.s."), e["sig"]
+    return f"{e['diff_mean']:+.2f}\n[{e['diff_ci_lo']:+.2f}, {e['diff_ci_hi']:+.2f}]", False
 
 
 def control_panel(ax, level, key, title):
@@ -166,14 +172,14 @@ def control_panel(ax, level, key, title):
             ax.text(b.get_x() + b.get_width() / 2, v + 0.010, f"{v:.2f}", ha="center",
                     va="bottom", fontsize=7.2, color="#333333")
     for i, (suffix, _) in enumerate(REGIMES):
-        s = signflip_stars(pqs[suffix], level)
+        s, is_sig = control_annotation(REGIME_KEY[suffix], level)
         top = max(vals["RFoldseek"][i], vals["RiboSeek"][i])
         y = top + 0.050
         ax.plot([x[i] - width / 2, x[i] - width / 2, x[i] + width / 2, x[i] + width / 2],
                 [y, y + 0.013, y + 0.013, y], lw=0.9, color="#777777", zorder=4)
         ax.text(x[i], y + 0.010, s, ha="center", va="bottom",
-                fontsize=9 if s != "n.s." else 7.5, color="#333333",
-                fontweight="bold" if s not in ("n.s.",) else "normal")
+                fontsize=9 if is_sig else 7.0, color="#333333",
+                fontweight="bold" if is_sig else "normal", linespacing=1.15)
     ax.set_xticks(x, [lab for _, lab in REGIMES])
     ax.set_xlabel("Scoring regime", fontsize=12)
     ax.set_ylabel("Sens@1FP", fontsize=12)
@@ -202,13 +208,19 @@ def main():
                 va="bottom", ha="right")
 
     handles, labels = axes[0, 0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False, fontsize=12,
-               bbox_to_anchor=(0.5, -0.006), handlelength=2.6, columnspacing=2.4)
+    legend = fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False, fontsize=12,
+                        bbox_to_anchor=(0.5, -0.006), handlelength=2.8, columnspacing=2.4,
+                        markerscale=1.45)
+    for handle in legend.legend_handles:
+        handle.set_linewidth(3.0)
     fig.tight_layout(rect=(0, 0.035, 1, 1))
     out_png = Path(FIG_DIR) / "fig2.png"
+    out_pdf = Path(FIG_DIR) / "fig2.pdf"
     out_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=200, bbox_inches="tight")
+    fig.savefig(out_pdf, bbox_inches="tight")
     print(f"Wrote {out_png}")
+    print(f"Wrote {out_pdf}")
 
 
 if __name__ == "__main__":
