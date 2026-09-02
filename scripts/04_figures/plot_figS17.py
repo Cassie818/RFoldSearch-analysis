@@ -16,6 +16,7 @@ matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
 import matplotlib.pyplot as plt
 
 SERIES = [
+    ("iid-background-200", "Background composition",    "#B3413A", "v"),
     ("shuffle-200",       "Block shuffle",              "#E07A5F", "o"),
     ("random-200",        "Random sample",              "#8C8C8C", "^"),
     ("random-200-trim10", "Random sample, censored",    "#1F9BD8", "s"),
@@ -24,7 +25,7 @@ SERIES = [
 
 
 def main():
-    d = json.load(open(resolve("files/ablation/evalue_calibration_all_nulls.json")))
+    d = json.load(open(resolve("files/ablation/evalue_calibration.json")))
     obs = d["observed_fp_per_query_full_db_scale"]
     grid = sorted((float(k) for k in obs[SERIES[0][0]]), key=float)
 

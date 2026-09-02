@@ -1,5 +1,6 @@
-"""Does a RANDOM sample of database chains work as the null, instead of a
-known-unrelated sample? Random sampling is what a deployed search can actually
+"""Calibration of RFoldseek E-values under five null models.
+
+Which null? Random sampling is what a deployed search can actually
 do for a novel query. Here all 884 scores per query are computed once, then
 three nulls are compared on the SAME held-out unrelated targets:
   (a) unrelated-200   : the idealised null (needs relationships known in advance)
@@ -58,9 +59,12 @@ def main():
         t = tmc.get((qi, j), tmc.get((j, qi)))
         return True if t is None else t < TM_MAX
 
+    bgf = np.bincount(np.concatenate(toks), minlength=mat.shape[0]).astype(float)
+    bgf /= bgf.sum()
+    lens = np.array([len(t) for t in toks])
     rng = np.random.default_rng(SEED)
     n = len(toks)
-    variants = ["shuffle-200", "unrelated-200", "random-200", "random-200-trim10"]
+    variants = ["iid-background-200", "shuffle-200", "unrelated-200", "random-200", "random-200-trim10"]
     obs = {v: {str(e): [] for e in GRID} for v in variants}
     contam, used, t0 = [], 0, time.time()
     for k, qi in enumerate(famq, 1):
@@ -75,9 +79,14 @@ def main():
         pu = rng.permutation(len(U)); cal_u, held = U[pu[:B]], U[pu[B:]]
         ridx = rng.choice(len(others), size=B, replace=False)
         contam.append(float((~um[ridx]).mean()))
+        K = mat.shape[0]
+        iid = np.array([SW(rng.choice(K, size=len(q), p=bgf).astype(np.int64),
+                          rng.choice(K, size=int(rng.choice(lens)), p=bgf).astype(np.int64),
+                          mat, GO, GE) for _ in range(B)])
         shuf = np.array([SW(bshuf(q, 4, rng), toks[int(j)], mat, GO, GE)
                          for j in rng.choice(others, size=B, replace=False)])
-        fits = {"shuffle-200": fit(shuf),
+        fits = {"iid-background-200": fit(iid),
+                "shuffle-200": fit(shuf),
                 "unrelated-200": fit(sc[cal_u]),
                 "random-200": fit(sc[ridx]),
                 "random-200-trim10": fit(sc[ridx], trim=0.10)}
@@ -99,7 +108,7 @@ def main():
         out["observed_fp_per_query_full_db_scale"][v] = {str(e): r for e, r in zip(GRID, row)}
         print("%-20s %s" % (v, "  ".join(f"{r:>9.3f}" for r in row)))
     print("\n(nominal expectation on the held-out subset is lower than E itself;\n compare variants to each other and to 'unrelated-200')")
-    p = Path(PC) / "files/ablation/evalue_calibration_all_nulls.json"
+    p = Path(PC) / "files/ablation/evalue_calibration.json"
     json.dump(out, open(p, "w"), indent=2); print(f"\nWrote {p}")
 
 
