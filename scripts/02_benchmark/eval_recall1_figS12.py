@@ -86,10 +86,9 @@ def expand(qk):
     return out
 
 
-def rank_new(q):
-    """RFoldseek ranking for query q: similar-k-mer-expansion prefilter over the
-    inverted index (double-match on a common diagonal), top-N candidates, then
-    token Smith-Waterman reranking; returns db indices by descending score."""
+def prefilter_candidates(q):
+    """RFoldseek prefilter for query q: similar-k-mer-expansion over the inverted
+    index, double-match on a common diagonal, top-N candidates by hit count."""
     tt = toks[q]
     td = defaultdict(dict)
     for qp in range(len(tt) - KMER_K + 1):
@@ -101,7 +100,13 @@ def rank_new(q):
     sc = [(ti, max((c for c in dm.values() if c >= 2), default=-1)) for ti, dm in td.items()]
     sc = [x for x in sc if x[1] > 0]
     sc.sort(key=lambda x: (-x[1], x[0]))  # deterministic tie-break: score, then target index
-    cand = np.array([x[0] for x in sc[:TOPN]], np.int64)
+    return np.array([x[0] for x in sc[:TOPN]], np.int64)
+
+
+def rank_new(q):
+    """RFoldseek: prefilter candidates reranked by token Smith-Waterman."""
+    tt = toks[q]
+    cand = prefilter_candidates(q)
     if len(cand) == 0:
         return np.zeros(0, np.int64)
     return cand[
@@ -109,6 +114,14 @@ def rank_new(q):
             -np.array([smith_waterman_numba(tt, toks[t], sub, GO, GE) for t in cand]), kind="stable"
         )
     ]
+
+
+def rank_rfoldseek_tm(q):
+    """RFoldseek-TM: the same prefilter candidates reranked by US-align TM."""
+    d = us.get(q, {})
+    rows = [(t, d[t], r) for r, t in enumerate(prefilter_candidates(q)) if t in d and t != q]
+    rows.sort(key=lambda x: (-x[1], x[2], x[0]))
+    return np.asarray([t for t, _, _ in rows], dtype=np.int64)
 
 
 from riboseek import Searcher
@@ -228,8 +241,14 @@ def rank_blastn_all():
 
 
 print("running BLASTN...", flush=True)
-blast = rank_blastn_all()
-rank_bl = rank_from(blast)
+import shutil as _shutil
+_bb = Path(os.environ.get('RFS_BLAST_BIN', ''))
+_have_blast = bool(_shutil.which(str(_bb / 'makeblastdb') if str(_bb) else 'makeblastdb'))
+if _have_blast:
+    blast = rank_blastn_all()
+    rank_bl = rank_from(blast)
+else:
+    print('makeblastdb not found; keeping the previous BLASTN results', flush=True)
 
 
 base2i = {os.path.basename(str(e["id"])).replace(".cif", ""): i for i, e in enumerate(ents)}
@@ -298,16 +317,18 @@ def rank_rtm(q):
 
 RANKERS = {
     "RFoldseek": rank_new,
+    "RFoldseek-TM": rank_rfoldseek_tm,
     "US-align": rank_us,
     "RMalign": rank_rm,
     "RiboSeek": rank_ribo,
-    "BLASTN": rank_bl,
 }
 # GTalign / RTM-align: added when their all-vs-database outputs are present
 if gt_ranks:
     RANKERS["GTalign"] = rank_gtalign
 if rtm_ranks:
     RANKERS["RTM-align"] = rank_rtm
+if _have_blast:
+    RANKERS["BLASTN"] = rank_bl
 
 
 def r1_family(r, q):
@@ -348,11 +369,11 @@ pr_out = {
     ),
     "_query_ids": {"family": fam_q, "clan": clan_q},
 }
-# carry over GTalign / RTM-align from any existing files when their outputs are absent
+# carry over any method not recomputed here (its tool or outputs being absent)
 _prev = json.load(open(RET / "recall1_rfam_test.json")) if os.path.exists(RET / "recall1_rfam_test.json") else {}
 _pr_prev = json.load(open(RET / "weighted_pr_rfam_test.json")) if os.path.exists(RET / "weighted_pr_rfam_test.json") else {}
-for _m in ("GTalign", "RTM-align"):
-    if _m not in RANKERS:
+for _m in set(_prev) | set(_pr_prev):
+    if not _m.startswith("_") and _m not in RANKERS:
         if _m in _prev:
             out[_m] = _prev[_m]
         if _m in _pr_prev:

@@ -29,12 +29,12 @@ RET = REPO / "files/production/retrieval"
 r1 = json.load(open(RET / "recall1_rfam_test.json"))
 wp = json.load(open(RET / "weighted_pr_rfam_test.json"))
 
-METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
+METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
-    "RFoldseek": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
+    "RFoldseek": "#1F9BD8", "RFoldseek-TM": "#009E9E", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
     "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "BLASTN": "#FFC107",
 }
-MARKER = {"RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
+MARKER = {"RFoldseek": "o", "RFoldseek-TM": "*", "GTalign": "X", "RTM-align": "P", "US-align": "s",
           "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}
 # Morandi bar palette (panel A)
 C1, C2, E1, E2 = "#9EB6C6", "#DFCE95", "#7E97A8", "#C4B274"
