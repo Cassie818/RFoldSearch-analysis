@@ -28,6 +28,7 @@ REPO = Path(DATA_ROOT)
 RET = REPO / "files/production/retrieval"
 r1 = json.load(open(RET / "recall1_rfam_test.json"))
 wp = json.load(open(RET / "weighted_pr_rfam_test.json"))
+ap_sig = json.load(open(RET / "bootstrap_figS12_ap.json"))
 
 METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
 METHOD_COLOR = {
@@ -71,11 +72,12 @@ def pr_panel(ax, level, title):
         rec = np.asarray(wp[m][level]["recall"])
         prec = np.asarray(wp[m][level]["precision"])
         ap = wp[m][level]["aupr"]
+        star = "*" if ap_sig.get(level, {}).get(m, {}).get("sig_vs_rf") else ""
         step = max(1, len(rec) // 10)
         ax.plot(rec, prec, "-", color=METHOD_COLOR[m], linewidth=2.0,
                 marker=MARKER[m], markevery=step, markersize=5.5,
                 markeredgecolor="white", markeredgewidth=0.6,
-                label=f"{m} ({ap:.2f})", zorder=3)
+                label=f"{m} ({ap:.2f}){star}", zorder=3)
     ax.set_xlabel("Recall", fontsize=12)
     ax.set_ylabel("Precision", fontsize=12)
     ax.set_xlim(0, 1.0)
