@@ -43,14 +43,12 @@ def load_selectivity():
 
 
 def annotation(K, level):
-    """Paired block-bootstrap difference from the VQ-VAE: the effect size with
-    its interval, marked when the interval excludes zero. Clan-level intervals
-    rest on eight Rfam blocks, so a missing mark is not evidence of no
-    difference."""
+    """Paired block-bootstrap difference from the VQ-VAE, marked when its
+    interval excludes zero. Clan-level intervals rest on eight Rfam blocks, so a
+    missing mark is not evidence of no difference."""
     e = CTRL_BOOT["quantiser_control"][f"KMeans_K{K}"][level]
     star = "*" if e["sig"] else ""
-    return (f"{e['diff_mean']:+.3f}{star}\n[{e['diff_ci_lo']:+.3f}, {e['diff_ci_hi']:+.3f}]",
-            e["sig"])
+    return f"{e['diff_mean']:+.3f}{star}", e["sig"]
 
 
 def main():
@@ -76,9 +74,8 @@ def main():
                 label="K-means")
         for K, v in zip(KS, km):
             txt, is_sig = annotation(K, level)
-            _dy = -46 if (level == "clan" and K == 80) else -32
-            ax.annotate(txt, (K, v), textcoords="offset points", xytext=(0, _dy),
-                        ha="center", fontsize=7.0, color="#333333", linespacing=1.15)
+            ax.annotate(txt, (K, v), textcoords="offset points", xytext=(0, -20),
+                        ha="center", fontsize=8.0, color="#333333")
             ax.annotate(f"{v:.3f}", (K, v), textcoords="offset points", xytext=(0, 10),
                         ha="center", fontsize=9, color="#555555")
         ax.set_xscale("log")
@@ -89,7 +86,7 @@ def main():
         ax.set_ylabel("Sens@1FP", fontsize=12)
         ax.set_title(title, fontsize=13)
         lo, hi = min(km + [vq]), max(km + [vq])
-        pad = (hi - lo) * 0.75 + 0.012
+        pad = (hi - lo) * 0.55 + 0.010
         ax.set_ylim(lo - pad, hi + pad)
         ax.set_xlim(6.0, 145)
         for sp in ("top", "right"):
@@ -115,7 +112,6 @@ def main():
     ax_sel.set_xscale("log")
     ax_sel.set_xlabel("Index postings traversed per query  (fewer is more selective)", fontsize=11.5)
     ax_sel.set_ylabel("Family Sens@1FP", fontsize=11.5)
-    ax_sel.set_title("Accuracy against prefilter selectivity", fontsize=13)
     ax_sel.set_xlim(6.5e3, 2.1e6)
     ys = km_y + [vq_y]
     ax_sel.set_ylim(min(ys) - 0.022, max(ys) + 0.030)
