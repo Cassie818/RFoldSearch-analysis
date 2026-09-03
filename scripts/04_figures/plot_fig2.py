@@ -7,11 +7,9 @@ alphabet control (row 3) reads against the same legend as the main benchmark.
 
     A/B  Rfam AUROC1 sorted-sensitivity curves (all methods; RFoldseek 95% band)
     C/D  Structure-defined (US-align TM-score) Sens@1FP bars, by TM threshold
-    E/F  Alphabet control: RFoldseek vs RiboSeek under one matched pipeline, three
-         scoring regimes (Native / Identity / Self-BLOSUM). The blue-over-pink gap
-         is wide under native scoring, collapses under identity scoring, and
-         re-opens under matched self-BLOSUM -- the sensitivity gain comes from
-         learned substitution geometry, not the pipeline or exact symbol matching.
+    E/F  Attribution waterfall: the gap from RiboSeek as published to RFoldseek,
+         split into the search pipeline, the learned substitution matrix and the
+         3Dr alphabet, with block-bootstrap intervals on each step.
 
 Writes figures/fig2.{png,pdf}.
 """
@@ -144,46 +142,55 @@ def load_ctrl_pq(suffix):
         f"files/ablation/riboseek_alphabet_same_pipeline_control{suffix}_per_query.json")))
 
 
-def control_annotation(regime_key, level):
-    """Block-bootstrap annotation for a control panel.
-
-    Family level has 27 Rfam blocks and carries a significance mark; the clan
-    level has only 8, too few for a dependable binary call, so the effect size
-    and its interval are shown instead.
-    """
-    e = CTRL_BOOT["alphabet_control"][regime_key][level]
-    if level == "family":
-        return ("*" if e["sig"] else "n.s."), e["sig"]
-    return f"{e['diff_mean']:+.2f}\n[{e['diff_ci_lo']:+.2f}, {e['diff_ci_hi']:+.2f}]", False
+ATTR = json.load(open(resolve("files/ablation/attribution_paths.json")))
+STEPS = [("B_fwd_pipeline", "+ RFoldseek\npipeline", "+ RFoldseek pipeline"),
+         ("C_fwd_matrix", "+ learned\nmatrix", "+ learned matrix"),
+         ("D_rfoldseek", "+ 3Dr\nalphabet", "+ 3Dr alphabet")]
+C_ANCHOR = "#5B7C99"
 
 
-def control_panel(ax, level, key, title):
-    data = {s: load_ctrl(s) for s, _ in REGIMES}
-    pqs = {s: load_ctrl_pq(s) for s, _ in REGIMES}
-    x = np.arange(len(REGIMES)); width = 0.36
-    vals = {"RFoldseek": [], "RiboSeek": []}
-    for suffix, _ in REGIMES:
-        vals["RFoldseek"].append(data[suffix][RF][key])
-        vals["RiboSeek"].append(data[suffix][RB][key])
-    for who, off in (("RFoldseek", -width / 2), ("RiboSeek", width / 2)):
-        bars = ax.bar(x + off, vals[who], width, color=METHOD_COLOR[who], edgecolor="#666666",
-                      linewidth=0.6, label=who, zorder=3)
-        for b, v in zip(bars, vals[who]):
-            ax.text(b.get_x() + b.get_width() / 2, v + 0.010, f"{v:.2f}", ha="center",
-                    va="bottom", fontsize=7.2, color="#333333")
-    for i, (suffix, _) in enumerate(REGIMES):
-        s, is_sig = control_annotation(REGIME_KEY[suffix], level)
-        top = max(vals["RFoldseek"][i], vals["RiboSeek"][i])
-        y = top + 0.050
-        ax.plot([x[i] - width / 2, x[i] - width / 2, x[i] + width / 2, x[i] + width / 2],
-                [y, y + 0.013, y + 0.013, y], lw=0.9, color="#777777", zorder=4)
-        ax.text(x[i], y + 0.010, s, ha="center", va="bottom",
-                fontsize=9 if is_sig else 7.0, color="#333333",
-                fontweight="bold" if is_sig else "normal", linespacing=1.15)
-    ax.set_xticks(x, [lab for _, lab in REGIMES])
-    ax.set_xlabel("Scoring regime", fontsize=12)
+def control_panel(ax, level, title):
+    """Waterfall: how the RiboSeek-to-RFoldseek gap divides between the search
+    pipeline, the learned substitution matrix and the 3Dr alphabet."""
+    lv = ATTR["levels"][level]
+    m, fwd = lv["means"], lv["forward"]
+    keys = ["A_ribo_published"] + [k for k, _, _ in STEPS]
+    vals = [m[k] for k in keys]
+    up = METHOD_COLOR["RFoldseek"]
+
+    ax.bar(0, vals[0], 0.62, color=C_ANCHOR, edgecolor="#3f5a6b", linewidth=0.6, zorder=3)
+    ax.text(0, vals[0] + 0.008, f"{vals[0]:.3f}", ha="center", va="bottom",
+            fontsize=8.5, fontweight="bold", color="#222222")
+    for n, (_, _, lbl) in enumerate(STEPS, start=1):
+        lo, hi = min(vals[n - 1], vals[n]), max(vals[n - 1], vals[n])
+        e0 = fwd[[l for _, _, l in STEPS][n - 1]]
+        col, edge = (up, "#15709c") if e0["diff"] > 0 else ("#BDBDBD", "#8a8a8a")
+        span = max(hi - lo, max(vals) * 0.006)          # keep a null step visible
+        ax.bar(n, span, 0.62, bottom=lo, color=col, edgecolor=edge,
+               linewidth=0.6, zorder=3)
+        e = fwd[lbl]
+        ax.errorbar(n, hi, yerr=[[max(e["diff"] - e["lo"], 0)], [max(e["hi"] - e["diff"], 0)]],
+                    fmt="none", ecolor="#555555", elinewidth=0.9, capsize=2.5, zorder=4)
+        star = "*" if e["sig"] else ""
+        ax.text(n, hi + max(e["hi"] - e["diff"], 0) + max(vals) * 0.022,
+                f"{e['diff']:+.3f}{star}", ha="center", va="bottom", fontsize=8,
+                color="#15709c" if e["diff"] > 0 else "#777777")
+        ax.plot([n - 1 + 0.31, n - 0.31], [vals[n - 1], vals[n - 1]],
+                color="#999999", lw=0.8, ls=(0, (3, 2)), zorder=2)
+    ax.bar(4, vals[-1], 0.62, color=C_ANCHOR, edgecolor="#3f5a6b", linewidth=0.6, zorder=3)
+    ax.text(4, vals[-1] + 0.008, f"{vals[-1]:.3f}", ha="center", va="bottom",
+            fontsize=8.5, fontweight="bold", color="#222222")
+    ax.plot([3 + 0.31, 4 - 0.31], [vals[-1], vals[-1]], color="#999999", lw=0.8,
+            ls=(0, (3, 2)), zorder=2)
+
+    ax.set_xticks(range(5))
+    ax.set_xticklabels(["RiboSeek\nas published"] + [t for _, t, _ in STEPS] + ["RFoldseek"],
+                       fontsize=8)
     ax.set_ylabel("Sens@1FP", fontsize=12)
-    ax.set_xlim(-0.5, len(REGIMES) - 0.5); ax.set_ylim(0, 0.74)
+    top = max(max(vals),
+              max(m[k] + max(fwd[l]["hi"] - fwd[l]["diff"], 0) for k, _, l in STEPS))
+    ax.set_ylim(0, top * 1.30)
+    ax.set_xlim(-0.55, 4.55)
     ax.set_title(title, fontsize=13, pad=8)
     ax.tick_params(axis="both", labelsize=10)
     ax.spines[["top", "right"]].set_visible(False)
@@ -200,8 +207,8 @@ def main():
     curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
     bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
     bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
-    control_panel(axes[2, 0], "family", "family_sens_1fp", "Family (alphabet control)")
-    control_panel(axes[2, 1], "clan", "clan_sens_1fp", "Clan (alphabet control)")
+    control_panel(axes[2, 0], "family", "Family (attribution)")
+    control_panel(axes[2, 1], "clan", "Clan (attribution)")
 
     for ax, lab in zip(axes.flat, "ABCDEF"):
         ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
