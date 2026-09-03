@@ -16,6 +16,7 @@ from sklearn.cluster import MiniBatchKMeans
 SPLITS = os.path.expanduser("~/Desktop/RFoldSeek/Splits/pdb_out")
 KEEP = sorted(list(range(0, 10)) + list(range(42, 49)))
 K_MER = 4
+SUFFIX = os.environ.get("SEL_SUFFIX", "")
 
 db = torch.load(F.resolve("files/models/db.pt"), map_location="cpu", weights_only=False)
 ents = db["entries"]
@@ -41,7 +42,8 @@ norm = {i: ((raw[i][:, KEEP] - mn) / sd).astype(np.float64) for i in raw}
 Xtr = ((tr - mn) / sd).astype(np.float64)
 
 alphabets = {"VQ-VAE_K80": ([np.asarray(e["tokens"], dtype=np.int64) for e in ents], 80)}
-for K in (20, 80):
+SEL_KS = [int(x) for x in os.environ.get("SEL_KS", "20,80").split(",")]
+for K in SEL_KS:
     km = MiniBatchKMeans(n_clusters=K, batch_size=10000, max_iter=200, random_state=42, n_init=3).fit(Xtr)
     alphabets[f"KMeans_K{K}"] = ([km.predict(norm[i]).astype(np.int64) if len(norm[i]) else np.zeros(0, np.int64)
                                   for i in range(len(ents))], K)
@@ -66,5 +68,5 @@ for name, (toks, K) in alphabets.items():
     out[name] = {"K": K, "postings_per_query": float(np.mean(post)),
                  "distinct_targets": float(np.mean(tgts)), "survivors": float(np.mean(surv))}
     print("%-14s %6d %14.0f %16.1f %14.1f" % (name, K, np.mean(post), np.mean(tgts), np.mean(surv)), flush=True)
-json.dump(out, open(f"{PC}/files/ablation/prefilter_selectivity.json", "w"), indent=2)
+json.dump(out, open(f"{PC}/files/ablation/prefilter_selectivity{SUFFIX}.json", "w"), indent=2)
 print("\nwrote files/ablation/prefilter_selectivity.json")
