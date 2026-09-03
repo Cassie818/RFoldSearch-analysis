@@ -50,12 +50,12 @@ def regime_panel(ax, key, title):
         ax.plot([x[i] - w / 2, x[i] - w / 2, x[i] + w / 2, x[i] + w / 2],
                 [top, top + 0.012, top + 0.012, top], lw=0.9, color="#777777", zorder=4)
         star = "*" if e["sig"] else ""
-        ax.text(x[i], top + 0.016, f"{e['diff_mean']:+.3f}{star}\n[{e['diff_ci_lo']:+.3f}, {e['diff_ci_hi']:+.3f}]",
-                ha="center", va="bottom", fontsize=6.6, color="#333333", linespacing=1.15)
+        ax.text(x[i], top + 0.016, f"{e['diff_mean']:+.3f}{star}", ha="center",
+                va="bottom", fontsize=8, color="#333333")
     ax.set_xticks(x, [lbl for _, lbl, _ in REGIMES], fontsize=9)
     ax.set_xlabel("Scoring regime", fontsize=11)
     ax.set_ylabel("Sens@1FP", fontsize=11)
-    ax.set_ylim(0, max(max(v) for v in vals.values()) * 1.62)
+    ax.set_ylim(0, max(max(v) for v in vals.values()) * 1.42)
     ax.set_title(title, fontsize=12)
     ax.tick_params(labelsize=9)
     ax.spines[["top", "right"]].set_visible(False)
