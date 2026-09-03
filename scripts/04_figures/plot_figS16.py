@@ -36,13 +36,14 @@ CTRL_BOOT = json.load(open(resolve("files/production/retrieval/bootstrap_control
 
 
 def annotation(K, level):
-    """Family level carries a significance mark (27 Rfam blocks); the clan level
-    has only 8, too few for a dependable binary call, so the paired effect size
-    and its interval are shown instead."""
+    """Paired block-bootstrap difference from the VQ-VAE: the effect size with
+    its interval, marked when the interval excludes zero. Clan-level intervals
+    rest on eight Rfam blocks, so a missing mark is not evidence of no
+    difference."""
     e = CTRL_BOOT["quantiser_control"][f"KMeans_K{K}"][level]
-    if level == "family":
-        return ("*" if e["sig"] else "n.s."), e["sig"]
-    return f"{e['diff_mean']:+.2f}\n[{e['diff_ci_lo']:+.2f}, {e['diff_ci_hi']:+.2f}]", False
+    star = "*" if e["sig"] else ""
+    return (f"{e['diff_mean']:+.3f}{star}\n[{e['diff_ci_lo']:+.3f}, {e['diff_ci_hi']:+.3f}]",
+            e["sig"])
 
 
 def main():
@@ -64,9 +65,8 @@ def main():
                 label="K-means")
         for K, v in zip(KS, km):
             txt, is_sig = annotation(K, level)
-            ax.annotate(txt, (K, v), textcoords="offset points",
-                        xytext=(0, -17 if is_sig else -30), ha="center",
-                        fontsize=10 if is_sig else 7.0, color="#333333", linespacing=1.15)
+            ax.annotate(txt, (K, v), textcoords="offset points", xytext=(0, -32),
+                        ha="center", fontsize=7.0, color="#333333", linespacing=1.15)
             ax.annotate(f"{v:.3f}", (K, v), textcoords="offset points", xytext=(0, 10),
                         ha="center", fontsize=9, color="#555555")
         ax.set_xscale("log")

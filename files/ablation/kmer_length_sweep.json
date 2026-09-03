@@ -1,0 +1,79 @@
+{
+  "VQ-VAE_K80|k3": {
+    "alphabet": "VQ-VAE_K80",
+    "K": 80,
+    "k": 3,
+    "space": 512000,
+    "family_sens_1fp": 0.5824365433201394,
+    "clan_sens_1fp": 0.2191277523732865,
+    "postings_per_query": 47466.943396226416,
+    "survivors": 617.7547169811321,
+    "sec": 155.96341919898987
+  },
+  "VQ-VAE_K80|k4": {
+    "alphabet": "VQ-VAE_K80",
+    "K": 80,
+    "k": 4,
+    "space": 40960000,
+    "family_sens_1fp": 0.5844170444830004,
+    "clan_sens_1fp": 0.21863392521279268,
+    "postings_per_query": 12601.132075471698,
+    "survivors": 385.77358490566036,
+    "sec": 135.91113591194153
+  },
+  "VQ-VAE_K80|k5": {
+    "alphabet": "VQ-VAE_K80",
+    "K": 80,
+    "k": 5,
+    "space": 3276800000,
+    "family_sens_1fp": 0.559538096920493,
+    "clan_sens_1fp": 0.22697170918276055,
+    "postings_per_query": 4468.047169811321,
+    "survivors": 201.70754716981133,
+    "sec": 132.74364113807678
+  },
+  "VQ-VAE_K80|k6": {
+    "alphabet": "VQ-VAE_K80",
+    "K": 80,
+    "k": 6,
+    "space": 262144000000,
+    "family_sens_1fp": 0.5358756943701511,
+    "clan_sens_1fp": 0.2204570091814705,
+    "postings_per_query": 1847.4245283018868,
+    "survivors": 100.79245283018868,
+    "sec": 127.350754737854
+  },
+  "KMeans_K20|k4": {
+    "alphabet": "KMeans_K20",
+    "K": 20,
+    "k": 4,
+    "space": 160000,
+    "family_sens_1fp": 0.5675699053396756,
+    "clan_sens_1fp": 0.19314481480801915,
+    "postings_per_query": 568413.5471698113,
+    "survivors": 789.7641509433962,
+    "sec": 168.78170919418335
+  },
+  "KMeans_K20|k5": {
+    "alphabet": "KMeans_K20",
+    "K": 20,
+    "k": 5,
+    "space": 3200000,
+    "family_sens_1fp": 0.5696399446669798,
+    "clan_sens_1fp": 0.1870687282721625,
+    "postings_per_query": 216447.64150943398,
+    "survivors": 710.3018867924528,
+    "sec": 141.0581760406494
+  },
+  "KMeans_K20|k6": {
+    "alphabet": "KMeans_K20",
+    "K": 20,
+    "k": 6,
+    "space": 64000000,
+    "family_sens_1fp": 0.5645322591192721,
+    "clan_sens_1fp": 0.18812338940025913,
+    "postings_per_query": 82037.1603773585,
+    "survivors": 606.0377358490566,
+    "sec": 128.55218482017517
+  }
+}

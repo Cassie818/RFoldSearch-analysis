@@ -47,6 +47,7 @@ def _lighten(h, f=0.24):
     return "#%02x%02x%02x" % tuple(round(c + (255 - c) * f) for c in (r, g, b))
 
 
+METHOD_BASE = dict(METHOD_COLOR)          # text uses the unlightened tone
 METHOD_COLOR = {k: _lighten(v) for k, v in METHOD_COLOR.items()}
 LINESTYLE = {m: "-" for m in METHODS}
 LINESTYLE["BLASTN"] = "--"
@@ -110,8 +111,8 @@ def bar_panel(ax, tm, metric, title, ylabel, boot, level):
             # and the "* vs RFoldseek" note in the corner disambiguates them.
             if m == "RFoldseek":
                 ax.text(b.get_x() + b.get_width() / 2, top, f"{v:.2f}",
-                        ha="center", va="bottom", fontsize=8.5, color="#222222",
-                        fontweight="bold")
+                        ha="center", va="bottom", fontsize=8.5,
+                        color=METHOD_BASE["RFoldseek"])
             elif sig:
                 ax.text(b.get_x() + b.get_width() / 2, top, "*",
                         ha="center", va="bottom", fontsize=10, color="#555555",
@@ -119,8 +120,8 @@ def bar_panel(ax, tm, metric, title, ylabel, boot, level):
     ceil = tm["thresholds"][keys[0]].get("US-align", tm["thresholds"][keys[0]].get("US-align*"))[metric]
     ax.plot([-0.5, len(thr) - 0.5], [ceil, ceil], ls="--", color=METHOD_COLOR["US-align"],
             lw=1.5, zorder=2)
-    ax.text(len(thr) - 0.52, ceil - 0.03, "US-align (oracle ceiling)", ha="right", va="top",
-            fontsize=8.5, color=METHOD_COLOR["US-align"])
+    ax.text(-0.44, ceil + 0.012, "US-align (oracle ceiling)", ha="left",
+            va="bottom", fontsize=8.5, color=METHOD_BASE["US-align"])
     ax.set_xticks(x, [f"{t:.2f}" for t in thr])
     ax.set_xlabel("TM-score similarity threshold", fontsize=12)
     ax.set_ylabel(ylabel, fontsize=12)
@@ -144,7 +145,7 @@ def load_ctrl_pq(suffix):
 
 ATTR = json.load(open(resolve("files/ablation/attribution_paths.json")))
 STEPS = [("B_fwd_pipeline", "+ RFoldseek\npipeline", "+ RFoldseek pipeline"),
-         ("C_fwd_matrix", "+ learned\nmatrix", "+ learned matrix"),
+         ("C_fwd_matrix", "+ Structure-BLOSUM\nmatrix", "+ learned matrix"),
          ("D_rfoldseek", "+ 3Dr\nalphabet", "+ 3Dr alphabet")]
 # Anchors reuse the method colours from rows 1-2; each contribution gets its own
 # hue, checked pairwise for CVD separation against the anchors and each other.
@@ -166,7 +167,7 @@ def control_panel(ax, level, title):
     ax.bar(0, vals[0], 0.62, color=METHOD_COLOR["RiboSeek"], edgecolor="#b05a94",
            linewidth=0.6, zorder=3)
     ax.text(0, vals[0] + 0.008, f"{vals[0]:.3f}", ha="center", va="bottom",
-            fontsize=8.5, fontweight="bold", color="#222222")
+            fontsize=8.5, color=METHOD_BASE["RiboSeek"])
     for n, (_, _, lbl) in enumerate(STEPS, start=1):
         lo, hi = min(vals[n - 1], vals[n]), max(vals[n - 1], vals[n])
         e0 = fwd[[l for _, _, l in STEPS][n - 1]]
@@ -188,12 +189,12 @@ def control_panel(ax, level, title):
     ax.bar(4, vals[-1], 0.62, color=METHOD_COLOR["RFoldseek"], edgecolor="#15709c",
            linewidth=0.6, zorder=3)
     ax.text(4, vals[-1] + 0.008, f"{vals[-1]:.3f}", ha="center", va="bottom",
-            fontsize=8.5, fontweight="bold", color="#222222")
+            fontsize=8.5, color=METHOD_BASE["RFoldseek"])
     ax.plot([3 + 0.31, 4 - 0.31], [vals[-1], vals[-1]], color="#999999", lw=0.8,
             ls=(0, (3, 2)), zorder=2)
 
     ax.set_xticks(range(5))
-    ax.set_xticklabels(["RiboSeek\nas published"] + [t for _, t, _ in STEPS] + ["RFoldseek"],
+    ax.set_xticklabels(["RiboSeek"] + [t for _, t, _ in STEPS] + ["RFoldseek"],
                        fontsize=8)
     ax.set_ylabel("Sens@1FP", fontsize=12)
     top = max(max(vals),
@@ -216,8 +217,8 @@ def main():
     curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
     bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
     bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
-    control_panel(axes[2, 0], "family", "Family (attribution)")
-    control_panel(axes[2, 1], "clan", "Clan (attribution)")
+    control_panel(axes[2, 0], "family", "Family")
+    control_panel(axes[2, 1], "clan", "Clan")
 
     for ax, lab in zip(axes.flat, "ABCDEF"):
         ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
