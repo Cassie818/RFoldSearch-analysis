@@ -25,7 +25,9 @@ RF, RB = "RFoldseek_tokens_same_pipeline", "RiboSeek_sa20_same_pipeline"
 REGIMES = [("", "Native", "native"), ("_identity", "Identity", "identity"),
            ("_self_blosum", "Self-BLOSUM", "self_blosum")]
 C_RF, C_RB = "#4FB3E3", "#EC9BD3"          # lightened method colours
-C_STEP = {"+ 3Dr alphabet": "#B5651D", "+ RFoldseek pipeline & matrix": "#C9A227"}
+# same encoding as Fig. 2E,F: anchors carry the method colours, contributions
+# share one pale fill and are told apart by their axis labels
+STEP_FILL, STEP_TEXT = "#C8D3DA", "#4A6472"
 BOOT = json.load(open(resolve("files/production/retrieval/bootstrap_controls.json")))
 ATTR = json.load(open(resolve("files/ablation/attribution_paths.json")))
 
@@ -72,13 +74,13 @@ def reverse_panel(ax, level, title):
     for n, lbl in enumerate(steps, start=1):
         lo, hi = min(vals[n - 1], vals[n]), max(vals[n - 1], vals[n])
         e = rev[lbl]
-        ax.bar(n, hi - lo, 0.6, bottom=lo, color=C_STEP[lbl], edgecolor="#555555",
+        ax.bar(n, hi - lo, 0.6, bottom=lo, color=STEP_FILL, edgecolor="#8FA3AE",
                linewidth=0.6, zorder=3)
         ax.errorbar(n, hi, yerr=[[max(e["diff"] - e["lo"], 0)], [max(e["hi"] - e["diff"], 0)]],
                     fmt="none", ecolor="#555555", elinewidth=0.9, capsize=2.5, zorder=4)
         ax.text(n, hi + max(e["hi"] - e["diff"], 0) + max(vals) * 0.03,
                 f"{e['diff']:+.3f}{'*' if e['sig'] else ''}", ha="center", va="bottom",
-                fontsize=8, color=C_STEP[lbl])
+                fontsize=8, color=STEP_TEXT)
         ax.plot([n - 1 + 0.3, n - 0.3], [vals[n - 1], vals[n - 1]], color="#999999",
                 lw=0.8, ls=(0, (3, 2)), zorder=2)
     ax.bar(3, vals[-1], 0.6, color=C_RF, edgecolor="#15709c", linewidth=0.6, zorder=3)
