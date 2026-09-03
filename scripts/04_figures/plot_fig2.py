@@ -146,7 +146,12 @@ ATTR = json.load(open(resolve("files/ablation/attribution_paths.json")))
 STEPS = [("B_fwd_pipeline", "+ RFoldseek\npipeline", "+ RFoldseek pipeline"),
          ("C_fwd_matrix", "+ learned\nmatrix", "+ learned matrix"),
          ("D_rfoldseek", "+ 3Dr\nalphabet", "+ 3Dr alphabet")]
-C_ANCHOR = "#5B7C99"
+# Anchors reuse the method colours from rows 1-2; each contribution gets its own
+# hue, checked pairwise for CVD separation against the anchors and each other.
+STEP_COLOR = {"+ RFoldseek pipeline": "#C9A227",
+              "+ learned matrix": "#556B7D",
+              "+ 3Dr alphabet": "#B5651D"}
+NULL_COLOR = "#BDBDBD"
 
 
 def control_panel(ax, level, title):
@@ -158,13 +163,16 @@ def control_panel(ax, level, title):
     vals = [m[k] for k in keys]
     up = METHOD_COLOR["RFoldseek"]
 
-    ax.bar(0, vals[0], 0.62, color=C_ANCHOR, edgecolor="#3f5a6b", linewidth=0.6, zorder=3)
+    ax.bar(0, vals[0], 0.62, color=METHOD_COLOR["RiboSeek"], edgecolor="#b05a94",
+           linewidth=0.6, zorder=3)
     ax.text(0, vals[0] + 0.008, f"{vals[0]:.3f}", ha="center", va="bottom",
             fontsize=8.5, fontweight="bold", color="#222222")
     for n, (_, _, lbl) in enumerate(STEPS, start=1):
         lo, hi = min(vals[n - 1], vals[n]), max(vals[n - 1], vals[n])
         e0 = fwd[[l for _, _, l in STEPS][n - 1]]
-        col, edge = (up, "#15709c") if e0["diff"] > 0 else ("#BDBDBD", "#8a8a8a")
+        lbl0 = [l for _, _, l in STEPS][n - 1]
+        col = STEP_COLOR[lbl0] if e0["diff"] > 0 else NULL_COLOR
+        edge = "#555555"
         span = max(hi - lo, max(vals) * 0.006)          # keep a null step visible
         ax.bar(n, span, 0.62, bottom=lo, color=col, edgecolor=edge,
                linewidth=0.6, zorder=3)
@@ -174,10 +182,11 @@ def control_panel(ax, level, title):
         star = "*" if e["sig"] else ""
         ax.text(n, hi + max(e["hi"] - e["diff"], 0) + max(vals) * 0.022,
                 f"{e['diff']:+.3f}{star}", ha="center", va="bottom", fontsize=8,
-                color="#15709c" if e["diff"] > 0 else "#777777")
+                color=STEP_COLOR[[l for _, _, l in STEPS][n - 1]] if e["diff"] > 0 else "#777777")
         ax.plot([n - 1 + 0.31, n - 0.31], [vals[n - 1], vals[n - 1]],
                 color="#999999", lw=0.8, ls=(0, (3, 2)), zorder=2)
-    ax.bar(4, vals[-1], 0.62, color=C_ANCHOR, edgecolor="#3f5a6b", linewidth=0.6, zorder=3)
+    ax.bar(4, vals[-1], 0.62, color=METHOD_COLOR["RFoldseek"], edgecolor="#15709c",
+           linewidth=0.6, zorder=3)
     ax.text(4, vals[-1] + 0.008, f"{vals[-1]:.3f}", ha="center", va="bottom",
             fontsize=8.5, fontweight="bold", color="#222222")
     ax.plot([3 + 0.31, 4 - 0.31], [vals[-1], vals[-1]], color="#999999", lw=0.8,
