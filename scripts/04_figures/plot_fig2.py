@@ -149,10 +149,11 @@ STEPS = [("B_fwd_pipeline", "+ RFoldseek\npipeline", "+ RFoldseek pipeline"),
          ("D_rfoldseek", "+ 3Dr\nalphabet", "+ 3Dr alphabet")]
 # Anchors reuse the method colours from rows 1-2; each contribution gets its own
 # hue, checked pairwise for CVD separation against the anchors and each other.
-STEP_COLOR = {"+ RFoldseek pipeline": "#C9A227",
-              "+ learned matrix": "#556B7D",
-              "+ 3Dr alphabet": "#B5651D"}
-NULL_COLOR = "#BDBDBD"
+# One pale tone for every contribution: the anchors carry the method colours,
+# and the three steps are told apart by their axis labels, not by hue.
+STEP_FILL = "#C8D3DA"
+STEP_TEXT = "#4A6472"
+NULL_COLOR = "#E2E2E2"
 
 
 def control_panel(ax, level, title):
@@ -172,8 +173,8 @@ def control_panel(ax, level, title):
         lo, hi = min(vals[n - 1], vals[n]), max(vals[n - 1], vals[n])
         e0 = fwd[[l for _, _, l in STEPS][n - 1]]
         lbl0 = [l for _, _, l in STEPS][n - 1]
-        col = STEP_COLOR[lbl0] if e0["diff"] > 0 else NULL_COLOR
-        edge = "#555555"
+        col = STEP_FILL if e0["diff"] > 0 else NULL_COLOR
+        edge = "#8FA3AE" if e0["diff"] > 0 else "#BDBDBD"
         span = max(hi - lo, max(vals) * 0.006)          # keep a null step visible
         ax.bar(n, span, 0.62, bottom=lo, color=col, edgecolor=edge,
                linewidth=0.6, zorder=3)
@@ -183,7 +184,7 @@ def control_panel(ax, level, title):
         star = "*" if e["sig"] else ""
         ax.text(n, hi + max(e["hi"] - e["diff"], 0) + max(vals) * 0.022,
                 f"{e['diff']:+.3f}{star}", ha="center", va="bottom", fontsize=8,
-                color=STEP_COLOR[[l for _, _, l in STEPS][n - 1]] if e["diff"] > 0 else "#777777")
+                color=STEP_TEXT if e["diff"] > 0 else "#888888")
         ax.plot([n - 1 + 0.31, n - 0.31], [vals[n - 1], vals[n - 1]],
                 color="#999999", lw=0.8, ls=(0, (3, 2)), zorder=2)
     ax.bar(4, vals[-1], 0.62, color=METHOD_COLOR["RFoldseek"], edgecolor="#15709c",
