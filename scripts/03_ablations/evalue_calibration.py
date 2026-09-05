@@ -6,11 +6,13 @@ three nulls are compared on the SAME held-out unrelated targets:
   (a) unrelated-200   : the idealised null (needs relationships known in advance)
   (b) random-200      : the deployable null (may include related chains)
   (c) random-200-trim : same, with the top 10% of scores censored before fitting
+  (d) random-200-trunc: same censoring, fitted with the truncated likelihood
 """
 from __future__ import annotations
 import json, os, sys, time
 from pathlib import Path
 import numpy as np, torch
+from scipy.optimize import minimize
 from scipy.stats import gumbel_r
 
 PC = os.path.expanduser("~/Desktop/RFoldseek-paper-code")
@@ -35,6 +37,37 @@ def fit(scores, trim=0.0):
     if trim > 0:
         s = s[: max(10, int(len(s) * (1 - trim)))]
     return gumbel_r.fit(s)
+
+
+def fit_truncated(scores, trim):
+    """Gumbel MLE for a sample whose top ``trim`` fraction was removed.
+
+    Censoring the high scores leaves a sample drawn from the Gumbel truncated
+    at T, so the likelihood has to be divided by F(T). Fitting the untruncated
+    likelihood to it -- as ``fit(..., trim=...)`` does -- reads the missing tail
+    as a narrower distribution, biasing beta down and lambda up, which makes
+    E-values too small.
+
+        log L = -n log beta - sum(z) - sum(exp(-z)) + n exp(-(T-mu)/beta)
+
+    with z = (x - mu) / beta. The last term is -n log F(T).
+    """
+    s = np.sort(scores)
+    x = s[: max(10, int(len(s) * (1 - trim)))]
+    T = float(x[-1])
+    mu0, beta0 = gumbel_r.fit(x)
+
+    def nll(p):
+        mu, log_beta = p
+        beta = np.exp(log_beta)
+        z = (x - mu) / beta
+        ll = (-len(x) * log_beta - z.sum() - np.exp(-z).sum()
+              + len(x) * np.exp(-(T - mu) / beta))
+        return -ll
+
+    r = minimize(nll, [mu0, np.log(beta0)], method="Nelder-Mead",
+                 options={"xatol": 1e-8, "fatol": 1e-10, "maxiter": 5000})
+    return float(r.x[0]), float(np.exp(r.x[1]))
 
 
 def main():
@@ -64,7 +97,8 @@ def main():
     lens = np.array([len(t) for t in toks])
     rng = np.random.default_rng(SEED)
     n = len(toks)
-    variants = ["iid-background-200", "shuffle-200", "unrelated-200", "random-200", "random-200-trim10"]
+    variants = ["iid-background-200", "shuffle-200", "unrelated-200", "random-200",
+                "random-200-trim10", "random-200-trunc10"]
     obs = {v: {str(e): [] for e in GRID} for v in variants}
     contam, used, t0 = [], 0, time.time()
     for k, qi in enumerate(famq, 1):
@@ -89,7 +123,8 @@ def main():
                 "shuffle-200": fit(shuf),
                 "unrelated-200": fit(sc[cal_u]),
                 "random-200": fit(sc[ridx]),
-                "random-200-trim10": fit(sc[ridx], trim=0.10)}
+                "random-200-trim10": fit(sc[ridx], trim=0.10),
+                "random-200-trunc10": fit_truncated(sc[ridx], trim=0.10)}
         scale = (n - 1) / len(held)
         for v, (mu, beta) in fits.items():
             E = (n - 1) * gumbel_r.sf(sc[held], loc=mu, scale=beta)

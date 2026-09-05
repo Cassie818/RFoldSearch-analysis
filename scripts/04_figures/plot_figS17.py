@@ -20,6 +20,7 @@ SERIES = [
     ("shuffle-200",       "Block shuffle",              "#E07A5F", "o"),
     ("random-200",        "Random sample",              "#8C8C8C", "^"),
     ("random-200-trim10", "Random sample, censored",    "#1F9BD8", "s"),
+    ("random-200-trunc10", "Random sample, censored\n(truncated likelihood)", "#2E8B57", "P"),
     ("unrelated-200",     "Known-unrelated (idealised)", "#5B7C99", "D"),
 ]
 
