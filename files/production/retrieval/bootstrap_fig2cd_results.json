@@ -8,6 +8,13 @@
         "sig_vs_rf": null,
         "n_blocks": 27
       },
+      "RFoldseek-TM": {
+        "estimate": 0.8004366558968266,
+        "ci_lower": 0.7003307326849627,
+        "ci_upper": 0.9200866123611084,
+        "sig_vs_rf": true,
+        "n_blocks": 27
+      },
       "US-align*": {
         "estimate": 1.0,
         "ci_lower": 1.0,
@@ -57,6 +64,13 @@
         "ci_lower": 0.3100072394944821,
         "ci_upper": 0.7563391177650551,
         "sig_vs_rf": null,
+        "n_blocks": 9
+      },
+      "RFoldseek-TM": {
+        "estimate": 0.7266436871708516,
+        "ci_lower": 0.6331556152474569,
+        "ci_upper": 0.927731377507997,
+        "sig_vs_rf": true,
         "n_blocks": 9
       },
       "US-align*": {
@@ -112,6 +126,13 @@
         "sig_vs_rf": null,
         "n_blocks": 26
       },
+      "RFoldseek-TM": {
+        "estimate": 0.8230313073939115,
+        "ci_lower": 0.7234370343777147,
+        "ci_upper": 0.9439083713285953,
+        "sig_vs_rf": true,
+        "n_blocks": 26
+      },
       "US-align*": {
         "estimate": 1.0,
         "ci_lower": 1.0,
@@ -161,6 +182,13 @@
         "ci_lower": 0.2743845342875515,
         "ci_upper": 0.7821998934823536,
         "sig_vs_rf": null,
+        "n_blocks": 8
+      },
+      "RFoldseek-TM": {
+        "estimate": 0.7583983860079786,
+        "ci_lower": 0.6550418186857939,
+        "ci_upper": 0.9357875651888752,
+        "sig_vs_rf": true,
         "n_blocks": 8
       },
       "US-align*": {
@@ -216,6 +244,13 @@
         "sig_vs_rf": null,
         "n_blocks": 25
       },
+      "RFoldseek-TM": {
+        "estimate": 0.8411701375150467,
+        "ci_lower": 0.7360851849719979,
+        "ci_upper": 0.9613423707250258,
+        "sig_vs_rf": true,
+        "n_blocks": 25
+      },
       "US-align*": {
         "estimate": 1.0,
         "ci_lower": 1.0,
@@ -265,6 +300,13 @@
         "ci_lower": 0.18163823557878436,
         "ci_upper": 0.8746660534480032,
         "sig_vs_rf": null,
+        "n_blocks": 8
+      },
+      "RFoldseek-TM": {
+        "estimate": 0.7309890841027282,
+        "ci_lower": 0.5243386729394077,
+        "ci_upper": 0.9639836907278767,
+        "sig_vs_rf": true,
         "n_blocks": 8
       },
       "US-align*": {

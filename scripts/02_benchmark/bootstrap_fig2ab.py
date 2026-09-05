@@ -30,7 +30,16 @@ SEED = 123
 # explicit mapping to keep bootstrap CI bit-for-bit reproducible.
 LEVEL_SEED = {"family": SEED + 1, "clan": SEED + 2}
 GRID = np.linspace(0, 1, 60)
-METHODS = ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]
+METHODS = [
+    "RFoldseek",
+    "RFoldseek-TM",
+    "GTalign",
+    "RTM-align",
+    "US-align",
+    "RMalign",
+    "RiboSeek",
+    "BLASTN",
+]
 
 
 def curve_on_grid(vals):

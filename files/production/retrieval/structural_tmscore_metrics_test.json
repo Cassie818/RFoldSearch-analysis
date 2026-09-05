@@ -9,6 +9,13 @@
         "n_queries": 105,
         "n_clan": 91
       },
+      "RFoldseek-TM": {
+        "Recall@1": 0.9714285714285714,
+        "Sens@1FP": 0.8004366558968266,
+        "Sens@1FP_clan": 0.7266436871708516,
+        "n_queries": 105,
+        "n_clan": 91
+      },
       "US-align*": {
         "Recall@1": 1.0,
         "Sens@1FP": 1.0,
@@ -60,6 +67,13 @@
         "n_queries": 104,
         "n_clan": 86
       },
+      "RFoldseek-TM": {
+        "Recall@1": 0.9807692307692307,
+        "Sens@1FP": 0.8230313073939115,
+        "Sens@1FP_clan": 0.7583983860079786,
+        "n_queries": 104,
+        "n_clan": 86
+      },
       "US-align*": {
         "Recall@1": 1.0,
         "Sens@1FP": 1.0,
@@ -108,6 +122,13 @@
         "Recall@1": 0.9019607843137255,
         "Sens@1FP": 0.5985017187636759,
         "Sens@1FP_clan": 0.5058498968167284,
+        "n_queries": 102,
+        "n_clan": 79
+      },
+      "RFoldseek-TM": {
+        "Recall@1": 0.9803921568627451,
+        "Sens@1FP": 0.8411701375150467,
+        "Sens@1FP_clan": 0.7309890841027282,
         "n_queries": 102,
         "n_clan": 79
       },

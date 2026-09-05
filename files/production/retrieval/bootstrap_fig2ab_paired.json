@@ -3,6 +3,14 @@
   "_n_replicates": 2000,
   "_seed": 123,
   "family": {
+    "RFoldseek-TM": {
+      "anchor_mean": 0.5844170444830004,
+      "method_mean": 0.6599678532819807,
+      "diff_mean": -0.07555080879898035,
+      "diff_ci_lo": -0.1359628844702319,
+      "diff_ci_hi": -0.033768913055643966,
+      "sig_vs_rf": true
+    },
     "GTalign": {
       "anchor_mean": 0.5844170444830004,
       "method_mean": 0.6315247141072045,
@@ -53,6 +61,14 @@
     }
   },
   "clan": {
+    "RFoldseek-TM": {
+      "anchor_mean": 0.21863392521279268,
+      "method_mean": 0.2968257822726099,
+      "diff_mean": -0.07819185705981724,
+      "diff_ci_lo": -0.4174475270657461,
+      "diff_ci_hi": 0.03991190565264639,
+      "sig_vs_rf": false
+    },
     "GTalign": {
       "anchor_mean": 0.21863392521279268,
       "method_mean": 0.3180773184131584,

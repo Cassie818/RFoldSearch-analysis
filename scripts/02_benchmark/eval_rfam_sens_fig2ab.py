@@ -92,10 +92,8 @@ def expand(qk):
     return out
 
 
-def rank_new(q):
-    """RFoldseek ranking for query q: similar-k-mer-expansion prefilter over the
-    inverted index (double-match on a common diagonal), top-N candidates, then
-    token Smith-Waterman reranking; returns db indices by descending SW score."""
+def prefilter_candidates(q):
+    """RFoldseek similar-k-mer prefilter candidates before final reranking."""
     tt = toks[q]
     td = defaultdict(dict)
     for qp in range(len(tt) - KMER_K + 1):
@@ -107,7 +105,13 @@ def rank_new(q):
     sc = [(ti, max((c for c in dm.values() if c >= 2), default=-1)) for ti, dm in td.items()]
     sc = [x for x in sc if x[1] > 0]
     sc.sort(key=lambda x: (-x[1], x[0]))  # deterministic tie-break: score, then target index
-    cand = np.array([x[0] for x in sc[:TOPN]], np.int64)
+    return np.array([x[0] for x in sc[:TOPN]], np.int64)
+
+
+def rank_new(q):
+    """RFoldseek ranking for query q: token prefilter, then token SW reranking."""
+    tt = toks[q]
+    cand = prefilter_candidates(q)
     if len(cand) == 0:
         return np.zeros(0, np.int64)
     sw = np.array([smith_waterman_numba(tt, toks[t], sub, GO, GE) for t in cand], dtype=np.float64)
@@ -154,6 +158,14 @@ def rank_us(q):
     d = _us.get(q, {})
     order = sorted(((t, s) for t, s in d.items() if t != q), key=lambda x: (-x[1], x[0]))
     return np.asarray([t for t, _ in order], dtype=np.int64)
+
+
+def rank_rfoldseek_tm(q):
+    """RFoldseek-TM: RFoldseek prefilter candidates reranked by US-align TM."""
+    d = _us.get(q, {})
+    rows = [(t, d[t], rank) for rank, t in enumerate(prefilter_candidates(q)) if t in d and t != q]
+    rows.sort(key=lambda x: (-x[1], x[2], x[0]))
+    return np.asarray([t for t, _, _ in rows], dtype=np.int64)
 
 
 def _load_pair_scores(path, key):
@@ -350,6 +362,8 @@ def per_query_sens(rank_fn):
 
 print("computing NEW RFoldseek per-query...", flush=True)
 nf, nc = per_query_sens(rank_new)
+print("computing RFoldseek-TM per-query...", flush=True)
+tmf, tmc = per_query_sens(rank_rfoldseek_tm)
 print("computing RiboSeek per-query...", flush=True)
 rf, rc = per_query_sens(rank_ribo)
 # assemble output in the same array order as the test subset positions
@@ -366,6 +380,7 @@ def pack(fam_map, clan_map):
 
 
 out["RFoldseek"] = pack(nf, nc)
+out["RFoldseek-TM"] = pack(tmf, tmc)
 out["RiboSeek"] = pack(rf, rc)
 # US-align is recomputed here with the symmetric-TM convention (see rank_us)
 if _us:
@@ -423,7 +438,7 @@ elif "BLASTN" in _prev:
     )
 json.dump(out, open(_dst, "w"), indent=2)
 print("\n=== TEST-ONLY per-query means ===", flush=True)
-for t in ["RFoldseek", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]:
+for t in ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign", "RiboSeek", "BLASTN"]:
     if t in out:
         print(
             f"  {t:12s} famSens={out[t]['family']['mean']:.3f}  clanSens={out[t]['clan']['mean']:.3f}",

@@ -91,10 +91,8 @@ def expand(qk):
     return out
 
 
-def rank_new(q):
-    """RFoldseek ranking for query q: similar-k-mer-expansion prefilter over the
-    inverted index (double-match on a common diagonal), top-N candidates, then
-    token Smith-Waterman reranking; returns db indices by descending score."""
+def prefilter_candidates(q):
+    """RFoldseek similar-k-mer prefilter candidates before final reranking."""
     tt = toks[q]
     td = defaultdict(dict)
     for qp in range(len(tt) - KMER_K + 1):
@@ -106,7 +104,13 @@ def rank_new(q):
     sc = [(ti, max((c for c in dm.values() if c >= 2), default=-1)) for ti, dm in td.items()]
     sc = [x for x in sc if x[1] > 0]
     sc.sort(key=lambda x: (-x[1], x[0]))  
-    cand = np.array([x[0] for x in sc[:TOPN]], np.int64)
+    return np.array([x[0] for x in sc[:TOPN]], np.int64)
+
+
+def rank_new(q):
+    """RFoldseek ranking for query q: token prefilter, then token SW reranking."""
+    tt = toks[q]
+    cand = prefilter_candidates(q)
     if len(cand) == 0:
         return np.zeros(0, np.int64)
     return cand[
@@ -157,6 +161,18 @@ def rank_us(q):
     cand = [(t, row[t]) for t in range(n) if t != q and not np.isnan(row[t])]
     return np.asarray([t for t, _ in sorted(cand, key=lambda kv: (-kv[1], kv[0]))],
                       dtype=np.int64)
+
+
+def rank_rfoldseek_tm(q):
+    """RFoldseek-TM: RFoldseek prefilter candidates reranked by US-align TM."""
+    row = tm[q]
+    rows = [
+        (t, row[t], rank)
+        for rank, t in enumerate(prefilter_candidates(q))
+        if t != q and not np.isnan(row[t])
+    ]
+    rows.sort(key=lambda x: (-x[1], x[2], x[0]))
+    return np.asarray([t for t, _, _ in rows], dtype=np.int64)
 
 
 def rank_blastn_all():
@@ -309,6 +325,7 @@ def rank_rtm(q):
 
 RANKERS = {
     "RFoldseek": rank_new,
+    "RFoldseek-TM": rank_rfoldseek_tm,
     "US-align*": rank_us,
     "RMalign": rank_rm,
     "RiboSeek": rank_ribo,
