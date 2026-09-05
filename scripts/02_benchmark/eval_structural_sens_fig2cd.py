@@ -147,14 +147,16 @@ for line in open(RET / "rmalign_full.cache.jsonl"):
 def rank_rm(q):
     d = rm.get(q, {})
     return np.asarray(
-        [t for t, _ in sorted(d.items(), key=lambda kv: -kv[1]) if t != q], dtype=np.int64
+        [t for t, _ in sorted(d.items(), key=lambda kv: (-kv[1], kv[0])) if t != q],
+        dtype=np.int64,
     )
 
 
 def rank_us(q):
     row = tm[q]
     cand = [(t, row[t]) for t in range(n) if t != q and not np.isnan(row[t])]
-    return np.asarray([t for t, _ in sorted(cand, key=lambda kv: -kv[1])], dtype=np.int64)
+    return np.asarray([t for t, _ in sorted(cand, key=lambda kv: (-kv[1], kv[0]))],
+                      dtype=np.int64)
 
 
 def rank_blastn_all():
@@ -229,7 +231,8 @@ except FileNotFoundError:
 def rank_bl(q):
     d = blast.get(q, {})
     return np.asarray(
-        [t for t, _ in sorted(d.items(), key=lambda kv: -kv[1]) if t != q], dtype=np.int64
+        [t for t, _ in sorted(d.items(), key=lambda kv: (-kv[1], kv[0])) if t != q],
+        dtype=np.int64,
     )
 
 

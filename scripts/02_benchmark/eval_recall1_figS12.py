@@ -169,7 +169,8 @@ def rank_from(d):
     def f(q):
         dd = d.get(q, {})
         return np.asarray(
-            [t for t, _ in sorted(dd.items(), key=lambda kv: -kv[1]) if t != q], dtype=np.int64
+            [t for t, _ in sorted(dd.items(), key=lambda kv: (-kv[1], kv[0])) if t != q],
+            dtype=np.int64,
         )
 
     return f
