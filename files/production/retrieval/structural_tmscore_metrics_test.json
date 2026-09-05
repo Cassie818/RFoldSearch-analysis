@@ -3,16 +3,16 @@
   "thresholds": {
     "0.4": {
       "RFoldseek": {
-        "Recall@1": 0.9333333333333333,
-        "Sens@1FP": 0.6193401835725166,
-        "Sens@1FP_clan": 0.487718333852404,
+        "Recall@1": 0.939047619047619,
+        "Sens@1FP": 0.619594172961384,
+        "Sens@1FP_clan": 0.4821408947691408,
         "n_queries": 105,
         "n_clan": 91
       },
       "RFoldseek-TM": {
-        "Recall@1": 0.9714285714285714,
-        "Sens@1FP": 0.8004366558968266,
-        "Sens@1FP_clan": 0.7266436871708516,
+        "Recall@1": 0.9723809523809523,
+        "Sens@1FP": 0.8007337465429314,
+        "Sens@1FP_clan": 0.7072241951943405,
         "n_queries": 105,
         "n_clan": 91
       },
@@ -62,15 +62,15 @@
     "0.45": {
       "RFoldseek": {
         "Recall@1": 0.9230769230769231,
-        "Sens@1FP": 0.6153889400737461,
-        "Sens@1FP_clan": 0.4829643894272429,
+        "Sens@1FP": 0.6147103504409652,
+        "Sens@1FP_clan": 0.4771970736090454,
         "n_queries": 104,
         "n_clan": 86
       },
       "RFoldseek-TM": {
-        "Recall@1": 0.9807692307692307,
-        "Sens@1FP": 0.8230313073939115,
-        "Sens@1FP_clan": 0.7583983860079786,
+        "Recall@1": 0.9798076923076924,
+        "Sens@1FP": 0.8201967056945415,
+        "Sens@1FP_clan": 0.7329741873581251,
         "n_queries": 104,
         "n_clan": 86
       },
@@ -120,15 +120,15 @@
     "0.5": {
       "RFoldseek": {
         "Recall@1": 0.9019607843137255,
-        "Sens@1FP": 0.5985017187636759,
-        "Sens@1FP_clan": 0.5058498968167284,
+        "Sens@1FP": 0.5974798712731949,
+        "Sens@1FP_clan": 0.48998346820213723,
         "n_queries": 102,
         "n_clan": 79
       },
       "RFoldseek-TM": {
-        "Recall@1": 0.9803921568627451,
-        "Sens@1FP": 0.8411701375150467,
-        "Sens@1FP_clan": 0.7309890841027282,
+        "Recall@1": 0.9774509803921569,
+        "Sens@1FP": 0.8410003862026513,
+        "Sens@1FP_clan": 0.711079851159668,
         "n_queries": 102,
         "n_clan": 79
       },
@@ -175,5 +175,26 @@
         "n_clan": 79
       }
     }
+  },
+  "_tie_break": {
+    "methods": [
+      "RFoldseek",
+      "RFoldseek-TM"
+    ],
+    "scheme": "sha256(\"<seed>:<chain_id>\"), applied at the prefilter top_n cut and at the reranking",
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "per_query_values": "mean over seeds",
+    "note": "Other methods rank the whole database with no top_n cut and keep the index tie-break."
   }
 }

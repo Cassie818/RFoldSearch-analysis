@@ -2,16 +2,16 @@
   "0.4": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.6193401835725166,
-        "ci_lower": 0.4571708032216855,
-        "ci_upper": 0.8023198936375441,
+        "estimate": 0.619594172961384,
+        "ci_lower": 0.458292414981364,
+        "ci_upper": 0.8005585587910317,
         "sig_vs_rf": null,
         "n_blocks": 27
       },
       "RFoldseek-TM": {
-        "estimate": 0.8004366558968266,
-        "ci_lower": 0.7003307326849627,
-        "ci_upper": 0.9200866123611084,
+        "estimate": 0.8007337465429314,
+        "ci_lower": 0.7021829743242727,
+        "ci_upper": 0.918310935933995,
         "sig_vs_rf": true,
         "n_blocks": 27
       },
@@ -60,16 +60,16 @@
     },
     "clan": {
       "RFoldseek": {
-        "estimate": 0.487718333852404,
-        "ci_lower": 0.3100072394944821,
-        "ci_upper": 0.7563391177650551,
+        "estimate": 0.4821408947691408,
+        "ci_lower": 0.3042436755656603,
+        "ci_upper": 0.7448408562875362,
         "sig_vs_rf": null,
         "n_blocks": 9
       },
       "RFoldseek-TM": {
-        "estimate": 0.7266436871708516,
-        "ci_lower": 0.6331556152474569,
-        "ci_upper": 0.927731377507997,
+        "estimate": 0.7072241951943405,
+        "ci_lower": 0.6070795306379505,
+        "ci_upper": 0.9081745781650495,
         "sig_vs_rf": true,
         "n_blocks": 9
       },
@@ -120,16 +120,16 @@
   "0.45": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.6153889400737461,
-        "ci_lower": 0.43807313985070173,
-        "ci_upper": 0.8212637160624106,
+        "estimate": 0.6147103504409652,
+        "ci_lower": 0.43886117801658453,
+        "ci_upper": 0.8199317753117781,
         "sig_vs_rf": null,
         "n_blocks": 26
       },
       "RFoldseek-TM": {
-        "estimate": 0.8230313073939115,
-        "ci_lower": 0.7234370343777147,
-        "ci_upper": 0.9439083713285953,
+        "estimate": 0.8201967056945415,
+        "ci_lower": 0.7206165830009913,
+        "ci_upper": 0.9403836019594982,
         "sig_vs_rf": true,
         "n_blocks": 26
       },
@@ -178,16 +178,16 @@
     },
     "clan": {
       "RFoldseek": {
-        "estimate": 0.4829643894272429,
-        "ci_lower": 0.2743845342875515,
-        "ci_upper": 0.7821998934823536,
+        "estimate": 0.4771970736090454,
+        "ci_lower": 0.2725864342630638,
+        "ci_upper": 0.7645042570538135,
         "sig_vs_rf": null,
         "n_blocks": 8
       },
       "RFoldseek-TM": {
-        "estimate": 0.7583983860079786,
-        "ci_lower": 0.6550418186857939,
-        "ci_upper": 0.9357875651888752,
+        "estimate": 0.7329741873581251,
+        "ci_lower": 0.6204314575329702,
+        "ci_upper": 0.922242823108443,
         "sig_vs_rf": true,
         "n_blocks": 8
       },
@@ -238,16 +238,16 @@
   "0.5": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.5985017187636759,
-        "ci_lower": 0.35061931887760495,
-        "ci_upper": 0.8758302957133803,
+        "estimate": 0.5974798712731949,
+        "ci_lower": 0.35031793362220504,
+        "ci_upper": 0.8734307931524984,
         "sig_vs_rf": null,
         "n_blocks": 25
       },
       "RFoldseek-TM": {
-        "estimate": 0.8411701375150467,
-        "ci_lower": 0.7360851849719979,
-        "ci_upper": 0.9613423707250258,
+        "estimate": 0.8410003862026513,
+        "ci_lower": 0.7365288030729661,
+        "ci_upper": 0.9592585447156107,
         "sig_vs_rf": true,
         "n_blocks": 25
       },
@@ -296,16 +296,16 @@
     },
     "clan": {
       "RFoldseek": {
-        "estimate": 0.5058498968167284,
-        "ci_lower": 0.18163823557878436,
-        "ci_upper": 0.8746660534480032,
+        "estimate": 0.48998346820213723,
+        "ci_lower": 0.1743420115709835,
+        "ci_upper": 0.8459749749147368,
         "sig_vs_rf": null,
         "n_blocks": 8
       },
       "RFoldseek-TM": {
-        "estimate": 0.7309890841027282,
-        "ci_lower": 0.5243386729394077,
-        "ci_upper": 0.9639836907278767,
+        "estimate": 0.711079851159668,
+        "ci_lower": 0.5057936507936509,
+        "ci_upper": 0.9530014235777458,
         "sig_vs_rf": true,
         "n_blocks": 8
       },
@@ -334,7 +334,7 @@
         "estimate": 0.7770513536900978,
         "ci_lower": 0.6820833488866276,
         "ci_upper": 0.9476190476190476,
-        "sig_vs_rf": false,
+        "sig_vs_rf": true,
         "n_blocks": 8
       },
       "RTM-align": {
