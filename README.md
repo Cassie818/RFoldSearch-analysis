@@ -12,7 +12,7 @@ and local split files are ignored by Git.
 
 ```
 paths.py                  shared path resolution
-preprocessing/            RNA structure preprocessing helpers
+preprocessing/            dataset construction and structure preprocessing
 src/models/               tokenizer model, descriptors, and training utilities
 src/search/               evaluation metrics and Smith-Waterman helper code
 scripts/01_train/         final tokenizer training script
@@ -51,6 +51,55 @@ Fig. 4 can be redrawn from the bundled motif tables with:
 ```bash
 python scripts/04_figures/plot_fig4.py
 ```
+
+## Dataset construction
+
+The 885-chain non-redundant set is built from RNAsolo per-chain CIF files in
+three steps. The scripts are in `preprocessing/`; the CIF corpus itself is not
+tracked. `cdhit_dedup.py` needs `cd-hit-est` on the PATH.
+
+```bash
+# 1. Keep only BGSU non-redundant representatives (4.0 A list, v4.38)
+python preprocessing/dedup_bgsu.py raw_cifs/ -o bgsu_filtered/
+
+# 2. Remove residual chain-level redundancy at 80% sequence identity
+python preprocessing/cdhit_dedup.py bgsu_filtered/ -o nr80/ --identity 0.80
+
+# 3. Backbone coordinates plus base-pair and stacking edges, one JSON per chain
+python preprocessing/extract_backbone.py --pdb_dir nr80/ --output nr80.json
+```
+
+`add_edges.py` has no command line of its own: `extract_backbone.py` imports
+`find_base_pair_and_stack_idx` from it and writes the edges into the same
+records as the coordinates.
+
+**Why two redundancy steps.** BGSU's non-redundant list groups structures at
+the IFE (Integrated Functional Element) level, not the chain level. Once
+multi-chain IFEs are expanded into their constituent chains, the same RNA
+species reappears across IFE classes, so a chain-level pass is still needed.
+`cdhit_dedup.py` runs CD-HIT-EST at `-c 0.80` with `-aS 0.80 -aL 0.80`, which
+requires 80% alignment coverage of *both* sequences, so a short chain that is
+merely contained in a longer one is not clustered away. Cluster
+representatives are chosen deterministically: longest chain, ties broken by
+best resolution, then by filename.
+
+**Residue identification is shared.** `cdhit_dedup.py`, `extract_backbone.py`
+and `add_edges.py` use the same `RNA_BASES` set and the same 19-entry
+`MODIFIED_TO_CANONICAL` map, so clustering and coordinate extraction apply one
+definition of what counts as an RNA residue. The two differ in what counts as
+*resolved*: clustering records a residue if the CIF has any atom for it, while
+coordinate extraction requires C3', C4' and O4' to all be present. For 854 of
+the 885 chains the two lengths agree exactly; across the whole set the
+coordinate side is shorter by 0.1% of residues, concentrated in a few chains
+with unresolved backbone atoms.
+
+**Sequence redundancy is not structural redundancy.** The set is
+non-redundant at 80% sequence identity, which does not bound structural
+similarity: 1357 of the 361244 chain pairs (0.38%) reach a symmetric US-align
+TM-score of 0.90 or higher. Retrieval numbers on this set should be read with
+that in mind — every method benefits from it equally, but the absolute
+sensitivities are higher than they would be on a structurally deduplicated
+set.
 
 ## Data
 
