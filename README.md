@@ -78,25 +78,6 @@ Bundled files in this repository are preferred by default for reproducible
 plotting. Set `RFOLDSEEK_PREFER_EXTERNAL=1` only when you explicitly want a
 script to read matching results from `RFOLDSEEK_DATA`.
 
-## Figure map
-
-| Figure | Plot script | Analysis script(s) | Bundled result |
-|---|---|---|---|
-| Fig. 2A,B | `scripts/04_figures/plot_fig2.py` | `scripts/02_benchmark/eval_rfam_sens_fig2ab.py` | `files/production/retrieval/per_query_sens_test.json`, `bootstrap_fig2ab_band.json` |
-| Fig. 2C,D | `scripts/04_figures/plot_fig2.py` | `scripts/02_benchmark/eval_structural_sens_fig2cd.py` | `files/production/retrieval/structural_tmscore_metrics_test.json`, `bootstrap_fig2cd_results.json` |
-| Fig. 4 | `scripts/04_figures/plot_fig4.py` | `scripts/05_motif/*.py` | `files/motifs/` |
-| Fig. S2 | `scripts/04_figures/plot_figS2.py` | `scripts/03_ablations/ablation_figS2_descriptor_blocks.py` | `files/ablation/cv_s2_clan_5fold.json` |
-| Fig. S3 | `scripts/04_figures/plot_figS3.py` | `scripts/03_ablations/ablation_figS3_descriptor_blocks2.py` | `files/ablation/cv_s3_clan_5fold.json` |
-| Fig. S4 | `scripts/04_figures/plot_figS4.py` | `scripts/03_ablations/ablation_figS4_codebook_size.py` | `files/ablation/cv_s4_clan_5fold.json` |
-| Fig. S5 | `scripts/04_figures/plot_figS5.py` | `scripts/03_ablations/ablation_figS5_vqvae_arch.py` | `files/ablation/cv_s5_clan_5fold.json` |
-| Fig. S6 | `scripts/04_figures/plot_figS6.py` | `scripts/03_ablations/ablation_figS6_substitution_matrix.py` | `files/ablation/cv_s6_clan_5fold.json` |
-| Fig. S7 | `scripts/04_figures/plot_figS7.py` | `scripts/03_ablations/ablation_figS7_prefilter.py` | `files/ablation/cv_s7_clan_5fold.json` |
-| Fig. S8 | `scripts/04_figures/plot_figS8.py` | `scripts/03_ablations/ablation_figS8_virtual_centre.py` | `files/ablation/cv_vc_clan_5fold.json` |
-| Fig. S9 | `scripts/04_figures/plot_figS9.py` | `scripts/03_ablations/ablation_figS9_prefilter_scoring.py` | `files/ablation/cv_prefilter_score_5fold.json` |
-| Fig. S10 | `scripts/04_figures/plot_figS10.py` | `scripts/01_train/train_final_model.py` | reads `files/models/desc_vqvae_best.pt` |
-| Fig. S11 | `scripts/04_figures/plot_figS11.py` | direct model/codebook inspection | reads `files/models/desc_vqvae_best.pt` and `files/models/db.pt` |
-| Fig. S12 | `scripts/04_figures/plot_figS12.py` | `scripts/02_benchmark/eval_recall1_figS12.py` | `files/production/retrieval/recall1_rfam_test.json` |
-
 All design ablations use PDB-disjoint five-fold cross-validation on the
 train-plus-validation partition. The held-out test partition is used only for
 the final retrieval evaluations.
