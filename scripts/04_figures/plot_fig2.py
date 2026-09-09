@@ -215,51 +215,29 @@ def main():
     boot = json.load(open(resolve("files/production/retrieval/bootstrap_fig2cd_results.json")))
     band = json.load(open(resolve("files/production/retrieval/bootstrap_fig2ab_band.json")))
 
-    fig = plt.figure(figsize=(14.0, 16.4))
-    LEFT, RIGHT, HS, WS = 0.115, 0.985, 0.34, 0.19
-    # Two concept blocks with a wider gap between them.
-    top_gs = fig.add_gridspec(2, 2, left=LEFT, right=RIGHT, top=0.945, bottom=0.575,
-                              hspace=HS, wspace=WS)
-    bot_gs = fig.add_gridspec(2, 2, left=LEFT, right=RIGHT, top=0.460, bottom=0.085,
-                              hspace=HS, wspace=WS)
-    ax = {(r, c): fig.add_subplot(g[r % 2, c]) for g, rows in
-          ((top_gs, (0, 1)), (bot_gs, (2, 3))) for r in rows for c in (0, 1)}
+    fig, axes = plt.subplots(4, 2, figsize=(14.0, 16.0))
+    curve_panel(axes[0, 0], data, "family", "Family (AUROC1)", band)
+    curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
+    bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
+    bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
+    control_panel(axes[2, 0], ATTR["levels"]["family"], "Family (Rfam)")
+    control_panel(axes[2, 1], ATTR["levels"]["clan"], "Clan (Rfam)")
+    control_panel(axes[3, 0], ATTR_S["thresholds"][TM_TAU]["family"],
+                  f"Family (TM $\\geq$ {TM_TAU})")
+    control_panel(axes[3, 1], ATTR_S["thresholds"][TM_TAU]["clan"],
+                  f"Clan (TM $\\geq$ {TM_TAU})")
 
-    curve_panel(ax[(0, 0)], data, "family", "Family", band)
-    curve_panel(ax[(0, 1)], data, "clan", "Clan", band)
-    bar_panel(ax[(1, 0)], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
-    bar_panel(ax[(1, 1)], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
-    control_panel(ax[(2, 0)], ATTR["levels"]["family"], "Family")
-    control_panel(ax[(2, 1)], ATTR["levels"]["clan"], "Clan")
-    control_panel(ax[(3, 0)], ATTR_S["thresholds"][TM_TAU]["family"], "Family")
-    control_panel(ax[(3, 1)], ATTR_S["thresholds"][TM_TAU]["clan"], "Clan")
+    for ax, lab in zip(axes.flat, "ABCDEFGH"):
+        ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
+                va="bottom", ha="right")
 
-    order = [(0, 0), (0, 1), (1, 0), (1, 1), (2, 0), (2, 1), (3, 0), (3, 1)]
-    for key, lab in zip(order, "ABCDEFGH"):
-        ax[key].text(-0.11, 1.04, lab, transform=ax[key].transAxes, fontsize=16,
-                     fontweight="bold", va="bottom", ha="right")
-
-    # Block titles.
-    fig.text(0.5 * (LEFT + RIGHT), 0.970, "Benchmarking against existing methods",
-             ha="center", va="bottom", fontsize=15, fontweight="bold")
-    fig.text(0.5 * (LEFT + RIGHT), 0.495,
-             "Attribution of the RiboSeek-to-RFoldseek gap",
-             ha="center", va="bottom", fontsize=15, fontweight="bold")
-
-    # Left-hand ground-truth labels, one per row, centred on each row's axes.
-    row_gt = {0: "Rfam annotation", 1: "Structure-defined (US-align)",
-              2: "Rfam annotation", 3: f"Structure-defined (TM $\\geq$ {TM_TAU})"}
-    for r, txt in row_gt.items():
-        pos = ax[(r, 0)].get_position()
-        fig.text(0.028, 0.5 * (pos.y0 + pos.y1), txt, rotation=90, ha="center",
-                 va="center", fontsize=12, fontweight="bold", color="#333333")
-
-    handles, labels = ax[(0, 0)].get_legend_handles_labels()
+    handles, labels = axes[0, 0].get_legend_handles_labels()
     legend = fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False, fontsize=12,
-                        bbox_to_anchor=(0.5, 0.006), handlelength=2.8, columnspacing=2.4,
+                        bbox_to_anchor=(0.5, -0.004), handlelength=2.8, columnspacing=2.4,
                         markerscale=1.45)
     for handle in legend.legend_handles:
         handle.set_linewidth(3.0)
+    fig.tight_layout(rect=(0, 0.026, 1, 1))
     out_png = Path(FIG_DIR) / "fig2.png"
     out_pdf = Path(FIG_DIR) / "fig2.pdf"
     out_png.parent.mkdir(parents=True, exist_ok=True)
