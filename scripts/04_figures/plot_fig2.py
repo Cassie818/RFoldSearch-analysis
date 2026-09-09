@@ -144,6 +144,8 @@ def load_ctrl_pq(suffix):
 
 
 ATTR = json.load(open(resolve("files/ablation/attribution_paths.json")))
+ATTR_S = json.load(open(resolve("files/ablation/attribution_paths_structural.json")))
+TM_TAU = "0.45"   # middle of the three thresholds reported for panels C,D
 STEPS = [("B_fwd_pipeline", "+ RFoldseek\npipeline", "+ RFoldseek pipeline"),
          ("C_fwd_matrix", "+ Structure-BLOSUM\nmatrix", "+ learned matrix"),
          ("D_rfoldseek", "+ 3Dr\nalphabet", "+ 3Dr alphabet")]
@@ -156,10 +158,10 @@ STEP_TEXT = "#4A6472"
 NULL_COLOR = "#E2E2E2"
 
 
-def control_panel(ax, level, title):
+def control_panel(ax, lv, title):
     """Waterfall: how the RiboSeek-to-RFoldseek gap divides between the search
-    pipeline, the learned substitution matrix and the 3Dr alphabet."""
-    lv = ATTR["levels"][level]
+    pipeline, the learned substitution matrix and the 3Dr alphabet. `lv` carries
+    the means and the forward-path intervals under one ground truth."""
     m, fwd = lv["means"], lv["forward"]
     keys = ["A_ribo_published"] + [k for k, _, _ in STEPS]
     vals = [m[k] for k in keys]
@@ -213,25 +215,29 @@ def main():
     boot = json.load(open(resolve("files/production/retrieval/bootstrap_fig2cd_results.json")))
     band = json.load(open(resolve("files/production/retrieval/bootstrap_fig2ab_band.json")))
 
-    fig, axes = plt.subplots(3, 2, figsize=(14.0, 12.0))
+    fig, axes = plt.subplots(4, 2, figsize=(14.0, 16.0))
     curve_panel(axes[0, 0], data, "family", "Family (AUROC1)", band)
     curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
     bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
     bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
-    control_panel(axes[2, 0], "family", "Family")
-    control_panel(axes[2, 1], "clan", "Clan")
+    control_panel(axes[2, 0], ATTR["levels"]["family"], "Family (Rfam)")
+    control_panel(axes[2, 1], ATTR["levels"]["clan"], "Clan (Rfam)")
+    control_panel(axes[3, 0], ATTR_S["thresholds"][TM_TAU]["family"],
+                  f"Family (TM $\\geq$ {TM_TAU})")
+    control_panel(axes[3, 1], ATTR_S["thresholds"][TM_TAU]["clan"],
+                  f"Clan (TM $\\geq$ {TM_TAU})")
 
-    for ax, lab in zip(axes.flat, "ABCDEF"):
+    for ax, lab in zip(axes.flat, "ABCDEFGH"):
         ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
                 va="bottom", ha="right")
 
     handles, labels = axes[0, 0].get_legend_handles_labels()
     legend = fig.legend(handles, labels, loc="lower center", ncol=4, frameon=False, fontsize=12,
-                        bbox_to_anchor=(0.5, -0.006), handlelength=2.8, columnspacing=2.4,
+                        bbox_to_anchor=(0.5, -0.004), handlelength=2.8, columnspacing=2.4,
                         markerscale=1.45)
     for handle in legend.legend_handles:
         handle.set_linewidth(3.0)
-    fig.tight_layout(rect=(0, 0.035, 1, 1))
+    fig.tight_layout(rect=(0, 0.026, 1, 1))
     out_png = Path(FIG_DIR) / "fig2.png"
     out_pdf = Path(FIG_DIR) / "fig2.pdf"
     out_png.parent.mkdir(parents=True, exist_ok=True)
