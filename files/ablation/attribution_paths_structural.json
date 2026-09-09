@@ -1,0 +1,351 @@
+{
+ "_config": {
+  "B": 2000,
+  "seed": 123,
+  "thresholds": [
+   0.4,
+   0.45,
+   0.5
+  ],
+  "n_queries": 108,
+  "_note": "structure-defined ground truth; blocks are Rfam families/clans"
+ },
+ "thresholds": {
+  "0.4": {
+   "family": {
+    "means": {
+     "A_ribo_published": 0.28877045870631296,
+     "B_fwd_pipeline": 0.48261158931754927,
+     "C_fwd_matrix": 0.5234763768444319,
+     "D_rfoldseek": 0.6193401835725166,
+     "E_rev_alphabet": 0.39672627967048857
+    },
+    "forward": {
+     "+ RFoldseek pipeline": {
+      "diff": 0.1938411306112363,
+      "lo": 0.1220920290498912,
+      "hi": 0.29044945236223557,
+      "n_blocks": 27,
+      "sig": true
+     },
+     "+ learned matrix": {
+      "diff": 0.04086478752688269,
+      "lo": -0.026002122997229312,
+      "hi": 0.13877056955992204,
+      "n_blocks": 27,
+      "sig": false
+     },
+     "+ 3Dr alphabet": {
+      "diff": 0.09586380672808469,
+      "lo": -0.01075199271677283,
+      "hi": 0.17810020088573536,
+      "n_blocks": 27,
+      "sig": false
+     }
+    },
+    "reverse": {
+     "+ 3Dr alphabet": {
+      "diff": 0.10795582096417557,
+      "lo": 0.01939608115130195,
+      "hi": 0.2094675564886229,
+      "n_blocks": 27,
+      "sig": true
+     },
+     "+ RFoldseek pipeline & matrix": {
+      "diff": 0.22261390390202812,
+      "lo": 0.15835385340775082,
+      "hi": 0.30820489940587564,
+      "n_blocks": 27,
+      "sig": true
+     }
+    },
+    "n_scored": {
+     "A_ribo_published": 105,
+     "B_fwd_pipeline": 105,
+     "C_fwd_matrix": 105,
+     "D_rfoldseek": 105,
+     "E_rev_alphabet": 105
+    }
+   },
+   "clan": {
+    "means": {
+     "A_ribo_published": 0.0662491400613975,
+     "B_fwd_pipeline": 0.2400856280835804,
+     "C_fwd_matrix": 0.35389083967831825,
+     "D_rfoldseek": 0.487718333852404,
+     "E_rev_alphabet": 0.18800960490311378
+    },
+    "forward": {
+     "+ RFoldseek pipeline": {
+      "diff": 0.1797627319320301,
+      "lo": 0.030330381424131424,
+      "hi": 0.3619765991503242,
+      "n_blocks": 9,
+      "sig": true
+     },
+     "+ learned matrix": {
+      "diff": 0.1176849347172857,
+      "lo": -0.002627369909538097,
+      "hi": 0.268272649631575,
+      "n_blocks": 9,
+      "sig": false
+     },
+     "+ 3Dr alphabet": {
+      "diff": 0.1383897951118386,
+      "lo": -0.02350116909764434,
+      "hi": 0.3475049305391713,
+      "n_blocks": 9,
+      "sig": false
+     }
+    },
+    "reverse": {
+     "+ 3Dr alphabet": {
+      "diff": 0.12591138977950206,
+      "lo": 0.01220288826859756,
+      "hi": 0.34952760345745265,
+      "n_blocks": 9,
+      "sig": true
+     },
+     "+ RFoldseek pipeline & matrix": {
+      "diff": 0.30992607198165234,
+      "lo": 0.19678726683515252,
+      "hi": 0.4352682336334817,
+      "n_blocks": 9,
+      "sig": true
+     }
+    },
+    "n_scored": {
+     "A_ribo_published": 91,
+     "B_fwd_pipeline": 91,
+     "C_fwd_matrix": 91,
+     "D_rfoldseek": 91,
+     "E_rev_alphabet": 91
+    }
+   }
+  },
+  "0.45": {
+   "family": {
+    "means": {
+     "A_ribo_published": 0.29556157256775656,
+     "B_fwd_pipeline": 0.49586462509358814,
+     "C_fwd_matrix": 0.5365685125616213,
+     "D_rfoldseek": 0.6153889400737461,
+     "E_rev_alphabet": 0.40293161833065816
+    },
+    "forward": {
+     "+ RFoldseek pipeline": {
+      "diff": 0.20030305252583158,
+      "lo": 0.13188648490577326,
+      "hi": 0.2998596144657233,
+      "n_blocks": 26,
+      "sig": true
+     },
+     "+ learned matrix": {
+      "diff": 0.04070388746803323,
+      "lo": -0.030015991292796463,
+      "hi": 0.15026427250257549,
+      "n_blocks": 26,
+      "sig": false
+     },
+     "+ 3Dr alphabet": {
+      "diff": 0.0788204275121247,
+      "lo": -0.01862903030502787,
+      "hi": 0.16599352665885134,
+      "n_blocks": 26,
+      "sig": false
+     }
+    },
+    "reverse": {
+     "+ 3Dr alphabet": {
+      "diff": 0.10737004576290157,
+      "lo": 0.02221238723123924,
+      "hi": 0.21347618673918184,
+      "n_blocks": 26,
+      "sig": true
+     },
+     "+ RFoldseek pipeline & matrix": {
+      "diff": 0.21245732174308798,
+      "lo": 0.14355272097893354,
+      "hi": 0.31584872220859755,
+      "n_blocks": 26,
+      "sig": true
+     }
+    },
+    "n_scored": {
+     "A_ribo_published": 104,
+     "B_fwd_pipeline": 104,
+     "C_fwd_matrix": 104,
+     "D_rfoldseek": 104,
+     "E_rev_alphabet": 104
+    }
+   },
+   "clan": {
+    "means": {
+     "A_ribo_published": 0.08436200765463243,
+     "B_fwd_pipeline": 0.2615421210631836,
+     "C_fwd_matrix": 0.38808691981428634,
+     "D_rfoldseek": 0.4829643894272429,
+     "E_rev_alphabet": 0.20790945411491935
+    },
+    "forward": {
+     "+ RFoldseek pipeline": {
+      "diff": 0.1792645853310047,
+      "lo": 0.016239137206879143,
+      "hi": 0.3575069981417485,
+      "n_blocks": 8,
+      "sig": true
+     },
+     "+ learned matrix": {
+      "diff": 0.12803356108935104,
+      "lo": 0.025603093565050083,
+      "hi": 0.2639554953219325,
+      "n_blocks": 8,
+      "sig": true
+     },
+     "+ 3Dr alphabet": {
+      "diff": 0.09599367513781484,
+      "lo": -0.03446961272694142,
+      "hi": 0.35221914776484436,
+      "n_blocks": 8,
+      "sig": false
+     }
+    },
+    "reverse": {
+     "+ 3Dr alphabet": {
+      "diff": 0.1250009458304079,
+      "lo": -0.005119247769992279,
+      "hi": 0.3449631753909855,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "+ RFoldseek pipeline & matrix": {
+      "diff": 0.2782908757277626,
+      "lo": 0.15267923291179106,
+      "hi": 0.41732460045474273,
+      "n_blocks": 8,
+      "sig": true
+     }
+    },
+    "n_scored": {
+     "A_ribo_published": 86,
+     "B_fwd_pipeline": 86,
+     "C_fwd_matrix": 86,
+     "D_rfoldseek": 86,
+     "E_rev_alphabet": 86
+    }
+   }
+  },
+  "0.5": {
+   "family": {
+    "means": {
+     "A_ribo_published": 0.31330609605027393,
+     "B_fwd_pipeline": 0.5106150548854695,
+     "C_fwd_matrix": 0.5601306996148976,
+     "D_rfoldseek": 0.5985017187636759,
+     "E_rev_alphabet": 0.40661494404157716
+    },
+    "forward": {
+     "+ RFoldseek pipeline": {
+      "diff": 0.19730895883519559,
+      "lo": 0.11194184299971176,
+      "hi": 0.3331533597395683,
+      "n_blocks": 25,
+      "sig": true
+     },
+     "+ learned matrix": {
+      "diff": 0.04951564472942812,
+      "lo": -0.018260373742922387,
+      "hi": 0.1609103787106057,
+      "n_blocks": 25,
+      "sig": false
+     },
+     "+ 3Dr alphabet": {
+      "diff": 0.03837101914877827,
+      "lo": -0.036724543929616896,
+      "hi": 0.1313469453264584,
+      "n_blocks": 25,
+      "sig": false
+     }
+    },
+    "reverse": {
+     "+ 3Dr alphabet": {
+      "diff": 0.09330884799130322,
+      "lo": 0.0023561353430288715,
+      "hi": 0.22182101170176954,
+      "n_blocks": 25,
+      "sig": true
+     },
+     "+ RFoldseek pipeline & matrix": {
+      "diff": 0.1918867747220987,
+      "lo": 0.09354564740776494,
+      "hi": 0.351378490023455,
+      "n_blocks": 25,
+      "sig": true
+     }
+    },
+    "n_scored": {
+     "A_ribo_published": 102,
+     "B_fwd_pipeline": 102,
+     "C_fwd_matrix": 102,
+     "D_rfoldseek": 102,
+     "E_rev_alphabet": 102
+    }
+   },
+   "clan": {
+    "means": {
+     "A_ribo_published": 0.08401380366562067,
+     "B_fwd_pipeline": 0.2849214770855943,
+     "C_fwd_matrix": 0.42474282749936637,
+     "D_rfoldseek": 0.5058498968167284,
+     "E_rev_alphabet": 0.22391248416793536
+    },
+    "forward": {
+     "+ RFoldseek pipeline": {
+      "diff": 0.20090767341997362,
+      "lo": 0.0345771144278607,
+      "hi": 0.4108150605124502,
+      "n_blocks": 8,
+      "sig": true
+     },
+     "+ learned matrix": {
+      "diff": 0.1398213504137721,
+      "lo": 0.02763772175536881,
+      "hi": 0.30609801544422754,
+      "n_blocks": 8,
+      "sig": true
+     },
+     "+ 3Dr alphabet": {
+      "diff": 0.08110706931736204,
+      "lo": -0.07525473216906672,
+      "hi": 0.4065249469595374,
+      "n_blocks": 8,
+      "sig": false
+     }
+    },
+    "reverse": {
+     "+ 3Dr alphabet": {
+      "diff": 0.13989868050231474,
+      "lo": 0.005155279503105591,
+      "hi": 0.3813581141506788,
+      "n_blocks": 8,
+      "sig": true
+     },
+     "+ RFoldseek pipeline & matrix": {
+      "diff": 0.2819374126487931,
+      "lo": 0.08121279761904762,
+      "hi": 0.5216264377114503,
+      "n_blocks": 8,
+      "sig": true
+     }
+    },
+    "n_scored": {
+     "A_ribo_published": 79,
+     "B_fwd_pipeline": 79,
+     "C_fwd_matrix": 79,
+     "D_rfoldseek": 79,
+     "E_rev_alphabet": 79
+    }
+   }
+  }
+ }
+}
