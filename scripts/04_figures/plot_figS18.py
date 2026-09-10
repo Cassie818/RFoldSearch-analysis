@@ -30,6 +30,8 @@ C_RF, C_RB = "#4FB3E3", "#EC9BD3"          # lightened method colours
 STEP_FILL, STEP_TEXT = "#C8D3DA", "#4A6472"
 BOOT = json.load(open(resolve("files/production/retrieval/bootstrap_controls.json")))
 ATTR = json.load(open(resolve("files/ablation/attribution_paths.json")))
+ATTR_S = json.load(open(resolve("files/ablation/attribution_paths_structural.json")))
+TAU = "0.45"   # structure-defined reverse decomposition uses this threshold
 
 
 def regime_panel(ax, key, title):
@@ -63,8 +65,8 @@ def regime_panel(ax, key, title):
     ax.spines[["top", "right"]].set_visible(False)
 
 
-def reverse_panel(ax, level, title):
-    lv = ATTR["levels"][level]; m, rev = lv["means"], lv["reverse"]
+def reverse_panel(ax, lv, title):
+    m, rev = lv["means"], lv["reverse"]
     keys = ["A_ribo_published", "E_rev_alphabet", "D_rfoldseek"]
     steps = ["+ 3Dr alphabet", "+ RFoldseek pipeline & matrix"]
     vals = [m[k] for k in keys]
@@ -101,18 +103,20 @@ def reverse_panel(ax, level, title):
 
 
 def main():
-    fig, ax = plt.subplots(2, 2, figsize=(10.6, 8.4))
+    fig, ax = plt.subplots(3, 2, figsize=(10.6, 12.4))
     regime_panel(ax[0, 0], "family_sens_1fp", "Family")
     regime_panel(ax[0, 1], "clan_sens_1fp", "Clan")
-    reverse_panel(ax[1, 0], "family", "Family")
-    reverse_panel(ax[1, 1], "clan", "Clan")
+    reverse_panel(ax[1, 0], ATTR["levels"]["family"], "Family (Rfam)")
+    reverse_panel(ax[1, 1], ATTR["levels"]["clan"], "Clan (Rfam)")
+    reverse_panel(ax[2, 0], ATTR_S["thresholds"][TAU]["family"], f"Family (TM $\\geq$ {TAU})")
+    reverse_panel(ax[2, 1], ATTR_S["thresholds"][TAU]["clan"], f"Clan (TM $\\geq$ {TAU})")
     h, l = ax[0, 0].get_legend_handles_labels()
     fig.legend(h, l, loc="lower center", ncol=2, frameon=False, fontsize=10,
                bbox_to_anchor=(0.5, -0.004))
-    for a, lab in zip(ax.flat, "ABCD"):
+    for a, lab in zip(ax.flat, "ABCDEF"):
         a.text(-0.12, 1.05, lab, transform=a.transAxes, fontsize=15, fontweight="bold",
                va="top")
-    fig.tight_layout(rect=(0, 0.035, 1, 1))
+    fig.tight_layout(rect=(0, 0.024, 1, 1))
     out = Path(FIG_DIR) / "S18.png"
     fig.savefig(out, dpi=200, bbox_inches="tight")
     print(f"Wrote {out}")
