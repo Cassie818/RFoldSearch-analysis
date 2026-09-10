@@ -1,0 +1,256 @@
+{
+ "_config": {
+  "B": 2000,
+  "seed": 123,
+  "thresholds": [
+   0.4,
+   0.45,
+   0.5
+  ],
+  "n_queries": 108,
+  "anchor": "VQ-VAE_K80_deployed",
+  "_note": "diff = VQ - k-means; structure-defined ground truth; Rfam blocks"
+ },
+ "thresholds": {
+  "0.4": {
+   "family": {
+    "means": {
+     "VQ-VAE_K80_deployed": 0.6193401835725166,
+     "KMeans_K10": 0.5758925584155289,
+     "KMeans_K20": 0.6247336680246426,
+     "KMeans_K40": 0.6069635871726863,
+     "KMeans_K80": 0.5869084344234387
+    },
+    "vs_vqvae": {
+     "KMeans_K10": {
+      "diff_mean": 0.04344762515698784,
+      "diff_ci_lo": 0.01674654218996813,
+      "diff_ci_hi": 0.06326354704247442,
+      "n_blocks": 27,
+      "sig": true
+     },
+     "KMeans_K20": {
+      "diff_mean": -0.005393484452125931,
+      "diff_ci_lo": -0.046244011218153365,
+      "diff_ci_hi": 0.016918979752466187,
+      "n_blocks": 27,
+      "sig": false
+     },
+     "KMeans_K40": {
+      "diff_mean": 0.012376596399830363,
+      "diff_ci_lo": -0.045753124049829445,
+      "diff_ci_hi": 0.04073904516232895,
+      "n_blocks": 27,
+      "sig": false
+     },
+     "KMeans_K80": {
+      "diff_mean": 0.032431749149077906,
+      "diff_ci_lo": -0.04921976368665249,
+      "diff_ci_hi": 0.07946187152593596,
+      "n_blocks": 27,
+      "sig": false
+     }
+    }
+   },
+   "clan": {
+    "means": {
+     "VQ-VAE_K80_deployed": 0.487718333852404,
+     "KMeans_K10": 0.44966823150672314,
+     "KMeans_K20": 0.4784915084221127,
+     "KMeans_K40": 0.4591275340212477,
+     "KMeans_K80": 0.443862972679244
+    },
+    "vs_vqvae": {
+     "KMeans_K10": {
+      "diff_mean": 0.03934726492564717,
+      "diff_ci_lo": 0.023851461038961037,
+      "diff_ci_hi": 0.05414834518308207,
+      "n_blocks": 9,
+      "sig": true
+     },
+     "KMeans_K20": {
+      "diff_mean": 0.009541376297232989,
+      "diff_ci_lo": -0.05644491209658625,
+      "diff_ci_hi": 0.06879355927408289,
+      "n_blocks": 9,
+      "sig": false
+     },
+     "KMeans_K40": {
+      "diff_mean": 0.029565486189036618,
+      "diff_ci_lo": -0.012344427769910212,
+      "diff_ci_hi": 0.05661432661878715,
+      "n_blocks": 9,
+      "sig": false
+     },
+     "KMeans_K80": {
+      "diff_mean": 0.045350430304063015,
+      "diff_ci_lo": -0.015898079400801214,
+      "diff_ci_hi": 0.11038688847082695,
+      "n_blocks": 9,
+      "sig": false
+     }
+    }
+   }
+  },
+  "0.45": {
+   "family": {
+    "means": {
+     "VQ-VAE_K80_deployed": 0.6153889400737461,
+     "KMeans_K10": 0.566000708560825,
+     "KMeans_K20": 0.5978226719055968,
+     "KMeans_K40": 0.6004204446448795,
+     "KMeans_K80": 0.5836148073635476
+    },
+    "vs_vqvae": {
+     "KMeans_K10": {
+      "diff_mean": 0.049388231512921196,
+      "diff_ci_lo": 0.018662147852266064,
+      "diff_ci_hi": 0.07519083476760613,
+      "n_blocks": 26,
+      "sig": true
+     },
+     "KMeans_K20": {
+      "diff_mean": 0.017566268168149275,
+      "diff_ci_lo": -0.030871617573864155,
+      "diff_ci_hi": 0.04867447356656969,
+      "n_blocks": 26,
+      "sig": false
+     },
+     "KMeans_K40": {
+      "diff_mean": 0.014968495428866626,
+      "diff_ci_lo": -0.04032363030964729,
+      "diff_ci_hi": 0.039632549443706734,
+      "n_blocks": 26,
+      "sig": false
+     },
+     "KMeans_K80": {
+      "diff_mean": 0.03177413271019839,
+      "diff_ci_lo": -0.04371390026392697,
+      "diff_ci_hi": 0.07214884450030908,
+      "n_blocks": 26,
+      "sig": false
+     }
+    }
+   },
+   "clan": {
+    "means": {
+     "VQ-VAE_K80_deployed": 0.4829643894272429,
+     "KMeans_K10": 0.49981933962114145,
+     "KMeans_K20": 0.4964539256992658,
+     "KMeans_K40": 0.48453174666409227,
+     "KMeans_K80": 0.4604290001664478
+    },
+    "vs_vqvae": {
+     "KMeans_K10": {
+      "diff_mean": -0.017053243725591513,
+      "diff_ci_lo": -0.09113084017946776,
+      "diff_ci_hi": 0.051809964368283314,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "KMeans_K20": {
+      "diff_mean": -0.013648236698752553,
+      "diff_ci_lo": -0.10485829959514169,
+      "diff_ci_hi": 0.08333510430529373,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "KMeans_K40": {
+      "diff_mean": -0.001585796733753432,
+      "diff_ci_lo": -0.01955401119647943,
+      "diff_ci_hi": 0.022248397884393097,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "KMeans_K80": {
+      "diff_mean": 0.022800511487392643,
+      "diff_ci_lo": -0.009971624219290149,
+      "diff_ci_hi": 0.10941395054333551,
+      "n_blocks": 8,
+      "sig": false
+     }
+    }
+   }
+  },
+  "0.5": {
+   "family": {
+    "means": {
+     "VQ-VAE_K80_deployed": 0.5985017187636759,
+     "KMeans_K10": 0.5668112221318292,
+     "KMeans_K20": 0.5817751527295506,
+     "KMeans_K40": 0.5900049978104915,
+     "KMeans_K80": 0.5756731539995709
+    },
+    "vs_vqvae": {
+     "KMeans_K10": {
+      "diff_mean": 0.031690496631846705,
+      "diff_ci_lo": -0.0013229752530730323,
+      "diff_ci_hi": 0.10585774870305993,
+      "n_blocks": 25,
+      "sig": false
+     },
+     "KMeans_K20": {
+      "diff_mean": 0.016726566034125208,
+      "diff_ci_lo": -0.021507466268708145,
+      "diff_ci_hi": 0.062212381035104,
+      "n_blocks": 25,
+      "sig": false
+     },
+     "KMeans_K40": {
+      "diff_mean": 0.008496720953184322,
+      "diff_ci_lo": -0.030656354507821747,
+      "diff_ci_hi": 0.04419017973755151,
+      "n_blocks": 25,
+      "sig": false
+     },
+     "KMeans_K80": {
+      "diff_mean": 0.022828564764105018,
+      "diff_ci_lo": -0.020529994003154323,
+      "diff_ci_hi": 0.046422297353591095,
+      "n_blocks": 25,
+      "sig": false
+     }
+    }
+   },
+   "clan": {
+    "means": {
+     "VQ-VAE_K80_deployed": 0.5058498968167284,
+     "KMeans_K10": 0.5358404861437212,
+     "KMeans_K20": 0.4984056600033583,
+     "KMeans_K40": 0.5154589349218107,
+     "KMeans_K80": 0.48549089208548335
+    },
+    "vs_vqvae": {
+     "KMeans_K10": {
+      "diff_mean": -0.029990589326992757,
+      "diff_ci_lo": -0.12788220551378446,
+      "diff_ci_hi": 0.07424149515457736,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "KMeans_K20": {
+      "diff_mean": 0.007444236813370188,
+      "diff_ci_lo": -0.07221230158730159,
+      "diff_ci_hi": 0.09442545216716093,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "KMeans_K40": {
+      "diff_mean": -0.009609038105082386,
+      "diff_ci_lo": -0.025104427736006688,
+      "diff_ci_hi": 0.005855141383668216,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "KMeans_K80": {
+      "diff_mean": 0.020359004731244947,
+      "diff_ci_lo": -0.04211544486215538,
+      "diff_ci_hi": 0.15264958934601786,
+      "n_blocks": 8,
+      "sig": false
+     }
+    }
+   }
+  }
+ }
+}
