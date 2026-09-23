@@ -51,7 +51,9 @@ def args_parser() -> argparse.Namespace:
     parser.add_argument("--structure-dir", type=Path,
                         default=Path(paths.RFAM3D_STRUCTURES))
     parser.add_argument("--rfam-seed", type=Path,
-                        default=root / "files/rebuilt_subsets_2305f07/rfam_3d_seed.gz")
+                        default=(root / "files/ablation/"
+                                 "rfam3d_reference_disjoint_independent_3dseed/"
+                                 "rfam_3d_seed.gz"))
     parser.add_argument("--pairs", type=Path,
                         default=(root / "files/ablation/"
                                  "rfam3d_reference_disjoint_independent_3dseed/"
