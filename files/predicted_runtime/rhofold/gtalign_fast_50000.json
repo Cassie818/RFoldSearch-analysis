@@ -1,0 +1,6 @@
+{
+ "n_database": 50000,
+ "mean_s": 1.6287674728720827,
+ "median_s": 1.6287674728720827,
+ "note": "GTalign --speed=13; ref default 3.318s x (2080 s13/s8 ratio 0.491)"
+}

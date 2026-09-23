@@ -222,7 +222,8 @@ __marimo__/
 # ---------------------------------------------------------------
 .DS_Store
 
-# Generated outputs - regenerate with scripts/04_figures/
+# Generated outputs - regenerate with the figure scripts under scripts/01_model/
+# through scripts/06_motifs/.
 figures/
 
 # Large data artifacts live outside the repo (see README "Data")
@@ -238,3 +239,8 @@ Splits/
 !files/models/sub_matrix.pt
 !files/models/db.pt
 !files/models/evalue_params.json
+
+# Large intermediates regenerated from raw structures (see README)
+files/predicted_retrieval/db/
+files/predicted_retrieval/usalign/
+files/production/retrieval/infernal_fig2_work/

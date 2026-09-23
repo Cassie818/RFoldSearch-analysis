@@ -56,6 +56,13 @@
         "ci_upper": 0.28719008401747603,
         "sig_vs_rf": true,
         "n_blocks": 27
+      },
+      "Infernal": {
+        "estimate": 0.46271702368899276,
+        "ci_lower": 0.2557218914535949,
+        "ci_upper": 0.7121612432010545,
+        "sig_vs_rf": false,
+        "n_blocks": 27
       }
     },
     "clan": {
@@ -112,6 +119,13 @@
         "estimate": 0.009823142352921138,
         "ci_lower": 0.0,
         "ci_upper": 0.025886865643101442,
+        "sig_vs_rf": true,
+        "n_blocks": 9
+      },
+      "Infernal": {
+        "estimate": 0.22589416296931514,
+        "ci_lower": 0.05133371715925191,
+        "ci_upper": 0.5098700222614008,
         "sig_vs_rf": true,
         "n_blocks": 9
       }
@@ -174,6 +188,13 @@
         "ci_upper": 0.3002493190151839,
         "sig_vs_rf": true,
         "n_blocks": 26
+      },
+      "Infernal": {
+        "estimate": 0.48383887167654105,
+        "ci_lower": 0.2775233848072672,
+        "ci_upper": 0.7506655897908667,
+        "sig_vs_rf": false,
+        "n_blocks": 26
       }
     },
     "clan": {
@@ -230,6 +251,13 @@
         "estimate": 0.011147255102336337,
         "ci_lower": 0.0,
         "ci_upper": 0.026743481618075448,
+        "sig_vs_rf": true,
+        "n_blocks": 8
+      },
+      "Infernal": {
+        "estimate": 0.24049392261453856,
+        "ci_lower": 0.05831950291771721,
+        "ci_upper": 0.5213732070162397,
         "sig_vs_rf": true,
         "n_blocks": 8
       }
@@ -292,6 +320,13 @@
         "ci_upper": 0.3238902192096761,
         "sig_vs_rf": true,
         "n_blocks": 25
+      },
+      "Infernal": {
+        "estimate": 0.5029132302294078,
+        "ci_lower": 0.26303921833072436,
+        "ci_upper": 0.7991532197957969,
+        "sig_vs_rf": true,
+        "n_blocks": 25
       }
     },
     "clan": {
@@ -348,6 +383,13 @@
         "estimate": 0.008148847826592889,
         "ci_lower": 0.0,
         "ci_upper": 0.028825028879142008,
+        "sig_vs_rf": true,
+        "n_blocks": 8
+      },
+      "Infernal": {
+        "estimate": 0.2450412295709351,
+        "ci_lower": 0.03333333333333333,
+        "ci_upper": 0.5939523956907674,
         "sig_vs_rf": true,
         "n_blocks": 8
       }

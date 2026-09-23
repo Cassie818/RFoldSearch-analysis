@@ -1,0 +1,80 @@
+{
+  "1000": {
+    "build_s": 0.43,
+    "index_mem_mb": 308.1,
+    "pre_mean": 0.008261609127124151,
+    "pre_median": 0.0009239949285984039,
+    "rr_mean": 0.07691517802576224,
+    "rr_median": 0.055598121136426926,
+    "pre_share_mean": 0.0969936693232528,
+    "pre_share_median": 0.01634749356403081,
+    "postings_mean": 986925.9366666666,
+    "postings_median": 13702.5,
+    "median_qlen": 94.0
+  },
+  "5000": {
+    "build_s": 0.42,
+    "index_mem_mb": 279.7,
+    "pre_mean": 0.039559642697374026,
+    "pre_median": 0.0016912482678890228,
+    "rr_mean": 0.12798104949295522,
+    "rr_median": 0.06739794835448265,
+    "pre_share_mean": 0.23611960879589516,
+    "pre_share_median": 0.02447920008584066,
+    "postings_mean": 4693060.043333333,
+    "postings_median": 67912.0,
+    "median_qlen": 94.0
+  },
+  "10000": {
+    "build_s": 0.6,
+    "index_mem_mb": 116.1,
+    "pre_mean": 0.07789425907035669,
+    "pre_median": 0.002278856933116913,
+    "rr_mean": 0.14623220426340897,
+    "rr_median": 0.06734226271510124,
+    "pre_share_mean": 0.3475460144764688,
+    "pre_share_median": 0.0327322649309797,
+    "postings_mean": 9328155.296666667,
+    "postings_median": 136607.0,
+    "median_qlen": 94.0
+  },
+  "20000": {
+    "build_s": 0.92,
+    "index_mem_mb": 135.2,
+    "pre_mean": 0.16108462202052276,
+    "pre_median": 0.0035985931754112244,
+    "rr_mean": 0.15757484232385954,
+    "rr_median": 0.06567937880754471,
+    "pre_share_mean": 0.5055071009798568,
+    "pre_share_median": 0.051944262691416054,
+    "postings_mean": 18621459.42,
+    "postings_median": 273461.0,
+    "median_qlen": 94.0
+  },
+  "50000": {
+    "build_s": 2.02,
+    "index_mem_mb": 0.0,
+    "pre_mean": 0.4212088506917159,
+    "pre_median": 0.007642142474651337,
+    "rr_mean": 0.16667010694742201,
+    "rr_median": 0.06429113820195198,
+    "pre_share_mean": 0.7164890752056304,
+    "pre_share_median": 0.10623931513715854,
+    "postings_mean": 46161624.67333333,
+    "postings_median": 676549.5,
+    "median_qlen": 94.0
+  },
+  "83156": {
+    "build_s": 3.3,
+    "index_mem_mb": 0.0,
+    "pre_mean": 0.7236941504230102,
+    "pre_median": 0.013543732464313507,
+    "rr_mean": 0.17010837915043037,
+    "rr_median": 0.06362604349851608,
+    "pre_share_mean": 0.8096801323312286,
+    "pre_share_median": 0.17550566002468537,
+    "postings_mean": 76954598.61,
+    "postings_median": 1125441.0,
+    "median_qlen": 94.0
+  }
+}

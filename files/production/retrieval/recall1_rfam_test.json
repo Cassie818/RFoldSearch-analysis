@@ -47,5 +47,11 @@
     "clan_recall1": 0.8148148148148148,
     "n_family": 106,
     "n_clan": 81
+  },
+  "Infernal": {
+    "family_recall1": 0.9150943396226415,
+    "clan_recall1": 0.9506172839506173,
+    "n_family": 106,
+    "n_clan": 81
   }
 }

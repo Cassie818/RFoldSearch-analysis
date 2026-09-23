@@ -7,7 +7,7 @@ numba==0.55.1
 scipy==1.9.1      # Section 2.4 motif confidence intervals (Clopper-Pearson)
 biotite==0.40.0   # structure preprocessing (preprocessing/extract_backbone.py)
 
-# RiboSeek baseline only (scripts/02_benchmark/riboseek_baseline.py).
+# RiboSeek baseline only (scripts/02_rnasolo_benchmark/riboseek_baseline.py).
 # Requires Python >= 3.9; the rest of the pipeline was run under Python 3.8.
 riboseek==0.1.0
 

@@ -1,0 +1,1357 @@
+{
+ "seed": 20260917,
+ "min_len": 30,
+ "family_cap": 50,
+ "queries": [
+  {
+   "urs_id": "URS000037F45F_39947",
+   "family": "RF00003",
+   "taxonomy_id": "39947",
+   "length": 162,
+   "plddt": 77.72,
+   "family_members": 50,
+   "cross_species_positives": 47
+  },
+  {
+   "urs_id": "URS000007D1E6_237561",
+   "family": "RF00004",
+   "taxonomy_id": "237561",
+   "length": 215,
+   "plddt": 69.48,
+   "family_members": 50,
+   "cross_species_positives": 48
+  },
+  {
+   "urs_id": "URS000075A48F_10090",
+   "family": "RF00007",
+   "taxonomy_id": "10090",
+   "length": 150,
+   "plddt": 80.67,
+   "family_members": 23,
+   "cross_species_positives": 17
+  },
+  {
+   "urs_id": "URS0000BF8F6C_86049",
+   "family": "RF00009",
+   "taxonomy_id": "86049",
+   "length": 394,
+   "plddt": 77.92,
+   "family_members": 50,
+   "cross_species_positives": 49
+  },
+  {
+   "urs_id": "URS00026506B2_1352",
+   "family": "RF00011",
+   "taxonomy_id": "1352",
+   "length": 368,
+   "plddt": 82.1,
+   "family_members": 50,
+   "cross_species_positives": 1
+  },
+  {
+   "urs_id": "URS00006C447F_9606",
+   "family": "RF00012",
+   "taxonomy_id": "9606",
+   "length": 216,
+   "plddt": 72.92,
+   "family_members": 50,
+   "cross_species_positives": 44
+  },
+  {
+   "urs_id": "URS000064BC97_447093",
+   "family": "RF00020",
+   "taxonomy_id": "447093",
+   "length": 116,
+   "plddt": 76.38,
+   "family_members": 50,
+   "cross_species_positives": 49
+  },
+  {
+   "urs_id": "URS00021BEE54_1352",
+   "family": "RF00023",
+   "taxonomy_id": "1352",
+   "length": 367,
+   "plddt": 73.69,
+   "family_members": 50,
+   "cross_species_positives": 17
+  },
+  {
+   "urs_id": "URS00000AF869_6239",
+   "family": "RF00026",
+   "taxonomy_id": "6239",
+   "length": 93,
+   "plddt": 65.62,
+   "family_members": 50,
+   "cross_species_positives": 47
+  },
+  {
+   "urs_id": "URS00008514F9_6279",
+   "family": "RF00032",
+   "taxonomy_id": "6279",
+   "length": 46,
+   "plddt": 68.04,
+   "family_members": 12,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS0000726642_10116",
+   "family": "RF00049",
+   "taxonomy_id": "10116",
+   "length": 71,
+   "plddt": 72.96,
+   "family_members": 39,
+   "cross_species_positives": 35
+  },
+  {
+   "urs_id": "URS00006BAFFD_3702",
+   "family": "RF00055",
+   "taxonomy_id": "3702",
+   "length": 97,
+   "plddt": 68.93,
+   "family_members": 24,
+   "cross_species_positives": 19
+  },
+  {
+   "urs_id": "URS000070CBF5_10090",
+   "family": "RF00056",
+   "taxonomy_id": "10090",
+   "length": 132,
+   "plddt": 78.93,
+   "family_members": 40,
+   "cross_species_positives": 27
+  },
+  {
+   "urs_id": "URS00006BA117_10116",
+   "family": "RF00066",
+   "taxonomy_id": "10116",
+   "length": 63,
+   "plddt": 79.53,
+   "family_members": 50,
+   "cross_species_positives": 36
+  },
+  {
+   "urs_id": "URS00001E7E30_3702",
+   "family": "RF00069",
+   "taxonomy_id": "3702",
+   "length": 94,
+   "plddt": 77.44,
+   "family_members": 37,
+   "cross_species_positives": 30
+  },
+  {
+   "urs_id": "URS00001409A3_10090",
+   "family": "RF00071",
+   "taxonomy_id": "10090",
+   "length": 71,
+   "plddt": 77.43,
+   "family_members": 14,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS000072983E_10090",
+   "family": "RF00072",
+   "taxonomy_id": "10090",
+   "length": 130,
+   "plddt": 74.94,
+   "family_members": 10,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS00006CF00B_3702",
+   "family": "RF00075",
+   "taxonomy_id": "3702",
+   "length": 100,
+   "plddt": 85.17,
+   "family_members": 50,
+   "cross_species_positives": 38
+  },
+  {
+   "urs_id": "URS0000D4F366_7955",
+   "family": "RF00076",
+   "taxonomy_id": "7955",
+   "length": 63,
+   "plddt": 85.71,
+   "family_members": 48,
+   "cross_species_positives": 31
+  },
+  {
+   "urs_id": "URS0000EA91A9_9606",
+   "family": "RF00100",
+   "taxonomy_id": "9606",
+   "length": 243,
+   "plddt": 74.33,
+   "family_members": 50,
+   "cross_species_positives": 35
+  },
+  {
+   "urs_id": "URS00006716B5_10116",
+   "family": "RF00105",
+   "taxonomy_id": "10116",
+   "length": 78,
+   "plddt": 70.91,
+   "family_members": 50,
+   "cross_species_positives": 33
+  },
+  {
+   "urs_id": "URS000070FC6F_10116",
+   "family": "RF00130",
+   "taxonomy_id": "10116",
+   "length": 110,
+   "plddt": 84.52,
+   "family_members": 19,
+   "cross_species_positives": 15
+  },
+  {
+   "urs_id": "URS0000C6FE21_4577",
+   "family": "RF00132",
+   "taxonomy_id": "4577",
+   "length": 93,
+   "plddt": 76.56,
+   "family_members": 36,
+   "cross_species_positives": 32
+  },
+  {
+   "urs_id": "URS0000707410_4577",
+   "family": "RF00134",
+   "taxonomy_id": "4577",
+   "length": 80,
+   "plddt": 74.49,
+   "family_members": 20,
+   "cross_species_positives": 18
+  },
+  {
+   "urs_id": "URS0000C51D7D_4577",
+   "family": "RF00145",
+   "taxonomy_id": "4577",
+   "length": 68,
+   "plddt": 67.19,
+   "family_members": 25,
+   "cross_species_positives": 15
+  },
+  {
+   "urs_id": "URS000232BEFF_10090",
+   "family": "RF00147",
+   "taxonomy_id": "10090",
+   "length": 61,
+   "plddt": 71.15,
+   "family_members": 36,
+   "cross_species_positives": 31
+  },
+  {
+   "urs_id": "URS0000C7F9FF_4577",
+   "family": "RF00149",
+   "taxonomy_id": "4577",
+   "length": 93,
+   "plddt": 78.96,
+   "family_members": 50,
+   "cross_species_positives": 31
+  },
+  {
+   "urs_id": "URS00005BB0E5_10090",
+   "family": "RF00158",
+   "taxonomy_id": "10090",
+   "length": 68,
+   "plddt": 66.98,
+   "family_members": 11,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00023292ED_1133849",
+   "family": "RF00174",
+   "taxonomy_id": "1133849",
+   "length": 186,
+   "plddt": 85.8,
+   "family_members": 25,
+   "cross_species_positives": 18
+  },
+  {
+   "urs_id": "URS0002332BF1_7955",
+   "family": "RF00178",
+   "taxonomy_id": "7955",
+   "length": 70,
+   "plddt": 90.65,
+   "family_members": 50,
+   "cross_species_positives": 34
+  },
+  {
+   "urs_id": "URS000075992F_10090",
+   "family": "RF00211",
+   "taxonomy_id": "10090",
+   "length": 89,
+   "plddt": 71.78,
+   "family_members": 16,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS0000A98AD5_9606",
+   "family": "RF00212",
+   "taxonomy_id": "9606",
+   "length": 67,
+   "plddt": 85.06,
+   "family_members": 19,
+   "cross_species_positives": 10
+  },
+  {
+   "urs_id": "URS0000D8F461_9606",
+   "family": "RF00216",
+   "taxonomy_id": "9606",
+   "length": 302,
+   "plddt": 71.8,
+   "family_members": 15,
+   "cross_species_positives": 2
+  },
+  {
+   "urs_id": "URS0000130FE9_6239",
+   "family": "RF00237",
+   "taxonomy_id": "6239",
+   "length": 82,
+   "plddt": 83.79,
+   "family_members": 50,
+   "cross_species_positives": 46
+  },
+  {
+   "urs_id": "URS000231146A_9606",
+   "family": "RF00245",
+   "taxonomy_id": "9606",
+   "length": 66,
+   "plddt": 89.97,
+   "family_members": 50,
+   "cross_species_positives": 37
+  },
+  {
+   "urs_id": "URS0000D5241B_7955",
+   "family": "RF00246",
+   "taxonomy_id": "7955",
+   "length": 62,
+   "plddt": 84.93,
+   "family_members": 35,
+   "cross_species_positives": 24
+  },
+  {
+   "urs_id": "URS000230FE3F_7227",
+   "family": "RF00249",
+   "taxonomy_id": "7227",
+   "length": 67,
+   "plddt": 81.05,
+   "family_members": 17,
+   "cross_species_positives": 12
+  },
+  {
+   "urs_id": "URS0000459EC3_7227",
+   "family": "RF00251",
+   "taxonomy_id": "7227",
+   "length": 100,
+   "plddt": 84.55,
+   "family_members": 50,
+   "cross_species_positives": 46
+  },
+  {
+   "urs_id": "URS000016B83E_10090",
+   "family": "RF00253",
+   "taxonomy_id": "10090",
+   "length": 75,
+   "plddt": 89.5,
+   "family_members": 32,
+   "cross_species_positives": 24
+  },
+  {
+   "urs_id": "URS000230EE50_7955",
+   "family": "RF00254",
+   "taxonomy_id": "7955",
+   "length": 65,
+   "plddt": 89.85,
+   "family_members": 50,
+   "cross_species_positives": 37
+  },
+  {
+   "urs_id": "URS0002322360_10090",
+   "family": "RF00257",
+   "taxonomy_id": "10090",
+   "length": 85,
+   "plddt": 90.44,
+   "family_members": 34,
+   "cross_species_positives": 25
+  },
+  {
+   "urs_id": "URS000053336F_9606",
+   "family": "RF00271",
+   "taxonomy_id": "9606",
+   "length": 83,
+   "plddt": 78.57,
+   "family_members": 13,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS0000AA0298_9606",
+   "family": "RF00272",
+   "taxonomy_id": "9606",
+   "length": 99,
+   "plddt": 74.65,
+   "family_members": 24,
+   "cross_species_positives": 16
+  },
+  {
+   "urs_id": "URS00006F5E77_9606",
+   "family": "RF00275",
+   "taxonomy_id": "9606",
+   "length": 71,
+   "plddt": 76.27,
+   "family_members": 12,
+   "cross_species_positives": 4
+  },
+  {
+   "urs_id": "URS0000670F96_9606",
+   "family": "RF00284",
+   "taxonomy_id": "9606",
+   "length": 80,
+   "plddt": 75.3,
+   "family_members": 20,
+   "cross_species_positives": 4
+  },
+  {
+   "urs_id": "URS0000708EFE_353153",
+   "family": "RF00292",
+   "taxonomy_id": "353153",
+   "length": 72,
+   "plddt": 82.51,
+   "family_members": 11,
+   "cross_species_positives": 3
+  },
+  {
+   "urs_id": "URS0000BF45B5_4577",
+   "family": "RF00303",
+   "taxonomy_id": "4577",
+   "length": 122,
+   "plddt": 78.6,
+   "family_members": 11,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS0000654F3B_3702",
+   "family": "RF00315",
+   "taxonomy_id": "3702",
+   "length": 76,
+   "plddt": 76.64,
+   "family_members": 14,
+   "cross_species_positives": 12
+  },
+  {
+   "urs_id": "URS000232424B_9606",
+   "family": "RF00319",
+   "taxonomy_id": "9606",
+   "length": 179,
+   "plddt": 81.97,
+   "family_members": 11,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS000071F254_7955",
+   "family": "RF00325",
+   "taxonomy_id": "7955",
+   "length": 82,
+   "plddt": 83.47,
+   "family_members": 23,
+   "cross_species_positives": 18
+  },
+  {
+   "urs_id": "URS00006769BF_3702",
+   "family": "RF00328",
+   "taxonomy_id": "3702",
+   "length": 95,
+   "plddt": 67.84,
+   "family_members": 13,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS000232EABB_3702",
+   "family": "RF00356",
+   "taxonomy_id": "3702",
+   "length": 91,
+   "plddt": 75.08,
+   "family_members": 10,
+   "cross_species_positives": 3
+  },
+  {
+   "urs_id": "URS000197CF70_9606",
+   "family": "RF00379",
+   "taxonomy_id": "9606",
+   "length": 123,
+   "plddt": 90.35,
+   "family_members": 12,
+   "cross_species_positives": 3
+  },
+  {
+   "urs_id": "URS00006E18F8_9606",
+   "family": "RF00401",
+   "taxonomy_id": "9606",
+   "length": 132,
+   "plddt": 77.06,
+   "family_members": 16,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS00006615F3_10116",
+   "family": "RF00402",
+   "taxonomy_id": "10116",
+   "length": 129,
+   "plddt": 79.21,
+   "family_members": 19,
+   "cross_species_positives": 18
+  },
+  {
+   "urs_id": "URS0000643F02_10116",
+   "family": "RF00403",
+   "taxonomy_id": "10116",
+   "length": 132,
+   "plddt": 74.65,
+   "family_members": 10,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS000065F4B8_10116",
+   "family": "RF00411",
+   "taxonomy_id": "10116",
+   "length": 133,
+   "plddt": 82.81,
+   "family_members": 17,
+   "cross_species_positives": 13
+  },
+  {
+   "urs_id": "URS0000630F49_10090",
+   "family": "RF00421",
+   "taxonomy_id": "10090",
+   "length": 122,
+   "plddt": 82.2,
+   "family_members": 31,
+   "cross_species_positives": 17
+  },
+  {
+   "urs_id": "URS0000A87E35_9606",
+   "family": "RF00424",
+   "taxonomy_id": "9606",
+   "length": 183,
+   "plddt": 75.38,
+   "family_members": 15,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS0000679FD0_9606",
+   "family": "RF00432",
+   "taxonomy_id": "9606",
+   "length": 131,
+   "plddt": 76.16,
+   "family_members": 35,
+   "cross_species_positives": 21
+  },
+  {
+   "urs_id": "URS0000547435_39947",
+   "family": "RF00445",
+   "taxonomy_id": "39947",
+   "length": 116,
+   "plddt": 83.31,
+   "family_members": 45,
+   "cross_species_positives": 31
+  },
+  {
+   "urs_id": "URS0000D55143_9606",
+   "family": "RF00446",
+   "taxonomy_id": "9606",
+   "length": 60,
+   "plddt": 86.18,
+   "family_members": 50,
+   "cross_species_positives": 40
+  },
+  {
+   "urs_id": "URS0002911906_10116",
+   "family": "RF00456",
+   "taxonomy_id": "10116",
+   "length": 71,
+   "plddt": 90.38,
+   "family_members": 36,
+   "cross_species_positives": 28
+  },
+  {
+   "urs_id": "URS000026811E_39947",
+   "family": "RF00482",
+   "taxonomy_id": "39947",
+   "length": 139,
+   "plddt": 79.84,
+   "family_members": 18,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS0000812EFE_83332",
+   "family": "RF00504",
+   "taxonomy_id": "83332",
+   "length": 98,
+   "plddt": 82.89,
+   "family_members": 11,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00006A3860_10090",
+   "family": "RF00554",
+   "taxonomy_id": "10090",
+   "length": 141,
+   "plddt": 69.83,
+   "family_members": 50,
+   "cross_species_positives": 34
+  },
+  {
+   "urs_id": "URS00006A6DA8_10116",
+   "family": "RF00560",
+   "taxonomy_id": "10116",
+   "length": 134,
+   "plddt": 67.95,
+   "family_members": 50,
+   "cross_species_positives": 28
+  },
+  {
+   "urs_id": "URS0000668A61_10116",
+   "family": "RF00565",
+   "taxonomy_id": "10116",
+   "length": 140,
+   "plddt": 83.17,
+   "family_members": 17,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS000053E02C_10090",
+   "family": "RF00566",
+   "taxonomy_id": "10090",
+   "length": 119,
+   "plddt": 75.19,
+   "family_members": 10,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS0000646A04_10116",
+   "family": "RF00568",
+   "taxonomy_id": "10116",
+   "length": 125,
+   "plddt": 77.83,
+   "family_members": 41,
+   "cross_species_positives": 21
+  },
+  {
+   "urs_id": "URS0000711FAF_10090",
+   "family": "RF00580",
+   "taxonomy_id": "10090",
+   "length": 93,
+   "plddt": 79.48,
+   "family_members": 11,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00006B01A6_9606",
+   "family": "RF00582",
+   "taxonomy_id": "9606",
+   "length": 136,
+   "plddt": 80.81,
+   "family_members": 13,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS000075BD61_9606",
+   "family": "RF00611",
+   "taxonomy_id": "9606",
+   "length": 101,
+   "plddt": 83.73,
+   "family_members": 11,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00006604DA_3847",
+   "family": "RF00619",
+   "taxonomy_id": "3847",
+   "length": 105,
+   "plddt": 69.97,
+   "family_members": 50,
+   "cross_species_positives": 44
+  },
+  {
+   "urs_id": "URS0000B82649_10116",
+   "family": "RF00641",
+   "taxonomy_id": "10116",
+   "length": 56,
+   "plddt": 91.49,
+   "family_members": 50,
+   "cross_species_positives": 34
+  },
+  {
+   "urs_id": "URS0002311245_9606",
+   "family": "RF00642",
+   "taxonomy_id": "9606",
+   "length": 61,
+   "plddt": 89.58,
+   "family_members": 33,
+   "cross_species_positives": 27
+  },
+  {
+   "urs_id": "URS000231013B_7955",
+   "family": "RF00644",
+   "taxonomy_id": "7955",
+   "length": 63,
+   "plddt": 84.28,
+   "family_members": 34,
+   "cross_species_positives": 19
+  },
+  {
+   "urs_id": "URS000009056F_3702",
+   "family": "RF00648",
+   "taxonomy_id": "3702",
+   "length": 135,
+   "plddt": 81.84,
+   "family_members": 19,
+   "cross_species_positives": 14
+  },
+  {
+   "urs_id": "URS000062A2F0_9606",
+   "family": "RF00655,RF00917",
+   "taxonomy_id": "9606",
+   "length": 88,
+   "plddt": 84.17,
+   "family_members": 13,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS000075D93C_10116",
+   "family": "RF00661",
+   "taxonomy_id": "10116",
+   "length": 106,
+   "plddt": 83.13,
+   "family_members": 14,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS00007E3C1F_10116",
+   "family": "RF00662",
+   "taxonomy_id": "10116",
+   "length": 62,
+   "plddt": 90.66,
+   "family_members": 33,
+   "cross_species_positives": 27
+  },
+  {
+   "urs_id": "URS00006B9362_9606",
+   "family": "RF00667",
+   "taxonomy_id": "9606",
+   "length": 67,
+   "plddt": 90.14,
+   "family_members": 13,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS0002311202_9606",
+   "family": "RF00668",
+   "taxonomy_id": "9606",
+   "length": 61,
+   "plddt": 89.02,
+   "family_members": 19,
+   "cross_species_positives": 10
+  },
+  {
+   "urs_id": "URS00006E7A41_10116",
+   "family": "RF00672",
+   "taxonomy_id": "10116",
+   "length": 85,
+   "plddt": 91.86,
+   "family_members": 16,
+   "cross_species_positives": 14
+  },
+  {
+   "urs_id": "URS00005FDE16_9606",
+   "family": "RF00679",
+   "taxonomy_id": "9606",
+   "length": 110,
+   "plddt": 87.33,
+   "family_members": 16,
+   "cross_species_positives": 12
+  },
+  {
+   "urs_id": "URS0002311669_7955",
+   "family": "RF00682",
+   "taxonomy_id": "7955",
+   "length": 59,
+   "plddt": 87.16,
+   "family_members": 12,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS00023325D6_10090",
+   "family": "RF00684",
+   "taxonomy_id": "10090",
+   "length": 73,
+   "plddt": 91.59,
+   "family_members": 12,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS0000C34B11_36087",
+   "family": "RF00685",
+   "taxonomy_id": "36087",
+   "length": 95,
+   "plddt": 93.2,
+   "family_members": 14,
+   "cross_species_positives": 13
+  },
+  {
+   "urs_id": "URS00023114CF_10090",
+   "family": "RF00686",
+   "taxonomy_id": "10090",
+   "length": 62,
+   "plddt": 83.2,
+   "family_members": 24,
+   "cross_species_positives": 19
+  },
+  {
+   "urs_id": "URS00005630CC_3702",
+   "family": "RF00688",
+   "taxonomy_id": "3702",
+   "length": 121,
+   "plddt": 80.66,
+   "family_members": 20,
+   "cross_species_positives": 16
+  },
+  {
+   "urs_id": "URS00007E358C_3847",
+   "family": "RF00689",
+   "taxonomy_id": "3847",
+   "length": 102,
+   "plddt": 89.07,
+   "family_members": 17,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS000075C2AA_4577",
+   "family": "RF00692",
+   "taxonomy_id": "4577",
+   "length": 104,
+   "plddt": 90.08,
+   "family_members": 14,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS00029138DB_10116",
+   "family": "RF00693",
+   "taxonomy_id": "10116",
+   "length": 77,
+   "plddt": 89.44,
+   "family_members": 22,
+   "cross_species_positives": 15
+  },
+  {
+   "urs_id": "URS000232FB78_9606",
+   "family": "RF00694",
+   "taxonomy_id": "9606",
+   "length": 71,
+   "plddt": 92.14,
+   "family_members": 19,
+   "cross_species_positives": 15
+  },
+  {
+   "urs_id": "URS0002315A2D_7955",
+   "family": "RF00696",
+   "taxonomy_id": "7955",
+   "length": 80,
+   "plddt": 90.73,
+   "family_members": 23,
+   "cross_species_positives": 15
+  },
+  {
+   "urs_id": "URS0002914553_9606",
+   "family": "RF00697",
+   "taxonomy_id": "9606",
+   "length": 82,
+   "plddt": 85.93,
+   "family_members": 23,
+   "cross_species_positives": 18
+  },
+  {
+   "urs_id": "URS0000D50789_7955",
+   "family": "RF00698",
+   "taxonomy_id": "7955",
+   "length": 61,
+   "plddt": 88.8,
+   "family_members": 10,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS000075DEE4_10116",
+   "family": "RF00700",
+   "taxonomy_id": "10116",
+   "length": 75,
+   "plddt": 83.97,
+   "family_members": 21,
+   "cross_species_positives": 17
+  },
+  {
+   "urs_id": "URS00007E353F_10116",
+   "family": "RF00701",
+   "taxonomy_id": "10116",
+   "length": 59,
+   "plddt": 89.34,
+   "family_members": 20,
+   "cross_species_positives": 16
+  },
+  {
+   "urs_id": "URS00006A8028_39947",
+   "family": "RF00704",
+   "taxonomy_id": "39947",
+   "length": 116,
+   "plddt": 84.22,
+   "family_members": 18,
+   "cross_species_positives": 12
+  },
+  {
+   "urs_id": "URS00007E4D0F_9606",
+   "family": "RF00715",
+   "taxonomy_id": "9606",
+   "length": 62,
+   "plddt": 85.23,
+   "family_members": 12,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS000230F860_7227",
+   "family": "RF00726",
+   "taxonomy_id": "7227",
+   "length": 72,
+   "plddt": 85.68,
+   "family_members": 13,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS000232417F_10116",
+   "family": "RF00736",
+   "taxonomy_id": "10116",
+   "length": 76,
+   "plddt": 87.21,
+   "family_members": 42,
+   "cross_species_positives": 38
+  },
+  {
+   "urs_id": "URS0002329869_7955",
+   "family": "RF00746",
+   "taxonomy_id": "7955",
+   "length": 104,
+   "plddt": 85.6,
+   "family_members": 11,
+   "cross_species_positives": 3
+  },
+  {
+   "urs_id": "URS0000636B3D_9606",
+   "family": "RF00761",
+   "taxonomy_id": "9606",
+   "length": 98,
+   "plddt": 89.63,
+   "family_members": 10,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS000230EE27_10090",
+   "family": "RF00781",
+   "taxonomy_id": "10090",
+   "length": 59,
+   "plddt": 91.55,
+   "family_members": 10,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS000231256F_10090",
+   "family": "RF00793",
+   "taxonomy_id": "10090",
+   "length": 85,
+   "plddt": 90.3,
+   "family_members": 14,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS000071A37A_10090",
+   "family": "RF00825",
+   "taxonomy_id": "10090",
+   "length": 95,
+   "plddt": 80.42,
+   "family_members": 50,
+   "cross_species_positives": 25
+  },
+  {
+   "urs_id": "URS00006B01A4_9606",
+   "family": "RF00882",
+   "taxonomy_id": "9606",
+   "length": 189,
+   "plddt": 83.01,
+   "family_members": 50,
+   "cross_species_positives": 45
+  },
+  {
+   "urs_id": "URS000098BB6C_9606",
+   "family": "RF00998",
+   "taxonomy_id": "9606",
+   "length": 103,
+   "plddt": 67.55,
+   "family_members": 50,
+   "cross_species_positives": 2
+  },
+  {
+   "urs_id": "URS000232C5C9_9606",
+   "family": "RF01014",
+   "taxonomy_id": "9606",
+   "length": 72,
+   "plddt": 84.54,
+   "family_members": 13,
+   "cross_species_positives": 10
+  },
+  {
+   "urs_id": "URS0000C71D89_4577",
+   "family": "RF01178",
+   "taxonomy_id": "4577",
+   "length": 83,
+   "plddt": 68.8,
+   "family_members": 11,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS000064D054_237561",
+   "family": "RF01185",
+   "taxonomy_id": "237561",
+   "length": 91,
+   "plddt": 73.71,
+   "family_members": 10,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00006457BC_9606",
+   "family": "RF01191",
+   "taxonomy_id": "9606",
+   "length": 82,
+   "plddt": 85.22,
+   "family_members": 10,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS0000804000_3702",
+   "family": "RF01198",
+   "taxonomy_id": "3702",
+   "length": 89,
+   "plddt": 69.14,
+   "family_members": 14,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS0000B1DEAD_237561",
+   "family": "RF01207",
+   "taxonomy_id": "237561",
+   "length": 94,
+   "plddt": 72.2,
+   "family_members": 10,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00009D759C_4577",
+   "family": "RF01208",
+   "taxonomy_id": "4577",
+   "length": 133,
+   "plddt": 77.61,
+   "family_members": 29,
+   "cross_species_positives": 6
+  },
+  {
+   "urs_id": "URS0000A77651_3702",
+   "family": "RF01215",
+   "taxonomy_id": "3702",
+   "length": 134,
+   "plddt": 81.62,
+   "family_members": 13,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS0000729CFE_4577",
+   "family": "RF01220",
+   "taxonomy_id": "4577",
+   "length": 118,
+   "plddt": 75.36,
+   "family_members": 14,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS0000A12150_4577",
+   "family": "RF01224",
+   "taxonomy_id": "4577",
+   "length": 146,
+   "plddt": 84.54,
+   "family_members": 17,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS00006D7B24_9606",
+   "family": "RF01225",
+   "taxonomy_id": "9606",
+   "length": 129,
+   "plddt": 81.84,
+   "family_members": 17,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS000233404A_7955",
+   "family": "RF01229",
+   "taxonomy_id": "7955",
+   "length": 139,
+   "plddt": 83.8,
+   "family_members": 10,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS0000645380_10116",
+   "family": "RF01233",
+   "taxonomy_id": "10116",
+   "length": 117,
+   "plddt": 75.93,
+   "family_members": 20,
+   "cross_species_positives": 14
+  },
+  {
+   "urs_id": "URS0000707EB6_3847",
+   "family": "RF01279",
+   "taxonomy_id": "3847",
+   "length": 79,
+   "plddt": 72.41,
+   "family_members": 14,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS0000C05EB7_4577",
+   "family": "RF01280",
+   "taxonomy_id": "4577",
+   "length": 89,
+   "plddt": 81.34,
+   "family_members": 10,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00000882C8_3702",
+   "family": "RF01284",
+   "taxonomy_id": "3702",
+   "length": 85,
+   "plddt": 78.42,
+   "family_members": 13,
+   "cross_species_positives": 4
+  },
+  {
+   "urs_id": "URS000069F030_3847",
+   "family": "RF01285",
+   "taxonomy_id": "3847",
+   "length": 82,
+   "plddt": 73.08,
+   "family_members": 28,
+   "cross_species_positives": 15
+  },
+  {
+   "urs_id": "URS0000686F48_3847",
+   "family": "RF01286",
+   "taxonomy_id": "3847",
+   "length": 90,
+   "plddt": 78.82,
+   "family_members": 10,
+   "cross_species_positives": 7
+  },
+  {
+   "urs_id": "URS00003F6554_3702",
+   "family": "RF01288",
+   "taxonomy_id": "3702",
+   "length": 99,
+   "plddt": 74.88,
+   "family_members": 26,
+   "cross_species_positives": 23
+  },
+  {
+   "urs_id": "URS000071D754_3847",
+   "family": "RF01302",
+   "taxonomy_id": "3847",
+   "length": 88,
+   "plddt": 70.29,
+   "family_members": 21,
+   "cross_species_positives": 17
+  },
+  {
+   "urs_id": "URS00006838CB_3847",
+   "family": "RF01419",
+   "taxonomy_id": "3847",
+   "length": 105,
+   "plddt": 71.86,
+   "family_members": 17,
+   "cross_species_positives": 10
+  },
+  {
+   "urs_id": "URS00006A27CD_39947",
+   "family": "RF01424",
+   "taxonomy_id": "39947",
+   "length": 88,
+   "plddt": 75.52,
+   "family_members": 12,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00006F1D65_39947",
+   "family": "RF01431",
+   "taxonomy_id": "39947",
+   "length": 149,
+   "plddt": 81.84,
+   "family_members": 17,
+   "cross_species_positives": 13
+  },
+  {
+   "urs_id": "URS00006BC1CB_353153",
+   "family": "RF01522",
+   "taxonomy_id": "353153",
+   "length": 71,
+   "plddt": 74.24,
+   "family_members": 22,
+   "cross_species_positives": 4
+  },
+  {
+   "urs_id": "URS0000711B01_353153",
+   "family": "RF01541",
+   "taxonomy_id": "353153",
+   "length": 73,
+   "plddt": 77.54,
+   "family_members": 22,
+   "cross_species_positives": 2
+  },
+  {
+   "urs_id": "URS00006DA4DE_9606",
+   "family": "RF01684",
+   "taxonomy_id": "9606",
+   "length": 57,
+   "plddt": 89.47,
+   "family_members": 17,
+   "cross_species_positives": 11
+  },
+  {
+   "urs_id": "URS0000C678E6_1133849",
+   "family": "RF01781",
+   "taxonomy_id": "1133849",
+   "length": 68,
+   "plddt": 72.07,
+   "family_members": 13,
+   "cross_species_positives": 8
+  },
+  {
+   "urs_id": "URS00006B82BB_3847",
+   "family": "RF01845",
+   "taxonomy_id": "3847",
+   "length": 231,
+   "plddt": 78.55,
+   "family_members": 11,
+   "cross_species_positives": 5
+  },
+  {
+   "urs_id": "URS00021ED97C_559292",
+   "family": "RF01846",
+   "taxonomy_id": "559292",
+   "length": 175,
+   "plddt": 76.11,
+   "family_members": 15,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS00006B3833_3702",
+   "family": "RF01855",
+   "taxonomy_id": "3702",
+   "length": 306,
+   "plddt": 79.09,
+   "family_members": 50,
+   "cross_species_positives": 33
+  },
+  {
+   "urs_id": "URS0000686139_9606",
+   "family": "RF01897",
+   "taxonomy_id": "9606",
+   "length": 106,
+   "plddt": 84.14,
+   "family_members": 16,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS000075DE32_10116",
+   "family": "RF01903",
+   "taxonomy_id": "10116",
+   "length": 84,
+   "plddt": 89.99,
+   "family_members": 33,
+   "cross_species_positives": 24
+  },
+  {
+   "urs_id": "URS0001FC017A_5671",
+   "family": "RF01960",
+   "taxonomy_id": "5671",
+   "length": 301,
+   "plddt": 81.52,
+   "family_members": 50,
+   "cross_species_positives": 48
+  },
+  {
+   "urs_id": "URS000230F64D_7955",
+   "family": "RF02061",
+   "taxonomy_id": "7955",
+   "length": 63,
+   "plddt": 84.56,
+   "family_members": 25,
+   "cross_species_positives": 18
+  },
+  {
+   "urs_id": "URS000072E736_4577",
+   "family": "RF02516",
+   "taxonomy_id": "4577",
+   "length": 112,
+   "plddt": 89.18,
+   "family_members": 50,
+   "cross_species_positives": 44
+  },
+  {
+   "urs_id": "URS0000C424D7_86049",
+   "family": "RF02541",
+   "taxonomy_id": "86049",
+   "length": 166,
+   "plddt": 81.92,
+   "family_members": 50,
+   "cross_species_positives": 48
+  },
+  {
+   "urs_id": "URS00027E275C_10116",
+   "family": "RF02543",
+   "taxonomy_id": "10116",
+   "length": 97,
+   "plddt": 76.17,
+   "family_members": 50,
+   "cross_species_positives": 48
+  },
+  {
+   "urs_id": "URS00023144AC_39947",
+   "family": "RF03896",
+   "taxonomy_id": "39947",
+   "length": 103,
+   "plddt": 90.39,
+   "family_members": 21,
+   "cross_species_positives": 9
+  },
+  {
+   "urs_id": "URS0002617367_10116",
+   "family": "RF04204",
+   "taxonomy_id": "10116",
+   "length": 66,
+   "plddt": 84.33,
+   "family_members": 50,
+   "cross_species_positives": 26
+  },
+  {
+   "urs_id": "URS00026175E1_9606",
+   "family": "RF04216",
+   "taxonomy_id": "9606",
+   "length": 82,
+   "plddt": 87.06,
+   "family_members": 12,
+   "cross_species_positives": 2
+  }
+ ]
+}

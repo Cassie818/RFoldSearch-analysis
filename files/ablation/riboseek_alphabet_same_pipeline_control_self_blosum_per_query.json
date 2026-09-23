@@ -1,8 +1,8 @@
 {
   "_provenance": {
-    "python": "/Users/cassie/opt/anaconda3/bin/python",
-    "python_version": "3.9.13 (main, Aug 25 2022, 18:29:29) \n[Clang 12.0.0 ]",
-    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
+    "python": "/Users/cassie/.claude-science/conda/envs/esm/bin/python3",
+    "python_version": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:29:05) [Clang 19.1.7 ]",
+    "data_root": "/Users/cassie/Desktop/RFoldSeek",
     "prefer_external": false,
     "matrix_mode": "self_blosum",
     "resolved_paths": {
@@ -15,7 +15,7 @@
       "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl"
     },
     "input_hashes_md5": {
-      "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
+      "files/models/db.pt": "cdd2da1d0d95ccd5db365e1ac3871ed4",
       "files/models/sub_matrix.pt": "bdb3f7128969775022e4a0952828140d",
       "files/ablation/riboseek_real_encoded.json": "3ce8d27fc42c9b8f69d443b2a5c11b1b",
       "Splits/pdb_out/test.json": "7b4b5249e36d02078476def61c536555",
@@ -38,10 +38,10 @@
         "alphabet_size": 80,
         "n_input_train_pairs": 6251,
         "n_aligned_train_pairs": 6251,
-        "n_aligned_columns": 4188879,
+        "n_aligned_columns": 4188640,
         "scale": 2.0,
-        "diag_mean_before_rescale": 8.227203369140625,
-        "diag_mean_after_rescale": 1.0000001192092896
+        "diag_mean_before_rescale": 8.22607135772705,
+        "diag_mean_after_rescale": 1.0
       },
       "RiboSeek_sa20_same_pipeline": {
         "alphabet_size": 20,
@@ -139,7 +139,7 @@
       {
         "query": 743,
         "recall1": 1,
-        "sens": 0.45255474452554745
+        "sens": 0.44525547445255476
       },
       {
         "query": 750,
@@ -219,7 +219,7 @@
       {
         "query": 776,
         "recall1": 1,
-        "sens": 0.36496350364963503
+        "sens": 0.35766423357664234
       },
       {
         "query": 777,
@@ -344,7 +344,7 @@
       {
         "query": 814,
         "recall1": 1,
-        "sens": 0.5109489051094891
+        "sens": 0.5036496350364964
       },
       {
         "query": 816,
@@ -941,7 +941,7 @@
       {
         "query": 863,
         "recall1": 1,
-        "sens": 0.2608695652173913
+        "sens": 0.2826086956521739
       },
       {
         "query": 866,

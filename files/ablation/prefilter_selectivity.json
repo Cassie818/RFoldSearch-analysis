@@ -1,20 +1,20 @@
 {
   "VQ-VAE_K80": {
     "K": 80,
-    "postings_per_query": 12601.132075471698,
-    "distinct_targets": 608.8396226415094,
-    "survivors": 385.77358490566036
+    "postings_per_query": 12598.084905660377,
+    "distinct_targets": 608.8301886792453,
+    "survivors": 385.4622641509434
   },
   "KMeans_K20": {
     "K": 20,
-    "postings_per_query": 568413.5471698113,
-    "distinct_targets": 825.1509433962265,
-    "survivors": 789.7641509433962
+    "postings_per_query": 579706.1037735849,
+    "distinct_targets": 826.1792452830189,
+    "survivors": 790.6415094339623
   },
   "KMeans_K80": {
     "K": 80,
-    "postings_per_query": 21514.83962264151,
-    "distinct_targets": 585.8301886792453,
-    "survivors": 317.50943396226415
+    "postings_per_query": 20453.669811320753,
+    "distinct_targets": 583.1603773584906,
+    "survivors": 314.1981132075472
   }
 }

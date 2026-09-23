@@ -1,8 +1,8 @@
 {
   "_provenance": {
-    "python": "/Users/cassie/opt/anaconda3/bin/python",
-    "python_version": "3.9.13 (main, Aug 25 2022, 18:29:29) \n[Clang 12.0.0 ]",
-    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
+    "python": "/Users/cassie/.claude-science/conda/envs/esm/bin/python3",
+    "python_version": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:29:05) [Clang 19.1.7 ]",
+    "data_root": "/Users/cassie/Desktop/RFoldSeek",
     "prefer_external": false,
     "matrix_mode": "native",
     "resolved_paths": {
@@ -13,7 +13,7 @@
       "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv"
     },
     "input_hashes_md5": {
-      "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
+      "files/models/db.pt": "cdd2da1d0d95ccd5db365e1ac3871ed4",
       "files/models/sub_matrix.pt": "bdb3f7128969775022e4a0952828140d",
       "files/ablation/riboseek_real_encoded.json": "3ce8d27fc42c9b8f69d443b2a5c11b1b",
       "Splits/pdb_out/test.json": "7b4b5249e36d02078476def61c536555",
@@ -24,10 +24,10 @@
     "family_recall1": 0.8867924528301887,
     "family_sens_1fp": 0.5844170444830004,
     "clan_recall1": 0.9012345679012346,
-    "clan_sens_1fp": 0.21863392521279268,
+    "clan_sens_1fp": 0.218902309539148,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 136.0279450416565,
+    "time_sec": 168.19224619865417,
     "alphabet_size": 80,
     "kmer_k": 4,
     "top_n": 200,
@@ -46,7 +46,7 @@
     "clan_sens_1fp": 0.08270993754408909,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 207.68919920921326,
+    "time_sec": 225.04494619369507,
     "alphabet_size": 20,
     "kmer_k": 4,
     "top_n": 200,

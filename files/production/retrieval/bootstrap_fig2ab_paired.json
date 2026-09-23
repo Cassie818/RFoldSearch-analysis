@@ -58,6 +58,14 @@
       "diff_ci_lo": 0.24456274051756746,
       "diff_ci_hi": 0.5195462650624985,
       "sig_vs_rf": true
+    },
+    "Infernal": {
+      "anchor_mean": 0.5850027960429098,
+      "method_mean": 0.569510374718124,
+      "diff_mean": 0.015492421324785788,
+      "diff_ci_lo": -0.10046883304409104,
+      "diff_ci_hi": 0.11059836313269256,
+      "sig_vs_rf": false
     }
   },
   "clan": {
@@ -116,6 +124,14 @@
       "diff_ci_lo": 0.10020661157024793,
       "diff_ci_hi": 0.349779585217675,
       "sig_vs_rf": true
+    },
+    "Infernal": {
+      "anchor_mean": 0.21991880465859157,
+      "method_mean": 0.15575797322611007,
+      "diff_mean": 0.0641608314324815,
+      "diff_ci_lo": -0.027264304771371706,
+      "diff_ci_hi": 0.10134890936615068,
+      "sig_vs_rf": false
     }
   }
 }

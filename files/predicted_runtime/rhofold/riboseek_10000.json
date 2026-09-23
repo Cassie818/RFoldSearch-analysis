@@ -1,0 +1,1813 @@
+{
+  "method": "riboseek",
+  "n_database": 10000,
+  "n_queries": 300,
+  "encode_build_s": 476.41,
+  "index_s": 0.73,
+  "mean_s": 0.09499166666666667,
+  "median_s": 0.07185,
+  "p90_s": 0.17045000000000002,
+  "max_s": 0.5293,
+  "per_query": [
+    {
+      "query": "URS0000675BA1",
+      "length": 24,
+      "hits": 500,
+      "seconds": 0.0271
+    },
+    {
+      "query": "URS000070AB4B",
+      "length": 30,
+      "hits": 500,
+      "seconds": 0.0268
+    },
+    {
+      "query": "URS0001A23DF2",
+      "length": 34,
+      "hits": 176,
+      "seconds": 0.0132
+    },
+    {
+      "query": "URS0000656FC2",
+      "length": 37,
+      "hits": 500,
+      "seconds": 0.0382
+    },
+    {
+      "query": "URS0000E7E8FE",
+      "length": 37,
+      "hits": 26,
+      "seconds": 0.0076
+    },
+    {
+      "query": "URS00006C6306",
+      "length": 38,
+      "hits": 500,
+      "seconds": 0.0317
+    },
+    {
+      "query": "URS0000D6C2D8",
+      "length": 45,
+      "hits": 71,
+      "seconds": 0.0103
+    },
+    {
+      "query": "URS0002689D1F",
+      "length": 47,
+      "hits": 500,
+      "seconds": 0.0457
+    },
+    {
+      "query": "URS000331AFF7",
+      "length": 48,
+      "hits": 500,
+      "seconds": 0.0437
+    },
+    {
+      "query": "URS0002685D44",
+      "length": 50,
+      "hits": 217,
+      "seconds": 0.02
+    },
+    {
+      "query": "URS0003407594",
+      "length": 51,
+      "hits": 500,
+      "seconds": 0.0431
+    },
+    {
+      "query": "URS000319420A",
+      "length": 52,
+      "hits": 500,
+      "seconds": 0.0406
+    },
+    {
+      "query": "URS0000E3D85A",
+      "length": 53,
+      "hits": 500,
+      "seconds": 0.0532
+    },
+    {
+      "query": "URS0000D6AE9F",
+      "length": 54,
+      "hits": 500,
+      "seconds": 0.0415
+    },
+    {
+      "query": "URS000071F603",
+      "length": 55,
+      "hits": 500,
+      "seconds": 0.0381
+    },
+    {
+      "query": "URS0003421503",
+      "length": 55,
+      "hits": 500,
+      "seconds": 0.0312
+    },
+    {
+      "query": "URS0002778870",
+      "length": 56,
+      "hits": 500,
+      "seconds": 0.047
+    },
+    {
+      "query": "URS0002310C6E",
+      "length": 57,
+      "hits": 500,
+      "seconds": 0.0456
+    },
+    {
+      "query": "URS0000BDF5C4",
+      "length": 58,
+      "hits": 500,
+      "seconds": 0.0442
+    },
+    {
+      "query": "URS0003087F05",
+      "length": 58,
+      "hits": 500,
+      "seconds": 0.0462
+    },
+    {
+      "query": "URS0000D69300",
+      "length": 59,
+      "hits": 500,
+      "seconds": 0.0555
+    },
+    {
+      "query": "URS0002F12BD0",
+      "length": 59,
+      "hits": 500,
+      "seconds": 0.0504
+    },
+    {
+      "query": "URS0000D52084",
+      "length": 60,
+      "hits": 500,
+      "seconds": 0.0502
+    },
+    {
+      "query": "URS000305BC60",
+      "length": 60,
+      "hits": 500,
+      "seconds": 0.0466
+    },
+    {
+      "query": "URS0000D52821",
+      "length": 61,
+      "hits": 500,
+      "seconds": 0.0559
+    },
+    {
+      "query": "URS0003217055",
+      "length": 61,
+      "hits": 500,
+      "seconds": 0.0404
+    },
+    {
+      "query": "URS0000D6D2D6",
+      "length": 62,
+      "hits": 500,
+      "seconds": 0.0471
+    },
+    {
+      "query": "URS0000496C81",
+      "length": 63,
+      "hits": 500,
+      "seconds": 0.0491
+    },
+    {
+      "query": "URS0000DC9FF0",
+      "length": 63,
+      "hits": 500,
+      "seconds": 0.0428
+    },
+    {
+      "query": "URS00031F5570",
+      "length": 63,
+      "hits": 500,
+      "seconds": 0.0342
+    },
+    {
+      "query": "URS0000C1A7E8",
+      "length": 64,
+      "hits": 500,
+      "seconds": 0.0582
+    },
+    {
+      "query": "URS0002699759",
+      "length": 64,
+      "hits": 500,
+      "seconds": 0.0543
+    },
+    {
+      "query": "URS000063D2A4",
+      "length": 65,
+      "hits": 500,
+      "seconds": 0.0499
+    },
+    {
+      "query": "URS0000D8762A",
+      "length": 65,
+      "hits": 500,
+      "seconds": 0.0479
+    },
+    {
+      "query": "URS00031D7081",
+      "length": 65,
+      "hits": 500,
+      "seconds": 0.0749
+    },
+    {
+      "query": "URS00006B264C",
+      "length": 66,
+      "hits": 500,
+      "seconds": 0.0513
+    },
+    {
+      "query": "URS0002313AAA",
+      "length": 66,
+      "hits": 500,
+      "seconds": 0.0486
+    },
+    {
+      "query": "URS000339A570",
+      "length": 66,
+      "hits": 500,
+      "seconds": 0.062
+    },
+    {
+      "query": "URS0000C55715",
+      "length": 67,
+      "hits": 500,
+      "seconds": 0.0561
+    },
+    {
+      "query": "URS0002685298",
+      "length": 67,
+      "hits": 500,
+      "seconds": 0.0656
+    },
+    {
+      "query": "URS00031D85F1",
+      "length": 67,
+      "hits": 500,
+      "seconds": 0.0414
+    },
+    {
+      "query": "URS0000680154",
+      "length": 68,
+      "hits": 500,
+      "seconds": 0.0499
+    },
+    {
+      "query": "URS0000DAD1C2",
+      "length": 68,
+      "hits": 500,
+      "seconds": 0.048
+    },
+    {
+      "query": "URS000233100C",
+      "length": 68,
+      "hits": 500,
+      "seconds": 0.0566
+    },
+    {
+      "query": "URS00032906AB",
+      "length": 68,
+      "hits": 500,
+      "seconds": 0.0594
+    },
+    {
+      "query": "URS000041D05C",
+      "length": 69,
+      "hits": 500,
+      "seconds": 0.0624
+    },
+    {
+      "query": "URS0000D52EA4",
+      "length": 69,
+      "hits": 500,
+      "seconds": 0.0603
+    },
+    {
+      "query": "URS00031241AF",
+      "length": 69,
+      "hits": 500,
+      "seconds": 0.0495
+    },
+    {
+      "query": "URS00000CAA4F",
+      "length": 70,
+      "hits": 500,
+      "seconds": 0.0542
+    },
+    {
+      "query": "URS0000DABBFC",
+      "length": 70,
+      "hits": 500,
+      "seconds": 0.0579
+    },
+    {
+      "query": "URS00030A33C8",
+      "length": 70,
+      "hits": 500,
+      "seconds": 0.0526
+    },
+    {
+      "query": "URS00034AD35D",
+      "length": 70,
+      "hits": 500,
+      "seconds": 0.066
+    },
+    {
+      "query": "URS0000D66367",
+      "length": 71,
+      "hits": 500,
+      "seconds": 0.0524
+    },
+    {
+      "query": "URS000269EE45",
+      "length": 71,
+      "hits": 500,
+      "seconds": 0.0544
+    },
+    {
+      "query": "URS00031EA898",
+      "length": 71,
+      "hits": 500,
+      "seconds": 0.058
+    },
+    {
+      "query": "URS0003489F78",
+      "length": 71,
+      "hits": 500,
+      "seconds": 0.0479
+    },
+    {
+      "query": "URS0000D68BF5",
+      "length": 72,
+      "hits": 500,
+      "seconds": 0.0591
+    },
+    {
+      "query": "URS00027E0F04",
+      "length": 72,
+      "hits": 500,
+      "seconds": 0.0591
+    },
+    {
+      "query": "URS000330F600",
+      "length": 72,
+      "hits": 500,
+      "seconds": 0.064
+    },
+    {
+      "query": "URS000075AEEF",
+      "length": 73,
+      "hits": 500,
+      "seconds": 0.0592
+    },
+    {
+      "query": "URS00023149AD",
+      "length": 73,
+      "hits": 500,
+      "seconds": 0.0587
+    },
+    {
+      "query": "URS0002F0E66F",
+      "length": 73,
+      "hits": 500,
+      "seconds": 0.0615
+    },
+    {
+      "query": "URS00032658B6",
+      "length": 73,
+      "hits": 500,
+      "seconds": 0.05
+    },
+    {
+      "query": "URS0000652A42",
+      "length": 74,
+      "hits": 500,
+      "seconds": 0.0529
+    },
+    {
+      "query": "URS0000C80194",
+      "length": 74,
+      "hits": 500,
+      "seconds": 0.0643
+    },
+    {
+      "query": "URS000232FE27",
+      "length": 74,
+      "hits": 500,
+      "seconds": 0.0612
+    },
+    {
+      "query": "URS00031212DC",
+      "length": 74,
+      "hits": 500,
+      "seconds": 0.0668
+    },
+    {
+      "query": "URS00032E6580",
+      "length": 74,
+      "hits": 500,
+      "seconds": 0.0555
+    },
+    {
+      "query": "URS00006C3DAD",
+      "length": 75,
+      "hits": 500,
+      "seconds": 0.0529
+    },
+    {
+      "query": "URS0000D4FE80",
+      "length": 75,
+      "hits": 500,
+      "seconds": 0.0631
+    },
+    {
+      "query": "URS000231FD85",
+      "length": 75,
+      "hits": 500,
+      "seconds": 0.0565
+    },
+    {
+      "query": "URS00030B7476",
+      "length": 75,
+      "hits": 500,
+      "seconds": 0.0623
+    },
+    {
+      "query": "URS00033461A1",
+      "length": 75,
+      "hits": 500,
+      "seconds": 0.0559
+    },
+    {
+      "query": "URS00008E054E",
+      "length": 76,
+      "hits": 500,
+      "seconds": 0.0551
+    },
+    {
+      "query": "URS0001A23E2F",
+      "length": 76,
+      "hits": 500,
+      "seconds": 0.0877
+    },
+    {
+      "query": "URS0003095911",
+      "length": 76,
+      "hits": 500,
+      "seconds": 0.057
+    },
+    {
+      "query": "URS0003282214",
+      "length": 76,
+      "hits": 500,
+      "seconds": 0.0629
+    },
+    {
+      "query": "URS000349E6E8",
+      "length": 76,
+      "hits": 500,
+      "seconds": 0.0497
+    },
+    {
+      "query": "URS0000BCF17C",
+      "length": 77,
+      "hits": 500,
+      "seconds": 0.0686
+    },
+    {
+      "query": "URS000231EFD8",
+      "length": 77,
+      "hits": 500,
+      "seconds": 0.0599
+    },
+    {
+      "query": "URS00030688CA",
+      "length": 77,
+      "hits": 500,
+      "seconds": 0.056
+    },
+    {
+      "query": "URS00032C5B64",
+      "length": 77,
+      "hits": 500,
+      "seconds": 0.061
+    },
+    {
+      "query": "URS00006278E4",
+      "length": 78,
+      "hits": 500,
+      "seconds": 0.0919
+    },
+    {
+      "query": "URS0000BFD3AD",
+      "length": 78,
+      "hits": 500,
+      "seconds": 0.0601
+    },
+    {
+      "query": "URS000231388E",
+      "length": 78,
+      "hits": 500,
+      "seconds": 0.0484
+    },
+    {
+      "query": "URS000268871D",
+      "length": 78,
+      "hits": 500,
+      "seconds": 0.0493
+    },
+    {
+      "query": "URS00030F6762",
+      "length": 78,
+      "hits": 500,
+      "seconds": 0.073
+    },
+    {
+      "query": "URS0003349CF3",
+      "length": 78,
+      "hits": 500,
+      "seconds": 0.0584
+    },
+    {
+      "query": "URS00006D11F2",
+      "length": 79,
+      "hits": 500,
+      "seconds": 0.056
+    },
+    {
+      "query": "URS000197D7D9",
+      "length": 79,
+      "hits": 500,
+      "seconds": 0.066
+    },
+    {
+      "query": "URS00030975AF",
+      "length": 79,
+      "hits": 500,
+      "seconds": 0.055
+    },
+    {
+      "query": "URS000328097A",
+      "length": 79,
+      "hits": 500,
+      "seconds": 0.0633
+    },
+    {
+      "query": "URS000065055E",
+      "length": 80,
+      "hits": 500,
+      "seconds": 0.0512
+    },
+    {
+      "query": "URS0000AAE88D",
+      "length": 80,
+      "hits": 500,
+      "seconds": 0.0599
+    },
+    {
+      "query": "URS000232B931",
+      "length": 80,
+      "hits": 500,
+      "seconds": 0.0583
+    },
+    {
+      "query": "URS000314E88B",
+      "length": 80,
+      "hits": 500,
+      "seconds": 0.0666
+    },
+    {
+      "query": "URS000337096B",
+      "length": 80,
+      "hits": 500,
+      "seconds": 0.0585
+    },
+    {
+      "query": "URS000091623F",
+      "length": 81,
+      "hits": 500,
+      "seconds": 0.0747
+    },
+    {
+      "query": "URS0000D8206B",
+      "length": 81,
+      "hits": 500,
+      "seconds": 0.0594
+    },
+    {
+      "query": "URS00029F5D01",
+      "length": 81,
+      "hits": 500,
+      "seconds": 0.0636
+    },
+    {
+      "query": "URS00032B47DC",
+      "length": 81,
+      "hits": 500,
+      "seconds": 0.0704
+    },
+    {
+      "query": "URS00034BF0D7",
+      "length": 81,
+      "hits": 500,
+      "seconds": 0.0582
+    },
+    {
+      "query": "URS0000A8625B",
+      "length": 82,
+      "hits": 500,
+      "seconds": 0.0589
+    },
+    {
+      "query": "URS0000D9D643",
+      "length": 82,
+      "hits": 500,
+      "seconds": 0.092
+    },
+    {
+      "query": "URS000268C588",
+      "length": 82,
+      "hits": 500,
+      "seconds": 0.0577
+    },
+    {
+      "query": "URS0003185134",
+      "length": 82,
+      "hits": 500,
+      "seconds": 0.0695
+    },
+    {
+      "query": "URS00033E90C7",
+      "length": 82,
+      "hits": 500,
+      "seconds": 0.0574
+    },
+    {
+      "query": "URS0000A9F2E2",
+      "length": 83,
+      "hits": 500,
+      "seconds": 0.0862
+    },
+    {
+      "query": "URS0002311F1F",
+      "length": 83,
+      "hits": 500,
+      "seconds": 0.0641
+    },
+    {
+      "query": "URS00026172C3",
+      "length": 83,
+      "hits": 500,
+      "seconds": 0.0704
+    },
+    {
+      "query": "URS00031BBBE9",
+      "length": 83,
+      "hits": 500,
+      "seconds": 0.0739
+    },
+    {
+      "query": "URS000336FBDA",
+      "length": 83,
+      "hits": 500,
+      "seconds": 0.0523
+    },
+    {
+      "query": "URS0000759E62",
+      "length": 84,
+      "hits": 500,
+      "seconds": 0.0763
+    },
+    {
+      "query": "URS0000D62119",
+      "length": 84,
+      "hits": 500,
+      "seconds": 0.0713
+    },
+    {
+      "query": "URS0002331C84",
+      "length": 84,
+      "hits": 500,
+      "seconds": 0.0702
+    },
+    {
+      "query": "URS00030B3243",
+      "length": 84,
+      "hits": 500,
+      "seconds": 0.0673
+    },
+    {
+      "query": "URS00032CD92B",
+      "length": 84,
+      "hits": 500,
+      "seconds": 0.0644
+    },
+    {
+      "query": "URS0003491B72",
+      "length": 84,
+      "hits": 500,
+      "seconds": 0.0559
+    },
+    {
+      "query": "URS0000C19D40",
+      "length": 85,
+      "hits": 500,
+      "seconds": 0.0677
+    },
+    {
+      "query": "URS0002321E14",
+      "length": 85,
+      "hits": 500,
+      "seconds": 0.0674
+    },
+    {
+      "query": "URS00030CA9D1",
+      "length": 85,
+      "hits": 500,
+      "seconds": 0.0866
+    },
+    {
+      "query": "URS0003235C57",
+      "length": 85,
+      "hits": 500,
+      "seconds": 0.0627
+    },
+    {
+      "query": "URS00033DC2A6",
+      "length": 85,
+      "hits": 500,
+      "seconds": 0.0526
+    },
+    {
+      "query": "URS0000BDE040",
+      "length": 86,
+      "hits": 500,
+      "seconds": 0.0638
+    },
+    {
+      "query": "URS000231D11A",
+      "length": 86,
+      "hits": 500,
+      "seconds": 0.0579
+    },
+    {
+      "query": "URS0003093F37",
+      "length": 86,
+      "hits": 500,
+      "seconds": 0.0686
+    },
+    {
+      "query": "URS0003236B05",
+      "length": 86,
+      "hits": 500,
+      "seconds": 0.0647
+    },
+    {
+      "query": "URS000347BD4F",
+      "length": 86,
+      "hits": 500,
+      "seconds": 0.0569
+    },
+    {
+      "query": "URS0000CC3C5D",
+      "length": 87,
+      "hits": 500,
+      "seconds": 0.0582
+    },
+    {
+      "query": "URS0002329551",
+      "length": 87,
+      "hits": 500,
+      "seconds": 0.0699
+    },
+    {
+      "query": "URS0003165E0B",
+      "length": 87,
+      "hits": 500,
+      "seconds": 0.1033
+    },
+    {
+      "query": "URS00033A0313",
+      "length": 87,
+      "hits": 500,
+      "seconds": 0.0722
+    },
+    {
+      "query": "URS000070A13D",
+      "length": 88,
+      "hits": 500,
+      "seconds": 0.0785
+    },
+    {
+      "query": "URS000195FB14",
+      "length": 88,
+      "hits": 500,
+      "seconds": 0.0757
+    },
+    {
+      "query": "URS0003291FB4",
+      "length": 88,
+      "hits": 500,
+      "seconds": 0.0675
+    },
+    {
+      "query": "URS00006CAC1D",
+      "length": 89,
+      "hits": 500,
+      "seconds": 0.1017
+    },
+    {
+      "query": "URS0002312E81",
+      "length": 89,
+      "hits": 500,
+      "seconds": 0.0649
+    },
+    {
+      "query": "URS00030DD34C",
+      "length": 89,
+      "hits": 500,
+      "seconds": 0.0786
+    },
+    {
+      "query": "URS00034034C5",
+      "length": 89,
+      "hits": 500,
+      "seconds": 0.0567
+    },
+    {
+      "query": "URS0000C3E264",
+      "length": 90,
+      "hits": 500,
+      "seconds": 0.0619
+    },
+    {
+      "query": "URS000232FA97",
+      "length": 90,
+      "hits": 500,
+      "seconds": 0.0679
+    },
+    {
+      "query": "URS000321887D",
+      "length": 90,
+      "hits": 500,
+      "seconds": 0.0603
+    },
+    {
+      "query": "URS00006FA959",
+      "length": 91,
+      "hits": 500,
+      "seconds": 0.0669
+    },
+    {
+      "query": "URS000219A117",
+      "length": 91,
+      "hits": 500,
+      "seconds": 0.0653
+    },
+    {
+      "query": "URS00030F555A",
+      "length": 91,
+      "hits": 500,
+      "seconds": 0.0716
+    },
+    {
+      "query": "URS00007138BF",
+      "length": 92,
+      "hits": 500,
+      "seconds": 0.0763
+    },
+    {
+      "query": "URS0000D6AF86",
+      "length": 92,
+      "hits": 500,
+      "seconds": 0.0751
+    },
+    {
+      "query": "URS0002914513",
+      "length": 92,
+      "hits": 500,
+      "seconds": 0.0595
+    },
+    {
+      "query": "URS0003303356",
+      "length": 92,
+      "hits": 500,
+      "seconds": 0.0674
+    },
+    {
+      "query": "URS000075C10A",
+      "length": 93,
+      "hits": 500,
+      "seconds": 0.0678
+    },
+    {
+      "query": "URS0001A235A5",
+      "length": 93,
+      "hits": 500,
+      "seconds": 0.1051
+    },
+    {
+      "query": "URS0003143EA9",
+      "length": 93,
+      "hits": 500,
+      "seconds": 0.0665
+    },
+    {
+      "query": "URS000022B43C",
+      "length": 94,
+      "hits": 500,
+      "seconds": 0.0632
+    },
+    {
+      "query": "URS0000BD1AA0",
+      "length": 94,
+      "hits": 500,
+      "seconds": 0.0728
+    },
+    {
+      "query": "URS000232D17F",
+      "length": 94,
+      "hits": 500,
+      "seconds": 0.0682
+    },
+    {
+      "query": "URS000334C319",
+      "length": 94,
+      "hits": 500,
+      "seconds": 0.0684
+    },
+    {
+      "query": "URS0000932416",
+      "length": 95,
+      "hits": 500,
+      "seconds": 0.0659
+    },
+    {
+      "query": "URS0000D7E5DA",
+      "length": 95,
+      "hits": 500,
+      "seconds": 0.1053
+    },
+    {
+      "query": "URS0003082536",
+      "length": 95,
+      "hits": 500,
+      "seconds": 0.0826
+    },
+    {
+      "query": "URS0000629D76",
+      "length": 96,
+      "hits": 500,
+      "seconds": 0.0604
+    },
+    {
+      "query": "URS0000AB9874",
+      "length": 96,
+      "hits": 500,
+      "seconds": 0.0653
+    },
+    {
+      "query": "URS000232FA1E",
+      "length": 96,
+      "hits": 500,
+      "seconds": 0.0753
+    },
+    {
+      "query": "URS0003472DC6",
+      "length": 96,
+      "hits": 500,
+      "seconds": 0.0884
+    },
+    {
+      "query": "URS0000A8DE45",
+      "length": 97,
+      "hits": 500,
+      "seconds": 0.0661
+    },
+    {
+      "query": "URS000232F666",
+      "length": 97,
+      "hits": 500,
+      "seconds": 0.0658
+    },
+    {
+      "query": "URS0003481D17",
+      "length": 97,
+      "hits": 500,
+      "seconds": 0.088
+    },
+    {
+      "query": "URS000092CE00",
+      "length": 98,
+      "hits": 500,
+      "seconds": 0.0697
+    },
+    {
+      "query": "URS0000D687E1",
+      "length": 98,
+      "hits": 500,
+      "seconds": 0.1152
+    },
+    {
+      "query": "URS000323EC8D",
+      "length": 98,
+      "hits": 500,
+      "seconds": 0.063
+    },
+    {
+      "query": "URS0000759F95",
+      "length": 99,
+      "hits": 500,
+      "seconds": 0.1008
+    },
+    {
+      "query": "URS0002696366",
+      "length": 99,
+      "hits": 500,
+      "seconds": 0.0805
+    },
+    {
+      "query": "URS00006D6D3B",
+      "length": 100,
+      "hits": 500,
+      "seconds": 0.0796
+    },
+    {
+      "query": "URS0000D9D1CA",
+      "length": 100,
+      "hits": 500,
+      "seconds": 0.1086
+    },
+    {
+      "query": "URS000341B805",
+      "length": 100,
+      "hits": 500,
+      "seconds": 0.0842
+    },
+    {
+      "query": "URS000075E8B9",
+      "length": 101,
+      "hits": 500,
+      "seconds": 0.1029
+    },
+    {
+      "query": "URS00030E8289",
+      "length": 101,
+      "hits": 500,
+      "seconds": 0.1207
+    },
+    {
+      "query": "URS0000A8ECBC",
+      "length": 102,
+      "hits": 500,
+      "seconds": 0.0879
+    },
+    {
+      "query": "URS0003064818",
+      "length": 102,
+      "hits": 500,
+      "seconds": 0.0652
+    },
+    {
+      "query": "URS00009988E3",
+      "length": 103,
+      "hits": 500,
+      "seconds": 0.0906
+    },
+    {
+      "query": "URS00031A6019",
+      "length": 103,
+      "hits": 500,
+      "seconds": 0.0873
+    },
+    {
+      "query": "URS0000D50640",
+      "length": 104,
+      "hits": 500,
+      "seconds": 0.1183
+    },
+    {
+      "query": "URS000335CA48",
+      "length": 104,
+      "hits": 500,
+      "seconds": 0.0855
+    },
+    {
+      "query": "URS0000D6863C",
+      "length": 105,
+      "hits": 500,
+      "seconds": 0.1031
+    },
+    {
+      "query": "URS0003261559",
+      "length": 105,
+      "hits": 500,
+      "seconds": 0.0738
+    },
+    {
+      "query": "URS0002334BE9",
+      "length": 106,
+      "hits": 500,
+      "seconds": 0.0684
+    },
+    {
+      "query": "URS00006C799E",
+      "length": 107,
+      "hits": 500,
+      "seconds": 0.0911
+    },
+    {
+      "query": "URS000232B9A6",
+      "length": 107,
+      "hits": 500,
+      "seconds": 0.0809
+    },
+    {
+      "query": "URS0000BCB674",
+      "length": 108,
+      "hits": 500,
+      "seconds": 0.0889
+    },
+    {
+      "query": "URS00026915F6",
+      "length": 108,
+      "hits": 500,
+      "seconds": 0.085
+    },
+    {
+      "query": "URS00004AA973",
+      "length": 109,
+      "hits": 500,
+      "seconds": 0.0977
+    },
+    {
+      "query": "URS0000CC68D2",
+      "length": 109,
+      "hits": 500,
+      "seconds": 0.0713
+    },
+    {
+      "query": "URS0003087431",
+      "length": 109,
+      "hits": 500,
+      "seconds": 0.0734
+    },
+    {
+      "query": "URS0000A797F1",
+      "length": 110,
+      "hits": 500,
+      "seconds": 0.0727
+    },
+    {
+      "query": "URS00031525F6",
+      "length": 110,
+      "hits": 500,
+      "seconds": 0.133
+    },
+    {
+      "query": "URS0000DA9B98",
+      "length": 111,
+      "hits": 500,
+      "seconds": 0.0802
+    },
+    {
+      "query": "URS00007E3740",
+      "length": 112,
+      "hits": 500,
+      "seconds": 0.0958
+    },
+    {
+      "query": "URS000314EDB6",
+      "length": 112,
+      "hits": 500,
+      "seconds": 0.0782
+    },
+    {
+      "query": "URS0000D69798",
+      "length": 113,
+      "hits": 500,
+      "seconds": 0.0665
+    },
+    {
+      "query": "URS000217C605",
+      "length": 114,
+      "hits": 500,
+      "seconds": 0.1142
+    },
+    {
+      "query": "URS0000ABA778",
+      "length": 115,
+      "hits": 500,
+      "seconds": 0.0757
+    },
+    {
+      "query": "URS0002912DE3",
+      "length": 115,
+      "hits": 500,
+      "seconds": 0.0681
+    },
+    {
+      "query": "URS0000D6B31A",
+      "length": 116,
+      "hits": 500,
+      "seconds": 0.0684
+    },
+    {
+      "query": "URS000096CA28",
+      "length": 117,
+      "hits": 500,
+      "seconds": 0.1187
+    },
+    {
+      "query": "URS00033B4188",
+      "length": 117,
+      "hits": 500,
+      "seconds": 0.0655
+    },
+    {
+      "query": "URS0000E60871",
+      "length": 118,
+      "hits": 500,
+      "seconds": 0.0721
+    },
+    {
+      "query": "URS0000D6688B",
+      "length": 119,
+      "hits": 500,
+      "seconds": 0.0961
+    },
+    {
+      "query": "URS00034987E7",
+      "length": 119,
+      "hits": 500,
+      "seconds": 0.0728
+    },
+    {
+      "query": "URS0002321836",
+      "length": 120,
+      "hits": 500,
+      "seconds": 0.0782
+    },
+    {
+      "query": "URS0000A777E6",
+      "length": 121,
+      "hits": 500,
+      "seconds": 0.0792
+    },
+    {
+      "query": "URS00006513F6",
+      "length": 122,
+      "hits": 500,
+      "seconds": 0.1144
+    },
+    {
+      "query": "URS000311369B",
+      "length": 122,
+      "hits": 500,
+      "seconds": 0.0812
+    },
+    {
+      "query": "URS0002682ADB",
+      "length": 123,
+      "hits": 500,
+      "seconds": 0.0747
+    },
+    {
+      "query": "URS0000BD710C",
+      "length": 124,
+      "hits": 500,
+      "seconds": 0.1056
+    },
+    {
+      "query": "URS0000C14F6E",
+      "length": 125,
+      "hits": 500,
+      "seconds": 0.0949
+    },
+    {
+      "query": "URS00006A440C",
+      "length": 126,
+      "hits": 500,
+      "seconds": 0.0823
+    },
+    {
+      "query": "URS000308EB7F",
+      "length": 126,
+      "hits": 500,
+      "seconds": 0.0906
+    },
+    {
+      "query": "URS00032D8AE8",
+      "length": 127,
+      "hits": 500,
+      "seconds": 0.0723
+    },
+    {
+      "query": "URS0000EEBF1C",
+      "length": 128,
+      "hits": 500,
+      "seconds": 0.1193
+    },
+    {
+      "query": "URS0000D6964B",
+      "length": 129,
+      "hits": 500,
+      "seconds": 0.0802
+    },
+    {
+      "query": "URS00006A9423",
+      "length": 130,
+      "hits": 500,
+      "seconds": 0.0939
+    },
+    {
+      "query": "URS000217A731",
+      "length": 130,
+      "hits": 500,
+      "seconds": 0.0943
+    },
+    {
+      "query": "URS0000628C2F",
+      "length": 131,
+      "hits": 500,
+      "seconds": 0.1157
+    },
+    {
+      "query": "URS00023250DA",
+      "length": 131,
+      "hits": 500,
+      "seconds": 0.0935
+    },
+    {
+      "query": "URS0000BD7B99",
+      "length": 132,
+      "hits": 500,
+      "seconds": 0.1204
+    },
+    {
+      "query": "URS00033D3D82",
+      "length": 132,
+      "hits": 500,
+      "seconds": 0.0853
+    },
+    {
+      "query": "URS00031BE9B2",
+      "length": 133,
+      "hits": 500,
+      "seconds": 0.1218
+    },
+    {
+      "query": "URS0000BF9186",
+      "length": 134,
+      "hits": 500,
+      "seconds": 0.092
+    },
+    {
+      "query": "URS0003491CD5",
+      "length": 134,
+      "hits": 500,
+      "seconds": 0.1074
+    },
+    {
+      "query": "URS0000D721F5",
+      "length": 135,
+      "hits": 500,
+      "seconds": 0.1174
+    },
+    {
+      "query": "URS00030EFB76",
+      "length": 135,
+      "hits": 500,
+      "seconds": 0.0832
+    },
+    {
+      "query": "URS0000C462CF",
+      "length": 136,
+      "hits": 500,
+      "seconds": 0.1367
+    },
+    {
+      "query": "URS00006F78EA",
+      "length": 137,
+      "hits": 500,
+      "seconds": 0.0856
+    },
+    {
+      "query": "URS000316BF28",
+      "length": 137,
+      "hits": 500,
+      "seconds": 0.079
+    },
+    {
+      "query": "URS0000E31D9C",
+      "length": 138,
+      "hits": 500,
+      "seconds": 0.0825
+    },
+    {
+      "query": "URS0001990D08",
+      "length": 139,
+      "hits": 500,
+      "seconds": 0.0829
+    },
+    {
+      "query": "URS0000D68E6A",
+      "length": 140,
+      "hits": 500,
+      "seconds": 0.1249
+    },
+    {
+      "query": "URS0000D9D8DC",
+      "length": 141,
+      "hits": 500,
+      "seconds": 0.0794
+    },
+    {
+      "query": "URS00023151A8",
+      "length": 142,
+      "hits": 500,
+      "seconds": 0.088
+    },
+    {
+      "query": "URS00030595FD",
+      "length": 143,
+      "hits": 500,
+      "seconds": 0.0788
+    },
+    {
+      "query": "URS000306FE2A",
+      "length": 144,
+      "hits": 500,
+      "seconds": 0.0899
+    },
+    {
+      "query": "URS00030C069E",
+      "length": 145,
+      "hits": 500,
+      "seconds": 0.0891
+    },
+    {
+      "query": "URS00030C45E0",
+      "length": 146,
+      "hits": 500,
+      "seconds": 0.0834
+    },
+    {
+      "query": "URS00030EB46B",
+      "length": 147,
+      "hits": 500,
+      "seconds": 0.084
+    },
+    {
+      "query": "URS0003402F5E",
+      "length": 148,
+      "hits": 500,
+      "seconds": 0.1486
+    },
+    {
+      "query": "URS00032EEEEC",
+      "length": 149,
+      "hits": 500,
+      "seconds": 0.1445
+    },
+    {
+      "query": "URS00032F47D5",
+      "length": 150,
+      "hits": 500,
+      "seconds": 0.0854
+    },
+    {
+      "query": "URS0000C63422",
+      "length": 152,
+      "hits": 500,
+      "seconds": 0.116
+    },
+    {
+      "query": "URS000068E08B",
+      "length": 154,
+      "hits": 500,
+      "seconds": 0.1444
+    },
+    {
+      "query": "URS00006E43F2",
+      "length": 156,
+      "hits": 500,
+      "seconds": 0.1492
+    },
+    {
+      "query": "URS00034A3DE0",
+      "length": 157,
+      "hits": 500,
+      "seconds": 0.1068
+    },
+    {
+      "query": "URS000269B725",
+      "length": 159,
+      "hits": 500,
+      "seconds": 0.1535
+    },
+    {
+      "query": "URS000063122F",
+      "length": 162,
+      "hits": 500,
+      "seconds": 0.0842
+    },
+    {
+      "query": "URS00006F228D",
+      "length": 164,
+      "hits": 500,
+      "seconds": 0.1455
+    },
+    {
+      "query": "URS0000D686A3",
+      "length": 165,
+      "hits": 500,
+      "seconds": 0.086
+    },
+    {
+      "query": "URS0000C4D7D5",
+      "length": 167,
+      "hits": 500,
+      "seconds": 0.1067
+    },
+    {
+      "query": "URS00032625B5",
+      "length": 168,
+      "hits": 500,
+      "seconds": 0.1284
+    },
+    {
+      "query": "URS0000E87FA9",
+      "length": 171,
+      "hits": 500,
+      "seconds": 0.145
+    },
+    {
+      "query": "URS00029FF3F4",
+      "length": 173,
+      "hits": 500,
+      "seconds": 0.1748
+    },
+    {
+      "query": "URS0000AAE686",
+      "length": 175,
+      "hits": 500,
+      "seconds": 0.1673
+    },
+    {
+      "query": "URS0000303242",
+      "length": 177,
+      "hits": 500,
+      "seconds": 0.1511
+    },
+    {
+      "query": "URS00006F015E",
+      "length": 179,
+      "hits": 500,
+      "seconds": 0.1545
+    },
+    {
+      "query": "URS0002E61A37",
+      "length": 180,
+      "hits": 500,
+      "seconds": 0.1585
+    },
+    {
+      "query": "URS000233554C",
+      "length": 182,
+      "hits": 500,
+      "seconds": 0.1484
+    },
+    {
+      "query": "URS00007B9CDD",
+      "length": 185,
+      "hits": 500,
+      "seconds": 0.1247
+    },
+    {
+      "query": "URS0000CCC787",
+      "length": 187,
+      "hits": 500,
+      "seconds": 0.177
+    },
+    {
+      "query": "URS0002693442",
+      "length": 189,
+      "hits": 500,
+      "seconds": 0.1785
+    },
+    {
+      "query": "URS0002695C6D",
+      "length": 191,
+      "hits": 500,
+      "seconds": 0.1631
+    },
+    {
+      "query": "URS0000D8C804",
+      "length": 194,
+      "hits": 500,
+      "seconds": 0.1709
+    },
+    {
+      "query": "URS0003486111",
+      "length": 196,
+      "hits": 500,
+      "seconds": 0.1842
+    },
+    {
+      "query": "URS00006B64B3",
+      "length": 199,
+      "hits": 500,
+      "seconds": 0.1704
+    },
+    {
+      "query": "URS0000D541EC",
+      "length": 201,
+      "hits": 500,
+      "seconds": 0.1027
+    },
+    {
+      "query": "URS0000E794D0",
+      "length": 203,
+      "hits": 500,
+      "seconds": 0.1355
+    },
+    {
+      "query": "URS0000C2D2F8",
+      "length": 205,
+      "hits": 500,
+      "seconds": 0.1407
+    },
+    {
+      "query": "URS0000D6A23F",
+      "length": 207,
+      "hits": 500,
+      "seconds": 0.1775
+    },
+    {
+      "query": "URS0000EEF011",
+      "length": 210,
+      "hits": 500,
+      "seconds": 0.1191
+    },
+    {
+      "query": "URS000062F4FC",
+      "length": 213,
+      "hits": 500,
+      "seconds": 0.1835
+    },
+    {
+      "query": "URS0000D66A26",
+      "length": 215,
+      "hits": 500,
+      "seconds": 0.1782
+    },
+    {
+      "query": "URS0000D502EB",
+      "length": 220,
+      "hits": 500,
+      "seconds": 0.2045
+    },
+    {
+      "query": "URS00007B7426",
+      "length": 223,
+      "hits": 500,
+      "seconds": 0.1844
+    },
+    {
+      "query": "URS00019DF918",
+      "length": 226,
+      "hits": 500,
+      "seconds": 0.2095
+    },
+    {
+      "query": "URS0002F0FDD8",
+      "length": 230,
+      "hits": 500,
+      "seconds": 0.1885
+    },
+    {
+      "query": "URS000067603F",
+      "length": 239,
+      "hits": 500,
+      "seconds": 0.1554
+    },
+    {
+      "query": "URS0000D67F97",
+      "length": 246,
+      "hits": 500,
+      "seconds": 0.2086
+    },
+    {
+      "query": "URS0000C47659",
+      "length": 252,
+      "hits": 500,
+      "seconds": 0.2066
+    },
+    {
+      "query": "URS000063D34B",
+      "length": 257,
+      "hits": 500,
+      "seconds": 0.2356
+    },
+    {
+      "query": "URS0003302D32",
+      "length": 262,
+      "hits": 500,
+      "seconds": 0.2396
+    },
+    {
+      "query": "URS0000693F6C",
+      "length": 269,
+      "hits": 500,
+      "seconds": 0.2455
+    },
+    {
+      "query": "URS0000DF6D6C",
+      "length": 275,
+      "hits": 500,
+      "seconds": 0.2242
+    },
+    {
+      "query": "URS0002FC1B0B",
+      "length": 284,
+      "hits": 500,
+      "seconds": 0.2582
+    },
+    {
+      "query": "URS000300FB45",
+      "length": 291,
+      "hits": 500,
+      "seconds": 0.2343
+    },
+    {
+      "query": "URS0000D83680",
+      "length": 306,
+      "hits": 500,
+      "seconds": 0.2765
+    },
+    {
+      "query": "URS000290F885",
+      "length": 319,
+      "hits": 500,
+      "seconds": 0.2872
+    },
+    {
+      "query": "URS0002684B7A",
+      "length": 337,
+      "hits": 500,
+      "seconds": 0.3268
+    },
+    {
+      "query": "URS0000BDAA50",
+      "length": 354,
+      "hits": 500,
+      "seconds": 0.343
+    },
+    {
+      "query": "URS000233D063",
+      "length": 372,
+      "hits": 500,
+      "seconds": 0.4273
+    },
+    {
+      "query": "URS0001DE737F",
+      "length": 389,
+      "hits": 500,
+      "seconds": 0.4078
+    },
+    {
+      "query": "URS0000E2AED6",
+      "length": 410,
+      "hits": 500,
+      "seconds": 0.3816
+    },
+    {
+      "query": "URS0002748A57",
+      "length": 435,
+      "hits": 500,
+      "seconds": 0.4689
+    },
+    {
+      "query": "URS0000C5610A",
+      "length": 462,
+      "hits": 500,
+      "seconds": 0.4746
+    },
+    {
+      "query": "URS00005E1511",
+      "length": 500,
+      "hits": 500,
+      "seconds": 0.5293
+    }
+  ]
+}

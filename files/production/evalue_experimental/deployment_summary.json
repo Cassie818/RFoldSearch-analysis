@@ -1,0 +1,13 @@
+{
+  "database": "/Users/cassie/Desktop/RFoldseek-paper-code/files/models/db.pt",
+  "deployed_database": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/evalue_experimental/db_885_empirical_evalue.pt",
+  "parameters": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/evalue_experimental/evalue_params_experimental_empirical.json",
+  "n_chains": 885,
+  "n_clusters": 882,
+  "n_calibration_queries": 496,
+  "n_families": 93,
+  "n_background_observations": 182878,
+  "excluded_structurally_related_background": 115,
+  "total_background_weight": 881.4453694586903,
+  "finite_sample_floor": 6.689523296378647e-05
+}

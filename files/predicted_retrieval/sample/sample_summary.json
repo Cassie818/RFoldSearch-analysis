@@ -1,0 +1,32 @@
+{
+ "seed": 20260917,
+ "min_len": 30,
+ "family_cap": 50,
+ "p2p_min_members": 10,
+ "unlabelled_sampling": "matched: organism x length x pLDDT",
+ "length_bins": [
+  30,
+  50,
+  75,
+  100,
+  150,
+  200,
+  300,
+  401
+ ],
+ "plddt_bins": [
+  0,
+  60,
+  70,
+  80,
+  90,
+  101
+ ],
+ "n_p2p_families": 150,
+ "universe": 289309,
+ "accuracy_db": 33043,
+ "labelled": 17723,
+ "unlabelled": 15320,
+ "p2p_queries": 150,
+ "exp_queries": 69
+}

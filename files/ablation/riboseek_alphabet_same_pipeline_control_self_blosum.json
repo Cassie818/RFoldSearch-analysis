@@ -1,8 +1,8 @@
 {
   "_provenance": {
-    "python": "/Users/cassie/opt/anaconda3/bin/python",
-    "python_version": "3.9.13 (main, Aug 25 2022, 18:29:29) \n[Clang 12.0.0 ]",
-    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
+    "python": "/Users/cassie/.claude-science/conda/envs/esm/bin/python3",
+    "python_version": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:29:05) [Clang 19.1.7 ]",
+    "data_root": "/Users/cassie/Desktop/RFoldSeek",
     "prefer_external": false,
     "matrix_mode": "self_blosum",
     "resolved_paths": {
@@ -15,7 +15,7 @@
       "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl"
     },
     "input_hashes_md5": {
-      "files/models/db.pt": "bd6da9190525e2d67e5276da7a83de98",
+      "files/models/db.pt": "cdd2da1d0d95ccd5db365e1ac3871ed4",
       "files/models/sub_matrix.pt": "bdb3f7128969775022e4a0952828140d",
       "files/ablation/riboseek_real_encoded.json": "3ce8d27fc42c9b8f69d443b2a5c11b1b",
       "Splits/pdb_out/test.json": "7b4b5249e36d02078476def61c536555",
@@ -38,10 +38,10 @@
         "alphabet_size": 80,
         "n_input_train_pairs": 6251,
         "n_aligned_train_pairs": 6251,
-        "n_aligned_columns": 4188879,
+        "n_aligned_columns": 4188640,
         "scale": 2.0,
-        "diag_mean_before_rescale": 8.227203369140625,
-        "diag_mean_after_rescale": 1.0000001192092896
+        "diag_mean_before_rescale": 8.22607135772705,
+        "diag_mean_after_rescale": 1.0
       },
       "RiboSeek_sa20_same_pipeline": {
         "alphabet_size": 20,
@@ -56,12 +56,12 @@
   },
   "RFoldseek_tokens_same_pipeline": {
     "family_recall1": 0.8867924528301887,
-    "family_sens_1fp": 0.5844170444830004,
+    "family_sens_1fp": 0.5842104613677269,
     "clan_recall1": 0.9012345679012346,
-    "clan_sens_1fp": 0.21863392521279268,
+    "clan_sens_1fp": 0.218902309539148,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 135.77118492126465,
+    "time_sec": 165.77829384803772,
     "alphabet_size": 80,
     "kmer_k": 4,
     "top_n": 200,
@@ -70,16 +70,16 @@
     "gap_extend": -0.5,
     "matrix_mode": "self_blosum",
     "matrix_rule": "alphabet-specific Structure-BLOSUM learned from the same train US-align pairs",
-    "matrix_diag_mean_after_scaling": 1.0000001192092896,
+    "matrix_diag_mean_after_scaling": 1.0,
     "n_empty_or_short_sequences": 0,
     "self_blosum": {
       "alphabet_size": 80,
       "n_input_train_pairs": 6251,
       "n_aligned_train_pairs": 6251,
-      "n_aligned_columns": 4188879,
+      "n_aligned_columns": 4188640,
       "scale": 2.0,
-      "diag_mean_before_rescale": 8.227203369140625,
-      "diag_mean_after_rescale": 1.0000001192092896
+      "diag_mean_before_rescale": 8.22607135772705,
+      "diag_mean_after_rescale": 1.0
     }
   },
   "RiboSeek_sa20_same_pipeline": {
@@ -89,7 +89,7 @@
     "clan_sens_1fp": 0.17084472846381923,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 166.23414015769958,
+    "time_sec": 208.2501699924469,
     "alphabet_size": 20,
     "kmer_k": 4,
     "top_n": 200,

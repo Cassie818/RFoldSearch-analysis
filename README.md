@@ -11,15 +11,18 @@ paths.py                  shared path resolution
 preprocessing/            dataset construction and structure preprocessing
 src/models/               tokenizer model, descriptors, and training utilities
 src/search/               evaluation metrics and Smith-Waterman helper code
-scripts/01_train/         final tokenizer training script
-scripts/02_benchmark/     RNAsolo retrieval evaluations and baselines
-scripts/03_ablations/     model-design and alphabet-control analyses
-scripts/04_figures/       manuscript and supplementary figure plotting scripts
-scripts/05_motif/         recurrent token-word and motif-core analyses
+scripts/01_model/         final tokenizer training and model ablations
+scripts/02_rnasolo_benchmark/ RNAsolo retrieval evaluations and baselines
+scripts/03_token_alignment/  Rfam 3D reference-alignment analyses
+scripts/04_predicted_runtime/ predicted-database runtime analyses
+scripts/05_predicted_retrieval/ predicted-database retrieval analyses
+scripts/06_motifs/         recurrent token-word and motif-core analyses
 files/models/             deployed model artifacts used by analyses
-files/production/         bundled retrieval results for Fig. 2 and Fig. S12
-files/ablation/           bundled ablation and alphabet-control results
-files/motifs/             bundled motif-analysis tables for Fig. 4
+files/production/         bundled retrieval and calibration results
+files/ablation/           bundled ablation and alignment results
+files/predicted_runtime/  bundled predicted-database runtime results
+files/predicted_retrieval/ bundled predicted-database retrieval results
+files/motifs/             bundled motif-analysis tables for Fig. 5
 ```
 
 ## Quick start
@@ -27,23 +30,28 @@ files/motifs/             bundled motif-analysis tables for Fig. 4
 ```bash
 pip install -r requirements.txt
 
-# Redraw figures from bundled result files
-for f in scripts/04_figures/plot_fig*.py; do python "$f"; done
+# Main figures, from bundled result files
+python scripts/02_rnasolo_benchmark/plot_fig2.py
+python scripts/04_predicted_runtime/plot_fig3.py
+python scripts/05_predicted_retrieval/plot_fig4.py
+python scripts/06_motifs/plot_fig5.py
 ```
 
-Most figures redraw directly from bundled JSON/TSV/PT artifacts. Two
-supplementary plots read the deployed tokenizer directly:
+Supplementary plots are grouped with the analyses that produce them. For
+example, the model-ablation figures read:
 
 ```bash
-python scripts/04_figures/plot_figS10.py
-python scripts/04_figures/plot_figS11.py
+python scripts/01_model/plot_figS10.py
+python scripts/01_model/plot_figS11.py
 ```
 
-Fig. 4 can be redrawn from the bundled motif tables with:
+The Rfam 3D alignment benchmark and its case-study plot are run from
+`scripts/03_token_alignment/`. Experimental-database E-value calibration
+scripts are kept with the RNAsolo analyses in
+`scripts/02_rnasolo_benchmark/`.
 
-```bash
-python scripts/04_figures/plot_fig4.py
-```
+Use `run` to regenerate only the raw rankings or `score` to update the Fig. 2
+and Fig. S12 summaries from an existing ranking file.
 
 ## Dataset construction
 
@@ -65,25 +73,3 @@ python preprocessing/extract_backbone.py --pdb_dir nr80/ --output nr80.json
 `add_edges.py` has no command line of its own: `extract_backbone.py` imports
 `find_base_pair_and_stack_idx` from it and writes the edges into the same
 records as the coordinates.
-
-## Data
-
-Small analysis artifacts needed for plotting are bundled under `files/`. Larger
-intermediate inputs, such as descriptor tensors, split files, and full pairwise
-alignment caches used to regenerate benchmark outputs from scratch, are not
-tracked. To rerun those analyses, point `RFOLDSEEK_DATA` to a local data tree:
-
-```bash
-export RFOLDSEEK_DATA=/path/to/RFoldSeek
-```
-
-Expected external layout:
-
-```
-Splits/labels.tsv
-Splits/pdb_out/{train,val,test}.json
-Splits/pdb_out/{train,val}_desc.pt
-files/production/retrieval/usalign_full.cache.jsonl
-files/production/retrieval/rmalign_full.cache.jsonl
-files/production/chain_sequences.tsv
-```

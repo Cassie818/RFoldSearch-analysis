@@ -1,0 +1,1865 @@
+{
+  "results": "/Users/cassie/Desktop/RFoldSeek/data/predicted/nufold_combined_46k/manifests/rfoldseek_upstream_seed0_top1000_mindiag1_seq60neutral.json",
+  "criterion": "tm_query >= 0.45 and tm_target >= 0.45",
+  "top_k_adjudicated": 10,
+  "n_unlabelled_pairs": 200,
+  "n_new_usalign_pairs": 0,
+  "n_failed_pairs": 0,
+  "n_structurally_confirmed_pairs": 44,
+  "cohorts": {
+    "all": {
+      "top_1": {
+        "precision_corrected": 0.5606060606060606,
+        "success_corrected": 0.5606060606060606,
+        "positive_hits": 37,
+        "total_hits": 66,
+        "successful_queries": 37,
+        "n_queries": 66
+      },
+      "top_5": {
+        "precision_corrected": 0.5696969696969697,
+        "success_corrected": 0.6515151515151515,
+        "positive_hits": 188,
+        "total_hits": 330,
+        "successful_queries": 43,
+        "n_queries": 66
+      },
+      "top_10": {
+        "precision_corrected": 0.5636363636363636,
+        "success_corrected": 0.6818181818181818,
+        "positive_hits": 372,
+        "total_hits": 660,
+        "successful_queries": 45,
+        "n_queries": 66
+      }
+    },
+    "blastn_blind": {
+      "top_1": {
+        "precision_corrected": 0.6481481481481481,
+        "success_corrected": 0.6481481481481481,
+        "positive_hits": 35,
+        "total_hits": 54,
+        "successful_queries": 35,
+        "n_queries": 54
+      },
+      "top_5": {
+        "precision_corrected": 0.6481481481481481,
+        "success_corrected": 0.7407407407407407,
+        "positive_hits": 175,
+        "total_hits": 270,
+        "successful_queries": 40,
+        "n_queries": 54
+      },
+      "top_10": {
+        "precision_corrected": 0.6388888888888888,
+        "success_corrected": 0.7777777777777778,
+        "positive_hits": 345,
+        "total_hits": 540,
+        "successful_queries": 42,
+        "n_queries": 54
+      }
+    }
+  },
+  "rows": [
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001FIR_1_A.cif",
+      "query_family": "RF00005",
+      "rank": 6,
+      "target_id": "URS00003E7E00_10116",
+      "tm_query": 0.4774,
+      "tm_target": 0.4675,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001FIR_1_A.cif",
+      "query_family": "RF00005",
+      "rank": 9,
+      "target_id": "URS000075B95B_10090",
+      "tm_query": 0.2983,
+      "tm_target": 0.2447,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001FIR_1_A.cif",
+      "query_family": "RF00005",
+      "rank": 7,
+      "target_id": "URS000075ED5C_10090",
+      "tm_query": 0.2616,
+      "tm_target": 0.1571,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001P6V_1_B.cif",
+      "query_family": "RF00023",
+      "rank": 5,
+      "target_id": "URS000010AB1D_10090",
+      "tm_query": 0.2898,
+      "tm_target": 0.209,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001P6V_1_B.cif",
+      "query_family": "RF00023",
+      "rank": 9,
+      "target_id": "URS00004EBC6F_10090",
+      "tm_query": 0.2817,
+      "tm_target": 0.2419,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001P6V_1_B.cif",
+      "query_family": "RF00023",
+      "rank": 8,
+      "target_id": "URS0000A9F0A1_10116",
+      "tm_query": 0.2712,
+      "tm_target": 0.1043,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001QA6_1_C.cif",
+      "query_family": "RF02541",
+      "rank": 1,
+      "target_id": "URS0000A832FE_10090",
+      "tm_query": 0.1843,
+      "tm_target": 0.1421,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00001SER_1_T.cif",
+      "query_family": "RF00005",
+      "rank": 9,
+      "target_id": "URS000075BA2F_10116",
+      "tm_query": 0.1744,
+      "tm_target": 0.1333,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003AKZ_1_E.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS0000354F92_10116",
+      "tm_query": 0.7163,
+      "tm_target": 0.7496,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003AKZ_1_E.cif",
+      "query_family": "RF00005",
+      "rank": 6,
+      "target_id": "URS00022AE061_7955",
+      "tm_query": 0.6479,
+      "tm_target": 0.6526,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif",
+      "query_family": "RF00001",
+      "rank": 5,
+      "target_id": "URS000099BD8A_10090",
+      "tm_query": 0.2565,
+      "tm_target": 0.1785,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif",
+      "query_family": "RF00001",
+      "rank": 8,
+      "target_id": "URS00009B0DC9_10090",
+      "tm_query": 0.2533,
+      "tm_target": 0.146,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif",
+      "query_family": "RF00001",
+      "rank": 3,
+      "target_id": "URS00009B5DB0_10090",
+      "tm_query": 0.283,
+      "tm_target": 0.161,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif",
+      "query_family": "RF00001",
+      "rank": 2,
+      "target_id": "URS00009BC9F1_10090",
+      "tm_query": 0.246,
+      "tm_target": 0.1506,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif",
+      "query_family": "RF00001",
+      "rank": 6,
+      "target_id": "URS00009BCA62_10090",
+      "tm_query": 0.2356,
+      "tm_target": 0.1422,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif",
+      "query_family": "RF00001",
+      "rank": 9,
+      "target_id": "URS00009C1E00_10090",
+      "tm_query": 0.261,
+      "tm_target": 0.1404,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7O_1_7.cif",
+      "query_family": "RF00001",
+      "rank": 7,
+      "target_id": "URS0000A9B05C_10090",
+      "tm_query": 0.2517,
+      "tm_target": 0.1445,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 2,
+      "target_id": "URS000043BB4A_10090",
+      "tm_query": 0.8196,
+      "tm_target": 0.8196,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 9,
+      "target_id": "URS000061D582_10090",
+      "tm_query": 0.8193,
+      "tm_target": 0.8447,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 6,
+      "target_id": "URS000062EBF0_7955",
+      "tm_query": 0.8122,
+      "tm_target": 0.8367,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 7,
+      "target_id": "URS000073351C_10090",
+      "tm_query": 0.8028,
+      "tm_target": 0.8269,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 4,
+      "target_id": "URS000073E9F1_10116",
+      "tm_query": 0.8164,
+      "tm_target": 0.8413,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 3,
+      "target_id": "URS0000740A43_10090",
+      "tm_query": 0.7205,
+      "tm_target": 0.7402,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS000085531E_7955",
+      "tm_query": 0.8036,
+      "tm_target": 0.8275,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 5,
+      "target_id": "URS00022ADEC6_7955",
+      "tm_query": 0.7787,
+      "tm_target": 0.801,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 10,
+      "target_id": "URS00022AE061_7955",
+      "tm_query": 0.8007,
+      "tm_target": 0.8245,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JAG_1_2.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS00022AE1CC_7955",
+      "tm_query": 0.8198,
+      "tm_target": 0.8448,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JB9_1_C.cif",
+      "query_family": "RF00020",
+      "rank": 3,
+      "target_id": "URS0000265126_10116",
+      "tm_query": 0.3328,
+      "tm_target": 0.3292,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JB9_1_C.cif",
+      "query_family": "RF00020",
+      "rank": 2,
+      "target_id": "URS00005642E0_10116",
+      "tm_query": 0.3387,
+      "tm_target": 0.349,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JB9_1_C.cif",
+      "query_family": "RF00020",
+      "rank": 1,
+      "target_id": "URS000075A0EA_10090",
+      "tm_query": 0.3684,
+      "tm_target": 0.3087,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JB9_1_C.cif",
+      "query_family": "RF00020",
+      "rank": 10,
+      "target_id": "URS000075ABF6_10090",
+      "tm_query": 0.3135,
+      "tm_target": 0.2825,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003JB9_1_C.cif",
+      "query_family": "RF00020",
+      "rank": 5,
+      "target_id": "URS000075E9F7_10090",
+      "tm_query": 0.3918,
+      "tm_target": 0.4194,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003MOJ_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 4,
+      "target_id": "URS000075AAE8_10116",
+      "tm_query": 0.2977,
+      "tm_target": 0.2843,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00003MOJ_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 10,
+      "target_id": "URS00009BE236_10090",
+      "tm_query": 0.2591,
+      "tm_target": 0.0903,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004RDX_1_C.cif",
+      "query_family": "RF00005",
+      "rank": 10,
+      "target_id": "URS0000740A43_10090",
+      "tm_query": 0.6371,
+      "tm_target": 0.6493,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004RDX_1_C.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS00022AE0AC_7955",
+      "tm_query": 0.7006,
+      "tm_target": 0.7184,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004V5O_1_AA.cif",
+      "query_family": "RF01960",
+      "rank": 7,
+      "target_id": "URS000075B4D2_10116",
+      "tm_query": 0.0525,
+      "tm_target": 0.4735,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004V5O_1_AA.cif",
+      "query_family": "RF01960",
+      "rank": 5,
+      "target_id": "URS000075D8BE_10090",
+      "tm_query": 0.0491,
+      "tm_target": 0.526,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004V5O_1_AA.cif",
+      "query_family": "RF01960",
+      "rank": 8,
+      "target_id": "URS00009B9F9F_10090",
+      "tm_query": 0.0723,
+      "tm_target": 0.3419,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004V5O_1_AA.cif",
+      "query_family": "RF01960",
+      "rank": 6,
+      "target_id": "URS00009BC9F1_10090",
+      "tm_query": 0.0709,
+      "tm_target": 0.36,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004V5O_1_AA.cif",
+      "query_family": "RF01960",
+      "rank": 10,
+      "target_id": "URS0000A77E01_10090",
+      "tm_query": 0.048,
+      "tm_target": 0.453,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004WQ1_1_3L.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS000075A188_10116",
+      "tm_query": 0.3552,
+      "tm_target": 0.3248,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004WQ1_1_3L.cif",
+      "query_family": "RF00005",
+      "rank": 3,
+      "target_id": "URS0000A77C4E_10090",
+      "tm_query": 0.3522,
+      "tm_target": 0.2332,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00004WQ1_1_3L.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS0000A7FCB3_10090",
+      "tm_query": 0.3543,
+      "tm_target": 0.248,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005AH5_1_D.cif",
+      "query_family": "RF00005",
+      "rank": 5,
+      "target_id": "URS00022AE2F1_7955",
+      "tm_query": 0.6021,
+      "tm_target": 0.639,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 4,
+      "target_id": "URS0000984846_10090",
+      "tm_query": 0.2686,
+      "tm_target": 0.1687,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 1,
+      "target_id": "URS000099BD8A_10090",
+      "tm_query": 0.2726,
+      "tm_target": 0.1891,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 8,
+      "target_id": "URS00009AD1DA_10090",
+      "tm_query": 0.2514,
+      "tm_target": 0.1537,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 9,
+      "target_id": "URS00009AFC1C_10090",
+      "tm_query": 0.2737,
+      "tm_target": 0.1555,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 5,
+      "target_id": "URS00009B8B2C_10090",
+      "tm_query": 0.2772,
+      "tm_target": 0.1732,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 3,
+      "target_id": "URS00009C117D_10090",
+      "tm_query": 0.215,
+      "tm_target": 0.1493,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 7,
+      "target_id": "URS0000A7E546_10090",
+      "tm_query": 0.2598,
+      "tm_target": 0.1644,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005NGM_1_AB.cif",
+      "query_family": "RF00001",
+      "rank": 10,
+      "target_id": "URS0000A8F5CA_10090",
+      "tm_query": 0.2292,
+      "tm_target": 0.2247,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005O60_1_B.cif",
+      "query_family": "RF00001",
+      "rank": 3,
+      "target_id": "URS00009AF7D2_10090",
+      "tm_query": 0.2606,
+      "tm_target": 0.1507,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005O60_1_B.cif",
+      "query_family": "RF00001",
+      "rank": 10,
+      "target_id": "URS00009BBBF1_10090",
+      "tm_query": 0.2935,
+      "tm_target": 0.1668,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005O60_1_B.cif",
+      "query_family": "RF00001",
+      "rank": 7,
+      "target_id": "URS0000A7E546_10090",
+      "tm_query": 0.2626,
+      "tm_target": 0.1686,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005T2A_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 1,
+      "target_id": "URS00009C2FD4_10090",
+      "tm_query": 0.0631,
+      "tm_target": 0.3121,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005T2A_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 8,
+      "target_id": "URS0000A77C4E_10090",
+      "tm_query": 0.0542,
+      "tm_target": 0.4861,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005T2A_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 5,
+      "target_id": "URS0000A7A8BF_10090",
+      "tm_query": 0.0477,
+      "tm_target": 0.5062,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005T2A_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 7,
+      "target_id": "URS0000A8F5CA_10090",
+      "tm_query": 0.0427,
+      "tm_target": 0.4008,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005T2A_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 2,
+      "target_id": "URS0000A8F9B9_10090",
+      "tm_query": 0.0447,
+      "tm_target": 0.5561,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005T2A_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 3,
+      "target_id": "URS0000A9711A_10090",
+      "tm_query": 0.0352,
+      "tm_target": 0.2988,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005XYI_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 7,
+      "target_id": "URS000075A8DF_10090",
+      "tm_query": 0.0455,
+      "tm_target": 0.3514,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005XYI_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 1,
+      "target_id": "URS000075AAE8_10116",
+      "tm_query": 0.0416,
+      "tm_target": 0.4539,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005XYI_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 10,
+      "target_id": "URS00009C1557_10090",
+      "tm_query": 0.0685,
+      "tm_target": 0.3075,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005XYI_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 3,
+      "target_id": "URS0000A8DAEA_10090",
+      "tm_query": 0.0474,
+      "tm_target": 0.3675,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00005XYI_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 6,
+      "target_id": "URS0000B2DA25_10116",
+      "tm_query": 0.0815,
+      "tm_target": 0.226,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006BK8_1_5.cif",
+      "query_family": "RF00020",
+      "rank": 5,
+      "target_id": "URS000075C568_10116",
+      "tm_query": 0.3136,
+      "tm_target": 0.3253,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006BK8_1_5.cif",
+      "query_family": "RF00020",
+      "rank": 4,
+      "target_id": "URS0000A7A8BF_10090",
+      "tm_query": 0.3258,
+      "tm_target": 0.3417,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006BK8_1_5.cif",
+      "query_family": "RF00020",
+      "rank": 6,
+      "target_id": "URS0000A7FCB3_10090",
+      "tm_query": 0.3193,
+      "tm_target": 0.3112,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006BK8_1_5.cif",
+      "query_family": "RF00020",
+      "rank": 2,
+      "target_id": "URS0000A82914_10090",
+      "tm_query": 0.3445,
+      "tm_target": 0.3556,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006BK8_1_5.cif",
+      "query_family": "RF00020",
+      "rank": 1,
+      "target_id": "URS0000A842F8_10090",
+      "tm_query": 0.3132,
+      "tm_target": 0.2829,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006BK8_1_5.cif",
+      "query_family": "RF00020",
+      "rank": 3,
+      "target_id": "URS0000A91CBC_10090",
+      "tm_query": 0.3217,
+      "tm_target": 0.3388,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006BK8_1_5.cif",
+      "query_family": "RF00020",
+      "rank": 7,
+      "target_id": "URS0000AA6300_10090",
+      "tm_query": 0.3128,
+      "tm_target": 0.3236,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 1,
+      "target_id": "URS000075A8DF_10090",
+      "tm_query": 0.0451,
+      "tm_target": 0.3428,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 8,
+      "target_id": "URS000075ED2A_10116",
+      "tm_query": 0.0437,
+      "tm_target": 0.43,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 10,
+      "target_id": "URS000078E2E6_10090",
+      "tm_query": 0.0494,
+      "tm_target": 0.4338,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 5,
+      "target_id": "URS00007E406F_10090",
+      "tm_query": 0.046,
+      "tm_target": 0.3971,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 4,
+      "target_id": "URS00009AD1DA_10090",
+      "tm_query": 0.0559,
+      "tm_target": 0.2744,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 9,
+      "target_id": "URS0000A78AE4_10090",
+      "tm_query": 0.0608,
+      "tm_target": 0.4083,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 2,
+      "target_id": "URS0000A83F49_10090",
+      "tm_query": 0.0435,
+      "tm_target": 0.3867,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 3,
+      "target_id": "URS0000A8F5CA_10090",
+      "tm_query": 0.0439,
+      "tm_target": 0.3414,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006G18_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 7,
+      "target_id": "URS0000A9F56F_10090",
+      "tm_query": 0.0397,
+      "tm_target": 0.3901,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 4,
+      "target_id": "URS000076CEC3_10090",
+      "tm_query": 0.0888,
+      "tm_target": 0.3758,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 6,
+      "target_id": "URS0000A82315_10116",
+      "tm_query": 0.0486,
+      "tm_target": 0.2606,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 5,
+      "target_id": "URS0000A9DE54_10116",
+      "tm_query": 0.0737,
+      "tm_target": 0.2941,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 8,
+      "target_id": "URS0000B234E7_10116",
+      "tm_query": 0.0668,
+      "tm_target": 0.2506,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 3,
+      "target_id": "URS0000B24D0F_10116",
+      "tm_query": 0.0649,
+      "tm_target": 0.2225,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 2,
+      "target_id": "URS0000B2515D_10116",
+      "tm_query": 0.0753,
+      "tm_target": 0.2882,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 9,
+      "target_id": "URS0000B251B7_10116",
+      "tm_query": 0.0638,
+      "tm_target": 0.273,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006HCJ_1_A2.cif",
+      "query_family": "RF01960",
+      "rank": 10,
+      "target_id": "URS0000B2A114_10116",
+      "tm_query": 0.0914,
+      "tm_target": 0.2935,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006OF6_1_QW.cif",
+      "query_family": "RF00005",
+      "rank": 2,
+      "target_id": "URS00007321F9_10090",
+      "tm_query": 0.6283,
+      "tm_target": 0.6403,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006R84_1_B.cif",
+      "query_family": "RF00005",
+      "rank": 6,
+      "target_id": "URS00022ADF82_7955",
+      "tm_query": 0.7671,
+      "tm_target": 0.7882,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006R84_1_B.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS00022AE090_7955",
+      "tm_query": 0.7698,
+      "tm_target": 0.7912,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006R84_1_B.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS00022AE2A9_7955",
+      "tm_query": 0.7291,
+      "tm_target": 0.7472,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006R84_1_B.cif",
+      "query_family": "RF00005",
+      "rank": 5,
+      "target_id": "URS00022AE60E_7955",
+      "tm_query": 0.7087,
+      "tm_target": 0.7252,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006R84_1_B.cif",
+      "query_family": "RF00005",
+      "rank": 10,
+      "target_id": "URS00022AE62C_7955",
+      "tm_query": 0.7251,
+      "tm_target": 0.7429,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006TPQ_1_V.cif",
+      "query_family": "RF00001",
+      "rank": 10,
+      "target_id": "URS00009C1AFC_10090",
+      "tm_query": 0.2872,
+      "tm_target": 0.1956,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006WOO_1_3.cif",
+      "query_family": "RF00005",
+      "rank": 9,
+      "target_id": "URS000043BB4A_10090",
+      "tm_query": 0.6006,
+      "tm_target": 0.6006,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006WOO_1_3.cif",
+      "query_family": "RF00005",
+      "rank": 3,
+      "target_id": "URS000044730B_10116",
+      "tm_query": 0.6158,
+      "tm_target": 0.6158,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006WOO_1_3.cif",
+      "query_family": "RF00005",
+      "rank": 10,
+      "target_id": "URS000062EBF0_7955",
+      "tm_query": 0.6315,
+      "tm_target": 0.6443,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006WOO_1_3.cif",
+      "query_family": "RF00005",
+      "rank": 6,
+      "target_id": "URS000066F3D7_10090",
+      "tm_query": 0.6496,
+      "tm_target": 0.6635,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_Bv.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS00007321F9_10090",
+      "tm_query": 0.6686,
+      "tm_target": 0.618,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_S2.cif",
+      "query_family": "RF01960",
+      "rank": 2,
+      "target_id": "URS00009B8B2C_10090",
+      "tm_query": 0.0664,
+      "tm_target": 0.3233,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_S2.cif",
+      "query_family": "RF01960",
+      "rank": 7,
+      "target_id": "URS0000A842F8_10090",
+      "tm_query": 0.0611,
+      "tm_target": 0.4619,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_S2.cif",
+      "query_family": "RF01960",
+      "rank": 6,
+      "target_id": "URS0000A992F6_10090",
+      "tm_query": 0.0454,
+      "tm_target": 0.4103,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_S2.cif",
+      "query_family": "RF01960",
+      "rank": 10,
+      "target_id": "URS0000A9F56F_10090",
+      "tm_query": 0.0459,
+      "tm_target": 0.4252,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_S2.cif",
+      "query_family": "RF01960",
+      "rank": 8,
+      "target_id": "URS0000AAF8DB_10090",
+      "tm_query": 0.0527,
+      "tm_target": 0.5432,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006XA1_1_S2.cif",
+      "query_family": "RF01960",
+      "rank": 3,
+      "target_id": "URS0000AAF968_10090",
+      "tm_query": 0.0477,
+      "tm_target": 0.4367,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 10,
+      "target_id": "URS00009B12BF_10090",
+      "tm_query": 0.0359,
+      "tm_target": 0.2186,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 5,
+      "target_id": "URS0000A842F8_10090",
+      "tm_query": 0.0288,
+      "tm_target": 0.344,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 8,
+      "target_id": "URS0000A84B6B_10090",
+      "tm_query": 0.025,
+      "tm_target": 0.3456,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 6,
+      "target_id": "URS0000A84D77_10090",
+      "tm_query": 0.0294,
+      "tm_target": 0.4339,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 2,
+      "target_id": "URS0000A8DAEA_10090",
+      "tm_query": 0.0309,
+      "tm_target": 0.3367,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 1,
+      "target_id": "URS0000A8E0DA_10090",
+      "tm_query": 0.0295,
+      "tm_target": 0.3405,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 4,
+      "target_id": "URS0000A8F5CA_10090",
+      "tm_query": 0.0304,
+      "tm_target": 0.3704,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 9,
+      "target_id": "URS0000A8F9B9_10090",
+      "tm_query": 0.0294,
+      "tm_target": 0.4548,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 7,
+      "target_id": "URS0000A9345A_10090",
+      "tm_query": 0.0299,
+      "tm_target": 0.3471,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWV_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 3,
+      "target_id": "URS0000A957AE_10090",
+      "tm_query": 0.0228,
+      "tm_target": 0.3609,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZOK_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 3,
+      "target_id": "URS0000984846_10090",
+      "tm_query": 0.0703,
+      "tm_target": 0.2839,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZOK_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 9,
+      "target_id": "URS00009A25BA_10090",
+      "tm_query": 0.084,
+      "tm_target": 0.3125,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZOK_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 4,
+      "target_id": "URS00009AD1DA_10090",
+      "tm_query": 0.0816,
+      "tm_target": 0.3039,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZOK_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 2,
+      "target_id": "URS00009B8B2C_10090",
+      "tm_query": 0.0897,
+      "tm_target": 0.3493,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZOK_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 1,
+      "target_id": "URS00009BC9F1_10090",
+      "tm_query": 0.0843,
+      "tm_target": 0.3094,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZOK_1_2.cif",
+      "query_family": "RF01960",
+      "rank": 7,
+      "target_id": "URS00009BCCE0_10090",
+      "tm_query": 0.0913,
+      "tm_target": 0.3657,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZU5_1_L70.cif",
+      "query_family": "RF00001",
+      "rank": 5,
+      "target_id": "URS000099BD8A_10090",
+      "tm_query": 0.2451,
+      "tm_target": 0.1715,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZU5_1_L70.cif",
+      "query_family": "RF00001",
+      "rank": 7,
+      "target_id": "URS00009AD1DA_10090",
+      "tm_query": 0.2656,
+      "tm_target": 0.1641,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZU5_1_L70.cif",
+      "query_family": "RF00001",
+      "rank": 4,
+      "target_id": "URS00009BFBC3_10090",
+      "tm_query": 0.25,
+      "tm_target": 0.163,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZU5_1_L70.cif",
+      "query_family": "RF00001",
+      "rank": 6,
+      "target_id": "URS0000A8E0DA_10090",
+      "tm_query": 0.2515,
+      "tm_target": 0.2515,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZU5_1_L70.cif",
+      "query_family": "RF00001",
+      "rank": 10,
+      "target_id": "URS0000A8F5CA_10090",
+      "tm_query": 0.2184,
+      "tm_target": 0.2171,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZU5_1_L70.cif",
+      "query_family": "RF00001",
+      "rank": 3,
+      "target_id": "URS0000AABB4A_7955",
+      "tm_query": 0.4034,
+      "tm_target": 0.3846,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007JIL_1_3.cif",
+      "query_family": "RF00001",
+      "rank": 10,
+      "target_id": "URS00009B3761_10090",
+      "tm_query": 0.2832,
+      "tm_target": 0.1493,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007JIL_1_3.cif",
+      "query_family": "RF00001",
+      "rank": 9,
+      "target_id": "URS00009BBBF1_10090",
+      "tm_query": 0.2712,
+      "tm_target": 0.1499,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007K98_1_C.cif",
+      "query_family": "RF00005",
+      "rank": 7,
+      "target_id": "URS000043BB4A_10090",
+      "tm_query": 0.5838,
+      "tm_target": 0.5838,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007ODR_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 2,
+      "target_id": "URS0000651B17_10116",
+      "tm_query": 0.0458,
+      "tm_target": 0.3342,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007ODR_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 4,
+      "target_id": "URS000075A8DF_10090",
+      "tm_query": 0.0545,
+      "tm_target": 0.3321,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007ODR_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 10,
+      "target_id": "URS000075EEEE_10090",
+      "tm_query": 0.052,
+      "tm_target": 0.3858,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007ODR_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 1,
+      "target_id": "URS00009B5AB0_10090",
+      "tm_query": 0.0803,
+      "tm_target": 0.2781,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007ODR_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 5,
+      "target_id": "URS00009B8B2C_10090",
+      "tm_query": 0.0548,
+      "tm_target": 0.246,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007ODR_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 7,
+      "target_id": "URS00009BA7CD_10090",
+      "tm_query": 0.0684,
+      "tm_target": 0.2399,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007ODR_1_A.cif",
+      "query_family": "RF02541",
+      "rank": 8,
+      "target_id": "URS0000AA2B28_10090",
+      "tm_query": 0.0478,
+      "tm_target": 0.3722,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 3,
+      "target_id": "URS00009AE844_10090",
+      "tm_query": 0.1763,
+      "tm_target": 0.1614,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 6,
+      "target_id": "URS00009B3761_10090",
+      "tm_query": 0.1971,
+      "tm_target": 0.1652,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 10,
+      "target_id": "URS00009B5DB0_10090",
+      "tm_query": 0.1838,
+      "tm_target": 0.1521,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 7,
+      "target_id": "URS00009B9AC2_10090",
+      "tm_query": 0.1893,
+      "tm_target": 0.1674,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 5,
+      "target_id": "URS00009B9ED8_10090",
+      "tm_query": 0.2483,
+      "tm_target": 0.2246,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 4,
+      "target_id": "URS00009BA4F7_10090",
+      "tm_query": 0.1747,
+      "tm_target": 0.1507,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 8,
+      "target_id": "URS00009BCFAE_10090",
+      "tm_query": 0.1881,
+      "tm_target": 0.1564,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 9,
+      "target_id": "URS00009BE236_10090",
+      "tm_query": 0.1921,
+      "tm_target": 0.162,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007R7C_1_1.cif",
+      "query_family": "RF02543",
+      "rank": 1,
+      "target_id": "URS00009C2DF6_10090",
+      "tm_query": 0.2055,
+      "tm_target": 0.1889,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007X34_1_3.cif",
+      "query_family": "RF01960",
+      "rank": 1,
+      "target_id": "URS000075A6F0_10090",
+      "tm_query": 0.452,
+      "tm_target": 0.3518,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007X34_1_3.cif",
+      "query_family": "RF01960",
+      "rank": 2,
+      "target_id": "URS000078CC6E_10090",
+      "tm_query": 0.4049,
+      "tm_target": 0.3507,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007X34_1_3.cif",
+      "query_family": "RF01960",
+      "rank": 7,
+      "target_id": "URS00009C18CF_10090",
+      "tm_query": 0.3229,
+      "tm_target": 0.2117,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007X34_1_3.cif",
+      "query_family": "RF01960",
+      "rank": 10,
+      "target_id": "URS0000B2C623_10116",
+      "tm_query": 0.3643,
+      "tm_target": 0.2128,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007X34_1_3.cif",
+      "query_family": "RF01960",
+      "rank": 5,
+      "target_id": "URS0000D5F643_7955",
+      "tm_query": 0.3117,
+      "tm_target": 0.2784,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007Y7G_1_V.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS00001F74E7_10116",
+      "tm_query": 0.2468,
+      "tm_target": 0.2207,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007Y7G_1_V.cif",
+      "query_family": "RF00005",
+      "rank": 2,
+      "target_id": "URS000075AE40_10090",
+      "tm_query": 0.2878,
+      "tm_target": 0.2017,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007Y7G_1_V.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS0000A9FBA9_7955",
+      "tm_query": 0.2321,
+      "tm_target": 0.1016,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00007Y7G_1_V.cif",
+      "query_family": "RF00005",
+      "rank": 9,
+      "target_id": "URS0002618239_10090",
+      "tm_query": 0.2947,
+      "tm_target": 0.0862,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008ASW_1_X.cif",
+      "query_family": "RF00005",
+      "rank": 2,
+      "target_id": "URS00022ADEC3_7955",
+      "tm_query": 0.5455,
+      "tm_target": 0.5455,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 10,
+      "target_id": "URS00009B072A_10090",
+      "tm_query": 0.2416,
+      "tm_target": 0.1029,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS0000A8F996_10116",
+      "tm_query": 0.2448,
+      "tm_target": 0.0877,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 9,
+      "target_id": "URS0000B22FF2_10116",
+      "tm_query": 0.2605,
+      "tm_target": 0.0853,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 7,
+      "target_id": "URS0000B2343D_10116",
+      "tm_query": 0.2205,
+      "tm_target": 0.0742,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 3,
+      "target_id": "URS0000B23C73_10116",
+      "tm_query": 0.2113,
+      "tm_target": 0.0905,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 6,
+      "target_id": "URS0000B244A3_10116",
+      "tm_query": 0.2272,
+      "tm_target": 0.0867,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 5,
+      "target_id": "URS0000B2585D_10116",
+      "tm_query": 0.2506,
+      "tm_target": 0.1292,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 2,
+      "target_id": "URS0000B25F6E_10116",
+      "tm_query": 0.2392,
+      "tm_target": 0.0954,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008FZR_1_R.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS0000B26D95_10116",
+      "tm_query": 0.2325,
+      "tm_target": 0.0948,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008OMR_1_C.cif",
+      "query_family": "RF00005",
+      "rank": 4,
+      "target_id": "URS000228D96E_7955",
+      "tm_query": 0.6594,
+      "tm_target": 0.67,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008OMR_1_C.cif",
+      "query_family": "RF00005",
+      "rank": 2,
+      "target_id": "URS00022AE1CC_7955",
+      "tm_query": 0.6684,
+      "tm_target": 0.6794,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008OMR_1_C.cif",
+      "query_family": "RF00005",
+      "rank": 5,
+      "target_id": "URS00022AE2EA_7955",
+      "tm_query": 0.6559,
+      "tm_target": 0.6663,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008OMR_1_C.cif",
+      "query_family": "RF00005",
+      "rank": 10,
+      "target_id": "URS00022AE411_7955",
+      "tm_query": 0.6348,
+      "tm_target": 0.6446,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008P6P_1_5.cif",
+      "query_family": "RF00177",
+      "rank": 7,
+      "target_id": "URS000075C787_10090",
+      "tm_query": 0.0453,
+      "tm_target": 0.4785,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008P6P_1_5.cif",
+      "query_family": "RF00177",
+      "rank": 6,
+      "target_id": "URS000075C835_10090",
+      "tm_query": 0.0397,
+      "tm_target": 0.4075,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008P6P_1_5.cif",
+      "query_family": "RF00177",
+      "rank": 2,
+      "target_id": "URS000075E179_10090",
+      "tm_query": 0.0409,
+      "tm_target": 0.5184,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008P6P_1_5.cif",
+      "query_family": "RF00177",
+      "rank": 8,
+      "target_id": "URS000075ED5C_10090",
+      "tm_query": 0.0624,
+      "tm_target": 0.4287,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008P6P_1_5.cif",
+      "query_family": "RF00177",
+      "rank": 9,
+      "target_id": "URS0000A7FCB3_10090",
+      "tm_query": 0.0537,
+      "tm_target": 0.4381,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008P6P_1_8.cif",
+      "query_family": "RF00005",
+      "rank": 8,
+      "target_id": "URS000073351C_10090",
+      "tm_query": 0.4397,
+      "tm_target": 0.3447,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008Q5I_1_A.cif",
+      "query_family": "RF01960",
+      "rank": 9,
+      "target_id": "URS000075B4D2_10116",
+      "tm_query": 0.048,
+      "tm_target": 0.4198,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008Q5I_1_A.cif",
+      "query_family": "RF01960",
+      "rank": 4,
+      "target_id": "URS000075ED5C_10090",
+      "tm_query": 0.0589,
+      "tm_target": 0.4512,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008Q5I_1_A.cif",
+      "query_family": "RF01960",
+      "rank": 3,
+      "target_id": "URS0000A91CBC_10090",
+      "tm_query": 0.0552,
+      "tm_target": 0.5193,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008QFS_1_B.cif",
+      "query_family": "RF00005",
+      "rank": 4,
+      "target_id": "URS0000AA1281_10090",
+      "tm_query": 0.3159,
+      "tm_target": 0.2349,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008R6C_1_Y.cif",
+      "query_family": "RF00005",
+      "rank": 2,
+      "target_id": "URS0000309C11_10090",
+      "tm_query": 0.5776,
+      "tm_target": 0.5835,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008R6C_1_Y.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS00003D7A35_10090",
+      "tm_query": 0.5563,
+      "tm_target": 0.5626,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008R6C_1_Y.cif",
+      "query_family": "RF00005",
+      "rank": 7,
+      "target_id": "URS00022AE2DB_10090",
+      "tm_query": 0.7336,
+      "tm_target": 0.7144,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008UO6_1_A.cif",
+      "query_family": "RF00005",
+      "rank": 4,
+      "target_id": "URS0000908A12_10090",
+      "tm_query": 0.3179,
+      "tm_target": 0.226,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008UO6_1_A.cif",
+      "query_family": "RF00005",
+      "rank": 1,
+      "target_id": "URS0000A7E546_10090",
+      "tm_query": 0.3359,
+      "tm_target": 0.2199,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00008YUO_1_V.cif",
+      "query_family": "RF00005",
+      "rank": 6,
+      "target_id": "URS0000484F8C_10116",
+      "tm_query": 0.3074,
+      "tm_target": 0.2826,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASP_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 5,
+      "target_id": "URS0000759BE4_10090",
+      "tm_query": 0.5335,
+      "tm_target": 0.5646,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASP_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 7,
+      "target_id": "URS000075D1AC_7955",
+      "tm_query": 0.4253,
+      "tm_target": 0.4467,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASP_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 1,
+      "target_id": "URS000075E07B_10090",
+      "tm_query": 0.4343,
+      "tm_target": 0.3952,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 1,
+      "target_id": "URS000075A896_10090",
+      "tm_query": 0.4923,
+      "tm_target": 0.5119,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 6,
+      "target_id": "URS000075E4CE_10090",
+      "tm_query": 0.5555,
+      "tm_target": 0.5944,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 10,
+      "target_id": "URS00009BC9F1_10090",
+      "tm_query": 0.5437,
+      "tm_target": 0.264,
+      "confirmed": false
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 2,
+      "target_id": "URS0000A797B9_10090",
+      "tm_query": 0.5087,
+      "tm_target": 0.479,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 7,
+      "target_id": "URS0000AA1281_10090",
+      "tm_query": 0.5508,
+      "tm_target": 0.5715,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 8,
+      "target_id": "URS0000AA6300_10090",
+      "tm_query": 0.5127,
+      "tm_target": 0.5257,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 4,
+      "target_id": "URS0000AB1365_10090",
+      "tm_query": 0.4559,
+      "tm_target": 0.4697,
+      "confirmed": true
+    },
+    {
+      "query_id": "/Users/cassie/Desktop/NR80_local/PDB_00009ASQ_1_E.cif",
+      "query_family": "RF00027",
+      "rank": 9,
+      "target_id": "URS0000BD28A7_7955",
+      "tm_query": 0.5341,
+      "tm_target": 0.4903,
+      "confirmed": true
+    }
+  ]
+}
