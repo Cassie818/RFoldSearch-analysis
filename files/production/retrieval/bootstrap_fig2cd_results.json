@@ -2,17 +2,17 @@
   "0.4": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.619594172961384,
-        "ci_lower": 0.458292414981364,
+        "estimate": 0.619689411056622,
+        "ci_lower": 0.4583586511844545,
         "ci_upper": 0.8005585587910317,
         "sig_vs_rf": null,
         "n_blocks": 27
       },
       "RFoldseek-TM": {
-        "estimate": 0.8007337465429314,
-        "ci_lower": 0.7021829743242727,
-        "ci_upper": 0.918310935933995,
-        "sig_vs_rf": true,
+        "estimate": 0.8008139865129351,
+        "ci_lower": 0.7021531808826709,
+        "ci_upper": 0.9185675148813635,
+        "sig_vs_rf": null,
         "n_blocks": 27
       },
       "US-align*": {
@@ -63,12 +63,19 @@
         "ci_upper": 0.7121612432010545,
         "sig_vs_rf": false,
         "n_blocks": 27
+      },
+      "RiboSeek RS-80": {
+        "estimate": 0.3158213021089198,
+        "ci_lower": 0.13809813222712075,
+        "ci_upper": 0.5509845203256256,
+        "sig_vs_rf": true,
+        "n_blocks": 27
       }
     },
     "clan": {
       "RFoldseek": {
-        "estimate": 0.4821408947691408,
-        "ci_lower": 0.3042436755656603,
+        "estimate": 0.4824405950688411,
+        "ci_lower": 0.30491544694801004,
         "ci_upper": 0.7448408562875362,
         "sig_vs_rf": null,
         "n_blocks": 9
@@ -77,7 +84,7 @@
         "estimate": 0.7072241951943405,
         "ci_lower": 0.6070795306379505,
         "ci_upper": 0.9081745781650495,
-        "sig_vs_rf": true,
+        "sig_vs_rf": null,
         "n_blocks": 9
       },
       "US-align*": {
@@ -128,23 +135,30 @@
         "ci_upper": 0.5098700222614008,
         "sig_vs_rf": true,
         "n_blocks": 9
+      },
+      "RiboSeek RS-80": {
+        "estimate": 0.16606105725297812,
+        "ci_lower": 0.0097044042277308,
+        "ci_upper": 0.43105873199197936,
+        "sig_vs_rf": true,
+        "n_blocks": 9
       }
     }
   },
   "0.45": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.6147103504409652,
+        "estimate": 0.615030863261478,
         "ci_lower": 0.43886117801658453,
-        "ci_upper": 0.8199317753117781,
+        "ci_upper": 0.8202504027627585,
         "sig_vs_rf": null,
         "n_blocks": 26
       },
       "RFoldseek-TM": {
-        "estimate": 0.8201967056945415,
-        "ci_lower": 0.7206165830009913,
-        "ci_upper": 0.9403836019594982,
-        "sig_vs_rf": true,
+        "estimate": 0.820499076279931,
+        "ci_lower": 0.7210372774469453,
+        "ci_upper": 0.9409262178243716,
+        "sig_vs_rf": null,
         "n_blocks": 26
       },
       "US-align*": {
@@ -195,6 +209,13 @@
         "ci_upper": 0.7506655897908667,
         "sig_vs_rf": false,
         "n_blocks": 26
+      },
+      "RiboSeek RS-80": {
+        "estimate": 0.32441946386297427,
+        "ci_lower": 0.15022318554862887,
+        "ci_upper": 0.5694418739279216,
+        "sig_vs_rf": true,
+        "n_blocks": 26
       }
     },
     "clan": {
@@ -209,7 +230,7 @@
         "estimate": 0.7329741873581251,
         "ci_lower": 0.6204314575329702,
         "ci_upper": 0.922242823108443,
-        "sig_vs_rf": true,
+        "sig_vs_rf": null,
         "n_blocks": 8
       },
       "US-align*": {
@@ -260,23 +281,30 @@
         "ci_upper": 0.5213732070162397,
         "sig_vs_rf": true,
         "n_blocks": 8
+      },
+      "RiboSeek RS-80": {
+        "estimate": 0.18268137021573158,
+        "ci_lower": 0.012254901960784314,
+        "ci_upper": 0.4482725329559259,
+        "sig_vs_rf": true,
+        "n_blocks": 8
       }
     }
   },
   "0.5": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.5974798712731949,
+        "estimate": 0.5979700673516263,
         "ci_lower": 0.35031793362220504,
-        "ci_upper": 0.8734307931524984,
+        "ci_upper": 0.8741148351379104,
         "sig_vs_rf": null,
         "n_blocks": 25
       },
       "RFoldseek-TM": {
-        "estimate": 0.8410003862026513,
-        "ci_lower": 0.7365288030729661,
-        "ci_upper": 0.9592585447156107,
-        "sig_vs_rf": true,
+        "estimate": 0.8414709744379454,
+        "ci_lower": 0.7365057667553985,
+        "ci_upper": 0.9607928878762365,
+        "sig_vs_rf": null,
         "n_blocks": 25
       },
       "US-align*": {
@@ -327,6 +355,13 @@
         "ci_upper": 0.7991532197957969,
         "sig_vs_rf": true,
         "n_blocks": 25
+      },
+      "RiboSeek RS-80": {
+        "estimate": 0.35315320508089443,
+        "ci_lower": 0.1646863503139393,
+        "ci_upper": 0.6185803568370071,
+        "sig_vs_rf": true,
+        "n_blocks": 25
       }
     },
     "clan": {
@@ -341,7 +376,7 @@
         "estimate": 0.711079851159668,
         "ci_lower": 0.5057936507936509,
         "ci_upper": 0.9530014235777458,
-        "sig_vs_rf": true,
+        "sig_vs_rf": null,
         "n_blocks": 8
       },
       "US-align*": {
@@ -390,6 +425,13 @@
         "estimate": 0.2450412295709351,
         "ci_lower": 0.03333333333333333,
         "ci_upper": 0.5939523956907674,
+        "sig_vs_rf": true,
+        "n_blocks": 8
+      },
+      "RiboSeek RS-80": {
+        "estimate": 0.21724432865073767,
+        "ci_lower": 0.009948979591836736,
+        "ci_upper": 0.5114840627842172,
         "sig_vs_rf": true,
         "n_blocks": 8
       }

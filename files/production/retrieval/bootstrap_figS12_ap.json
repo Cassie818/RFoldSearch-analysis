@@ -67,6 +67,14 @@
       "diff_ci_lo": -0.06092211916084249,
       "diff_ci_hi": 0.14612660861248408,
       "sig_vs_rf": false
+    },
+    "RiboSeek RS-80": {
+      "anchor_mean": 0.7059987216722892,
+      "method_mean": 0.3622897219430869,
+      "diff_mean": 0.33521369722934646,
+      "diff_ci_lo": 0.1311656872417744,
+      "diff_ci_hi": 0.4899754338869098,
+      "sig_vs_rf": true
     }
   },
   "clan": {
@@ -132,6 +140,14 @@
       "diff_mean": 0.16097019505222565,
       "diff_ci_lo": 0.09880938724085303,
       "diff_ci_hi": 0.20952014399760838,
+      "sig_vs_rf": true
+    },
+    "RiboSeek RS-80": {
+      "anchor_mean": 0.4109835141311836,
+      "method_mean": 0.18970275266854675,
+      "diff_mean": 0.2110834566989758,
+      "diff_ci_lo": 0.13529611969495797,
+      "diff_ci_hi": 0.26241139275590547,
       "sig_vs_rf": true
     }
   }

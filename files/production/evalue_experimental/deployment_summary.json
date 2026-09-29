@@ -8,6 +8,7 @@
   "n_families": 93,
   "n_background_observations": 182878,
   "excluded_structurally_related_background": 115,
+  "tm_score_definition": "mean of query- and target-normalized US-align TM-scores",
   "total_background_weight": 881.4453694586903,
   "finite_sample_floor": 6.689523296378647e-05
 }

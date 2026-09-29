@@ -1,0 +1,645 @@
+{
+  "source": "PDBe ModelServer chain-level atom query, first model",
+  "selection_source": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/rfam3d_reference_alignment.json",
+  "n_requested_chains": 91,
+  "n_already_present": 0,
+  "results": [
+    {
+      "chain": "1FOQ_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00001FOQ_1_A.cif",
+      "bytes": 244978,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/1foq/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "1S9S_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00001S9S_1_A.cif",
+      "bytes": 260521,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/1s9s/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "1Z2J_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00001Z2J_1_A.cif",
+      "bytes": 117257,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/1z2j/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2CKY_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002CKY_1_A.cif",
+      "bytes": 157579,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2cky/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2GDI_X",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002GDI_1_X.cif",
+      "bytes": 198578,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2gdi/atoms?auth_asym_id=X&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2GIS_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002GIS_1_A.cif",
+      "bytes": 190242,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2gis/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2HOJ_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002HOJ_1_A.cif",
+      "bytes": 155022,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2hoj/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2IL9_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002IL9_1_A.cif",
+      "bytes": 254904,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2il9/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2KE6_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002KE6_1_A.cif",
+      "bytes": 122534,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2ke6/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2KUR_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002KUR_1_A.cif",
+      "bytes": 122261,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2kur/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2KUU_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002KUU_1_A.cif",
+      "bytes": 121977,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2kuu/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2KUV_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002KUV_1_A.cif",
+      "bytes": 120839,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2kuv/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2KUW_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002KUW_1_A.cif",
+      "bytes": 122812,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2kuw/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2L1F_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002L1F_1_A.cif",
+      "bytes": 185877,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2l1f/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2L1F_B",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002L1F_1_B.cif",
+      "bytes": 189246,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2l1f/atoms?auth_asym_id=B&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2L1V_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002L1V_1_A.cif",
+      "bytes": 96430,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2l1v/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2MF0_G",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002MF0_1_G.cif",
+      "bytes": 199788,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2mf0/atoms?auth_asym_id=G&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2N7M_X",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002N7M_1_X.cif",
+      "bytes": 229690,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2n7m/atoms?auth_asym_id=X&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2NOQ_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002NOQ_1_A.cif",
+      "bytes": 375614,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2noq/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2QBZ_X",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002QBZ_1_X.cif",
+      "bytes": 299097,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2qbz/atoms?auth_asym_id=X&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2QUW_B",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002QUW_1_B.cif",
+      "bytes": 121937,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2quw/atoms?auth_asym_id=B&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "2YDH_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00002YDH_1_A.cif",
+      "bytes": 177600,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/2ydh/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3F2Q_X",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003F2Q_1_X.cif",
+      "bytes": 208813,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3f2q/atoms?auth_asym_id=X&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3GCA_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003GCA_1_A.cif",
+      "bytes": 68533,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3gca/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3GX2_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003GX2_1_A.cif",
+      "bytes": 176659,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3gx2/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3GX7_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003GX7_1_A.cif",
+      "bytes": 176989,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3gx7/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3IQN_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003IQN_1_A.cif",
+      "bytes": 181447,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3iqn/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3IQP_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003IQP_1_A.cif",
+      "bytes": 186319,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3iqp/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3K0J_E",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003K0J_1_E.cif",
+      "bytes": 186192,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3k0j/atoms?auth_asym_id=E&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3K1V_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003K1V_1_A.cif",
+      "bytes": 70678,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3k1v/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3PDR_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003PDR_1_A.cif",
+      "bytes": 367038,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3pdr/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3SUX_X",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003SUX_1_X.cif",
+      "bytes": 188156,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3sux/atoms?auth_asym_id=X&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "3VRS_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00003VRS_1_A.cif",
+      "bytes": 105545,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/3vrs/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4AOB_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004AOB_1_A.cif",
+      "bytes": 182744,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4aob/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4B5R_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004B5R_1_A.cif",
+      "bytes": 183900,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4b5r/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4D5N_X",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004D5N_1_X.cif",
+      "bytes": 573041,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4d5n/atoms?auth_asym_id=X&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4FRG_B",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004FRG_1_B.cif",
+      "bytes": 178427,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4frg/atoms?auth_asym_id=B&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4FRN_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004FRN_1_A.cif",
+      "bytes": 210649,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4frn/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4GXY_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004GXY_1_A.cif",
+      "bytes": 321343,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4gxy/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4LVV_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004LVV_1_A.cif",
+      "bytes": 178413,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4lvv/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4NYA_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004NYA_1_A.cif",
+      "bytes": 165504,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4nya/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4V92_AZ",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004V92_1_AZ.cif",
+      "bytes": 503941,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4v92/atoms?auth_asym_id=AZ&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "4XWF_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00004XWF_1_A.cif",
+      "bytes": 142286,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/4xwf/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5BTP_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005BTP_1_A.cif",
+      "bytes": 130960,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5btp/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5DI2_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005DI2_1_A.cif",
+      "bytes": 136065,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5di2/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FJC_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FJC_1_A.cif",
+      "bytes": 226278,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fjc/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FK1_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FK1_1_A.cif",
+      "bytes": 185266,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fk1/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FK2_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FK2_1_A.cif",
+      "bytes": 187102,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fk2/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FK3_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FK3_1_A.cif",
+      "bytes": 185522,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fk3/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FK4_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FK4_1_A.cif",
+      "bytes": 188238,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fk4/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FK5_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FK5_1_A.cif",
+      "bytes": 182342,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fk5/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FK6_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FK6_1_A.cif",
+      "bytes": 183579,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fk6/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FKD_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FKD_1_A.cif",
+      "bytes": 182666,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fkd/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FKE_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FKE_1_A.cif",
+      "bytes": 184704,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fke/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FKF_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FKF_1_A.cif",
+      "bytes": 182114,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fkf/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FKG_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FKG_1_A.cif",
+      "bytes": 185066,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fkg/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5FKH_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005FKH_1_A.cif",
+      "bytes": 185134,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5fkh/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5GAN_V",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005GAN_1_V.cif",
+      "bytes": 269294,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5gan/atoms?auth_asym_id=V&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5IT7_4",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005IT7_1_4.cif",
+      "bytes": 955024,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5it7/atoms?auth_asym_id=4&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5KH8_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005KH8_1_A.cif",
+      "bytes": 120448,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5kh8/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5NY8_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005NY8_1_A.cif",
+      "bytes": 129788,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5ny8/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5NZ6_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005NZ6_1_A.cif",
+      "bytes": 120069,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5nz6/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "5O9Z_4",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00005O9Z_1_4.cif",
+      "bytes": 298732,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/5o9z/atoms?auth_asym_id=4&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6AH0_I",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006AH0_1_I.cif",
+      "bytes": 261896,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6ah0/atoms?auth_asym_id=I&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6D9J_4",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006D9J_1_4.cif",
+      "bytes": 950926,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6d9j/atoms?auth_asym_id=4&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6E1T_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006E1T_1_A.cif",
+      "bytes": 78629,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6e1t/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6E1U_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006E1U_1_A.cif",
+      "bytes": 72655,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6e1u/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6MCB_B",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006MCB_1_B.cif",
+      "bytes": 216805,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6mcb/atoms?auth_asym_id=B&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6Q57_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006Q57_1_A.cif",
+      "bytes": 168461,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6q57/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6QW6_4",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006QW6_1_4.cif",
+      "bytes": 276290,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6qw6/atoms?auth_asym_id=4&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6TF0_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006TF0_1_A.cif",
+      "bytes": 113219,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6tf0/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6UEY_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006UEY_1_A.cif",
+      "bytes": 111602,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6uey/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6UFJ_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006UFJ_1_A.cif",
+      "bytes": 112338,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6ufj/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6VUH_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006VUH_1_A.cif",
+      "bytes": 100049,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6vuh/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6VWM_4",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006VWM_1_4.cif",
+      "bytes": 641470,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6vwm/atoms?auth_asym_id=4&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6WJS_X",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006WJS_1_X.cif",
+      "bytes": 203110,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6wjs/atoms?auth_asym_id=X&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6XKN_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006XKN_1_A.cif",
+      "bytes": 261439,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6xkn/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "6XKO_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00006XKO_1_A.cif",
+      "bytes": 258961,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/6xko/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7D7W_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007D7W_1_A.cif",
+      "bytes": 121218,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7d7w/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7D82_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007D82_1_A.cif",
+      "bytes": 111800,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7d82/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7EAF_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007EAF_1_A.cif",
+      "bytes": 183277,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7eaf/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7JQQ_K",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007JQQ_1_K.cif",
+      "bytes": 306531,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7jqq/atoms?auth_asym_id=K&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7LYF_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007LYF_1_A.cif",
+      "bytes": 257616,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7lyf/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7REX_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007REX_1_A.cif",
+      "bytes": 106334,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7rex/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7TD7_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007TD7_1_A.cif",
+      "bytes": 141280,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7td7/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7UMC_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007UMC_1_A.cif",
+      "bytes": 180029,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7umc/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7V59_C",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007V59_1_C.cif",
+      "bytes": 257062,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7v59/atoms?auth_asym_id=C&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7YR6_A",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007YR6_1_A.cif",
+      "bytes": 238649,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7yr6/atoms?auth_asym_id=A&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "7ZJX_I",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00007ZJX_1_I.cif",
+      "bytes": 997423,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/7zjx/atoms?auth_asym_id=I&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "8FW4_Z",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00008FW4_1_Z.cif",
+      "bytes": 509230,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/8fw4/atoms?auth_asym_id=Z&model_nums=1&encoding=cif"
+    },
+    {
+      "chain": "8GZQ_S",
+      "status": "downloaded",
+      "path": "files/ablation/rfam3d_reference_disjoint_independent_3dseed/reconstructed_chains/PDB_00008GZQ_1_S.cif",
+      "bytes": 142867,
+      "url": "https://www.ebi.ac.uk/pdbe/model-server/v1/8gzq/atoms?auth_asym_id=S&model_nums=1&encoding=cif"
+    }
+  ]
+}

@@ -361413,6 +361413,7 @@
     "n_families": 93,
     "n_calibration_queries": 496,
     "tm_threshold": 0.45,
+    "tm_score_definition": "mean of query- and target-normalized US-align TM-scores",
     "structurally_related_background_excluded": 115,
     "source": "/Users/cassie/Desktop/RFoldSeek/data/experimental/nr80_885_evalue_structure_adjudication/qevd_nr80_885.pkl",
     "adjudication": "/Users/cassie/Desktop/RFoldSeek/data/experimental/nr80_885_database_adaptive_calibration/adjudication_rawE1.tsv"

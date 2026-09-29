@@ -6,6 +6,9 @@ matplotlib==3.5.2
 numba==0.55.1
 scipy==1.9.1      # Section 2.4 motif confidence intervals (Clopper-Pearson)
 biotite==0.40.0   # structure preprocessing (preprocessing/extract_backbone.py)
+biopython         # sequence identity (Fig. 3) and alignment-benchmark sequence baseline
+pandas            # motif controls (scripts/07_motifs)
+gemmi             # BGSU motif overlap (scripts/07_motifs/bgsu_overlap.py)
 
 # RiboSeek baseline only (scripts/02_rnasolo_benchmark/riboseek_baseline.py).
 # Requires Python >= 3.9; the rest of the pipeline was run under Python 3.8.

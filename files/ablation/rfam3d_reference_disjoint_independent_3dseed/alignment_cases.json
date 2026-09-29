@@ -1,0 +1,262 @@
+{
+ "query": "5O9Z_4",
+ "width": 80,
+ "cases": [
+  {
+   "label": "A",
+   "target": "2N7M_X",
+   "target_row": "URS00008FED30_32630/1-92",
+   "seq_id": 0.725,
+   "tok_id": 0.05,
+   "precision": 0.3333333333333333,
+   "recall": 0.15,
+   "f1": 0.20689655172413793,
+   "tol_f1": 0.6440677966101694,
+   "n_ref": 40,
+   "n_rf": 54,
+   "ref_rmsd": 34.99248892045896,
+   "rf_rmsd": 16.58517989940089,
+   "reference": [
+    {
+     "q": "AGCUUUGCGC-AGUGGCAG-UAUCGUAGCCAAUGAGGUUUA--UCCGAGGCGCGAUUA--UUGCUAA-UUGAAAACUUUU",
+     "s": "+.......+. .+...+.+ ++++++|+++++++.|.+++|  +++|+..+++|++|+  .....+. .+    ++....",
+     "n": " || ||  || |  || |  ||       || ||||| ||   ||||||      ||   |||||   |  ||| |    ",
+     "t": "GGCCUUAUGC-ACGGGAAA-UACGCAUAUCAGUGAGGAUUCG-UCCGAGAUUGUGUUU--UUGCUGG-UGUAAAUCAGCA",
+     "q0": 1,
+     "q1": 73,
+     "t0": 1,
+     "t1": 74
+    },
+    {
+     "q": "------CCCAAUA--CCCC",
+     "s": "          ...   ...",
+     "n": "           |    |||",
+     "t": "-----G----UUC---CCC",
+     "q0": 74,
+     "q1": 84,
+     "t0": 75,
+     "t1": 81
+    }
+   ],
+   "rfoldseek": [
+    {
+     "q": "GUAUCGUAGCCAAUGAGGUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCC",
+     "s": "+++++++|+++++++.|.+++|++|+|..+++|++.+....+...|++++++++",
+     "n": " ||       || ||||| ||   |   |   |  | ||      |     || ",
+     "t": "AUACGCAUAUCAGUGAGGAUUCGUCCGAGAUUGUGUUUUUGCUGGUGUAAAUCA",
+     "q0": 18,
+     "q1": 71,
+     "t0": 18,
+     "t1": 71
+    }
+   ]
+  },
+  {
+   "label": "B",
+   "target": "5GAN_V",
+   "target_row": "URS00001143F5_4932/1-160",
+   "seq_id": 0.8085106382978723,
+   "tok_id": 0.2978723404255319,
+   "precision": 1.0,
+   "recall": 0.851063829787234,
+   "f1": 0.9195402298850576,
+   "tol_f1": 0.9195402298850576,
+   "n_ref": 47,
+   "n_rf": 122,
+   "ref_rmsd": 8.987323234808805,
+   "rf_rmsd": 12.587285175612035,
+   "reference": [
+    {
+     "q": "AGCUUUGCGC-AGUGGCAG-UAUCGUAGCCAAUGAGGUUUA--UCCGAGGCGCGAUUA--UUGCUAA-UUGAAAACUUUU",
+     "s": "|||||+|+|+ ++|+|+|+ ++|+|+||||.|||||++++|  +.+||+||+||+|.+  +++++++ +.       +++",
+     "n": "| | ||  || |  || |  ||       || ||||| ||   ||||||      ||   |||||   ||||||  |  |",
+     "t": "AUCCUUAUGC-ACGGGAAA-UACGCAUAUCAGUGAGGAUUCG-UCCGAGAUUGUGUUU--UUGCUGG-UUGAAAUUUAAU",
+     "q0": 1,
+     "q1": 73,
+     "t0": 1,
+     "t1": 74
+    },
+    {
+     "q": "------CCCAAUA--CCCCGCC--GU-GAC-GACUUG--------------------------CAAUA--UA--GUCGG-",
+     "s": "      ++++++|   +....|  ++ +.+ +|+++                              +   .|  |+++| ",
+     "n": "      ||  |       | ||         | |                             |  |    |  | |   ",
+     "t": "UAUAAACCAGACC---GUCUCC--UC-AUG-GUCAAUUCGGUGUUCG------CUUUUGAAUAC-UU--CAA--GACUA-",
+     "q0": 74,
+     "q1": 110,
+     "t0": 75,
+     "t1": 135
+    },
+    {
+     "q": "CAU-UGGCAAUUUUUGAC",
+     "s": "|++ .+..+++++++++.",
+     "n": "  |  || ||||||||  ",
+     "t": "UGU-AGGGAAUUUUUGGA",
+     "q0": 111,
+     "q1": 127,
+     "t0": 136,
+     "t1": 152
+    }
+   ],
+   "rfoldseek": [
+    {
+     "q": "AGCUUUGCGCAGUGGCAGUAUCGUAGCCAAUGAG-GUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCCCAAUACCC",
+     "s": "|||||+|+|+++|+|+|+++|+|+||||.||||| |+|+++.+||+||+||+|.+++++++++.++++||+++++++.++",
+     "n": "| | ||  |||  || | ||       || ||||  ||  ||||||      || |||||  ||    ||   ||     ",
+     "t": "AUCCUUAUGCACGGGAAAUACGCAUAUCAGUGAGGAUUCGUCCGAGAUUGUGUUUUUGCUGGUUGAAAUUAUAAACCAGA",
+     "q0": 1,
+     "q1": 79,
+     "t0": 1,
+     "t1": 80
+    },
+    {
+     "q": "CGCCGUGACGACUUGCAAUAUAGUCGGCAUUGGCAAUUUUUGA",
+     "s": "........+++++++++.++.||+++||++.+..+++++++++",
+     "n": "|    |    |    ||||  || |    | || |||||||| ",
+     "t": "CCGUCUCCUCAUGGUCAAUCAAGACUAUGUAGGGAAUUUUUGG",
+     "q0": 80,
+     "q1": 122,
+     "t0": 81,
+     "t1": 123
+    }
+   ]
+  },
+  {
+   "label": "C",
+   "target": "6AH0_I",
+   "target_row": "URS00003F07BD_9606/1-144",
+   "seq_id": 1.0,
+   "tok_id": 0.7073170731707317,
+   "precision": 1.0,
+   "recall": 0.7560975609756098,
+   "f1": 0.8611111111111112,
+   "tol_f1": 0.8611111111111112,
+   "n_ref": 41,
+   "n_rf": 117,
+   "ref_rmsd": 29.407673141064176,
+   "rf_rmsd": 38.12395632880464,
+   "reference": [
+    {
+     "q": "AGCUUUGCGC-AGUGGCAG-UAUCGUAGCCAAUGAGGUUUA--UCCGAGGCGCGAUUA--UUGCUAA-UUGAAAACUUUU",
+     "s": "||||||++|+ |+|+|+|   +.+|||||||||||||||||  |||||||||+|   .  ++++.+| +.          ",
+     "n": "|||||||||| |||||||| |||||||||||||||||| ||  |||||||||||||||  ||||||| ||||||||||||",
+     "t": "AGCUUUGCGC-AGUGGCAG-UAUCGUAGCCAAUGAGGUCUA--UCCGAGGCGCGAUUA--UUGCUAA-UUGAAAACUUUU",
+     "q0": 1,
+     "q1": 73,
+     "t0": 1,
+     "t1": 73
+    },
+    {
+     "q": "------CCCAAUA--CCCCGCC--GU-GAC-GACUUG--------------------------CAAUA--UA--GUCGG-",
+     "s": "                 |||||  || ||| ||+|||                          |||||  ||  ||||+ ",
+     "n": "      |||||||  |||||||  || ||| ||||||                          |||||  ||  ||||| ",
+     "t": "------CCCAAUA--CCCCGCC--GU-GAC-GACUUG--------------------------CAAUA--UA--GUCGG-",
+     "q0": 74,
+     "q1": 110,
+     "t0": 74,
+     "t1": 110
+    },
+    {
+     "q": "CAU-UGGCAAUUUUUGAC",
+     "s": "||| +|||||||||||||",
+     "n": "||  ||||||||||||||",
+     "t": "CAC-UGGCAAUUUUUGAC",
+     "q0": 111,
+     "q1": 127,
+     "t0": 111,
+     "t1": 127
+    }
+   ],
+   "rfoldseek": [
+    {
+     "q": "AGCUUUGCGCAGUGGCAGUAUCGUAGCCAAUGAGGUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCCCAAUACCCC",
+     "s": "||||||++|+|+|+|+|++  +||||||||||||||||||||||||||+|+                 |+||+||||+||",
+     "n": "||||||||||||||||| |  ||||||||||||||| ||||||||||||||                 |  | |    ||",
+     "t": "AGCUUUGCGCAGUGGCAAU--CGUAGCCAAUGAGGUCUAUCCGAGGCGCGA-----------------UUGCUAAUUGCC",
+     "q0": 1,
+     "q1": 80,
+     "t0": 1,
+     "t1": 61
+    },
+    {
+     "q": "GCCGUGACGACUUGCAAUAUAGUCGGCAUUGGCAAUUUUUGACAGUCUCGAGACUG",
+     "s": "||||||||||+||||||||||||||+|||+|||||||||||||||||+.|||||||",
+     "n": "|||||||||||||||||||||||||||| |||||||||||||||||||||||||||",
+     "t": "GCCGUGACGACUUGCAAUAUAGUCGGCACUGGCAAUUUUUGACAGUCUCGAGACUG",
+     "q0": 81,
+     "q1": 136,
+     "t0": 62,
+     "t1": 117
+    }
+   ]
+  },
+  {
+   "label": "D",
+   "target": "6QW6_4",
+   "target_row": "URS0000E60BB1_9606/2-146",
+   "seq_id": 1.0,
+   "tok_id": 0.3409090909090909,
+   "precision": 0.7560975609756098,
+   "recall": 0.7045454545454546,
+   "f1": 0.7294117647058823,
+   "tol_f1": 0.9176470588235294,
+   "n_ref": 44,
+   "n_rf": 125,
+   "ref_rmsd": 30.44951403466368,
+   "rf_rmsd": 36.817048763744396,
+   "reference": [
+    {
+     "q": "AGCUUUGCGC-AGUGGCAG-UAUCGUAGCCAAUGAGGUUUA--UCCGAGGCGCGAUUA--UUGCUAA-UUGAAAACUUUU",
+     "s": "|||||||+|+ ++++.++. |..+|++++|+||||++|+|+  +++++||++++++    +.+++++ |.    |+  ++",
+     "n": "|||||||||| |||||||| |||||||||||||||||||||  |||||||||||||||  ||||||| ||||||||||||",
+     "t": "AGCUUUGCGC-AGUGGCAG-UAUCGUAGCCAAUGAGGUUUA--UCCGAGGCGCGAUUA--UUGCUAA-UUGAAAACUUUU",
+     "q0": 1,
+     "q1": 73,
+     "t0": 2,
+     "t1": 74
+    },
+    {
+     "q": "------CCCAAUA--CCCCGCC--GU-GAC-GACUUG--------------------------CAAUA--UA--GUCGG-",
+     "s": "      +||+|++      .|+  || +.+ ++|                                    .+  +++|+ ",
+     "n": "      |||||||  |||||||  || ||| ||||||                          |||||  ||  ||||| ",
+     "t": "------CCCAAUA--CCCCGCC--GU-GAC-GACUUG--------------------------CAAUA--UA--GUCGG-",
+     "q0": 74,
+     "q1": 110,
+     "t0": 75,
+     "t1": 111
+    },
+    {
+     "q": "CAU-UGGCAAUUUUUGAC",
+     "s": "+|+ +||++++++.++++",
+     "n": "||| ||||||||||||||",
+     "t": "CAU-UGGCAAUUUUUGAC",
+     "q0": 111,
+     "q1": 127,
+     "t0": 112,
+     "t1": 128
+    }
+   ],
+   "rfoldseek": [
+    {
+     "q": "AGCUUUGCGCAGUGGCAGUAUCGUAGCCAAUGAGGUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCCCAAUACCCC",
+     "s": "|||||||+|+++++.++.|..+|++++|+||||++|+|++++++||++++++    ++|++|.++|+++|+.+.|+|+++",
+     "n": "||||||||||||||||||||||||||||||||||||||||||||||||||||                  |         ",
+     "t": "AGCUUUGCGCAGUGGCAGUAUCGUAGCCAAUGAGGUUUAUCCGAGGCGCGAU----UUGCUAAUUGAAAACUUCCCAAUA",
+     "q0": 1,
+     "q1": 80,
+     "t0": 1,
+     "t1": 76
+    },
+    {
+     "q": "GCCGUGACGACUUGCAAUAUAGUCGGCAUUGGCAAUUUUUGACAGUCUCGAGACUGG",
+     "s": ".|+||+.+++|.+        +++|++|++||++++++.++++++|||..+|+||+|",
+     "n": "||||||||||||         ||||||||||||||||||||||||||||||||||||",
+     "t": "GCCGUGACGACUA--------GUCGGCAUUGGCAAUUUUUGACAGUCUCGAGACUGG",
+     "q0": 81,
+     "q1": 137,
+     "t0": 77,
+     "t1": 125
+    }
+   ]
+  }
+ ]
+}
