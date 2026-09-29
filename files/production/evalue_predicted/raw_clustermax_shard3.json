@@ -1,0 +1,379 @@
+{
+  "scheme": "predicted-raw-clustermax-full-shard",
+  "shard_index": 3,
+  "n_shards": 4,
+  "n_chains": 33043,
+  "n_clusters": 15271,
+  "records": [
+    {
+      "global_position": 3,
+      "query": "URS00027DE1FF_83333_rank_1",
+      "query_index": 13478,
+      "family": "RF01794",
+      "length": 157,
+      "token_entropy": 4.751514499322894,
+      "n_unique_tokens": 43,
+      "n_eligible_clusters": 15007
+    },
+    {
+      "global_position": 7,
+      "query": "URS0000148398_9606_rank_1",
+      "query_index": 1924,
+      "family": "RF00090",
+      "length": 200,
+      "token_entropy": 4.191171974805567,
+      "n_unique_tokens": 32,
+      "n_eligible_clusters": 13620
+    },
+    {
+      "global_position": 11,
+      "query": "URS0002310544_6239_rank_1",
+      "query_index": 2179,
+      "family": "RF00103",
+      "length": 61,
+      "token_entropy": 3.050761769265243,
+      "n_unique_tokens": 14,
+      "n_eligible_clusters": 12786
+    },
+    {
+      "global_position": 15,
+      "query": "URS000063031F_10116_rank_1",
+      "query_index": 9521,
+      "family": "RF00740",
+      "length": 79,
+      "token_entropy": 2.685783810952485,
+      "n_unique_tokens": 13,
+      "n_eligible_clusters": 13851
+    },
+    {
+      "global_position": 19,
+      "query": "URS00003107D1_6239_rank_1",
+      "query_index": 3469,
+      "family": "RF00199",
+      "length": 110,
+      "token_entropy": 4.167091067677315,
+      "n_unique_tokens": 26,
+      "n_eligible_clusters": 14735
+    },
+    {
+      "global_position": 23,
+      "query": "URS0000695C42_9606_rank_1",
+      "query_index": 7862,
+      "family": "RF00639",
+      "length": 87,
+      "token_entropy": 2.800046126140312,
+      "n_unique_tokens": 17,
+      "n_eligible_clusters": 14180
+    },
+    {
+      "global_position": 27,
+      "query": "URS000232030B_9606_rank_1",
+      "query_index": 11042,
+      "family": "RF00966",
+      "length": 73,
+      "token_entropy": 2.9489342514019077,
+      "n_unique_tokens": 14,
+      "n_eligible_clusters": 13589
+    },
+    {
+      "global_position": 31,
+      "query": "URS000051EFE6_10090_rank_1",
+      "query_index": 7214,
+      "family": "RF00561",
+      "length": 94,
+      "token_entropy": 3.867067559070808,
+      "n_unique_tokens": 24,
+      "n_eligible_clusters": 14302
+    },
+    {
+      "global_position": 35,
+      "query": "URS0002915466_10116_rank_1",
+      "query_index": 935,
+      "family": "RF00027,RF04289",
+      "length": 82,
+      "token_entropy": 2.927878165533386,
+      "n_unique_tokens": 17,
+      "n_eligible_clusters": 13990
+    },
+    {
+      "global_position": 39,
+      "query": "URS0000C4BBC7_318479_rank_1",
+      "query_index": 14194,
+      "family": "RF01960",
+      "length": 277,
+      "token_entropy": 5.115271379453666,
+      "n_unique_tokens": 57,
+      "n_eligible_clusters": 9169
+    },
+    {
+      "global_position": 43,
+      "query": "URS00007E35BB_9606_rank_1",
+      "query_index": 4357,
+      "family": "RF00254",
+      "length": 65,
+      "token_entropy": 2.645492708945966,
+      "n_unique_tokens": 12,
+      "n_eligible_clusters": 13080
+    },
+    {
+      "global_position": 47,
+      "query": "URS00006A27CD_39947_rank_1",
+      "query_index": 12582,
+      "family": "RF01424",
+      "length": 88,
+      "token_entropy": 4.051793959513677,
+      "n_unique_tokens": 26,
+      "n_eligible_clusters": 14222
+    },
+    {
+      "global_position": 51,
+      "query": "URS000006D1C5_9606_rank_1",
+      "query_index": 10775,
+      "family": "RF00915",
+      "length": 79,
+      "token_entropy": 3.189080675248554,
+      "n_unique_tokens": 16,
+      "n_eligible_clusters": 13850
+    },
+    {
+      "global_position": 55,
+      "query": "URS000057B702_39947_rank_1",
+      "query_index": 13724,
+      "family": "RF01855",
+      "length": 311,
+      "token_entropy": 4.669805353687695,
+      "n_unique_tokens": 47,
+      "n_eligible_clusters": 7635
+    },
+    {
+      "global_position": 59,
+      "query": "URS000232F78C_10090_rank_1",
+      "query_index": 8769,
+      "family": "RF00673",
+      "length": 93,
+      "token_entropy": 2.7742768985203585,
+      "n_unique_tokens": 14,
+      "n_eligible_clusters": 14325
+    },
+    {
+      "global_position": 63,
+      "query": "URS0000685A33_10116_rank_1",
+      "query_index": 8834,
+      "family": "RF00679",
+      "length": 96,
+      "token_entropy": 3.037216916219878,
+      "n_unique_tokens": 16,
+      "n_eligible_clusters": 14385
+    },
+    {
+      "global_position": 67,
+      "query": "URS000072B44B_3702_rank_1",
+      "query_index": 11867,
+      "family": "RF01219",
+      "length": 106,
+      "token_entropy": 4.361704065636996,
+      "n_unique_tokens": 31,
+      "n_eligible_clusters": 14665
+    },
+    {
+      "global_position": 71,
+      "query": "URS000075AA79_9606_rank_1",
+      "query_index": 17024,
+      "family": "RF04077",
+      "length": 69,
+      "token_entropy": 2.993691745403978,
+      "n_unique_tokens": 15,
+      "n_eligible_clusters": 13384
+    },
+    {
+      "global_position": 75,
+      "query": "URS000065759B_243232_rank_1",
+      "query_index": 12385,
+      "family": "RF01326",
+      "length": 30,
+      "token_entropy": 3.3600115303896287,
+      "n_unique_tokens": 13,
+      "n_eligible_clusters": 6251
+    },
+    {
+      "global_position": 79,
+      "query": "URS000075E5B9_10090_rank_1",
+      "query_index": 6524,
+      "family": "RF00446",
+      "length": 104,
+      "token_entropy": 3.1960008901728694,
+      "n_unique_tokens": 17,
+      "n_eligible_clusters": 14621
+    },
+    {
+      "global_position": 83,
+      "query": "URS000078D4C8_83333_rank_1",
+      "query_index": 5757,
+      "family": "RF00391",
+      "length": 136,
+      "token_entropy": 4.6212173218946955,
+      "n_unique_tokens": 37,
+      "n_eligible_clusters": 15105
+    },
+    {
+      "global_position": 87,
+      "query": "URS0000044515_6239_rank_1",
+      "query_index": 9824,
+      "family": "RF00774",
+      "length": 110,
+      "token_entropy": 3.187946347416129,
+      "n_unique_tokens": 15,
+      "n_eligible_clusters": 14742
+    },
+    {
+      "global_position": 91,
+      "query": "URS000063BD95_10090_rank_1",
+      "query_index": 7461,
+      "family": "RF00584",
+      "length": 85,
+      "token_entropy": 4.264312362257167,
+      "n_unique_tokens": 26,
+      "n_eligible_clusters": 14111
+    },
+    {
+      "global_position": 95,
+      "query": "URS00023489CA_9606_rank_1",
+      "query_index": 13987,
+      "family": "RF01906",
+      "length": 317,
+      "token_entropy": 5.020822107722935,
+      "n_unique_tokens": 54,
+      "n_eligible_clusters": 7433
+    },
+    {
+      "global_position": 99,
+      "query": "URS000031A4E5_39947_rank_1",
+      "query_index": 4937,
+      "family": "RF00305",
+      "length": 137,
+      "token_entropy": 4.392449383875441,
+      "n_unique_tokens": 31,
+      "n_eligible_clusters": 15114
+    },
+    {
+      "global_position": 103,
+      "query": "URS0000BE5F7C_6282_rank_1",
+      "query_index": 175,
+      "family": "RF00004",
+      "length": 166,
+      "token_entropy": 4.376382679401107,
+      "n_unique_tokens": 33,
+      "n_eligible_clusters": 14829
+    },
+    {
+      "global_position": 107,
+      "query": "URS000075A323_9606_rank_1",
+      "query_index": 15770,
+      "family": "RF03307",
+      "length": 52,
+      "token_entropy": 2.671405583442497,
+      "n_unique_tokens": 11,
+      "n_eligible_clusters": 12133
+    },
+    {
+      "global_position": 111,
+      "query": "URS00006AF7C7_10116_rank_1",
+      "query_index": 1639,
+      "family": "RF00072",
+      "length": 137,
+      "token_entropy": 4.374601106509799,
+      "n_unique_tokens": 31,
+      "n_eligible_clusters": 15113
+    },
+    {
+      "global_position": 115,
+      "query": "URS000075D6A0_7955_rank_1",
+      "query_index": 8540,
+      "family": "RF00660",
+      "length": 100,
+      "token_entropy": 2.9477450167345345,
+      "n_unique_tokens": 17,
+      "n_eligible_clusters": 14522
+    },
+    {
+      "global_position": 119,
+      "query": "URS000034E5FB_39947_rank_1",
+      "query_index": 2710,
+      "family": "RF00142",
+      "length": 105,
+      "token_entropy": 3.897393993397747,
+      "n_unique_tokens": 29,
+      "n_eligible_clusters": 14645
+    },
+    {
+      "global_position": 123,
+      "query": "URS000028748D_185431_rank_1",
+      "query_index": 12858,
+      "family": "RF01539",
+      "length": 73,
+      "token_entropy": 4.0948525998815395,
+      "n_unique_tokens": 23,
+      "n_eligible_clusters": 13587
+    },
+    {
+      "global_position": 127,
+      "query": "URS0002326CBF_9606_rank_1",
+      "query_index": 16908,
+      "family": "RF03969",
+      "length": 72,
+      "token_entropy": 3.1296842678300516,
+      "n_unique_tokens": 17,
+      "n_eligible_clusters": 13542
+    },
+    {
+      "global_position": 131,
+      "query": "URS000068145C_39947_rank_1",
+      "query_index": 10566,
+      "family": "RF00886",
+      "length": 176,
+      "token_entropy": 2.320430764382209,
+      "n_unique_tokens": 20,
+      "n_eligible_clusters": 14593
+    },
+    {
+      "global_position": 135,
+      "query": "URS00007B61CF_7227_rank_1",
+      "query_index": 16560,
+      "family": "RF03724",
+      "length": 61,
+      "token_entropy": 2.8737661711975404,
+      "n_unique_tokens": 12,
+      "n_eligible_clusters": 12803
+    },
+    {
+      "global_position": 139,
+      "query": "URS000097A03C_4577_rank_1",
+      "query_index": 2635,
+      "family": "RF00135",
+      "length": 94,
+      "token_entropy": 3.5120316683863644,
+      "n_unique_tokens": 22,
+      "n_eligible_clusters": 14325
+    },
+    {
+      "global_position": 143,
+      "query": "URS0000668254_83333_rank_1",
+      "query_index": 2394,
+      "family": "RF00118",
+      "length": 61,
+      "token_entropy": 4.214623595135001,
+      "n_unique_tokens": 26,
+      "n_eligible_clusters": 12803
+    },
+    {
+      "global_position": 147,
+      "query": "URS0000C6A0CE_318479_rank_1",
+      "query_index": 724,
+      "family": "RF00020",
+      "length": 117,
+      "token_entropy": 4.310569953479709,
+      "n_unique_tokens": 28,
+      "n_eligible_clusters": 14834
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import argparse
 import csv
 import json
 import pickle
+import sys
 from collections import defaultdict
 from pathlib import Path
 
@@ -17,6 +18,8 @@ import matplotlib.pyplot as plt
 
 
 ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+from paths import EVALUE_EXPERIMENTAL_DATA as EVALUE_DATA  # noqa: E402
 LEVELS = np.asarray([0.01, 0.1, 1.0, 10.0, 100.0])
 
 
@@ -26,16 +29,14 @@ def main() -> None:
         "--evaluation",
         type=Path,
         default=Path(
-            "/Users/cassie/Desktop/RFoldSeek/data/experimental/"
-            "nr80_885_evalue_structure_adjudication/qevd_nr80_885.pkl"
+            EVALUE_DATA, "nr80_885_evalue_structure_adjudication", "qevd_nr80_885.pkl"
         ),
     )
     parser.add_argument(
         "--adjudication",
         type=Path,
         default=Path(
-            "/Users/cassie/Desktop/RFoldSeek/data/experimental/"
-            "nr80_885_database_adaptive_calibration/adjudication_rawE1.tsv"
+            EVALUE_DATA, "nr80_885_database_adaptive_calibration", "adjudication_rawE1.tsv"
         ),
     )
     parser.add_argument(

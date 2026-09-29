@@ -58,6 +58,10 @@ NUFOLD_ROOT = _first_existing(
 RFAM3D_STRUCTURES = _first_existing(
     "RFOLDSEEK_RFAM3D_STRUCTURES",
     os.path.join(_PARENT, "RFoldseek-structures", "files", "ablation", "rfam3d_reference", "structures"))
+# Experimental-database E-value calibration inputs (per-query extreme-value fits and
+# US-align adjudication of background hits): scripts/08_evalue_calibration.
+EVALUE_EXPERIMENTAL_DATA = _first_existing(
+    "RFOLDSEEK_EVALUE_DATA", os.path.join(_PARENT, "RFoldSeek", "data", "experimental"))
 # Third-party binaries. An empty directory means "take the executable from PATH".
 USALIGN = _first_existing("RFOLDSEEK_USALIGN", os.path.join(_PARENT, "RFoldSeek", ".tools", "USalign"))
 BLAST_BIN = os.environ.get("RFOLDSEEK_BLAST_BIN", "")

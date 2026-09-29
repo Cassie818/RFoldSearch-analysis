@@ -16,7 +16,10 @@ import torch
 
 
 ROOT = Path(__file__).resolve().parents[2]
-UPSTREAM = Path("/Users/cassie/Desktop/RFoldseek-upstream")
+sys.path.insert(0, str(ROOT))
+from paths import EVALUE_EXPERIMENTAL_DATA as EVALUE_DATA, RFOLDSEEK_REPO  # noqa: E402
+
+UPSTREAM = Path(RFOLDSEEK_REPO)
 
 # Load only the E-value module and its lightweight Smith--Waterman dependency.
 # Importing the package initializer also imports optional structure libraries,
@@ -46,16 +49,14 @@ def main() -> None:
         "--evaluation",
         type=Path,
         default=Path(
-            "/Users/cassie/Desktop/RFoldSeek/data/experimental/"
-            "nr80_885_evalue_structure_adjudication/qevd_nr80_885.pkl"
+            EVALUE_DATA, "nr80_885_evalue_structure_adjudication", "qevd_nr80_885.pkl"
         ),
     )
     parser.add_argument(
         "--adjudication",
         type=Path,
         default=Path(
-            "/Users/cassie/Desktop/RFoldSeek/data/experimental/"
-            "nr80_885_database_adaptive_calibration/adjudication_rawE1.tsv"
+            EVALUE_DATA, "nr80_885_database_adaptive_calibration", "adjudication_rawE1.tsv"
         ),
     )
     parser.add_argument(
