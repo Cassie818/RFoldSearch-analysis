@@ -1,5 +1,6 @@
 {
   "summary": {
+    "manuscript_canonical_summary": true,
     "n_evaluable_pairs": 313,
     "n_evaluable_families": 24,
     "n_pairs_below_sequence_identity_0.8": 17,

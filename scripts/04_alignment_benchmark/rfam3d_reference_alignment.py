@@ -229,7 +229,7 @@ def metrics(predicted: np.ndarray, reference: np.ndarray,
 
 def restrict_to_evaluable_positions(predicted: np.ndarray,
                                     reference: np.ndarray) -> np.ndarray:
-    """Ignore predicted pairs involving insert states absent from the reference."""
+    """Treat predicted pairs outside the common match-state positions as neutral."""
     query_positions = {int(pair[0]) for pair in reference}
     target_positions = {int(pair[1]) for pair in reference}
     return np.asarray([
@@ -770,6 +770,14 @@ def main() -> None:
             "reference_columns": "uppercase Rfam #=GC RF consensus match states",
             "insert_state_pairs": "neutral; excluded from both metric denominators",
             "shared_valid_positions": True,
+            "evaluable_positions": (
+                "intersection of positions mapped for every compared structural "
+                "method in both structures"
+            ),
+            "tolerant_match": (
+                "a pair matches if query and target indices are each within 1 nt "
+                "of any reference pair; precision and recall are evaluated analogously"
+            ),
             "missing_alignment_score": 0.0,
             "minimum_reference_pairs": args.min_reference_pairs,
             "minimum_mapping_coverage": args.min_map_coverage,

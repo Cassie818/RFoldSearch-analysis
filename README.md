@@ -19,7 +19,7 @@ scripts/common/                   plot style shared across figures (figstyle.py)
 scripts/01_model/                 final tokenizer training, ablations, family-disjoint CV
 scripts/02_rnasolo_retrieval/     RNAsolo retrieval benchmark and baselines
 scripts/03_sequence_divergent/    retrieval of sequence-divergent homologues
-scripts/04_alignment_benchmark/   residue-level alignment benchmark against Rfam 3D seeds
+scripts/04_alignment_benchmark/   nucleotide-level alignment benchmark against Rfam 3D seeds
 scripts/05_runtime/               runtime on the predicted-structure databases
 scripts/06_predicted_retrieval/   retrieval on the predicted-structure databases
 scripts/07_motifs/                recurrent token words and motif cores
@@ -44,6 +44,12 @@ python scripts/05_runtime/plot_fig4.py
 python scripts/06_predicted_retrieval/plot_fig5.py
 python scripts/07_motifs/plot_fig6.py
 ```
+
+## Manuscript result sources
+
+- Sequence-divergent zone summaries: `files/production/retrieval/sequence_divergent/zone_checks.json`.
+- Sequence-filtered family and clan results: `family_perquery.json` and `clan_perquery.json` in the same directory. The `B/N E<=10` key denotes positives reported by BLASTN or nhmmer at $E \leq 10$.
+- Canonical 313-pair nucleotide-alignment summary: `files/ablation/rfam3d_reference_disjoint_independent_3dseed/rfam3d_reference_alignment_common_313.json` (2,000 family-block bootstrap replicates; seed 20260924).
 
 All plotting scripts run from the bundled files, except the alphabet-states and
 predicted-database supplements, which need the raw structures.

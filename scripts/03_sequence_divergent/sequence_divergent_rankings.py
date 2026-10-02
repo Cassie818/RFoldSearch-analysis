@@ -28,8 +28,9 @@ and scores two analyses:
           families, same-family targets are neutral.
 
 Each analysis is scored without filtering and after neutralising positives that
-BLASTN or nhmmer detect at E < 0.01 or E < 10, or E < 10 together with any Infernal
-hit. RFoldseek, RFoldseek-TM and Shuffled are means over their seeds or shuffles.
+BLASTN or nhmmer detect at E < 0.01 or E <= 10, or at E <= 10 together with any
+Infernal hit. RFoldseek, RFoldseek-TM and Shuffled are means over their seeds or
+shuffles.
 
 Writes files/production/retrieval/sequence_divergent/
     family_rankings.json, family_pair_identity.json, family_perquery.json,
@@ -71,7 +72,7 @@ RET = os.path.join(REPO, "files", "production", "retrieval")
 OUT = os.path.join(RET, "sequence_divergent")
 K, TOPN, KMER_K, THRESH_FRAC, GO, GE = 80, 200, 4, 0.75, -2.0, -0.5
 NSHUF = 3
-FILTERS = ("none", "B/N E<0.01", "B/N E<10", "B/N E<10 + Infernal any")
+FILTERS = ("none", "B/N E<0.01", "B/N E<=10", "B/N E<=10 + Infernal any")
 
 
 def _bin(d, name):

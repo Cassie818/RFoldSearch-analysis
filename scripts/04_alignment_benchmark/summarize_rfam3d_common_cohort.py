@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Summarize all four alignment methods on one strictly verified pair cohort."""
+"""Build the manuscript's canonical summary on the verified common pair cohort."""
 
 from __future__ import annotations
 
@@ -53,6 +53,7 @@ def summarize(rows: list[dict], reps: int, seed: int,
     draws = [[rng.randrange(len(families)) for _ in families]
              for _ in range(reps)]
     summary = {
+        "manuscript_canonical_summary": True,
         "n_evaluable_pairs": len(selected),
         "n_evaluable_families": len(families),
         "n_pairs_below_sequence_identity_0.8": sum(
