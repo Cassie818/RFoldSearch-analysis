@@ -8,15 +8,17 @@ Fig. 3:
      and midnight zone (< 50th). Only same-family targets in the zone are
      positives; same-family targets outside it are neutral. Pairs above 80% are
      not shown.
+     Query eligibility is determined separately in each zone, so cross-zone
+     values are descriptive rather than paired measurements of a fixed cohort.
      95% block-bootstrap intervals for RFoldseek and Infernal only.
   b  RFoldseek minus each comparator after same-family targets detected by
-     BLASTN (-task blastn, both strands) or nhmmer at E < 10 are made neutral,
+     BLASTN (-task blastn, both strands) or nhmmer at E <= 10 are made neutral,
      all families and with tRNA (RF00005) excluded; homology-free controls rank
      targets by 3Dr token composition, by length, or by RFoldseek on the query's
      shuffled tokens
   c  clan-level Sens@1FP by clan without filtering (open) and after removing
      clan positives detected by BLASTN (-task blastn, both strands) or nhmmer at
-     E < 10 (filled); identity bins are uninformative here because cross-family
+     E <= 10 (filled); identity bins are uninformative here because cross-family
      pairs are almost all of low identity
 
 RFoldseek and RFoldseek-TM are means over ten sha256 tie-breaking seeds. Unlabelled
@@ -158,7 +160,7 @@ def forest_panel(ax, V, blocks, stratum, rows, xlabel):
 
 def clan_panel(ax, cl):
     cv, clan = cl["values"], cl["clan"]
-    f = "B/N E<10"
+    f = "B/N E<=10"
     groups = CLANS + [("other", "Other")]
 
     def in_group(q, g):
@@ -224,7 +226,7 @@ def main():
     axd["a"].set_yticks(np.arange(0, 1.01, 0.2))
     axd["a"].legend(ncol=3, frameon=False, fontsize=9, loc="upper center", handlelength=1.8,
                     columnspacing=0.9, handletextpad=0.4)
-    forest_panel(axd["b"], V, blocks, "B/N E<10", ["Infernal", "RS-20", "RS-80", "Composition", "Length", "Shuffled"],
+    forest_panel(axd["b"], V, blocks, "B/N E<=10", ["Infernal", "RS-20", "RS-80", "Composition", "Length", "Shuffled"],
                  "RFoldseek − comparator (Δ Sens@1FP)")
     axd["b"].set_xlim(-0.25, 0.6)
     clan_panel(axd["c"], cl)
