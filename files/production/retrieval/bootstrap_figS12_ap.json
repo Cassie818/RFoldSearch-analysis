@@ -4,151 +4,151 @@
   "_seed": 123,
   "_metric": "per-query average precision",
   "family": {
-    "GTalign": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.8651296803455718,
-      "diff_mean": -0.14786736909893486,
-      "diff_ci_lo": -0.28237410953163894,
-      "diff_ci_hi": -0.020323951095522076,
-      "sig_vs_rf": true
-    },
-    "BLASTN": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.21427049075890825,
-      "diff_mean": 0.4878579459245402,
-      "diff_ci_lo": 0.33952824745962645,
-      "diff_ci_hi": 0.6069565136053056,
-      "sig_vs_rf": true
-    },
-    "RTM-align": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.8830947038702518,
-      "diff_mean": -0.1657336376266705,
-      "diff_ci_lo": -0.2910108657940859,
-      "diff_ci_hi": -0.05393874919060951,
-      "sig_vs_rf": true
-    },
     "RFoldseek-TM": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.7318408235440491,
-      "diff_mean": -0.027363715282362932,
-      "diff_ci_lo": -0.050509626236988486,
-      "diff_ci_hi": -0.009397128077862131,
-      "sig_vs_rf": true
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.7355253525579474,
+      "diff_mean": -0.010924776304768846,
+      "diff_ci_lo": -0.024775961748643598,
+      "diff_ci_hi": -0.0025585757535781573,
+      "sig": true
     },
     "US-align": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.8796491075017892,
-      "diff_mean": -0.16234611111506353,
-      "diff_ci_lo": -0.2878354892169375,
-      "diff_ci_hi": -0.04957236706106534,
-      "sig_vs_rf": true
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.8965585947516073,
+      "diff_mean": -0.17195801849842873,
+      "diff_ci_lo": -0.2896832893567894,
+      "diff_ci_hi": -0.04729443794755797,
+      "sig": true
     },
     "RMalign": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.7219835065741971,
-      "diff_mean": 0.004153708244821372,
-      "diff_ci_lo": -0.15139271058695902,
-      "diff_ci_hi": 0.1813244899682162,
-      "sig_vs_rf": false
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.8909473459434244,
+      "diff_mean": -0.16634676969024587,
+      "diff_ci_lo": -0.28777841869403537,
+      "diff_ci_hi": -0.03256670833362011,
+      "sig": true
+    },
+    "GTalign": {
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.7769457117352794,
+      "diff_mean": -0.052345135482100846,
+      "diff_ci_lo": -0.10292587219813835,
+      "diff_ci_hi": 0.01173483755330137,
+      "sig": false
+    },
+    "RTM-align": {
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.901867472487803,
+      "diff_mean": -0.17726689623462444,
+      "diff_ci_lo": -0.29197638718856034,
+      "diff_ci_hi": -0.05559757521412176,
+      "sig": true
     },
     "RiboSeek": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.45982128580049064,
-      "diff_mean": 0.2424821165365737,
-      "diff_ci_lo": 0.1504579517951314,
-      "diff_ci_hi": 0.327690897146836,
-      "sig_vs_rf": true
-    },
-    "Infernal": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.644489802835945,
-      "diff_mean": 0.05129402695858345,
-      "diff_ci_lo": -0.06092211916084249,
-      "diff_ci_hi": 0.14612660861248408,
-      "sig_vs_rf": false
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.5232625387220748,
+      "diff_mean": 0.2013380375311037,
+      "diff_ci_lo": 0.08280222097232591,
+      "diff_ci_hi": 0.2951243041120608,
+      "sig": true
     },
     "RiboSeek RS-80": {
-      "anchor_mean": 0.7059987216722892,
-      "method_mean": 0.3622897219430869,
-      "diff_mean": 0.33521369722934646,
-      "diff_ci_lo": 0.1311656872417744,
-      "diff_ci_hi": 0.4899754338869098,
-      "sig_vs_rf": true
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.36276790123423003,
+      "diff_mean": 0.3618326750189485,
+      "diff_ci_lo": 0.14480742736348465,
+      "diff_ci_hi": 0.5130777784601245,
+      "sig": true
+    },
+    "BLASTN": {
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.21427547963371738,
+      "diff_mean": 0.5103250966194611,
+      "diff_ci_lo": 0.35596426404615944,
+      "diff_ci_hi": 0.6278428138018906,
+      "sig": true
+    },
+    "Infernal": {
+      "anchor_mean": 0.7246005762531785,
+      "method_mean": 0.6468186130328446,
+      "diff_mean": 0.07778196322033393,
+      "diff_ci_lo": -0.045215865082705496,
+      "diff_ci_hi": 0.1671261399158478,
+      "sig": false
     }
   },
   "clan": {
-    "GTalign": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.4708089286333479,
-      "diff_mean": -0.059179311523267816,
-      "diff_ci_lo": -0.25862009017321913,
-      "diff_ci_hi": 0.22847812633328798,
-      "sig_vs_rf": false
-    },
-    "BLASTN": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.009018981535512569,
-      "diff_mean": 0.4050499123260379,
-      "diff_ci_lo": 0.22698440190423033,
-      "diff_ci_hi": 0.6427731356964784,
-      "sig_vs_rf": true
-    },
-    "RTM-align": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.49940014334323896,
-      "diff_mean": -0.08878999438881177,
-      "diff_ci_lo": -0.2846803438998786,
-      "diff_ci_hi": 0.17715953668281958,
-      "sig_vs_rf": false
-    },
     "RFoldseek-TM": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.4221258819180281,
-      "diff_mean": -0.018946706775956394,
-      "diff_ci_lo": -0.0923965207055539,
-      "diff_ci_hi": 0.005621630681240403,
-      "sig_vs_rf": false
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.44923679962741947,
+      "diff_mean": 0.0028202636751344934,
+      "diff_ci_lo": -0.026893008088273565,
+      "diff_ci_hi": 0.020441799352357487,
+      "sig": false
     },
     "US-align": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.5023844049804419,
-      "diff_mean": -0.11017303148335635,
-      "diff_ci_lo": -0.27765831866401036,
-      "diff_ci_hi": 0.004687709693668968,
-      "sig_vs_rf": false
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.6115562804039412,
+      "diff_mean": -0.1594992171013872,
+      "diff_ci_lo": -0.28754389356505583,
+      "diff_ci_hi": -0.09242731651722487,
+      "sig": true
     },
     "RMalign": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.3083540703094277,
-      "diff_mean": 0.09254680649257171,
-      "diff_ci_lo": 0.0020674835800517754,
-      "diff_ci_hi": 0.1596409038767162,
-      "sig_vs_rf": true
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.6108777003790382,
+      "diff_mean": -0.15882063707648425,
+      "diff_ci_lo": -0.25273298604832684,
+      "diff_ci_hi": -0.08015483443873134,
+      "sig": true
+    },
+    "GTalign": {
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.38535975736597267,
+      "diff_mean": 0.0666973059365813,
+      "diff_ci_lo": -0.09531550579262639,
+      "diff_ci_hi": 0.20439485767950577,
+      "sig": false
+    },
+    "RTM-align": {
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.6458172220308931,
+      "diff_mean": -0.19376015872833913,
+      "diff_ci_lo": -0.3175990481833132,
+      "diff_ci_hi": -0.10574409899566796,
+      "sig": true
     },
     "RiboSeek": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.13701039554753572,
-      "diff_mean": 0.26657747532483633,
-      "diff_ci_lo": 0.18072672605125023,
-      "diff_ci_hi": 0.3336331232322446,
-      "sig_vs_rf": true
-    },
-    "Infernal": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.24104576762610447,
-      "diff_mean": 0.16097019505222565,
-      "diff_ci_lo": 0.09880938724085303,
-      "diff_ci_hi": 0.20952014399760838,
-      "sig_vs_rf": true
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.22316034590620298,
+      "diff_mean": 0.22889671739635098,
+      "diff_ci_lo": 0.1277716645224143,
+      "diff_ci_hi": 0.27768648790363165,
+      "sig": true
     },
     "RiboSeek RS-80": {
-      "anchor_mean": 0.4109835141311836,
-      "method_mean": 0.18970275266854675,
-      "diff_mean": 0.2110834566989758,
-      "diff_ci_lo": 0.13529611969495797,
-      "diff_ci_hi": 0.26241139275590547,
-      "sig_vs_rf": true
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.19187433929654382,
+      "diff_mean": 0.26018272400601017,
+      "diff_ci_lo": 0.17534913141998873,
+      "diff_ci_hi": 0.331171267185954,
+      "sig": true
+    },
+    "BLASTN": {
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.009018981535512569,
+      "diff_mean": 0.4430380817670414,
+      "diff_ci_lo": 0.30418159737474953,
+      "diff_ci_hi": 0.6867898180513538,
+      "sig": true
+    },
+    "Infernal": {
+      "anchor_mean": 0.45205706330255396,
+      "method_mean": 0.24466247155577647,
+      "diff_mean": 0.2073945917467775,
+      "diff_ci_lo": 0.13456486998138822,
+      "diff_ci_hi": 0.2762899044054676,
+      "sig": true
     }
   }
 }

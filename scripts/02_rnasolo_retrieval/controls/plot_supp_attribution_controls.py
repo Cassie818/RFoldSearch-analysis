@@ -1,7 +1,9 @@
 """Supplementary attribution-control figure: scoring controls and reverse-order attribution robustness.
 
 (A,B) Matched-pipeline scoring regimes for the RFoldseek and RiboSeek alphabets.
-(C-F) Reverse replacement path: 3Dr alphabet first, then pipeline plus matrix.
+(C-F) Reverse replacement path: 3Dr alphabet first (with an identity matrix), then
+      its learned Structure-BLOSUM, then the RFoldseek pipeline (which ranks by the
+      structure score).
 
 Writes figures/S19.{png,pdf}.
 """
@@ -10,7 +12,7 @@ import os as _os
 import sys as _sys
 from pathlib import Path
 
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", ".."))
 from paths import DATA_ROOT, FIG_DIR, resolve
 
 _os.chdir(DATA_ROOT)
@@ -69,8 +71,8 @@ def regime_panel(ax, key, title):
 
 def reverse_panel(ax, level, title):
     means, reverse = level["means"], level["reverse"]
-    keys = ["A_ribo_published", "E_rev_alphabet", "D_rfoldseek"]
-    steps = ["+ 3Dr alphabet", "+ RFoldseek pipeline & matrix"]
+    keys = ["A_ribo_published", "E0_rev_alphabet", "E_rev_alphabet", "D_rfoldseek"]
+    steps = ["+ 3Dr alphabet", "+ learned matrix", "+ RFoldseek pipeline"]
     values = [means[key] for key in keys]
     ax.bar(0, values[0], 0.60, color=C_RB, edgecolor="#B05A94", linewidth=0.6,
            zorder=3)
@@ -94,15 +96,16 @@ def reverse_panel(ax, level, title):
         ax.plot([index - 1 + 0.30, index - 0.30],
                 [values[index - 1], values[index - 1]], color="#999999",
                 lw=0.8, ls=(0, (3, 2)), zorder=2)
-    ax.bar(3, values[-1], 0.60, color=C_RF, edgecolor="#15709C", linewidth=0.6,
+    last = len(steps) + 1
+    ax.bar(last, values[-1], 0.60, color=C_RF, edgecolor="#15709C", linewidth=0.6,
            zorder=3)
-    ax.text(3, values[-1] + 0.006, f"{values[-1]:.3f}", ha="center", va="bottom",
+    ax.text(last, values[-1] + 0.006, f"{values[-1]:.3f}", ha="center", va="bottom",
             fontsize=8, color="#1F9BD8")
-    ax.plot([2.30, 2.70], [values[-1], values[-1]], color="#999999", lw=0.8,
+    ax.plot([last - 0.70, last - 0.30], [values[-1], values[-1]], color="#999999", lw=0.8,
             ls=(0, (3, 2)), zorder=2)
-    ax.set_xticks(range(4))
-    ax.set_xticklabels(["RiboSeek", "+ 3Dr\nalphabet",
-                        "+ RFoldseek\npipeline & matrix", "RFoldseek"], fontsize=8)
+    ax.set_xticks(range(last + 1))
+    ax.set_xticklabels(["RiboSeek", "+ 3Dr\nalphabet", "+ learned\nmatrix",
+                        "+ RFoldseek\npipeline", "RFoldseek"], fontsize=8)
     ax.set_ylabel("Sens@1FP", fontsize=11)
     top = max(max(values), max(means[key] + max(reverse[label]["hi"]
               - reverse[label]["diff"], 0) for key, label in zip(keys[1:], steps)))

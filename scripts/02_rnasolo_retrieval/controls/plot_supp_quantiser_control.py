@@ -6,7 +6,7 @@ annotation (A,B) and the structure-defined ground truth at TM >= 0.45 (C,D),
 and accuracy against prefilter selectivity (E)."""
 import sys as _sys, os as _os
 
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", ".."))
 from paths import DATA_ROOT, FIG_DIR, resolve
 
 _os.chdir(DATA_ROOT)

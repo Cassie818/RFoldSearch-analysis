@@ -1,0 +1,508 @@
+{
+ "queries": 108,
+ "rmscore_thresholds": {
+  "0.4": 0.4925427694745814,
+  "0.45": 0.5227351513353651,
+  "0.5": 0.5787914470749653
+ },
+ "thresholds": {
+  "0.4": {
+   "family": {
+    "RFoldseek": {
+     "estimate": 0.6565749803489533,
+     "ci_lower": 0.5065414685716907,
+     "ci_upper": 0.841253430749281,
+     "sig_vs_rf": null,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "RFoldseek-TM": {
+     "estimate": 0.6851512353339404,
+     "ci_lower": 0.5248163017303009,
+     "ci_upper": 0.8814541468200181,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "GTalign": {
+     "estimate": 0.6870807471339658,
+     "ci_lower": 0.5357748398894844,
+     "ci_upper": 0.8745671517635919,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "RTM-align": {
+     "estimate": 0.7272341055749313,
+     "ci_lower": 0.613122417350013,
+     "ci_upper": 0.8822374141159154,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "US-align": {
+     "estimate": 0.733438813889596,
+     "ci_lower": 0.5851669993387834,
+     "ci_upper": 0.913250296864468,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "RMalign": {
+     "estimate": 1.0,
+     "ci_lower": 1.0,
+     "ci_upper": 1.0,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "RiboSeek": {
+     "estimate": 0.29198522699627577,
+     "ci_lower": 0.16679211294615362,
+     "ci_upper": 0.46553327916176906,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "RiboSeek RS-80": {
+     "estimate": 0.31559396903264186,
+     "ci_lower": 0.13297677956331294,
+     "ci_upper": 0.577170988031339,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "BLASTN": {
+     "estimate": 0.15573720375981817,
+     "ci_lower": 0.05404070093873368,
+     "ci_upper": 0.3195516748911444,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    },
+    "Infernal": {
+     "estimate": 0.45971758966863246,
+     "ci_lower": 0.25175796340245515,
+     "ci_upper": 0.7410850607132539,
+     "sig_vs_rf": true,
+     "n_queries": 104,
+     "n_blocks": 25
+    }
+   },
+   "clan": {
+    "RFoldseek": {
+     "estimate": 0.4670331954895214,
+     "ci_lower": 0.2866607456127759,
+     "ci_upper": 0.7939097244263281,
+     "sig_vs_rf": null,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "RFoldseek-TM": {
+     "estimate": 0.5876731068674048,
+     "ci_lower": 0.38442143314547533,
+     "ci_upper": 0.8580621978794718,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "GTalign": {
+     "estimate": 0.5785849009344057,
+     "ci_lower": 0.3635743819420802,
+     "ci_upper": 0.8541354316441044,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "RTM-align": {
+     "estimate": 0.7020723028108417,
+     "ci_lower": 0.5735337119831226,
+     "ci_upper": 0.8861736694677872,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "US-align": {
+     "estimate": 0.7137664300496511,
+     "ci_lower": 0.5577026722407762,
+     "ci_upper": 0.9103472584074427,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "RMalign": {
+     "estimate": 1.0,
+     "ci_lower": 1.0,
+     "ci_upper": 1.0,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "RiboSeek": {
+     "estimate": 0.06388072149373122,
+     "ci_lower": 0.025655894212523723,
+     "ci_upper": 0.14332648787881128,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "RiboSeek RS-80": {
+     "estimate": 0.18587154840278675,
+     "ci_lower": 0.009042689383841984,
+     "ci_upper": 0.4761376503975232,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "BLASTN": {
+     "estimate": 0.010548409487691748,
+     "ci_lower": 0.0,
+     "ci_upper": 0.027165877691528496,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    },
+    "Infernal": {
+     "estimate": 0.21786087854864564,
+     "ci_lower": 0.039607732601547235,
+     "ci_upper": 0.5435013116757971,
+     "sig_vs_rf": true,
+     "n_queries": 93,
+     "n_blocks": 8
+    }
+   }
+  },
+  "0.45": {
+   "family": {
+    "RFoldseek": {
+     "estimate": 0.6694771599807603,
+     "ci_lower": 0.5222807684641133,
+     "ci_upper": 0.8559909377929844,
+     "sig_vs_rf": null,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "RFoldseek-TM": {
+     "estimate": 0.7234678668277006,
+     "ci_lower": 0.5616493491397939,
+     "ci_upper": 0.9159636061294414,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "GTalign": {
+     "estimate": 0.7326037967739877,
+     "ci_lower": 0.5795917746443733,
+     "ci_upper": 0.9120270166953435,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "RTM-align": {
+     "estimate": 0.7713946045762307,
+     "ci_lower": 0.6525019253965859,
+     "ci_upper": 0.9403651187726277,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "US-align": {
+     "estimate": 0.7840406885404275,
+     "ci_lower": 0.6327193141994099,
+     "ci_upper": 0.9565352245820405,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "RMalign": {
+     "estimate": 1.0,
+     "ci_lower": 1.0,
+     "ci_upper": 1.0,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "RiboSeek": {
+     "estimate": 0.3103924414140122,
+     "ci_lower": 0.18248438006258197,
+     "ci_upper": 0.48523737777021936,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "RiboSeek RS-80": {
+     "estimate": 0.33191795348635517,
+     "ci_lower": 0.14377006502781545,
+     "ci_upper": 0.6035921138940296,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "BLASTN": {
+     "estimate": 0.16632247475069198,
+     "ci_lower": 0.061564684043027056,
+     "ci_upper": 0.3379811914953906,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    },
+    "Infernal": {
+     "estimate": 0.47308324895853165,
+     "ci_lower": 0.26200533435702505,
+     "ci_upper": 0.7488357923210219,
+     "sig_vs_rf": true,
+     "n_queries": 103,
+     "n_blocks": 25
+    }
+   },
+   "clan": {
+    "RFoldseek": {
+     "estimate": 0.47877614777912053,
+     "ci_lower": 0.28642855733907757,
+     "ci_upper": 0.7716621431519268,
+     "sig_vs_rf": null,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "RFoldseek-TM": {
+     "estimate": 0.6364114059832007,
+     "ci_lower": 0.4102788923678086,
+     "ci_upper": 0.8926744239315318,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "GTalign": {
+     "estimate": 0.6579376369758363,
+     "ci_lower": 0.4555032268392517,
+     "ci_upper": 0.9005110291267103,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "RTM-align": {
+     "estimate": 0.7760409944120352,
+     "ci_lower": 0.6651831616763264,
+     "ci_upper": 0.9037878118156235,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "US-align": {
+     "estimate": 0.771895501977405,
+     "ci_lower": 0.6016251028445441,
+     "ci_upper": 0.9593006463289598,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "RMalign": {
+     "estimate": 1.0,
+     "ci_lower": 1.0,
+     "ci_upper": 1.0,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "RiboSeek": {
+     "estimate": 0.0727901572432698,
+     "ci_lower": 0.03061212989618775,
+     "ci_upper": 0.15947510062519912,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "RiboSeek RS-80": {
+     "estimate": 0.20077961545650122,
+     "ci_lower": 0.009781026672553926,
+     "ci_upper": 0.500721277304527,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "BLASTN": {
+     "estimate": 0.007647868343539628,
+     "ci_lower": 0.0,
+     "ci_upper": 0.028765392972772877,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    },
+    "Infernal": {
+     "estimate": 0.22202306447948572,
+     "ci_lower": 0.04268063585055092,
+     "ci_upper": 0.5285924636280043,
+     "sig_vs_rf": true,
+     "n_queries": 89,
+     "n_blocks": 8
+    }
+   }
+  },
+  "0.5": {
+   "family": {
+    "RFoldseek": {
+     "estimate": 0.6641075341802062,
+     "ci_lower": 0.4968800142493099,
+     "ci_upper": 0.8838667470301593,
+     "sig_vs_rf": null,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "RFoldseek-TM": {
+     "estimate": 0.7460834755830439,
+     "ci_lower": 0.5784686314170412,
+     "ci_upper": 0.9498614052390377,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "GTalign": {
+     "estimate": 0.7972314178529636,
+     "ci_lower": 0.6355873652387986,
+     "ci_upper": 0.9781899561107119,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "RTM-align": {
+     "estimate": 0.8065958778279092,
+     "ci_lower": 0.6745467602504304,
+     "ci_upper": 0.9682700159243707,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "US-align": {
+     "estimate": 0.8087148125244364,
+     "ci_lower": 0.6416570709959369,
+     "ci_upper": 0.9881125889119841,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "RMalign": {
+     "estimate": 1.0,
+     "ci_lower": 1.0,
+     "ci_upper": 1.0,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "RiboSeek": {
+     "estimate": 0.3430706648904712,
+     "ci_lower": 0.203707938801522,
+     "ci_upper": 0.5364695844328602,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "RiboSeek RS-80": {
+     "estimate": 0.34122148410106307,
+     "ci_lower": 0.14449702890188634,
+     "ci_upper": 0.6346044647419853,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "BLASTN": {
+     "estimate": 0.1869605402437703,
+     "ci_lower": 0.06857722805088351,
+     "ci_upper": 0.3862742017382135,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    },
+    "Infernal": {
+     "estimate": 0.4821496103653806,
+     "ci_lower": 0.264209408407845,
+     "ci_upper": 0.771393194468358,
+     "sig_vs_rf": true,
+     "n_queries": 100,
+     "n_blocks": 23
+    }
+   },
+   "clan": {
+    "RFoldseek": {
+     "estimate": 0.4334971735938959,
+     "ci_lower": 0.20306540051282623,
+     "ci_upper": 0.7305530303030302,
+     "sig_vs_rf": null,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "RFoldseek-TM": {
+     "estimate": 0.6216495246096638,
+     "ci_lower": 0.3648702147525677,
+     "ci_upper": 0.9148361708769123,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "GTalign": {
+     "estimate": 0.799714054369779,
+     "ci_lower": 0.6471116104026494,
+     "ci_upper": 0.9754052167717476,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "RTM-align": {
+     "estimate": 0.8742316138693245,
+     "ci_lower": 0.8055173073245363,
+     "ci_upper": 0.9635325178245351,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "US-align": {
+     "estimate": 0.8302291516354018,
+     "ci_lower": 0.69796656162465,
+     "ci_upper": 0.9866656763715587,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "RMalign": {
+     "estimate": 1.0,
+     "ci_lower": 1.0,
+     "ci_upper": 1.0,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "RiboSeek": {
+     "estimate": 0.08756961493420412,
+     "ci_lower": 0.036479591836734694,
+     "ci_upper": 0.17914924911139157,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "RiboSeek RS-80": {
+     "estimate": 0.21318220260459603,
+     "ci_lower": 0.012365591397849462,
+     "ci_upper": 0.5254543540357847,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "BLASTN": {
+     "estimate": 0.008460002167510883,
+     "ci_lower": 0.0,
+     "ci_upper": 0.030763644245494118,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    },
+    "Infernal": {
+     "estimate": 0.21459876168424322,
+     "ci_lower": 0.026301743943191312,
+     "ci_upper": 0.4885655405909505,
+     "sig_vs_rf": true,
+     "n_queries": 80,
+     "n_blocks": 6
+    }
+   }
+  }
+ }
+}

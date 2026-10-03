@@ -7,13 +7,13 @@ alphabets of several sizes on the identical descriptors.
 import json, os, sys
 from collections import defaultdict
 import numpy as np, torch
-PC = os.path.expanduser("~/Desktop/RFoldseek-paper-code")
-sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval"))
+PC = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval", "controls"))
 os.environ.setdefault("RFS_ALPHABET_CONTROL_MATRIX", "native")
 import riboseek_alphabet_control as F
 from sklearn.cluster import MiniBatchKMeans
 
-SPLITS = os.path.expanduser("~/Desktop/RFoldSeek/Splits/pdb_out")
+SPLITS = F.SPLITS_DESC
 KEEP = sorted(list(range(0, 10)) + list(range(42, 49)))
 K_MER = 4
 SUFFIX = os.environ.get("SEL_SUFFIX", "")

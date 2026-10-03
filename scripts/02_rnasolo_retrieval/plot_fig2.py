@@ -1,10 +1,8 @@
-"""Fig. 2: retrieval on the RNAsolo benchmark, 2x2.
+"""Fig. 2: retrieval on the RNAsolo benchmark, 3x2.
 
-    A/B  Rfam AUROC1 sorted-sensitivity curves (all methods; RFoldseek 95% band)
-    C/D  Structure-defined (US-align TM-score) Sens@1FP bars, by TM threshold
-
-Writes figures/fig2.png. Its colours, labels and markers are reused by the other
-figures (scripts/common/figstyle.py, scripts/04_alignment_benchmark).
+    A/B  Rfam AUROC1 sorted-sensitivity curves (all methods)
+    C/D  Structure-defined truth, symmetric US-align TM-score: Sens@1FP bars by threshold
+    E/F  Structure-defined truth, symmetric RMscore (thresholds quantile-matched to C/D)
 """
 import sys as _sys, os as _os
 
@@ -56,9 +54,9 @@ MARKER = {"RFoldseek": "o", "RFoldseek-TM": "*", "GTalign": "X", "RTM-align": "P
 # C/D: US-align defines the structural truth (ceiling 1). GTalign and RTM-align
 # rank by their own TM-scores and are near-oracles, shown for completeness.
 # RFoldseek-TM ranks the RFoldseek prefilter candidates by the truth TM-score, so
-# its Sens@1FP equals the prefilter recall (structure_truth_seeded.py); it is
-# not drawn here.
-BAR_METHODS = ["RFoldseek", "GTalign", "RTM-align", "RMalign",
+# its Sens@1FP equals the prefilter recall (rankings/run_rfoldseek.py); it is
+# drawn but not tested against RFoldseek.
+BAR_METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "RMalign",
                "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
 
 def sorted_curve(arr):
@@ -84,43 +82,39 @@ def curve_panel(ax, data, level, title, band):
 
 
 # ---- row 2: structural Sens@1FP bars -----------------------------------------
-def bar_panel(ax, tm, metric, title, ylabel, boot, level):
-    thr = sorted(float(t) for t in tm["thresholds"]); keys = [str(t) for t in thr]
-    x = np.arange(len(thr)); width = 0.82 / len(BAR_METHODS)
-    for i, m in enumerate(BAR_METHODS):
-        off = (i - (len(BAR_METHODS) - 1) / 2) * width
-        vals = [boot[k][level][m]["estimate"] if m in boot.get(k, {}).get(level, {})
-                else tm["thresholds"][k][m][metric] for k in keys]
-        yerr = None
-        if all(m in boot.get(k, {}).get(level, {}) for k in keys):
-            yerr = [[vals[j] - boot[keys[j]][level][m]["ci_lower"] for j in range(len(keys))],
-                    [boot[keys[j]][level][m]["ci_upper"] - vals[j] for j in range(len(keys))]]
+def bar_panel(ax, boot, level, methods, oracle, xticks, xlabel, title):
+    """Sens@1FP bars with 95% intervals; `oracle` (the method defining the truth), if any, is
+    drawn as its ceiling line."""
+    keys = sorted(boot, key=float)
+    x = np.arange(len(keys)); width = 0.82 / len(methods)
+    for i, m in enumerate(methods):
+        off = (i - (len(methods) - 1) / 2) * width
+        e = [boot[k][level][m] for k in keys]
+        vals = [v["estimate"] for v in e]
+        yerr = [[v["estimate"] - v["ci_lower"] for v in e], [v["ci_upper"] - v["estimate"] for v in e]]
         bars = ax.bar(x + off, vals, width, color=METHOD_COLOR[m], edgecolor="#666666",
                       linewidth=0.6, label=LABEL.get(m, m), zorder=3, yerr=yerr, capsize=2.5,
                       error_kw={"elinewidth": 0.9, "ecolor": "#555555"})
-        for j, (b, v) in enumerate(zip(bars, vals)):
-            top = v + (yerr[1][j] if yerr else 0.0) + 0.012
-            sig = boot.get(keys[j], {}).get(level, {}).get(m, {}).get("sig_vs_rf")
+        for j, (b, v) in enumerate(zip(bars, e)):
+            top = v["ci_upper"] + 0.012
             # Only annotate RFoldseek numerically (others read from the y-axis);
-            # significance stars sit on non-RFoldseek bars, visually detached,
-            # and the "* vs RFoldseek" note in the corner disambiguates them.
+            # significance stars sit on non-RFoldseek bars.
             if m == "RFoldseek":
-                ax.text(b.get_x() + b.get_width() / 2, top, f"{v:.2f}",
-                        ha="center", va="bottom", fontsize=8.5,
-                        color=METHOD_BASE["RFoldseek"])
-            elif sig:
-                ax.text(b.get_x() + b.get_width() / 2, top, "*",
-                        ha="center", va="bottom", fontsize=10, color="#555555",
-                        fontweight="bold")
-    ceil = tm["thresholds"][keys[0]].get("US-align", tm["thresholds"][keys[0]].get("US-align*"))[metric]
-    ax.plot([-0.5, len(thr) - 0.5], [ceil, ceil], ls="--", color=METHOD_COLOR["US-align"],
-            lw=1.5, zorder=2)
-    ax.text(-0.44, ceil + 0.012, "US-align (oracle ceiling)", ha="left",
-            va="bottom", fontsize=8.5, color=METHOD_BASE["US-align"])
-    ax.set_xticks(x, [f"{t:.2f}" for t in thr])
-    ax.set_xlabel("TM-score similarity threshold", fontsize=12)
-    ax.set_ylabel(ylabel, fontsize=12)
-    ax.set_xlim(-0.5, len(thr) - 0.5); ax.set_ylim(0, 1.08)
+                ax.text(b.get_x() + b.get_width() / 2, top, f"{v['estimate']:.2f}",
+                        ha="center", va="bottom", fontsize=8.5, color=METHOD_BASE["RFoldseek"])
+            elif v.get("sig_vs_rf"):
+                ax.text(b.get_x() + b.get_width() / 2, top, "*", ha="center", va="bottom",
+                        fontsize=10, color="#555555", fontweight="bold")
+    if oracle:
+        ref = boot[keys[0]][level]
+        ceil = (ref[oracle] if oracle in ref else ref[oracle + "*"])["estimate"]   # US-align* in the TM truth
+        ax.plot([-0.5, len(keys) - 0.5], [ceil, ceil], ls="--", color=METHOD_COLOR[oracle], lw=1.5, zorder=2)
+        ax.text(-0.44, ceil + 0.012, f"{oracle} (oracle ceiling)", ha="left", va="bottom", fontsize=8.5,
+                color=METHOD_BASE[oracle])
+    ax.set_xticks(x, xticks)
+    ax.set_xlabel(xlabel, fontsize=12)
+    ax.set_ylabel("Sens@1FP", fontsize=12)
+    ax.set_xlim(-0.5, len(keys) - 0.5); ax.set_ylim(0, 1.08)
     ax.set_yticks(np.arange(0, 1.01, 0.2))
     ax.set_title(title, fontsize=13, pad=8)
     ax.tick_params(axis="both", labelsize=10)
@@ -130,17 +124,26 @@ def bar_panel(ax, tm, metric, title, ylabel, boot, level):
 
 def main():
     data = json.load(open(resolve("files/production/retrieval/per_query_sens_test.json")))
-    tm = json.load(open(resolve("files/production/retrieval/structural_tmscore_metrics_test.json")))
     boot = json.load(open(resolve("files/production/retrieval/bootstrap_fig2cd_results.json")))
     band = json.load(open(resolve("files/production/retrieval/bootstrap_fig2ab_band.json")))
+    alt = json.load(open(resolve("files/production/retrieval/rmscore_truth.json")))
+    boot_rm = alt["thresholds"]
+    keys = sorted(boot, key=float)
+    tm_ticks = [f"{float(k):.2f}" for k in keys]
+    rm_ticks = [f"{alt['rmscore_thresholds'][k]:.2f}" for k in keys]
+    rm_methods = [m for m in BAR_METHODS if m != "RMalign"]
+    rm_methods.insert(rm_methods.index("RTM-align") + 1, "US-align")
 
-    fig, axes = plt.subplots(2, 2, figsize=(14.0, 8.4))
+    fig, axes = plt.subplots(3, 2, figsize=(14.0, 12.6))
     curve_panel(axes[0, 0], data, "family", "Family (AUROC1)", band)
     curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
-    bar_panel(axes[1, 0], tm, "Sens@1FP", "Family", "Sens@1FP", boot, "family")
-    bar_panel(axes[1, 1], tm, "Sens@1FP_clan", "Clan", "Sens@1FP", boot, "clan")
+    for col, level in enumerate(("family", "clan")):
+        bar_panel(axes[1, col], boot, level, BAR_METHODS, "US-align", tm_ticks,
+                  "TM-score similarity threshold", f"{level.capitalize()} (TM-score)")
+        bar_panel(axes[2, col], boot_rm, level, rm_methods, "RMalign", rm_ticks,
+                  "RMscore similarity threshold", f"{level.capitalize()} (RMscore)")
 
-    for ax, lab in zip(axes.flat, "ABCD"):
+    for ax, lab in zip(axes.flat, "ABCDEF"):
         ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
                 va="bottom", ha="right")
 
@@ -153,11 +156,11 @@ def main():
     labels = [LABEL.get(m, m) for m in order]
     handles = [by[l] for l in labels]
     legend = fig.legend(handles, labels, loc="lower center", ncol=5, frameon=False, fontsize=11.5,
-                        bbox_to_anchor=(0.5, -0.035), handlelength=2.6, columnspacing=1.8,
+                        bbox_to_anchor=(0.5, -0.025), handlelength=2.6, columnspacing=1.8,
                         markerscale=1.45)
     for handle in legend.legend_handles:
         handle.set_linewidth(3.0)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.tight_layout(rect=(0, 0.03, 1, 1))
     out_png = Path(FIG_DIR) / "fig2.png"
     out_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=200, bbox_inches="tight")

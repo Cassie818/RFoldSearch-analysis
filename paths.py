@@ -45,6 +45,10 @@ def _first_existing(env, *candidates):
     return candidates[0]
 
 
+# The analysis workspace now lives in OneDrive; each location below falls back to it.
+_WORKSPACE = os.path.expanduser(
+    "~/Library/CloudStorage/OneDrive-TheUniversityofQueensland/RFoldseek/RFoldSeek")
+
 # Released RFoldseek tool (search CLI, model assets, RiboSeek wrappers).
 RFOLDSEEK_REPO = _first_existing("RFOLDSEEK_REPO", os.path.join(_PARENT, "RFoldseek-upstream"))
 # Experimental RNAsolo structures (mmCIF): Fig 2 Infernal queries, Fig 4 experimental queries.
@@ -53,7 +57,8 @@ NR80_DIR = _first_existing(
     os.path.expanduser("~/Library/CloudStorage/OneDrive-TheUniversityofQueensland/RFoldseek/NR80"))
 # NuFold predicted-structure release (structures/rank1, metadata/data.csv): Fig 4.
 NUFOLD_ROOT = _first_existing(
-    "RFOLDSEEK_NUFOLD_ROOT", os.path.join(_PARENT, "RFoldSeek", "data", "predicted", "nufold_9_14_2026"))
+    "RFOLDSEEK_NUFOLD_ROOT", os.path.join(_PARENT, "RFoldSeek", "data", "predicted", "nufold_9_14_2026"),
+    os.path.join(_WORKSPACE, "data", "predicted", "nufold_9_14_2026"))
 # Rfam 3D seed structures for the token-alignment analysis (alignment, cases).
 RFAM3D_STRUCTURES = _first_existing(
     "RFOLDSEEK_RFAM3D_STRUCTURES",
@@ -61,9 +66,25 @@ RFAM3D_STRUCTURES = _first_existing(
 # Experimental-database E-value calibration inputs (per-query extreme-value fits and
 # US-align adjudication of background hits): scripts/08_evalue_calibration.
 EVALUE_EXPERIMENTAL_DATA = _first_existing(
-    "RFOLDSEEK_EVALUE_DATA", os.path.join(_PARENT, "RFoldSeek", "data", "experimental"))
+    "RFOLDSEEK_EVALUE_DATA", os.path.join(_PARENT, "RFoldSeek", "data", "experimental"),
+    os.path.join(_WORKSPACE, "data", "experimental"))
+# Per-split descriptor tensors ({train,val,test}_desc.pt) of the PDB-disjoint split:
+# the quantiser controls (k-means vs VQ-VAE).
+SPLITS_DESC = _first_existing(
+    "RFOLDSEEK_SPLITS_DESC", os.path.join(_PARENT, "RFoldSeek", "Splits", "pdb_out"),
+    os.path.join(_WORKSPACE, "Splits", "pdb_out"))
+# Chain database the model-development scripts (scripts/01_model) read for chain ids,
+# lengths and coordinates; they retrain their own tokens.
+PRODUCTION_DB = _first_existing(
+    "RFOLDSEEK_PRODUCTION_DB", os.path.join(_HERE, "files", "production", "db.pt"),
+    os.path.join(_WORKSPACE, "files", "production", "db.pt"))
+# Descriptor tensors used by the cross-validation retraining (scripts/01_model/cv_*).
+CV_DESC = _first_existing(
+    "RFOLDSEEK_CV_DESC", os.path.join(_HERE, "files", "ablation", "kmeans_baseline", "current_desc", "pdb_out"),
+    os.path.join(_WORKSPACE, "files", "ablation", "kmeans_baseline", "current_desc", "pdb_out"))
 # Third-party binaries. An empty directory means "take the executable from PATH".
-USALIGN = _first_existing("RFOLDSEEK_USALIGN", os.path.join(_PARENT, "RFoldSeek", ".tools", "USalign"))
+USALIGN = _first_existing("RFOLDSEEK_USALIGN", os.path.join(_PARENT, "RFoldSeek", ".tools", "USalign"),
+                          os.path.join(_WORKSPACE, ".tools", "USalign"))
 BLAST_BIN = os.environ.get("RFOLDSEEK_BLAST_BIN", "")
 INFERNAL_BIN = os.environ.get("RFOLDSEEK_INFERNAL_BIN", "")
 

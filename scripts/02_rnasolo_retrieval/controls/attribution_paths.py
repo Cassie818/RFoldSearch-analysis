@@ -2,9 +2,6 @@
 
 Forward : pipeline -> matrix -> alphabet
 Reverse : alphabet -> pipeline -> matrix
-Every configuration is evaluated on the same test queries against the same
-885-chain library, and each step's paired difference is given a block-bootstrap
-interval over Rfam families or clans.
 """
 from __future__ import annotations
 import json, os, sys, time
@@ -12,8 +9,8 @@ from collections import defaultdict
 import numpy as np, torch
 import importlib.resources as R
 
-PC = os.path.expanduser("~/Desktop/RFoldseek-paper-code")
-sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval"))
+PC = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval", "controls"))
 os.environ.setdefault("RFS_ALPHABET_CONTROL_MATRIX", "native")
 import riboseek_alphabet_control as F  # noqa: E402
 from riboseek import Searcher  # noqa: E402
@@ -62,10 +59,10 @@ def ribo_pipeline(toks, mat, name):
             c = np.asarray(cand)
             fq, cq = fam[q], clan[q]
             if level == "family":
-                rel = np.array([fam[j] == fq for j in c]); neu = np.array([fam[j] != fq and cq and clan[j] == cq for j in c])
+                rel = np.array([fam[j] == fq for j in c]); neu = np.array([not fam[j] or (fam[j] != fq and cq and clan[j] == cq) for j in c])
                 n_rel = sum(1 for j in range(n) if j != q and fam[j] == fq)
             else:
-                rel = np.array([cq and clan[j] == cq and fam[j] != fq for j in c]); neu = np.array([fam[j] == fq for j in c])
+                rel = np.array([cq and clan[j] == cq and fam[j] != fq for j in c]); neu = np.array([not fam[j] or fam[j] == fq for j in c])
                 n_rel = sum(1 for j in range(n) if j != q and cq and clan[j] == cq and fam[j] != fq)
             tp = 0
             for r, nu in zip(rel[order], neu[order]):
@@ -78,9 +75,10 @@ def ribo_pipeline(toks, mat, name):
     return per
 
 
-def rf_pipeline(toks, mat, name):
-    """RFoldseek pipeline: expansion 4-mer prefilter + affine-gap local SW."""
-    _, pq = F.evaluate_ranker(name, F.SamePipelineRanker(toks, mat.astype(np.float32)),
+def rf_pipeline(toks, mat, name, xyz=None):
+    """RFoldseek pipeline: expansion 4-mer prefilter + affine-gap local SW,
+    ranked by the structure score S * aTM when C4' coordinates are given."""
+    _, pq = F.evaluate_ranker(name, F.SamePipelineRanker(toks, mat.astype(np.float32), xyz=xyz),
                               fam_q, clan_q, fam, clan)
     return {lv: {x["query"]: x["sens"] for x in pq[lv]} for lv in ("family", "clan")}
 
@@ -93,7 +91,11 @@ cfg = {}
 cfg["A_ribo_published"] = ribo_pipeline(sa20, M_sa20, "A sa20 | RiboSeek pipeline | own matrix")
 cfg["B_fwd_pipeline"] = rf_pipeline(sa20, M_sa20, "B sa20 | RF pipeline | own matrix")
 cfg["C_fwd_matrix"] = rf_pipeline(sa20, M_sa20_sb, "C sa20 | RF pipeline | learned matrix")
-cfg["D_rfoldseek"] = rf_pipeline(tdr, M_3dr, "D 3Dr | RF pipeline | learned matrix")
+cfg["D_3dr_sw"] = rf_pipeline(tdr, M_3dr, "D' 3Dr | RF pipeline, SW ranking | learned matrix")
+cfg["D_rfoldseek"] = rf_pipeline(tdr, M_3dr, "D 3Dr | RF pipeline, structure score | learned matrix",
+                                 xyz=[F.c4_coords(e, len(t)) for e, t in zip(ents, tdr)])
+M_3dr_id = F.normalize_matrix(F.identity_matrix(80), 1.0).astype(np.float64)   # +2/-1, unit diagonal mean
+cfg["E0_rev_alphabet"] = ribo_pipeline(tdr, M_3dr_id, "E0 3Dr | RiboSeek pipeline | identity matrix")
 cfg["E_rev_alphabet"] = ribo_pipeline(tdr, M_3dr, "E 3Dr | RiboSeek pipeline | learned matrix")
 print(f"[{time.time()-t0:.0f}s]", flush=True)
 
@@ -113,9 +115,13 @@ def ci(a, b, level, seed):
 
 FWD = [("+ RFoldseek pipeline", "B_fwd_pipeline", "A_ribo_published"),
        ("+ learned matrix", "C_fwd_matrix", "B_fwd_pipeline"),
-       ("+ 3Dr alphabet", "D_rfoldseek", "C_fwd_matrix")]
-REV = [("+ 3Dr alphabet", "E_rev_alphabet", "A_ribo_published"),
-       ("+ RFoldseek pipeline & matrix", "D_rfoldseek", "E_rev_alphabet")]
+       ("+ 3Dr alphabet", "D_3dr_sw", "C_fwd_matrix"),
+       ("+ structure score", "D_rfoldseek", "D_3dr_sw")]
+# Reverse order: the 3Dr alphabet first (scored with an unlearned identity matrix),
+# then its learned Structure-BLOSUM, then the RFoldseek pipeline.
+REV = [("+ 3Dr alphabet", "E0_rev_alphabet", "A_ribo_published"),
+       ("+ learned matrix", "E_rev_alphabet", "E0_rev_alphabet"),
+       ("+ RFoldseek pipeline", "D_rfoldseek", "E_rev_alphabet")]
 out = {"levels": {}, "_config": {"B": B, "seed": SEED}}
 for level in ("family", "clan"):
     means = {k: float(np.mean(list(v[level].values()))) for k, v in cfg.items()}

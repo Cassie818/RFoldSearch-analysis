@@ -1,23 +1,16 @@
-"""K-means vs VQ-VAE quantiser control, identical descriptor + deployed pipeline.
-
-Isolates the contribution of the LEARNED quantiser from the descriptor design:
-the same 17-D production descriptor is tokenised either by the deployed VQ-VAE
-(K=80) or by K-means (K=80, K=20), and all three alphabets are then searched with
-the identical deployed pipeline (expansion prefilter, top-200, affine SW) using
-their own Structure-BLOSUM matrix built from the same training pairs.
-"""
+"""K-means vs VQ-VAE quantiser control, identical descriptor + deployed pipeline."""
 from __future__ import annotations
 import json, os, sys
 from pathlib import Path
 import numpy as np, torch
 from sklearn.cluster import MiniBatchKMeans
 
-PC = os.path.expanduser("~/Desktop/RFoldseek-paper-code")
-sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval"))
+PC = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval", "controls"))
 os.environ["RFS_ALPHABET_CONTROL_MATRIX"] = "self_blosum"
 import riboseek_alphabet_control as F  # noqa: E402
 
-SPLITS = os.path.expanduser("~/Desktop/RFoldSeek/Splits/pdb_out")
+SPLITS = F.SPLITS_DESC
 KEEP = sorted(list(range(0, 10)) + list(range(42, 49)))  # g_nn1 (0-9) + g_ctx (42-48)
 SEED = 42
 KS = [int(x) for x in os.environ.get("KM_KS", "80,20").split(",")]
@@ -77,7 +70,11 @@ def main() -> None:
     for name, (toks, K) in configs.items():
         mat, meta = F.build_self_blosum(toks, pairs, K)
         print(f"\n{name}: alphabet={K}", flush=True)
-        s, pq = F.evaluate_ranker(name, F.SamePipelineRanker(toks, mat), fam_q, clan_q, families, clans)
+        # every alphabet here has one token per resolved nucleotide, so each is
+        # ranked with the deployed structure score
+        xyz = [F.c4_coords(e, len(e["tokens"])) for e in ents]
+        s, pq = F.evaluate_ranker(name, F.SamePipelineRanker(toks, mat, xyz=xyz), fam_q, clan_q,
+                                  families, clans)
         s.update({"alphabet_size": K, "quantiser": "vq-vae" if "VQ" in name else "k-means",
                   "matrix": "self-BLOSUM (train pairs, TM>=0.5)", "self_blosum": meta})
         summaries[name], per_query[name] = s, pq

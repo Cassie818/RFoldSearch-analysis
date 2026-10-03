@@ -2,9 +2,9 @@
   "0.4": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.619689411056622,
-        "ci_lower": 0.4583586511844545,
-        "ci_upper": 0.8005585587910317,
+        "estimate": 0.6790423554165286,
+        "ci_lower": 0.5425693830423985,
+        "ci_upper": 0.837904846552686,
         "sig_vs_rf": null,
         "n_blocks": 27
       },
@@ -23,9 +23,23 @@
         "n_blocks": 27
       },
       "RMalign": {
-        "estimate": 0.4463037340975984,
-        "ci_lower": 0.30605382205032583,
-        "ci_upper": 0.6318567530090886,
+        "estimate": 0.8638994937224325,
+        "ci_lower": 0.8172720174445259,
+        "ci_upper": 0.9278054962276855,
+        "sig_vs_rf": true,
+        "n_blocks": 27
+      },
+      "GTalign": {
+        "estimate": 0.8280836919073938,
+        "ci_lower": 0.7603694342742375,
+        "ci_upper": 0.9072212311233043,
+        "sig_vs_rf": true,
+        "n_blocks": 27
+      },
+      "RTM-align": {
+        "estimate": 0.9228157613614355,
+        "ci_lower": 0.8866187837773318,
+        "ci_upper": 0.9706507299625361,
         "sig_vs_rf": true,
         "n_blocks": 27
       },
@@ -36,24 +50,17 @@
         "sig_vs_rf": true,
         "n_blocks": 27
       },
-      "GTalign": {
-        "estimate": 0.8408712930145281,
-        "ci_lower": 0.7923533082890736,
-        "ci_upper": 0.9002273321315182,
-        "sig_vs_rf": true,
-        "n_blocks": 27
-      },
-      "RTM-align": {
-        "estimate": 0.9159304589179134,
-        "ci_lower": 0.8720344047732885,
-        "ci_upper": 0.9691558620986263,
+      "RiboSeek RS-80": {
+        "estimate": 0.3158213021089198,
+        "ci_lower": 0.13809813222712075,
+        "ci_upper": 0.5509845203256256,
         "sig_vs_rf": true,
         "n_blocks": 27
       },
       "BLASTN": {
-        "estimate": 0.14177516976347307,
-        "ci_lower": 0.044949763045858376,
-        "ci_upper": 0.28719008401747603,
+        "estimate": 0.14104256903087234,
+        "ci_lower": 0.04439477912787267,
+        "ci_upper": 0.28619557406042206,
         "sig_vs_rf": true,
         "n_blocks": 27
       },
@@ -61,22 +68,15 @@
         "estimate": 0.46271702368899276,
         "ci_lower": 0.2557218914535949,
         "ci_upper": 0.7121612432010545,
-        "sig_vs_rf": false,
-        "n_blocks": 27
-      },
-      "RiboSeek RS-80": {
-        "estimate": 0.3158213021089198,
-        "ci_lower": 0.13809813222712075,
-        "ci_upper": 0.5509845203256256,
         "sig_vs_rf": true,
         "n_blocks": 27
       }
     },
     "clan": {
       "RFoldseek": {
-        "estimate": 0.4824405950688411,
-        "ci_lower": 0.30491544694801004,
-        "ci_upper": 0.7448408562875362,
+        "estimate": 0.5317124728314946,
+        "ci_lower": 0.37789388955728503,
+        "ci_upper": 0.8017152167430148,
         "sig_vs_rf": null,
         "n_blocks": 9
       },
@@ -95,9 +95,23 @@
         "n_blocks": 9
       },
       "RMalign": {
-        "estimate": 0.25367294022139536,
-        "ci_lower": 0.1611955403410255,
-        "ci_upper": 0.4159977630493885,
+        "estimate": 0.7692699721474343,
+        "ci_lower": 0.6649883853038641,
+        "ci_upper": 0.9184430318160661,
+        "sig_vs_rf": true,
+        "n_blocks": 9
+      },
+      "GTalign": {
+        "estimate": 0.669083870432689,
+        "ci_lower": 0.5076005556041466,
+        "ci_upper": 0.873286582720316,
+        "sig_vs_rf": true,
+        "n_blocks": 9
+      },
+      "RTM-align": {
+        "estimate": 0.9519483032099991,
+        "ci_lower": 0.8885736104414257,
+        "ci_upper": 1.0,
         "sig_vs_rf": true,
         "n_blocks": 9
       },
@@ -108,24 +122,17 @@
         "sig_vs_rf": true,
         "n_blocks": 9
       },
-      "GTalign": {
-        "estimate": 0.7330645255769269,
-        "ci_lower": 0.6645065254679011,
-        "ci_upper": 0.9232861911336282,
-        "sig_vs_rf": true,
-        "n_blocks": 9
-      },
-      "RTM-align": {
-        "estimate": 0.9280133086429759,
-        "ci_lower": 0.8140136042616036,
-        "ci_upper": 1.0,
+      "RiboSeek RS-80": {
+        "estimate": 0.16606105725297812,
+        "ci_lower": 0.0097044042277308,
+        "ci_upper": 0.43105873199197936,
         "sig_vs_rf": true,
         "n_blocks": 9
       },
       "BLASTN": {
-        "estimate": 0.009823142352921138,
+        "estimate": 0.00882414135392014,
         "ci_lower": 0.0,
-        "ci_upper": 0.025886865643101442,
+        "ci_upper": 0.02588244505785629,
         "sig_vs_rf": true,
         "n_blocks": 9
       },
@@ -135,22 +142,15 @@
         "ci_upper": 0.5098700222614008,
         "sig_vs_rf": true,
         "n_blocks": 9
-      },
-      "RiboSeek RS-80": {
-        "estimate": 0.16606105725297812,
-        "ci_lower": 0.0097044042277308,
-        "ci_upper": 0.43105873199197936,
-        "sig_vs_rf": true,
-        "n_blocks": 9
       }
     }
   },
   "0.45": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.615030863261478,
-        "ci_lower": 0.43886117801658453,
-        "ci_upper": 0.8202504027627585,
+        "estimate": 0.6694155982913984,
+        "ci_lower": 0.5268119186502671,
+        "ci_upper": 0.8501235135439621,
         "sig_vs_rf": null,
         "n_blocks": 26
       },
@@ -169,9 +169,23 @@
         "n_blocks": 26
       },
       "RMalign": {
-        "estimate": 0.44383334292319504,
-        "ci_lower": 0.3182919703665584,
-        "ci_upper": 0.6279679942895741,
+        "estimate": 0.8915675457256059,
+        "ci_lower": 0.8357831335387133,
+        "ci_upper": 0.9674530463297637,
+        "sig_vs_rf": true,
+        "n_blocks": 26
+      },
+      "GTalign": {
+        "estimate": 0.8849869549833079,
+        "ci_lower": 0.8374250625281895,
+        "ci_upper": 0.9496273808839435,
+        "sig_vs_rf": true,
+        "n_blocks": 26
+      },
+      "RTM-align": {
+        "estimate": 0.9264752581344207,
+        "ci_lower": 0.8969879652404009,
+        "ci_upper": 0.9851355594120906,
         "sig_vs_rf": true,
         "n_blocks": 26
       },
@@ -182,17 +196,10 @@
         "sig_vs_rf": true,
         "n_blocks": 26
       },
-      "GTalign": {
-        "estimate": 0.8488016451687214,
-        "ci_lower": 0.807854317461981,
-        "ci_upper": 0.9129792414695618,
-        "sig_vs_rf": true,
-        "n_blocks": 26
-      },
-      "RTM-align": {
-        "estimate": 0.9211990370184486,
-        "ci_lower": 0.8884174896770473,
-        "ci_upper": 0.9832524116613911,
+      "RiboSeek RS-80": {
+        "estimate": 0.32441946386297427,
+        "ci_lower": 0.15022318554862887,
+        "ci_upper": 0.5694418739279216,
         "sig_vs_rf": true,
         "n_blocks": 26
       },
@@ -207,22 +214,15 @@
         "estimate": 0.48383887167654105,
         "ci_lower": 0.2775233848072672,
         "ci_upper": 0.7506655897908667,
-        "sig_vs_rf": false,
-        "n_blocks": 26
-      },
-      "RiboSeek RS-80": {
-        "estimate": 0.32441946386297427,
-        "ci_lower": 0.15022318554862887,
-        "ci_upper": 0.5694418739279216,
         "sig_vs_rf": true,
         "n_blocks": 26
       }
     },
     "clan": {
       "RFoldseek": {
-        "estimate": 0.4771970736090454,
-        "ci_lower": 0.2725864342630638,
-        "ci_upper": 0.7645042570538135,
+        "estimate": 0.4886340225664162,
+        "ci_lower": 0.2894780883597167,
+        "ci_upper": 0.8372950201298839,
         "sig_vs_rf": null,
         "n_blocks": 8
       },
@@ -241,9 +241,23 @@
         "n_blocks": 8
       },
       "RMalign": {
-        "estimate": 0.2707124393054497,
-        "ci_lower": 0.16724665521088766,
-        "ci_upper": 0.4482758620689655,
+        "estimate": 0.819823131407295,
+        "ci_lower": 0.7061619801889594,
+        "ci_upper": 0.9614292429554523,
+        "sig_vs_rf": true,
+        "n_blocks": 8
+      },
+      "GTalign": {
+        "estimate": 0.7969049412737144,
+        "ci_lower": 0.6886152862034357,
+        "ci_upper": 0.9435803946404431,
+        "sig_vs_rf": true,
+        "n_blocks": 8
+      },
+      "RTM-align": {
+        "estimate": 0.9367243507931261,
+        "ci_lower": 0.8979641423414517,
+        "ci_upper": 0.9888435982622029,
         "sig_vs_rf": true,
         "n_blocks": 8
       },
@@ -254,17 +268,10 @@
         "sig_vs_rf": true,
         "n_blocks": 8
       },
-      "GTalign": {
-        "estimate": 0.7154503406780235,
-        "ci_lower": 0.6295502292216631,
-        "ci_upper": 0.9260518063833912,
-        "sig_vs_rf": true,
-        "n_blocks": 8
-      },
-      "RTM-align": {
-        "estimate": 0.9207568038082274,
-        "ci_lower": 0.8477909108837695,
-        "ci_upper": 0.9888435982622029,
+      "RiboSeek RS-80": {
+        "estimate": 0.18268137021573158,
+        "ci_lower": 0.012254901960784314,
+        "ci_upper": 0.4482725329559259,
         "sig_vs_rf": true,
         "n_blocks": 8
       },
@@ -281,22 +288,15 @@
         "ci_upper": 0.5213732070162397,
         "sig_vs_rf": true,
         "n_blocks": 8
-      },
-      "RiboSeek RS-80": {
-        "estimate": 0.18268137021573158,
-        "ci_lower": 0.012254901960784314,
-        "ci_upper": 0.4482725329559259,
-        "sig_vs_rf": true,
-        "n_blocks": 8
       }
     }
   },
   "0.5": {
     "family": {
       "RFoldseek": {
-        "estimate": 0.5979700673516263,
-        "ci_lower": 0.35031793362220504,
-        "ci_upper": 0.8741148351379104,
+        "estimate": 0.6536202892085404,
+        "ci_lower": 0.4443473425076375,
+        "ci_upper": 0.896169457568122,
         "sig_vs_rf": null,
         "n_blocks": 25
       },
@@ -315,9 +315,23 @@
         "n_blocks": 25
       },
       "RMalign": {
-        "estimate": 0.4466293169102812,
-        "ci_lower": 0.3124769670161691,
-        "ci_upper": 0.6094082390357656,
+        "estimate": 0.9097921005663762,
+        "ci_lower": 0.8395620384979999,
+        "ci_upper": 0.9921790790282909,
+        "sig_vs_rf": true,
+        "n_blocks": 25
+      },
+      "GTalign": {
+        "estimate": 0.9518750648188208,
+        "ci_lower": 0.93184543789279,
+        "ci_upper": 0.9829337080644933,
+        "sig_vs_rf": true,
+        "n_blocks": 25
+      },
+      "RTM-align": {
+        "estimate": 0.9183371060885624,
+        "ci_lower": 0.8815448684909284,
+        "ci_upper": 0.9916020680818135,
         "sig_vs_rf": true,
         "n_blocks": 25
       },
@@ -328,24 +342,17 @@
         "sig_vs_rf": true,
         "n_blocks": 25
       },
-      "GTalign": {
-        "estimate": 0.8608808264404503,
-        "ci_lower": 0.8142113904882896,
-        "ci_upper": 0.929272389565115,
-        "sig_vs_rf": true,
-        "n_blocks": 25
-      },
-      "RTM-align": {
-        "estimate": 0.9163003695131474,
-        "ci_lower": 0.8787448453545711,
-        "ci_upper": 0.9911135434797186,
+      "RiboSeek RS-80": {
+        "estimate": 0.35315320508089443,
+        "ci_lower": 0.1646863503139393,
+        "ci_upper": 0.6185803568370071,
         "sig_vs_rf": true,
         "n_blocks": 25
       },
       "BLASTN": {
-        "estimate": 0.16124835150128056,
-        "ci_lower": 0.05362859139464458,
-        "ci_upper": 0.3238902192096761,
+        "estimate": 0.16008121798120584,
+        "ci_lower": 0.053349739949899444,
+        "ci_upper": 0.3202174904029443,
         "sig_vs_rf": true,
         "n_blocks": 25
       },
@@ -355,20 +362,13 @@
         "ci_upper": 0.7991532197957969,
         "sig_vs_rf": true,
         "n_blocks": 25
-      },
-      "RiboSeek RS-80": {
-        "estimate": 0.35315320508089443,
-        "ci_lower": 0.1646863503139393,
-        "ci_upper": 0.6185803568370071,
-        "sig_vs_rf": true,
-        "n_blocks": 25
       }
     },
     "clan": {
       "RFoldseek": {
-        "estimate": 0.48998346820213723,
-        "ci_lower": 0.1743420115709835,
-        "ci_upper": 0.8459749749147368,
+        "estimate": 0.5016118225698302,
+        "ci_lower": 0.23505855378226648,
+        "ci_upper": 0.8709168091378628,
         "sig_vs_rf": null,
         "n_blocks": 8
       },
@@ -387,10 +387,24 @@
         "n_blocks": 8
       },
       "RMalign": {
-        "estimate": 0.3553756651340942,
-        "ci_lower": 0.23560891066155612,
-        "ci_upper": 0.5677889449290804,
-        "sig_vs_rf": false,
+        "estimate": 0.911581063168235,
+        "ci_lower": 0.8396771236749758,
+        "ci_upper": 0.9937243544575037,
+        "sig_vs_rf": true,
+        "n_blocks": 8
+      },
+      "GTalign": {
+        "estimate": 0.9630117194134624,
+        "ci_lower": 0.9201334115576772,
+        "ci_upper": 0.9855995771660024,
+        "sig_vs_rf": true,
+        "n_blocks": 8
+      },
+      "RTM-align": {
+        "estimate": 0.936869251768341,
+        "ci_lower": 0.8984674915891284,
+        "ci_upper": 0.9894741587879174,
+        "sig_vs_rf": true,
         "n_blocks": 8
       },
       "RiboSeek": {
@@ -400,17 +414,10 @@
         "sig_vs_rf": true,
         "n_blocks": 8
       },
-      "GTalign": {
-        "estimate": 0.7770513536900978,
-        "ci_lower": 0.6820833488866276,
-        "ci_upper": 0.9476190476190476,
-        "sig_vs_rf": true,
-        "n_blocks": 8
-      },
-      "RTM-align": {
-        "estimate": 0.9368303432811029,
-        "ci_lower": 0.8983645432273326,
-        "ci_upper": 0.9894741587879174,
+      "RiboSeek RS-80": {
+        "estimate": 0.21724432865073767,
+        "ci_lower": 0.009948979591836736,
+        "ci_upper": 0.5114840627842172,
         "sig_vs_rf": true,
         "n_blocks": 8
       },
@@ -425,13 +432,6 @@
         "estimate": 0.2450412295709351,
         "ci_lower": 0.03333333333333333,
         "ci_upper": 0.5939523956907674,
-        "sig_vs_rf": true,
-        "n_blocks": 8
-      },
-      "RiboSeek RS-80": {
-        "estimate": 0.21724432865073767,
-        "ci_lower": 0.009948979591836736,
-        "ci_upper": 0.5114840627842172,
         "sig_vs_rf": true,
         "n_blocks": 8
       }

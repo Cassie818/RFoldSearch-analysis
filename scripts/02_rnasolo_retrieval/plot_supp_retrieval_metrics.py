@@ -2,11 +2,9 @@
 held-out test partition (same query sets as Fig 2A/B).
 
 (A) Rfam family- and clan-level Recall@1 (grouped bars).
-(B,C) Per-query-averaged precision-recall curves at the (B) family and
-      (C) clan level: each method's mean interpolated precision over queries,
-      with its mean average precision (AP) in the legend. Each query is
-      weighted equally, so the curves are not biased by family size or query
-      length; AP corresponds to the per-query mean AUPR.
+(B,C) Per-query-averaged precision-recall curves at the (B) family and (C) clan level: 
+each method's mean interpolated precision over queries, with its mean average precision (AP) in the legend. Each query is
+weighted equally, so the curves are not biased by family size or query length; AP corresponds to the per-query mean AUPR.
 """
 import sys as _sys, os as _os
 
@@ -81,7 +79,7 @@ def pr_panel(ax, level, title):
         rec = np.asarray(wp[m][level]["recall"])
         prec = np.asarray(wp[m][level]["precision"])
         ap = wp[m][level]["aupr"]
-        star = "*" if ap_sig.get(level, {}).get(m, {}).get("sig_vs_rf") else ""
+        star = "*" if ap_sig.get(level, {}).get(m, {}).get("sig") else ""
         step = max(1, len(rec) // 10)
         ax.plot(rec, prec, "-", color=METHOD_COLOR[m], linewidth=2.0,
                 marker=MARKER[m], markevery=step, markersize=5.5,

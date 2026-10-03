@@ -1,32 +1,14 @@
 {
-  "_note": "Rfam family/clan Recall@1, test queries. Paper definition (Methods 'Evaluation on the RNAsolo benchmark'): top-ranked non-self target is a TP, no neutral set; family TP=same family, clan TP=same clan including same family.",
-  "GTalign": {
-    "family_recall1": 0.9339622641509434,
-    "clan_recall1": 0.9620253164556962,
-    "n_family": 106,
-    "n_clan": 79
-  },
-  "BLASTN": {
-    "family_recall1": 0.4056603773584906,
-    "clan_recall1": 0.5185185185185185,
-    "n_family": 106,
-    "n_clan": 81
-  },
-  "RTM-align": {
-    "family_recall1": 0.8490566037735849,
-    "clan_recall1": 0.9493670886075949,
-    "n_family": 106,
-    "n_clan": 79
-  },
+  "_note": "Rfam family/clan Recall@1, test queries: the top-ranked labelled non-self target is a TP; family TP = same family, clan TP = same clan including the same family.",
   "RFoldseek": {
-    "family_recall1": 0.8867924528301887,
-    "clan_recall1": 0.9012345679012346,
+    "family_recall1": 0.8962264150943396,
+    "clan_recall1": 0.9296296296296296,
     "n_family": 106,
     "n_clan": 81
   },
   "RFoldseek-TM": {
     "family_recall1": 0.9150943396226415,
-    "clan_recall1": 0.9382716049382716,
+    "clan_recall1": 0.9469135802469136,
     "n_family": 106,
     "n_clan": 81
   },
@@ -37,26 +19,44 @@
     "n_clan": 81
   },
   "RMalign": {
-    "family_recall1": 0.8207547169811321,
-    "clan_recall1": 0.9012345679012346,
+    "family_recall1": 0.9245283018867925,
+    "clan_recall1": 0.9506172839506173,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "GTalign": {
+    "family_recall1": 0.9245283018867925,
+    "clan_recall1": 0.9629629629629629,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "RTM-align": {
+    "family_recall1": 0.8490566037735849,
+    "clan_recall1": 0.9506172839506173,
     "n_family": 106,
     "n_clan": 81
   },
   "RiboSeek": {
-    "family_recall1": 0.7830188679245284,
-    "clan_recall1": 0.8148148148148148,
-    "n_family": 106,
-    "n_clan": 81
-  },
-  "Infernal": {
-    "family_recall1": 0.9150943396226415,
-    "clan_recall1": 0.9506172839506173,
+    "family_recall1": 0.839622641509434,
+    "clan_recall1": 0.8765432098765432,
     "n_family": 106,
     "n_clan": 81
   },
   "RiboSeek RS-80": {
     "family_recall1": 0.6886792452830188,
     "clan_recall1": 0.7283950617283951,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "BLASTN": {
+    "family_recall1": 0.4056603773584906,
+    "clan_recall1": 0.5185185185185185,
+    "n_family": 106,
+    "n_clan": 81
+  },
+  "Infernal": {
+    "family_recall1": 0.9150943396226415,
+    "clan_recall1": 0.9629629629629629,
     "n_family": 106,
     "n_clan": 81
   }

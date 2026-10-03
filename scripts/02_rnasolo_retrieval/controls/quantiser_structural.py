@@ -1,29 +1,18 @@
-"""K-means vs VQ-VAE quantiser control under the STRUCTURE-DEFINED ground truth.
-
-kmeans_quantiser_control.py evaluates the same alphabets under Rfam annotation.
-This script reuses the identical descriptor, k-means fitting, self-BLOSUM
-construction and deployed ranker, but scores retrieval the way Fig 2C,D/G,H do:
-a target is relevant when its symmetric US-align TM-score to the query clears a
-threshold (family), or clears it and comes from a different Rfam family (clan,
-same-family neutral). Paired block bootstrap over Rfam families/clans, VQ-VAE as
-the anchor (diff = VQ - k-means, positive when the VQ-VAE is better).
-
-Output: files/ablation/quantiser_structural.json
-"""
+"""K-means vs VQ-VAE quantiser control under the STRUCTURE-DEFINED ground truth."""
 from __future__ import annotations
 import json, os, sys, time
 from collections import defaultdict
 import numpy as np, torch
 from sklearn.cluster import MiniBatchKMeans
 
-PC = os.path.expanduser("~/Desktop/RFoldseek-paper-code")
-sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval"))
+PC = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval", "controls"))
 os.environ["RFS_ALPHABET_CONTROL_MATRIX"] = "self_blosum"
 import riboseek_alphabet_control as F  # noqa: E402
 sys.path.insert(0, os.path.join(PC, "src", "search"))
 from prefilter_rfam_benchmark import first_fp_sensitivity  # noqa: E402
 
-SPLITS = os.path.expanduser("~/Desktop/RFoldSeek/Splits/pdb_out")
+SPLITS = F.SPLITS_DESC
 KEEP = sorted(list(range(0, 10)) + list(range(42, 49)))
 SEED = 42
 KS = [int(x) for x in os.environ.get("KM_KS", "10,20,40,80").split(",")]
@@ -112,7 +101,7 @@ t0 = time.time()
 PER = {}   # config -> threshold -> level -> {q: sens}
 for name, (toks, K) in configs.items():
     mat, _ = F.build_self_blosum(toks, pairs, K)
-    ranker = F.SamePipelineRanker(toks, mat)
+    ranker = F.SamePipelineRanker(toks, mat, xyz=[F.c4_coords(e, len(e["tokens"])) for e in ents])
     ranks = {q: np.asarray(ranker.rank(q), dtype=np.int64) for q in queries}
     PER[name] = {f"{th}": {lv: score_ranks(ranks, th, lv) for lv in ("family", "clan")}
                  for th in THRESHOLDS}

@@ -1,15 +1,6 @@
-"""Block-bootstrap significance for the control experiments (RiboSeek alphabet and quantiser controls).
-
-Uses the same protocol as bootstrap_rfam_truth.py -- Rfam families (family level) or
-clans (clan level) resampled with replacement -- rather than a sign-flip
-permutation over queries. Queries within a family or clan are not independent,
-so resampling the blocks is the conservative choice and keeps every significance
-statement in the paper on one standard.
-
-Writes files/production/retrieval/bootstrap_controls.json.
-"""
+"""Block-bootstrap significance for the control experiments (RiboSeek alphabet and quantiser controls)."""
 import sys as _sys, os as _os
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", ".."))
 from paths import SRC_SEARCH, resolve
 _sys.path.insert(0, SRC_SEARCH)
 import json

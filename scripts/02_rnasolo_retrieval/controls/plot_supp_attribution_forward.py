@@ -2,7 +2,8 @@
 
 The four panels are the former main-text Fig. 2E-H, moved intact to the
 supplement. Each waterfall follows the same forward replacement path:
-RiboSeek -> RFoldseek search pipeline -> Structure-BLOSUM -> 3Dr alphabet.
+RiboSeek -> RFoldseek search pipeline -> Structure-BLOSUM -> 3Dr alphabet ->
+structure score (ranking by S * aTM instead of the Smith-Waterman score S).
 
 Writes figures/S18.{png,pdf}.
 """
@@ -11,7 +12,7 @@ import os as _os
 import sys as _sys
 from pathlib import Path
 
-_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", ".."))
 from paths import DATA_ROOT, FIG_DIR, resolve
 
 _os.chdir(DATA_ROOT)
@@ -31,8 +32,8 @@ TAU = "0.45"
 
 def forward_panel(ax, level, title):
     means, forward = level["means"], level["forward"]
-    keys = ["A_ribo_published", "B_fwd_pipeline", "C_fwd_matrix", "D_rfoldseek"]
-    steps = ["+ RFoldseek pipeline", "+ learned matrix", "+ 3Dr alphabet"]
+    keys = ["A_ribo_published", "B_fwd_pipeline", "C_fwd_matrix", "D_3dr_sw", "D_rfoldseek"]
+    steps = ["+ RFoldseek pipeline", "+ learned matrix", "+ 3Dr alphabet", "+ structure score"]
     values = [means[key] for key in keys]
 
     ax.bar(0, values[0], 0.62, color=C_RB, edgecolor="#B05A94", linewidth=0.6,
@@ -63,16 +64,17 @@ def forward_panel(ax, level, title):
         ax.plot([index - 1 + 0.31, index - 0.31], [previous, previous],
                 color="#999999", lw=0.8, ls=(0, (3, 2)), zorder=2)
 
-    ax.bar(4, values[-1], 0.62, color=C_RF, edgecolor="#15709C", linewidth=0.6,
+    last = len(steps) + 1
+    ax.bar(last, values[-1], 0.62, color=C_RF, edgecolor="#15709C", linewidth=0.6,
            zorder=3)
-    ax.text(4, values[-1] + 0.007, f"{values[-1]:.3f}", ha="center", va="bottom",
+    ax.text(last, values[-1] + 0.007, f"{values[-1]:.3f}", ha="center", va="bottom",
             fontsize=8.5, color="#1F9BD8")
-    ax.plot([3.31, 3.69], [values[-1], values[-1]], color="#999999", lw=0.8,
+    ax.plot([last - 0.69, last - 0.31], [values[-1], values[-1]], color="#999999", lw=0.8,
             ls=(0, (3, 2)), zorder=2)
 
-    ax.set_xticks(range(5))
+    ax.set_xticks(range(last + 1))
     ax.set_xticklabels(["RiboSeek", "+ RFoldseek\npipeline", "+ learned\nmatrix",
-                        "+ 3Dr\nalphabet", "RFoldseek"], fontsize=8)
+                        "+ 3Dr\nalphabet", "+ structure\nscore", "RFoldseek"], fontsize=8)
     ax.set_ylabel("Sens@1FP", fontsize=11)
     top = max(
         max(values),
@@ -80,14 +82,14 @@ def forward_panel(ax, level, title):
             for key, label in zip(keys[1:], steps)),
     )
     ax.set_ylim(0, top * 1.28)
-    ax.set_xlim(-0.55, 4.55)
+    ax.set_xlim(-0.55, last + 0.55)
     ax.set_title(title, fontsize=12, pad=7)
     ax.tick_params(axis="y", labelsize=9)
     ax.spines[["top", "right"]].set_visible(False)
 
 
 def main():
-    fig, axes = plt.subplots(2, 2, figsize=(11.0, 8.6))
+    fig, axes = plt.subplots(2, 2, figsize=(12.6, 8.6))
     forward_panel(axes[0, 0], ATTR["levels"]["family"], "Family (Rfam)")
     forward_panel(axes[0, 1], ATTR["levels"]["clan"], "Clan (Rfam)")
     forward_panel(axes[1, 0], ATTR_S["thresholds"][TAU]["family"],

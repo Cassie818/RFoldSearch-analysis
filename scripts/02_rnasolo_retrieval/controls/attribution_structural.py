@@ -1,16 +1,5 @@
 """Attribution of the RiboSeek -> RFoldseek gap under the STRUCTURE-DEFINED
 ground truth, mirroring attribution_paths.py.
-
-attribution_paths.py decomposes the gap under Rfam annotation. This script runs
-the identical five configurations and the identical forward/reverse orderings,
-but scores them the way Fig 2C,D does: a target is relevant when its symmetric
-US-align TM-score to the query clears a threshold. At the clan level a positive
-is TM-similar *and* from a different Rfam family, with same-family hits neutral.
-
-Bootstrap blocks remain Rfam families (family level) and Rfam clans (clan
-level), as everywhere else in the paper.
-
-Output: files/ablation/attribution_paths_structural.json
 """
 from __future__ import annotations
 import json, os, sys, time
@@ -18,8 +7,8 @@ from collections import defaultdict
 import numpy as np, torch
 import importlib.resources as R
 
-PC = os.path.expanduser("~/Desktop/RFoldseek-paper-code")
-sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval"))
+PC = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval", "controls"))
 os.environ.setdefault("RFS_ALPHABET_CONTROL_MATRIX", "native")
 import riboseek_alphabet_control as F  # noqa: E402
 from riboseek import Searcher  # noqa: E402
@@ -96,10 +85,11 @@ def ribo_ranks(toks, mat, name):
     return out
 
 
-def rf_ranks(toks, mat, name):
-    """RFoldseek pipeline: expansion 4-mer prefilter + affine-gap local SW."""
+def rf_ranks(toks, mat, name, xyz=None):
+    """RFoldseek pipeline: expansion 4-mer prefilter + affine-gap local SW,
+    ranked by the structure score S * aTM when C4' coordinates are given."""
     t0 = time.time()
-    ranker = F.SamePipelineRanker(toks, mat.astype(np.float32))
+    ranker = F.SamePipelineRanker(toks, mat.astype(np.float32), xyz=xyz)
     out = {q: np.asarray(ranker.rank(q), dtype=np.int64) for q in queries}
     print(f"  {name}: {time.time()-t0:.0f}s", flush=True)
     return out
@@ -110,7 +100,11 @@ RANKS = {}
 RANKS["A_ribo_published"] = ribo_ranks(sa20, M_sa20, "A sa20 | RiboSeek pipeline | own matrix")
 RANKS["B_fwd_pipeline"] = rf_ranks(sa20, M_sa20, "B sa20 | RF pipeline | own matrix")
 RANKS["C_fwd_matrix"] = rf_ranks(sa20, M_sa20_sb, "C sa20 | RF pipeline | learned matrix")
-RANKS["D_rfoldseek"] = rf_ranks(tdr, M_3dr, "D 3Dr | RF pipeline | learned matrix")
+RANKS["D_3dr_sw"] = rf_ranks(tdr, M_3dr, "D' 3Dr | RF pipeline, SW ranking | learned matrix")
+RANKS["D_rfoldseek"] = rf_ranks(tdr, M_3dr, "D 3Dr | RF pipeline, structure score | learned matrix",
+                                xyz=[F.c4_coords(e, len(t)) for e, t in zip(ents, tdr)])
+M_3dr_id = F.normalize_matrix(F.identity_matrix(80), 1.0).astype(np.float64)   # +2/-1, unit diagonal mean
+RANKS["E0_rev_alphabet"] = ribo_ranks(tdr, M_3dr_id, "E0 3Dr | RiboSeek pipeline | identity matrix")
 RANKS["E_rev_alphabet"] = ribo_ranks(tdr, M_3dr, "E 3Dr | RiboSeek pipeline | learned matrix")
 print(f"[rankings {time.time()-t0:.0f}s]", flush=True)
 
@@ -160,9 +154,13 @@ def ci(a, b, level, seed):
 
 FWD = [("+ RFoldseek pipeline", "B_fwd_pipeline", "A_ribo_published"),
        ("+ learned matrix", "C_fwd_matrix", "B_fwd_pipeline"),
-       ("+ 3Dr alphabet", "D_rfoldseek", "C_fwd_matrix")]
-REV = [("+ 3Dr alphabet", "E_rev_alphabet", "A_ribo_published"),
-       ("+ RFoldseek pipeline & matrix", "D_rfoldseek", "E_rev_alphabet")]
+       ("+ 3Dr alphabet", "D_3dr_sw", "C_fwd_matrix"),
+       ("+ structure score", "D_rfoldseek", "D_3dr_sw")]
+# Reverse order: the 3Dr alphabet first (scored with an unlearned identity matrix),
+# then its learned Structure-BLOSUM, then the RFoldseek pipeline.
+REV = [("+ 3Dr alphabet", "E0_rev_alphabet", "A_ribo_published"),
+       ("+ learned matrix", "E_rev_alphabet", "E0_rev_alphabet"),
+       ("+ RFoldseek pipeline", "D_rfoldseek", "E_rev_alphabet")]
 
 out = {"_config": {"B": B, "seed": SEED, "thresholds": THRESHOLDS,
                    "n_queries": len(queries),

@@ -1,8 +1,8 @@
 {
   "_provenance": {
-    "python": "/Users/cassie/.claude-science/conda/envs/esm/bin/python3",
-    "python_version": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:29:05) [Clang 19.1.7 ]",
-    "data_root": "/Users/cassie/Desktop/RFoldSeek",
+    "python": "/Users/cassie/.venvs/rfoldseek-paper/bin/python",
+    "python_version": "3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
     "prefer_external": false,
     "matrix_mode": "identity",
     "resolved_paths": {
@@ -21,13 +21,13 @@
     }
   },
   "RFoldseek_tokens_same_pipeline": {
-    "family_recall1": 0.8018867924528302,
-    "family_sens_1fp": 0.43564304940741144,
-    "clan_recall1": 0.8395061728395061,
-    "clan_sens_1fp": 0.14300788865223477,
+    "family_recall1": 0.8207547169811321,
+    "family_sens_1fp": 0.44043654280440303,
+    "clan_recall1": 0.8641975308641975,
+    "clan_sens_1fp": 0.15070506020540142,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 151.63819074630737,
+    "time_sec": 178.98041796684265,
     "alphabet_size": 80,
     "kmer_k": 4,
     "top_n": 200,
@@ -40,13 +40,13 @@
     "n_empty_or_short_sequences": 0
   },
   "RiboSeek_sa20_same_pipeline": {
-    "family_recall1": 0.8113207547169812,
-    "family_sens_1fp": 0.40641101760737347,
+    "family_recall1": 0.8207547169811321,
+    "family_sens_1fp": 0.4270636364071788,
     "clan_recall1": 0.8641975308641975,
-    "clan_sens_1fp": 0.13701154135721166,
+    "clan_sens_1fp": 0.14502016330886208,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 185.6669020652771,
+    "time_sec": 219.07154202461243,
     "alphabet_size": 20,
     "kmer_k": 4,
     "top_n": 200,

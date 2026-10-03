@@ -1,8 +1,8 @@
 {
   "_provenance": {
-    "python": "/Users/cassie/.claude-science/conda/envs/esm/bin/python3",
-    "python_version": "3.11.15 | packaged by conda-forge | (main, Jun 11 2026, 03:29:05) [Clang 19.1.7 ]",
-    "data_root": "/Users/cassie/Desktop/RFoldSeek",
+    "python": "/Users/cassie/.venvs/rfoldseek-paper/bin/python",
+    "python_version": "3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
     "prefer_external": false,
     "matrix_mode": "self_blosum",
     "resolved_paths": {
@@ -11,7 +11,7 @@
       "files/ablation/riboseek_real_encoded.json": "/Users/cassie/Desktop/RFoldseek-paper-code/files/ablation/riboseek_real_encoded.json",
       "Splits/pdb_out/test.json": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/test.json",
       "Splits/labels.tsv": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/labels.tsv",
-      "RFS_TRAIN_SPLIT": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
+      "RFS_TRAIN_SPLIT": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/train.json",
       "RFS_USALIGN_CACHE": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl"
     },
     "input_hashes_md5": {
@@ -25,7 +25,7 @@
     },
     "self_blosum": {
       "train_pair_pool": {
-        "train_split": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
+        "train_split": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/train.json",
         "usalign_cache": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl",
         "train_ids_in_db": 610,
         "cache_records": 361244,
@@ -56,12 +56,12 @@
   },
   "RFoldseek_tokens_same_pipeline": {
     "family_recall1": 0.8867924528301887,
-    "family_sens_1fp": 0.5842104613677269,
-    "clan_recall1": 0.9012345679012346,
-    "clan_sens_1fp": 0.218902309539148,
+    "family_sens_1fp": 0.6151839745776323,
+    "clan_recall1": 0.9135802469135802,
+    "clan_sens_1fp": 0.26858387401317735,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 165.77829384803772,
+    "time_sec": 198.8157820701599,
     "alphabet_size": 80,
     "kmer_k": 4,
     "top_n": 200,
@@ -84,12 +84,12 @@
   },
   "RiboSeek_sa20_same_pipeline": {
     "family_recall1": 0.8773584905660378,
-    "family_sens_1fp": 0.4745530563496697,
+    "family_sens_1fp": 0.48837117139351116,
     "clan_recall1": 0.9382716049382716,
-    "clan_sens_1fp": 0.17084472846381923,
+    "clan_sens_1fp": 0.17842763734607847,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 208.2501699924469,
+    "time_sec": 248.89847993850708,
     "alphabet_size": 20,
     "kmer_k": 4,
     "top_n": 200,

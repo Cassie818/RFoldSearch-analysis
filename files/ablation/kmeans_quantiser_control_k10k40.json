@@ -1,7 +1,7 @@
 {
   "_provenance": {
     "pair_pool": {
-      "train_split": "/Users/cassie/Desktop/RFoldSeek/Splits/pdb_out/train.json",
+      "train_split": "/Users/cassie/Desktop/RFoldseek-paper-code/Splits/pdb_out/train.json",
       "usalign_cache": "/Users/cassie/Desktop/RFoldseek-paper-code/files/production/retrieval/usalign_full.cache.jsonl",
       "train_ids_in_db": 610,
       "cache_records": 361244,
@@ -33,13 +33,13 @@
     "zscore": "train-split residues only"
   },
   "KMeans_K10": {
-    "family_recall1": 0.8584905660377359,
-    "family_sens_1fp": 0.497775775810771,
-    "clan_recall1": 0.8765432098765432,
-    "clan_sens_1fp": 0.17827405812001748,
+    "family_recall1": 0.9245283018867925,
+    "family_sens_1fp": 0.6741572420314503,
+    "clan_recall1": 0.9382716049382716,
+    "clan_sens_1fp": 0.284377515238387,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 239.34571528434753,
+    "time_sec": 244.9814739227295,
     "alphabet_size": 10,
     "quantiser": "k-means",
     "matrix": "self-BLOSUM (train pairs, TM>=0.5)",
@@ -47,20 +47,20 @@
       "alphabet_size": 10,
       "n_input_train_pairs": 6251,
       "n_aligned_train_pairs": 6251,
-      "n_aligned_columns": 4430249,
+      "n_aligned_columns": 4429746,
       "scale": 2.0,
-      "diag_mean_before_rescale": 4.203405857086182,
-      "diag_mean_after_rescale": 1.0
+      "diag_mean_before_rescale": 3.982409715652466,
+      "diag_mean_after_rescale": 0.9999998807907104
     }
   },
   "KMeans_K40": {
-    "family_recall1": 0.9056603773584906,
-    "family_sens_1fp": 0.5469100164398923,
-    "clan_recall1": 0.9259259259259259,
-    "clan_sens_1fp": 0.17650806476561898,
+    "family_recall1": 0.9245283018867925,
+    "family_sens_1fp": 0.6105681526269292,
+    "clan_recall1": 0.9506172839506173,
+    "clan_sens_1fp": 0.23697999400788683,
     "n_family_queries": 106,
     "n_clan_queries": 81,
-    "time_sec": 191.1124348640442,
+    "time_sec": 198.6289930343628,
     "alphabet_size": 40,
     "quantiser": "k-means",
     "matrix": "self-BLOSUM (train pairs, TM>=0.5)",
@@ -68,9 +68,9 @@
       "alphabet_size": 40,
       "n_input_train_pairs": 6251,
       "n_aligned_train_pairs": 6251,
-      "n_aligned_columns": 4325833,
+      "n_aligned_columns": 4324772,
       "scale": 2.0,
-      "diag_mean_before_rescale": 7.0391340255737305,
+      "diag_mean_before_rescale": 7.0658416748046875,
       "diag_mean_after_rescale": 1.0
     }
   }

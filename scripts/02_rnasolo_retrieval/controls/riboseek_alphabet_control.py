@@ -1,24 +1,4 @@
-"""RiboSeek alphabet control under the RFoldseek search pipeline.
-
-The standard RiboSeek baseline uses the RiboSeek package's own Searcher. That
-comparison mixes representation and search-procedure differences. This script
-holds the RFoldseek search procedure fixed:
-
-  similar-k-mer expansion prefilter -> top-N candidates -> token SW rerank
-
-and swaps only the discrete alphabet:
-
-  1. RFoldseek 80-state learned tokens + Structure-BLOSUM
-  2. RiboSeek sa20 labels + RiboSeek score matrix
-
-By default, each alphabet uses its native substitution matrix scaled to the same
-diagonal mean. For the stricter alphabet-only control, set
-``RFS_ALPHABET_CONTROL_MATRIX=identity``; both alphabets then use the same
-symbolic scoring rule (match=+2, mismatch=-1, rescaled to unit mean diagonal),
-with only matrix dimensionality following alphabet size. For the fairest learned-matrix control, set
-``RFS_ALPHABET_CONTROL_MATRIX=self_blosum``; each alphabet learns its own
-Structure-BLOSUM from the same training-partition US-align pairs.
-"""
+"""RiboSeek alphabet control under the RFoldseek search pipeline."""
 from __future__ import annotations
 
 import json
@@ -35,8 +15,10 @@ import torch
 from numba import njit
 from riboseek import Searcher
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, SRC_SEARCH, resolve  # noqa: E402
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
+from paths import DATA_ROOT, RFOLDSEEK_REPO, SPLITS_DESC, SRC_SEARCH, resolve  # noqa: E402
+sys.path.insert(0, RFOLDSEEK_REPO)
+from rfoldseek.structure_score import c4_coords, score_pair  # noqa: E402
 
 sys.path.insert(0, SRC_SEARCH)
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels  # noqa: E402
@@ -312,8 +294,17 @@ class SamePipelineRanker:
         kmer_k: int = KMER_K,
         top_n: int = TOPN,
         thresh_frac: float = THRESH_FRAC,
+        xyz: list[np.ndarray] | None = None,
     ) -> None:
+        """``xyz`` (per-token C4' coordinates) switches the ranking from the
+        Smith-Waterman score to RFoldseek's structure score S * aTM; without it
+        candidates are ranked by Smith-Waterman score, as for alphabets whose
+        tokens are not one per resolved nucleotide."""
         self.tokens = [np.asarray(seq, dtype=np.int64) for seq in tokens]
+        self.xyz = xyz
+        if xyz is not None:
+            assert all(len(t) == 0 or (x is not None and len(x) == len(t))
+                       for x, t in zip(xyz, self.tokens))
         self.score_matrix = np.asarray(score_matrix, dtype=np.float32)
         self.kmer_k = kmer_k
         self.top_n = top_n
@@ -369,6 +360,14 @@ class SamePipelineRanker:
         candidates = np.asarray([ti for ti, _score in scored[: self.top_n]], dtype=np.int64)
         if len(candidates) == 0:
             return np.zeros(0, dtype=np.int64)
+        if self.xyz is not None:
+            go, ge = np.float32(GAP_OPEN), np.float32(GAP_EXTEND)
+            key = []
+            for ti in candidates:
+                s, atm, _ = score_pair(q, self.xyz[query_index], self.tokens[int(ti)], self.xyz[int(ti)],
+                                       self.score_matrix, go, ge)
+                key.append(s * atm)
+            return candidates[np.argsort(-np.asarray(key), kind="stable")]
         sw = np.asarray(
             [
                 smith_waterman_numba(q, self.tokens[int(ti)], self.score_matrix, GAP_OPEN, GAP_EXTEND)
@@ -390,6 +389,7 @@ def evaluate_ranker(
     fam_pool = np.asarray(families, dtype=object)
     clan_pool = np.asarray(clans, dtype=object)
     all_idx = np.arange(len(families))
+    unlabelled = fam_pool == ""                 # unlabelled targets are neutral
     per_query = {"family": [], "clan": []}
 
     t0 = time.time()
@@ -401,8 +401,9 @@ def evaluate_ranker(
         rank_cache[q] = ranked
         valid = all_idx != q
         rel = (fam_pool == fam_pool[q]) & valid
-        neutral = ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & valid) if clan_pool[q] else None
-        recall1 = int(len(ranked) > 0 and fam_pool[int(ranked[0])] == fam_pool[q])
+        neutral = unlabelled | (((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & valid) if clan_pool[q] else False)
+        labelled = [int(t) for t in ranked if fam_pool[int(t)]]
+        recall1 = int(len(labelled) > 0 and fam_pool[labelled[0]] == fam_pool[q])
         sens = first_fp_sensitivity(ranked, rel, neutral)
         fam_r1.append(recall1)
         fam_sens.append(sens)
@@ -421,8 +422,9 @@ def evaluate_ranker(
         rel = (clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & valid
         if not rel.any():
             continue
-        neutral = (fam_pool == fam_pool[q]) & valid
-        recall1 = int(len(ranked) > 0 and clan_pool[int(ranked[0])] == clan_pool[q])
+        neutral = unlabelled | ((fam_pool == fam_pool[q]) & valid)
+        labelled = [int(t) for t in ranked if fam_pool[int(t)]]
+        recall1 = int(len(labelled) > 0 and clan_pool[labelled[0]] == clan_pool[q])
         sens = first_fp_sensitivity(ranked, rel, neutral)
         clan_r1.append(recall1)
         clan_sens.append(sens)
@@ -442,7 +444,7 @@ def evaluate_ranker(
 
 def load_riboseek_tokens(n_entries: int) -> tuple[list[np.ndarray], np.ndarray]:
     if not RIBOSEEK_CACHE.exists():
-        raise FileNotFoundError(f"Missing {RIBOSEEK_CACHE}; run scripts/02_rnasolo_retrieval/riboseek_encode.py first")
+        raise FileNotFoundError(f"Missing {RIBOSEEK_CACHE}; run scripts/02_rnasolo_retrieval/controls/riboseek_encode_v010.py first")
     encoded = json.load(open(RIBOSEEK_CACHE))
     tokens = [np.asarray(encoded.get(str(i), {}).get("labels", []), dtype=np.int64) for i in range(n_entries)]
     with R.as_file(R.files("riboseek.data").joinpath("demo_db.json")) as path:

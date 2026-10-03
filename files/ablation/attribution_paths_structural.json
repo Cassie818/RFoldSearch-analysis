@@ -17,7 +17,9 @@
      "A_ribo_published": 0.28877045870631296,
      "B_fwd_pipeline": 0.48261158931754927,
      "C_fwd_matrix": 0.5234763768444319,
-     "D_rfoldseek": 0.6193401835725166,
+     "D_3dr_sw": 0.6193401835725166,
+     "D_rfoldseek": 0.6777150681287392,
+     "E0_rev_alphabet": 0.20464880932719112,
      "E_rev_alphabet": 0.396204329148538
     },
     "forward": {
@@ -41,20 +43,34 @@
       "hi": 0.17810020088573536,
       "n_blocks": 27,
       "sig": false
+     },
+     "+ structure score": {
+      "diff": 0.05837488455622243,
+      "lo": 0.01812839240099139,
+      "hi": 0.09623709085761242,
+      "n_blocks": 27,
+      "sig": true
      }
     },
     "reverse": {
      "+ 3Dr alphabet": {
-      "diff": 0.10743387044222505,
-      "lo": 0.01773349984632851,
-      "hi": 0.209257618912164,
+      "diff": -0.08412164937912184,
+      "lo": -0.15118875337129262,
+      "hi": 0.03432591346791759,
+      "n_blocks": 27,
+      "sig": false
+     },
+     "+ learned matrix": {
+      "diff": 0.1915555198213469,
+      "lo": 0.08267300193381776,
+      "hi": 0.26541052222986283,
       "n_blocks": 27,
       "sig": true
      },
-     "+ RFoldseek pipeline & matrix": {
-      "diff": 0.22313585442397862,
-      "lo": 0.15861646305328986,
-      "hi": 0.31001361326464866,
+     "+ RFoldseek pipeline": {
+      "diff": 0.281510738980201,
+      "lo": 0.21920034207521052,
+      "hi": 0.3636559247831076,
       "n_blocks": 27,
       "sig": true
      }
@@ -63,7 +79,9 @@
      "A_ribo_published": 105,
      "B_fwd_pipeline": 105,
      "C_fwd_matrix": 105,
+     "D_3dr_sw": 105,
      "D_rfoldseek": 105,
+     "E0_rev_alphabet": 105,
      "E_rev_alphabet": 105
     }
    },
@@ -72,7 +90,9 @@
      "A_ribo_published": 0.0662491400613975,
      "B_fwd_pipeline": 0.2400856280835804,
      "C_fwd_matrix": 0.35389083967831825,
-     "D_rfoldseek": 0.487718333852404,
+     "D_3dr_sw": 0.487718333852404,
+     "D_rfoldseek": 0.5390859575419229,
+     "E0_rev_alphabet": 0.07133889461862582,
      "E_rev_alphabet": 0.18800960490311378
     },
     "forward": {
@@ -96,20 +116,34 @@
       "hi": 0.3475049305391713,
       "n_blocks": 9,
       "sig": false
+     },
+     "+ structure score": {
+      "diff": 0.051698338133479856,
+      "lo": 0.0037462558731115717,
+      "hi": 0.1314360596241836,
+      "n_blocks": 9,
+      "sig": true
      }
     },
     "reverse": {
      "+ 3Dr alphabet": {
-      "diff": 0.12591138977950206,
-      "lo": 0.01220288826859756,
-      "hi": 0.34952760345745265,
+      "diff": 0.005263268917133835,
+      "lo": -0.056568417205222016,
+      "hi": 0.09414442672024328,
+      "n_blocks": 9,
+      "sig": false
+     },
+     "+ learned matrix": {
+      "diff": 0.12064812086236822,
+      "lo": 0.05891692126258666,
+      "hi": 0.2712198823888249,
       "n_blocks": 9,
       "sig": true
      },
-     "+ RFoldseek pipeline & matrix": {
-      "diff": 0.30992607198165234,
-      "lo": 0.19678726683515252,
-      "hi": 0.4352682336334817,
+     "+ RFoldseek pipeline": {
+      "diff": 0.36162441011513224,
+      "lo": 0.2591956277362085,
+      "hi": 0.49024101116251184,
       "n_blocks": 9,
       "sig": true
      }
@@ -118,7 +152,9 @@
      "A_ribo_published": 91,
      "B_fwd_pipeline": 91,
      "C_fwd_matrix": 91,
+     "D_3dr_sw": 91,
      "D_rfoldseek": 91,
+     "E0_rev_alphabet": 91,
      "E_rev_alphabet": 91
     }
    }
@@ -129,7 +165,9 @@
      "A_ribo_published": 0.29556157256775656,
      "B_fwd_pipeline": 0.49586462509358814,
      "C_fwd_matrix": 0.5365685125616213,
-     "D_rfoldseek": 0.6153889400737461,
+     "D_3dr_sw": 0.6153889400737461,
+     "D_rfoldseek": 0.6720988874551039,
+     "E0_rev_alphabet": 0.213730207150358,
      "E_rev_alphabet": 0.40240464905368883
     },
     "forward": {
@@ -153,20 +191,34 @@
       "hi": 0.16599352665885134,
       "n_blocks": 26,
       "sig": false
+     },
+     "+ structure score": {
+      "diff": 0.05670994738135786,
+      "lo": 0.0011104703301954909,
+      "hi": 0.09920460432773529,
+      "n_blocks": 26,
+      "sig": true
      }
     },
     "reverse": {
      "+ 3Dr alphabet": {
-      "diff": 0.10684307648593228,
-      "lo": 0.021528882222825903,
-      "hi": 0.21347618673918184,
+      "diff": -0.08183136541739856,
+      "lo": -0.1476650983410253,
+      "hi": 0.02793455916102253,
+      "n_blocks": 26,
+      "sig": false
+     },
+     "+ learned matrix": {
+      "diff": 0.18867444190333088,
+      "lo": 0.09721597044698482,
+      "hi": 0.2776051261376202,
       "n_blocks": 26,
       "sig": true
      },
-     "+ RFoldseek pipeline & matrix": {
-      "diff": 0.21298429102005725,
-      "lo": 0.1436638246929621,
-      "hi": 0.31683421903058706,
+     "+ RFoldseek pipeline": {
+      "diff": 0.26969423840141504,
+      "lo": 0.21292397074282546,
+      "hi": 0.358675413848902,
       "n_blocks": 26,
       "sig": true
      }
@@ -175,7 +227,9 @@
      "A_ribo_published": 104,
      "B_fwd_pipeline": 104,
      "C_fwd_matrix": 104,
+     "D_3dr_sw": 104,
      "D_rfoldseek": 104,
+     "E0_rev_alphabet": 104,
      "E_rev_alphabet": 104
     }
    },
@@ -184,7 +238,9 @@
      "A_ribo_published": 0.08436200765463243,
      "B_fwd_pipeline": 0.2615421210631836,
      "C_fwd_matrix": 0.38808691981428634,
-     "D_rfoldseek": 0.4829643894272429,
+     "D_3dr_sw": 0.4829643894272429,
+     "D_rfoldseek": 0.4983937394347415,
+     "E0_rev_alphabet": 0.0815881622818913,
      "E_rev_alphabet": 0.20790945411491935
     },
     "forward": {
@@ -208,20 +264,34 @@
       "hi": 0.35221914776484436,
       "n_blocks": 8,
       "sig": false
+     },
+     "+ structure score": {
+      "diff": 0.015610871772292865,
+      "lo": -0.0347864342682736,
+      "hi": 0.13541393059080517,
+      "n_blocks": 8,
+      "sig": false
      }
     },
     "reverse": {
      "+ 3Dr alphabet": {
-      "diff": 0.1250009458304079,
-      "lo": -0.005119247769992279,
-      "hi": 0.3449631753909855,
+      "diff": -0.002806478847714578,
+      "lo": -0.0796718236854197,
+      "hi": 0.09145762365343722,
       "n_blocks": 8,
       "sig": false
      },
-     "+ RFoldseek pipeline & matrix": {
-      "diff": 0.2782908757277626,
-      "lo": 0.15267923291179106,
-      "hi": 0.41732460045474273,
+     "+ learned matrix": {
+      "diff": 0.1278074246781225,
+      "lo": 0.06395657997815206,
+      "hi": 0.2745614654586544,
+      "n_blocks": 8,
+      "sig": true
+     },
+     "+ RFoldseek pipeline": {
+      "diff": 0.2939017475000555,
+      "lo": 0.18039817206222075,
+      "hi": 0.4832673016651383,
       "n_blocks": 8,
       "sig": true
      }
@@ -230,7 +300,9 @@
      "A_ribo_published": 86,
      "B_fwd_pipeline": 86,
      "C_fwd_matrix": 86,
+     "D_3dr_sw": 86,
      "D_rfoldseek": 86,
+     "E0_rev_alphabet": 86,
      "E_rev_alphabet": 86
     }
    }
@@ -241,7 +313,9 @@
      "A_ribo_published": 0.31330609605027393,
      "B_fwd_pipeline": 0.5106150548854695,
      "C_fwd_matrix": 0.5601306996148976,
-     "D_rfoldseek": 0.5985017187636759,
+     "D_3dr_sw": 0.5985017187636759,
+     "D_rfoldseek": 0.6591485004942338,
+     "E0_rev_alphabet": 0.2333295147966879,
      "E_rev_alphabet": 0.40604648136238786
     },
     "forward": {
@@ -265,20 +339,34 @@
       "hi": 0.1313469453264584,
       "n_blocks": 25,
       "sig": false
+     },
+     "+ structure score": {
+      "diff": 0.060646781730557854,
+      "lo": -0.01001967748123526,
+      "hi": 0.11394995367684144,
+      "n_blocks": 25,
+      "sig": false
      }
     },
     "reverse": {
      "+ 3Dr alphabet": {
-      "diff": 0.0927403853121139,
-      "lo": 0.0013900879173867177,
-      "hi": 0.22110469349826944,
+      "diff": -0.07997658125358602,
+      "lo": -0.16913628642046286,
+      "hi": 0.03727264061498173,
+      "n_blocks": 25,
+      "sig": false
+     },
+     "+ learned matrix": {
+      "diff": 0.17271696656569993,
+      "lo": 0.06467811115708252,
+      "hi": 0.29027371830871396,
       "n_blocks": 25,
       "sig": true
      },
-     "+ RFoldseek pipeline & matrix": {
-      "diff": 0.19245523740128803,
-      "lo": 0.09354564740776494,
-      "hi": 0.351378490023455,
+     "+ RFoldseek pipeline": {
+      "diff": 0.2531020191318459,
+      "lo": 0.19063762899296827,
+      "hi": 0.3645550148467981,
       "n_blocks": 25,
       "sig": true
      }
@@ -287,7 +375,9 @@
      "A_ribo_published": 102,
      "B_fwd_pipeline": 102,
      "C_fwd_matrix": 102,
+     "D_3dr_sw": 102,
      "D_rfoldseek": 102,
+     "E0_rev_alphabet": 102,
      "E_rev_alphabet": 102
     }
    },
@@ -296,7 +386,9 @@
      "A_ribo_published": 0.08401380366562067,
      "B_fwd_pipeline": 0.2849214770855943,
      "C_fwd_matrix": 0.42474282749936637,
-     "D_rfoldseek": 0.5058498968167284,
+     "D_3dr_sw": 0.5058498968167284,
+     "D_rfoldseek": 0.523737038452524,
+     "E0_rev_alphabet": 0.09746635026693265,
      "E_rev_alphabet": 0.22391248416793536
     },
     "forward": {
@@ -320,20 +412,34 @@
       "hi": 0.4065249469595374,
       "n_blocks": 8,
       "sig": false
+     },
+     "+ structure score": {
+      "diff": 0.017887141635795484,
+      "lo": -0.05549501626877745,
+      "hi": 0.1,
+      "n_blocks": 8,
+      "sig": false
      }
     },
     "reverse": {
      "+ 3Dr alphabet": {
-      "diff": 0.13989868050231474,
-      "lo": 0.005155279503105591,
-      "hi": 0.3813581141506788,
+      "diff": 0.013452546601311956,
+      "lo": -0.0561985900598056,
+      "hi": 0.11321830533797765,
+      "n_blocks": 8,
+      "sig": false
+     },
+     "+ learned matrix": {
+      "diff": 0.12644613390100276,
+      "lo": 0.04141414141414142,
+      "hi": 0.29906104571024367,
       "n_blocks": 8,
       "sig": true
      },
-     "+ RFoldseek pipeline & matrix": {
-      "diff": 0.2819374126487931,
-      "lo": 0.08121279761904762,
-      "hi": 0.5216264377114503,
+     "+ RFoldseek pipeline": {
+      "diff": 0.2998245542845885,
+      "lo": 0.1549683701185584,
+      "hi": 0.5241782555173503,
       "n_blocks": 8,
       "sig": true
      }
@@ -342,7 +448,9 @@
      "A_ribo_published": 79,
      "B_fwd_pipeline": 79,
      "C_fwd_matrix": 79,
+     "D_3dr_sw": 79,
      "D_rfoldseek": 79,
+     "E0_rev_alphabet": 79,
      "E_rev_alphabet": 79
     }
    }
