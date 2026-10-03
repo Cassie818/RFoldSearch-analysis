@@ -5,8 +5,8 @@ method for the 106 family-evaluable RNAsolo test queries; RFoldseek and RFoldsee
 ranking per tie-breaking seed) and family_pair_identity.json (query--target identity for
 every same-family pair). Section 2.2 family-level definitions: within a stratum only
 same-family targets in the stratum are positives, same-family targets outside it and
-same-clan targets of other families are neutral, all other targets (including unlabelled
-chains) are false positives.
+same-clan targets of other families and unlabelled chains are neutral, all other targets
+are false positives.
 
     from sequence_divergent_rescore import rescore
     per = rescore([("bg", 0.0, 0.67), ("mid", 0.67, 0.80)])   # {stratum: {method: {query: Sens@1FP}}}
@@ -58,7 +58,7 @@ def rescore(strata, methods=None, ident=None):
             P = same & (idv >= lo) & (idv < hi)
             if not P.any():
                 continue
-            N = sameclan | (same & ~P)
+            N = sameclan | (same & ~P) | (fam == "")
             for m, r in R["ranks"][qt].items():
                 if m in ("seq_detect_E", "infernal_any") or (methods and m not in methods):
                     continue

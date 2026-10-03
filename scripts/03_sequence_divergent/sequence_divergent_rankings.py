@@ -1,47 +1,7 @@
 """Rankings and per-query Sens@1FP behind Fig. 3 (sequence-divergent homologues).
 
 RNAsolo benchmark (885 chains), Section 2.2 definitions; unlabelled chains are
-false positives. For every test query the script ranks the database with
-
-  RFoldseek      deployed token search (4-mer prefilter, top 200, SW rerank); ten
-                 sha256 tie-breaking seeds (rfoldseek.tiebreak) at the top-200 cut
-                 and in the SW ranking
-  RFoldseek-TM   the same top-200 candidates reranked by symmetric US-align TM-score,
-                 same seeds
-  US-align       all targets by symmetric TM-score
-  BLASTN         -task blastn, both strands, -dust no, E <= 10
-  nhmmer         --rna, E <= 10
-  Infernal       single-sequence CM rankings (files/production/retrieval)
-  RS-20, RS-80   RiboSeek 0.2.0 rankings (files/production/retrieval)
-  Length         target length closest to the query's
-  Composition    cosine similarity of 80-state 3Dr token composition
-  Shuffled       RFoldseek on the query's shuffled tokens (three shuffles)
-
-and scores two analyses:
-
-  family  106 family-evaluable test queries. Positives are same-family targets,
-          same-clan targets of other families are neutral. Also records the
-          pairwise sequence identity of every query--same-family-target pair
-          (global alignment, Biopython PairwiseAligner +2/-1, gap -3/-0.5;
-          identity over the shorter sequence), used by sequence_divergent_rescore.
-  clan    clan-evaluable test queries. Positives are same-clan targets of other
-          families, same-family targets are neutral.
-
-Each analysis is scored without filtering and after neutralising positives that
-BLASTN or nhmmer detect at E < 0.01 or E <= 10, or at E <= 10 together with any
-Infernal hit. RFoldseek, RFoldseek-TM and Shuffled are means over their seeds or
-shuffles.
-
-Writes files/production/retrieval/sequence_divergent/
-    family_rankings.json, family_pair_identity.json, family_perquery.json,
-    clan_perquery.json
-
-    python sequence_divergent_rankings.py [--seeds 10] [--check]
-
---check compares the new per-query values with the files already present and
-does not overwrite them. Binaries: RFOLDSEEK_BLAST_BIN, RFOLDSEEK_HMMER_BIN
-(directories; empty = PATH).
-"""
+neutral."""
 import argparse
 import csv
 import json
@@ -62,6 +22,7 @@ from paths import BLAST_BIN, RFOLDSEEK_REPO, SRC_SEARCH  # noqa: E402
 sys.path.insert(0, SRC_SEARCH)
 sys.path.insert(0, RFOLDSEEK_REPO)
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels  # noqa: E402
+from rfoldseek.structure_score import c4_coords, score_pair  # noqa: E402
 from rfoldseek.tiebreak import tie_keys  # noqa: E402
 from smith_waterman import smith_waterman_numba  # noqa: E402
 
@@ -103,6 +64,17 @@ for ti, tt in enumerate(toks):
     for p in range(len(tt) - KMER_K + 1):
         idx[int(np.dot(tt[p:p + KMER_K], powers))].append((ti, p))
 smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), sub, GO, GE)
+XYZ = [c4_coords(e, len(t)) for e, t in zip(ents, toks)]
+assert all(x is not None for x in XYZ), "every chain needs C4' coordinates"
+GO32, GE32 = np.float32(GO), np.float32(GE)
+
+
+def structure_score(qt, qxyz, t):
+    """RFoldseek's ranking score S * aTM of query tokens qt (C4' qxyz) against chain t."""
+    s, atm, _ = score_pair(qt, qxyz, toks[t], XYZ[t], sub, GO32, GE32)
+    return s * atm
+
+
 THR = THRESH_FRAC * KMER_K
 DIAG = np.array([sub[t, t] for t in range(K)], dtype=np.float64)
 
@@ -133,14 +105,14 @@ def prefilter(tt, q):
     return [x for x in sc if x[1] > 0]
 
 
-def rank_tokens(tt, q):
+def rank_tokens(tt, qxyz, q):
     """Deployed search with index tie-breaking (used for the shuffled-token control)."""
     sc = sorted(prefilter(tt, q), key=lambda x: (-x[1], x[0]))
     cand = np.array([x[0] for x in sc][:TOPN], np.int64)
     if len(cand) == 0:
         return np.zeros(0, np.int64)
-    sw = np.array([smith_waterman_numba(tt, toks[t], sub, GO, GE) for t in cand])
-    return cand[np.argsort(-sw, kind="stable")]
+    key = np.array([structure_score(tt, qxyz, t) for t in cand])
+    return cand[np.argsort(-key, kind="stable")]
 
 
 US = defaultdict(dict)
@@ -161,8 +133,8 @@ def rank_seeded(q, keys_by_seed):
             tm.append(c0)
             continue
         c = c0[np.lexsort((keys[c0], -s0))][:TOPN]
-        sw = np.array([cache.setdefault(int(t), smith_waterman_numba(toks[q], toks[t], sub, GO, GE)) for t in c])
-        rf.append(c[np.lexsort((keys[c], -sw))])
+        key = np.array([cache.setdefault(int(t), structure_score(toks[q], XYZ[q], t)) for t in c])
+        rf.append(c[np.lexsort((keys[c], -key))])
         tmv = np.array([US[q].get(int(t), -1.0) for t in c])
         tm.append(c[np.lexsort((keys[c], -tmv))])
     return rf, tm
@@ -204,8 +176,8 @@ def sequence_hits(q):
     return bl, nh
 
 
-INF = json.load(open(os.path.join(RET, "infernal_rankings_test.json")))
-RS = {m: json.load(open(os.path.join(RET, f"riboseek_{k}_rankings_test.json")))
+INF = json.load(open(os.path.join(RET, "rankings", "infernal.json")))
+RS = {m: json.load(open(os.path.join(RET, "rankings", f"riboseek_{k}.json")))
       for m, k in (("RS-20", "rs20"), ("RS-80", "rs80"))}
 TLEN = np.array([len(SEQS[t]) for t in tags])
 COMP = np.stack([np.bincount(t, minlength=K) for t in toks]).astype(float)
@@ -242,7 +214,8 @@ def score(queries, truth, keys_by_seed, cache, family=False):
     saved, pair_id = {}, {}
     for n, q in enumerate(queries):
         rf, tm, rank, bl, nh = rankings(q, keys_by_seed, cache)
-        shuf = [rank_tokens(rng.permutation(toks[q]), q) for _ in range(NSHUF)]
+        perms = [rng.permutation(len(toks[q])) for _ in range(NSHUF)]
+        shuf = [rank_tokens(toks[q][pm], XYZ[q][pm], q) for pm in perms]
         P, Nn = truth(q)
         s01, s10, ia = np.zeros(N, bool), np.zeros(N, bool), np.zeros(N, bool)
         for d in (bl, nh):
@@ -302,11 +275,11 @@ def main():
     def family_truth(q):
         va = ALL != q
         neutral = ((clan == clan[q]) & (fam != fam[q]) & va) if clan[q] else np.zeros(N, bool)
-        return (fam == fam[q]) & va, neutral
+        return (fam == fam[q]) & va, neutral | (fam == "")
 
     def clan_truth(q):
         va = ALL != q
-        return (clan == clan[q]) & (fam != fam[q]) & va, (fam == fam[q]) & va
+        return (clan == clan[q]) & (fam != fam[q]) & va, ((fam == fam[q]) & va) | (fam == "")
 
     fam_per, saved, pair_id = score(FAM_Q, family_truth, keys_by_seed, cache, family=True)
     clan_per, _, _ = score(CLAN_Q, clan_truth, keys_by_seed, cache)

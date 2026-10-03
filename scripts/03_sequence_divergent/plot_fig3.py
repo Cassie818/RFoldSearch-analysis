@@ -1,33 +1,4 @@
-"""Sequence-divergent homologues on the 885-chain RNAsolo benchmark (Section 2.2 definitions).
-
-Fig. 3:
-  a  family-level Sens@1FP by pairwise sequence identity between query and
-     same-family target (sequence_divergent_rescore.seq_identity), in zones
-     defined from the identity of unrelated chains (background_identity), after
-     Rost (1999): above background (> 99th percentile), twilight zone (50th-99th)
-     and midnight zone (< 50th). Only same-family targets in the zone are
-     positives; same-family targets outside it are neutral. Pairs above 80% are
-     not shown.
-     Query eligibility is determined separately in each zone, so cross-zone
-     values are descriptive rather than paired measurements of a fixed cohort.
-     95% block-bootstrap intervals for RFoldseek and Infernal only.
-  b  RFoldseek minus each comparator after same-family targets detected by
-     BLASTN (-task blastn, both strands) or nhmmer at E <= 10 are made neutral,
-     all families and with tRNA (RF00005) excluded; homology-free controls rank
-     targets by 3Dr token composition, by length, or by RFoldseek on the query's
-     shuffled tokens
-  c  clan-level Sens@1FP by clan without filtering (open) and after removing
-     clan positives detected by BLASTN (-task blastn, both strands) or nhmmer at
-     E <= 10 (filled); identity bins are uninformative here because cross-family
-     pairs are almost all of low identity
-
-RFoldseek and RFoldseek-TM are means over ten sha256 tie-breaking seeds. Unlabelled
-chains are false positives. Means over queries; 95% intervals from the hierarchical
-block bootstrap over Rfam families (2,000 replicates, seed 124), paired for differences.
-
-Reads files/production/retrieval/sequence_divergent/{family,clan}_perquery.json.
-Writes figures/fig3.png.
-"""
+"""Sequence-divergent homologues on the 885-chain RNAsolo benchmark"""
 import json
 import os
 import sys
