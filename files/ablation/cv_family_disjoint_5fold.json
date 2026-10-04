@@ -52,8 +52,8 @@
    "struct_blosum_pairs": 2656,
    "vqvae_train_chains": 464,
    "vqvae_val_chains": 116,
-   "fam_sens": 0.368714214588001,
-   "clan_sens": 0.08190883190883191,
+   "fam_sens": 0.5181416479960169,
+   "clan_sens": 0.19836182336182337,
    "nqf": 104,
    "nqc": 104
   },
@@ -90,7 +90,7 @@
    "struct_blosum_pairs": 5295,
    "vqvae_train_chains": 526,
    "vqvae_val_chains": 132,
-   "fam_sens": 0.7823529411764706,
+   "fam_sens": 0.7972549019607844,
    "clan_sens": null,
    "nqf": 34,
    "nqc": 0
@@ -160,8 +160,8 @@
    "struct_blosum_pairs": 3777,
    "vqvae_train_chains": 464,
    "vqvae_val_chains": 117,
-   "fam_sens": 0.4853535353535353,
-   "clan_sens": 0.11571600777208252,
+   "fam_sens": 0.56324354657688,
+   "clan_sens": 0.16050366056738188,
    "nqf": 33,
    "nqc": 22
   },
@@ -288,8 +288,8 @@
    "struct_blosum_pairs": 4575,
    "vqvae_train_chains": 455,
    "vqvae_val_chains": 114,
-   "fam_sens": 0.4696969696969697,
-   "clan_sens": 0.11847267316017317,
+   "fam_sens": 0.5747474747474748,
+   "clan_sens": 0.30396825396825394,
    "nqf": 33,
    "nqc": 16
   },
@@ -364,8 +364,8 @@
    "struct_blosum_pairs": 3385,
    "vqvae_train_chains": 453,
    "vqvae_val_chains": 114,
-   "fam_sens": 0.4627018851617781,
-   "clan_sens": 0.13215713081910263,
+   "fam_sens": 0.5488935702839446,
+   "clan_sens": 0.16507934546852263,
    "nqf": 33,
    "nqc": 15
   }
@@ -380,23 +380,23 @@
    "fold": 0
   },
   {
-   "fam": 0.5598705501618123,
-   "clan": 0.1851851851851852,
+   "fam": 0.6699029126213593,
+   "clan": 0.4074074074074074,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005O2R_1_x.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.47572815533980584,
-   "clan": 0.0,
+   "fam": 0.5598705501618123,
+   "clan": 0.1111111111111111,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001GAX_1_C.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.11650485436893204,
+   "fam": 0.49514563106796117,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005B63_1_D.cif",
    "family": "RF00005",
@@ -404,7 +404,7 @@
    "fold": 0
   },
   {
-   "fam": 0.00970873786407767,
+   "fam": 0.29449838187702265,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7Y_1_B.cif",
    "family": "RF00005",
@@ -412,31 +412,31 @@
    "fold": 0
   },
   {
-   "fam": 0.5016181229773463,
-   "clan": 0.0,
+   "fam": 0.5728155339805825,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008P7X_1_6.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.5048543689320388,
-   "clan": 0.0,
+   "fam": 0.6990291262135923,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008P7X_1_7.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.6019417475728155,
-   "clan": 0.1111111111111111,
+   "fam": 0.6634304207119741,
+   "clan": 0.4444444444444444,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008P7X_1_8.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.006472491909385113,
+   "fam": 0.0,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008R3V_1_W1.cif",
    "family": "RF00005",
@@ -452,15 +452,15 @@
    "fold": 0
   },
   {
-   "fam": 0.3300970873786408,
-   "clan": 0.2222222222222222,
+   "fam": 0.5372168284789643,
+   "clan": 0.4444444444444444,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003Q1Q_1_C.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.4789644012944984,
+   "fam": 0.6601941747572816,
    "clan": 0.1111111111111111,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004WJ3_1_Q.cif",
    "family": "RF00005",
@@ -468,15 +468,15 @@
    "fold": 0
   },
   {
-   "fam": 0.06796116504854369,
-   "clan": 0.0,
+   "fam": 0.1650485436893204,
+   "clan": 0.2222222222222222,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00002NQP_1_F.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.45307443365695793,
+   "fam": 0.42718446601941745,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006Q97_1_7.cif",
    "family": "RF00005",
@@ -484,401 +484,17 @@
    "fold": 0
   },
   {
-   "fam": 0.44012944983818764,
-   "clan": 0.0,
+   "fam": 0.5242718446601942,
+   "clan": 0.14814814814814814,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005E7K_1_3K.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.5242718446601942,
-   "clan": 0.1851851851851852,
+   "fam": 0.6699029126213593,
+   "clan": 0.5555555555555556,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008APN_1_C1.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.009708737864077669,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007ASA_1_2.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5501618122977346,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005WT3_1_C.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.23300970873786409,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00002DER_1_C.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.6828478964401294,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J9W_1_AX.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5436893203883495,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003TUP_1_T.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.44336569579288027,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007OII_1_z.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.576051779935275,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008AW3_1_1.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.1423948220064725,
-   "clan": 0.3333333333333333,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V87_1_BB.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.3624595469255663,
-   "clan": 0.1111111111111111,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007U2H_1_1y.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5889967637540453,
-   "clan": 0.14814814814814814,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001G59_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.6245954692556634,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008AM9_1_8.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5210355987055016,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008FMW_1_X.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.4789644012944984,
-   "clan": 0.3333333333333333,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001QF6_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.46278317152103554,
-   "clan": 0.14814814814814814,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006Q8Y_1_m.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5792880258899676,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006Q8Y_1_n.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.47572815533980584,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7A_1_7.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.47572815533980584,
-   "clan": 0.1111111111111111,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008PTX_1_X.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5307443365695793,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006T7T_1_6.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.6634304207119741,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008QCQ_1_w.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.009708737864077669,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006JXM_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5436893203883495,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00009EY1_1_T.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.3656957928802589,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006AH3_1_T.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.4077669902912621,
-   "clan": 0.4444444444444444,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005ON2_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.517799352750809,
-   "clan": 0.1111111111111111,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005CCB_1_N.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.04854368932038835,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004WR6_1_1L.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5048543689320388,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007QI6_1_Ax.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.02588996763754045,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008CBK_1_T.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.6472491909385113,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008B2L_1_W2.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.4919093851132686,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007A5H_1_24.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.44012944983818775,
-   "clan": 0.1111111111111111,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005WWR_1_C.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.3074433656957929,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007P6Z_1_7.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.27184466019417475,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008RR1_1_T.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.07766990291262135,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00009GMW_1_T.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.042071197411003236,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008JOZ_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5080906148867314,
-   "clan": 0.037037037037037035,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005X6B_1_P.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.3624595469255663,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003EPH_1_E.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5339805825242718,
-   "clan": 0.1111111111111111,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006IP5_1_zu.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.34627831715210355,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V7L_1_AW.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.2168284789644013,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7R_1_S6.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.598705501618123,
-   "clan": 0.2222222222222222,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007B5K_1_z.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.04854368932038835,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006QDW_1_v.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5016181229773463,
-   "clan": 0.4444444444444444,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007O80_1_AT.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.5825242718446602,
-   "clan": 0.1851851851851852,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006R5Q_1_2.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.4563106796116505,
-   "clan": 0.4444444444444444,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001H3E_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.4174757281553398,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003AMT_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.3948220064724919,
-   "clan": 0.1111111111111111,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008RR3_1_T.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.2394822006472492,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003KFU_1_K.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.47572815533980584,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007E8O_1_X.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
@@ -886,13 +502,397 @@
   {
    "fam": 0.0,
    "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007ASA_1_2.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6893203883495146,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005WT3_1_C.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.4077669902912621,
+   "clan": 0.2222222222222222,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00002DER_1_C.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6440129449838188,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J9W_1_AX.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.7119741100323624,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003TUP_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.576051779935275,
+   "clan": 0.25925925925925924,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007OII_1_z.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5954692556634303,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008AW3_1_1.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5307443365695793,
+   "clan": 0.5555555555555556,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V87_1_BB.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.4336569579288026,
+   "clan": 0.07407407407407407,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007U2H_1_1y.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.686084142394822,
+   "clan": 0.2962962962962963,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001G59_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6957928802588996,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008AM9_1_8.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6407766990291263,
+   "clan": 0.25925925925925924,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008FMW_1_X.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6213592233009708,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001QF6_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6084142394822006,
+   "clan": 0.2222222222222222,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006Q8Y_1_m.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6634304207119741,
+   "clan": 0.4444444444444444,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006Q8Y_1_n.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6084142394822006,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7A_1_7.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.4595469255663431,
+   "clan": 0.2962962962962963,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008PTX_1_X.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6440129449838188,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006T7T_1_6.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6634304207119741,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008QCQ_1_w.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.3106796116504854,
+   "clan": 0.1111111111111111,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006JXM_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.45307443365695793,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00009EY1_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5598705501618123,
+   "clan": 0.25925925925925924,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006AH3_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5275080906148867,
+   "clan": 0.4444444444444444,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005ON2_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6213592233009708,
+   "clan": 0.1111111111111111,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005CCB_1_N.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.22330097087378642,
+   "clan": 0.1111111111111111,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004WR6_1_1L.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5631067961165048,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007QI6_1_Ax.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5275080906148867,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008CBK_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6601941747572816,
+   "clan": 0.2962962962962963,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008B2L_1_W2.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6407766990291263,
+   "clan": 0.1111111111111111,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007A5H_1_24.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.44336569579288027,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005WWR_1_C.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6601941747572816,
+   "clan": 0.25925925925925924,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007P6Z_1_7.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.49838187702265374,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008RR1_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.23300970873786406,
+   "clan": 0.037037037037037035,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00009GMW_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.3851132686084142,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008JOZ_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6699029126213593,
+   "clan": 0.2962962962962963,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00005X6B_1_P.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5145631067961165,
+   "clan": 0.2222222222222222,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003EPH_1_E.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6019417475728155,
+   "clan": 0.2222222222222222,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006IP5_1_zu.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.576051779935275,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V7L_1_AW.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.41100323624595475,
+   "clan": 0.25925925925925924,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J7R_1_S6.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6731391585760518,
+   "clan": 0.3333333333333333,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007B5K_1_z.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.05825242718446602,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006QDW_1_v.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5728155339805825,
+   "clan": 0.5555555555555556,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007O80_1_AT.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6796116504854369,
+   "clan": 0.1851851851851852,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00006R5Q_1_2.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6181229773462783,
+   "clan": 0.4074074074074074,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001H3E_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6796116504854369,
+   "clan": 0.25925925925925924,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003AMT_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.4789644012944984,
+   "clan": 0.1111111111111111,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00008RR3_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5889967637540453,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00003KFU_1_K.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.5501618122977346,
+   "clan": 0.1111111111111111,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00007E8O_1_X.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.019417475728155338,
+   "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007UO0_1_C.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.04854368932038835,
+   "fam": 0.30097087378640774,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001OB2_1_B.cif",
    "family": "RF00005",
@@ -900,7 +900,7 @@
    "fold": 0
   },
   {
-   "fam": 0.6181229773462783,
+   "fam": 0.6440129449838188,
    "clan": 0.2222222222222222,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004YYE_1_C.cif",
    "family": "RF00005",
@@ -908,23 +908,23 @@
    "fold": 0
   },
   {
-   "fam": 0.5339805825242718,
-   "clan": 0.2222222222222222,
+   "fam": 0.546925566343042,
+   "clan": 0.037037037037037035,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00002DR2_1_B.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.009708737864077669,
-   "clan": 0.0,
+   "fam": 0.540453074433657,
+   "clan": 0.1111111111111111,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005UD5_1_D.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.04854368932038835,
+   "fam": 0.3624595469255663,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007VNV_1_A.cif",
    "family": "RF00005",
@@ -932,23 +932,23 @@
    "fold": 0
   },
   {
-   "fam": 0.47572815533980584,
-   "clan": 0.0,
+   "fam": 0.7281553398058253,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008BTK_1_AT.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.06796116504854369,
-   "clan": 0.1111111111111111,
+   "fam": 0.32038834951456313,
+   "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V8N_1_AW.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.1423948220064725,
+   "fam": 0.3786407766990291,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001F7V_1_B.cif",
    "family": "RF00005",
@@ -956,23 +956,23 @@
    "fold": 0
   },
   {
-   "fam": 0.13268608414239483,
-   "clan": 0.0,
+   "fam": 0.44660194174757284,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008P7B_1_R.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.08737864077669903,
-   "clan": 0.0,
+   "fam": 0.605177993527508,
+   "clan": 0.1111111111111111,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZM5_1_B.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.1262135922330097,
+   "fam": 0.6699029126213593,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZM5_1_w.cif",
    "family": "RF00005",
@@ -980,24 +980,24 @@
    "fold": 0
   },
   {
-   "fam": 0.5889967637540453,
-   "clan": 0.14814814814814814,
+   "fam": 0.6440129449838188,
+   "clan": 0.2222222222222222,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007F36_1_F.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.48220064724919093,
-   "clan": 0.0,
+   "fam": 0.6245954692556633,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003A2K_1_C.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.4498381877022654,
-   "clan": 0.0,
+   "fam": 0.6537216828478964,
+   "clan": 0.4074074074074074,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00002D6F_1_F.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
@@ -1012,89 +1012,49 @@
    "fold": 0
   },
   {
-   "fam": 0.5889967637540453,
-   "clan": 0.2222222222222222,
+   "fam": 0.7022653721682848,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00009BH5_1_DA.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.5339805825242718,
-   "clan": 0.0,
+   "fam": 0.5922330097087378,
+   "clan": 0.1111111111111111,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008CTI_1_C.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.5728155339805825,
-   "clan": 0.2222222222222222,
+   "fam": 0.5631067961165048,
+   "clan": 0.1111111111111111,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006I0Y_1_V.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.29449838187702265,
-   "clan": 0.4444444444444444,
+   "fam": 0.5436893203883495,
+   "clan": 0.5555555555555556,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001WZ2_1_C.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.12297734627831715,
-   "clan": 0.2222222222222222,
+   "fam": 0.46601941747572817,
+   "clan": 0.4444444444444444,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008HMY_1_T.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.5857605177993527,
-   "clan": 0.07407407407407407,
+   "fam": 0.6245954692556633,
+   "clan": 0.1851851851851852,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007NSP_1_v.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.401294498381877,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004LCK_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.39805825242718446,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00009C3H_1_S4.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.4595469255663431,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00002ZUE_1_B.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.3786407766990291,
-   "clan": 0.07407407407407407,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001ASY_1_R.cif",
-   "family": "RF00005",
-   "clan_acc": "CL00001",
-   "fold": 0
-  },
-  {
-   "fam": 0.4368932038834952,
-   "clan": 0.0,
-   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001H4Q_1_T.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
@@ -1102,29 +1062,69 @@
   {
    "fam": 0.2524271844660194,
    "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00004LCK_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.6731391585760518,
+   "clan": 0.1111111111111111,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00009C3H_1_S4.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.627831715210356,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00002ZUE_1_B.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.540453074433657,
+   "clan": 0.0,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001ASY_1_R.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.576051779935275,
+   "clan": 0.2222222222222222,
+   "id": "/Users/cassie/Desktop/NR80_local/PDB_00001H4Q_1_T.cif",
+   "family": "RF00005",
+   "clan_acc": "CL00001",
+   "fold": 0
+  },
+  {
+   "fam": 0.4563106796116505,
+   "clan": 0.1111111111111111,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006YWE_1_bb.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.5145631067961165,
-   "clan": 0.0,
+   "fam": 0.6084142394822006,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00002DU3_1_D.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.4789644012944984,
-   "clan": 0.1111111111111111,
+   "fam": 0.6245954692556634,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007LJ3_1_A.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.38187702265372164,
+   "fam": 0.5501618122977346,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008KD9_1_M.cif",
    "family": "RF00005",
@@ -1132,7 +1132,7 @@
    "fold": 0
   },
   {
-   "fam": 0.3333333333333333,
+   "fam": 0.33980582524271846,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001J2B_1_C.cif",
    "family": "RF00005",
@@ -1140,15 +1140,15 @@
    "fold": 0
   },
   {
-   "fam": 0.19741100323624594,
-   "clan": 0.0,
+   "fam": 0.5016181229773463,
+   "clan": 0.2222222222222222,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V5L_1_AY.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.019417475728155338,
+   "fam": 0.13592233009708737,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006YS5_1_7.cif",
    "family": "RF00005",
@@ -1156,31 +1156,31 @@
    "fold": 0
   },
   {
-   "fam": 0.546925566343042,
-   "clan": 0.1111111111111111,
+   "fam": 0.6731391585760518,
+   "clan": 0.3333333333333333,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006UFM_1_A.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.5663430420711973,
-   "clan": 0.0,
+   "fam": 0.6828478964401294,
+   "clan": 0.4444444444444444,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004UG0_1_S6.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.27184466019417475,
-   "clan": 0.0,
+   "fam": 0.7055016181229773,
+   "clan": 0.2962962962962963,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001VVJ_1_QV.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.0,
+   "fam": 0.022653721682847894,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004GCW_1_B.cif",
    "family": "RF00005",
@@ -1188,15 +1188,15 @@
    "fold": 0
   },
   {
-   "fam": 0.4368932038834951,
-   "clan": 0.0,
+   "fam": 0.576051779935275,
+   "clan": 0.14814814814814814,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005E6M_1_C.cif",
    "family": "RF00005",
    "clan_acc": "CL00001",
    "fold": 0
   },
   {
-   "fam": 0.3786407766990291,
+   "fam": 0.5825242718446602,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007P7T_1_C.cif",
    "family": "RF00005",
@@ -1204,7 +1204,7 @@
    "fold": 0
   },
   {
-   "fam": 0.92,
+   "fam": 0.96,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V8P_1_B3.cif",
    "family": "RF00001",
@@ -1212,7 +1212,7 @@
    "fold": 1
   },
   {
-   "fam": 0.64,
+   "fam": 0.8533333333333334,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008P7X_1_4.cif",
    "family": "RF00001",
@@ -1228,7 +1228,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 0.96,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008RXH_1_L8.cif",
    "family": "RF00001",
@@ -1236,7 +1236,7 @@
    "fold": 1
   },
   {
-   "fam": 0.7600000000000001,
+   "fam": 0.52,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008CGV_1_b.cif",
    "family": "RF00001",
@@ -1244,7 +1244,7 @@
    "fold": 1
   },
   {
-   "fam": 0.9066666666666667,
+   "fam": 0.84,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005IMQ_1_E.cif",
    "family": "RF00001",
@@ -1260,7 +1260,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 0.96,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008FMW_1_AB.cif",
    "family": "RF00001",
@@ -1284,7 +1284,7 @@
    "fold": 1
   },
   {
-   "fam": 0.8933333333333334,
+   "fam": 0.9466666666666667,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005XXB_1_3.cif",
    "family": "RF00001",
@@ -1308,7 +1308,7 @@
    "fold": 1
   },
   {
-   "fam": 0.8933333333333334,
+   "fam": 0.96,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006XU6_1_A7.cif",
    "family": "RF00001",
@@ -1316,7 +1316,7 @@
    "fold": 1
   },
   {
-   "fam": 0.8266666666666667,
+   "fam": 0.8533333333333334,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005MMI_1_B.cif",
    "family": "RF00001",
@@ -1332,7 +1332,7 @@
    "fold": 1
   },
   {
-   "fam": 0.8933333333333334,
+   "fam": 0.92,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZJ3_1_LO.cif",
    "family": "RF00001",
@@ -1340,7 +1340,7 @@
    "fold": 1
   },
   {
-   "fam": 0.8266666666666667,
+   "fam": 0.88,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00002ZJP_1_Z.cif",
    "family": "RF00001",
@@ -1356,7 +1356,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 0.96,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005XY3_1_3.cif",
    "family": "RF00001",
@@ -1364,7 +1364,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 0.9333333333333332,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007QEP_1_2.cif",
    "family": "RF00001",
@@ -1372,7 +1372,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J79_1_B.cif",
    "family": "RF00001",
@@ -1388,7 +1388,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 0.9066666666666667,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00009BH5_1_A7.cif",
    "family": "RF00001",
@@ -1412,7 +1412,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 0.96,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007R81_1_B1.cif",
    "family": "RF00001",
@@ -1420,7 +1420,7 @@
    "fold": 1
   },
   {
-   "fam": 0.9066666666666667,
+   "fam": 0.92,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006SKF_1_BB.cif",
    "family": "RF00001",
@@ -1428,7 +1428,7 @@
    "fold": 1
   },
   {
-   "fam": 0.56,
+   "fam": 0.68,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007OF1_1_3.cif",
    "family": "RF00001",
@@ -1436,7 +1436,7 @@
    "fold": 1
   },
   {
-   "fam": 0.92,
+   "fam": 0.9333333333333332,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008OVA_1_BD.cif",
    "family": "RF00001",
@@ -1444,7 +1444,7 @@
    "fold": 1
   },
   {
-   "fam": 0.7599999999999999,
+   "fam": 0.7733333333333334,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003J9Y_1_B.cif",
    "family": "RF00001",
@@ -1460,7 +1460,7 @@
    "fold": 1
   },
   {
-   "fam": 0.8666666666666667,
+   "fam": 0.8000000000000002,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001FFK_1_9.cif",
    "family": "RF00001",
@@ -1484,7 +1484,7 @@
    "fold": 2
   },
   {
-   "fam": 0.0,
+   "fam": 0.07407407407407407,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008R3V_1_71.cif",
    "family": "RF02540",
@@ -1492,7 +1492,7 @@
    "fold": 2
   },
   {
-   "fam": 1.0,
+   "fam": 0.5,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008K1E_1_A.cif",
    "family": "RF01684",
@@ -1500,7 +1500,7 @@
    "fold": 2
   },
   {
-   "fam": 0.0,
+   "fam": 0.5,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00009DTT_1_B.cif",
    "family": "RF02340",
@@ -1508,8 +1508,8 @@
    "fold": 2
   },
   {
-   "fam": 0.3185185185185185,
-   "clan": 0.24242424242424243,
+   "fam": 0.22962962962962963,
+   "clan": 0.13636363636363635,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007ASA_1_A.cif",
    "family": "RF02540",
    "clan_acc": "CL00112",
@@ -1533,14 +1533,14 @@
   },
   {
    "fam": 0.20000000000000004,
-   "clan": 0.028037383177570093,
+   "clan": 0.14641744548286603,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004RQF_1_C.cif",
    "family": "RF01852",
    "clan_acc": "CL00001",
    "fold": 2
   },
   {
-   "fam": 0.5,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008V1H_1_A.cif",
    "family": "RF01684",
@@ -1556,8 +1556,8 @@
    "fold": 2
   },
   {
-   "fam": 0.6666666666666666,
-   "clan": 0.2866043613707165,
+   "fam": 0.8000000000000002,
+   "clan": 0.3302180685358255,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007ZJW_1_F.cif",
    "family": "RF01852",
    "clan_acc": "CL00001",
@@ -1573,7 +1573,7 @@
   },
   {
    "fam": 0.25,
-   "clan": 0.6349206349206349,
+   "clan": 0.40740740740740744,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007NAF_1_1.cif",
    "family": "RF02543",
    "clan_acc": "CL00112",
@@ -1581,14 +1581,14 @@
   },
   {
    "fam": 0.8000000000000002,
-   "clan": 0.16822429906542055,
+   "clan": 0.2523364485981308,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003W3S_1_B.cif",
    "family": "RF01852",
    "clan_acc": "CL00001",
    "fold": 2
   },
   {
-   "fam": 0.0,
+   "fam": 0.1111111111111111,
    "clan": 0.03076923076923077,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005U4J_1_a.cif",
    "family": "RF00177",
@@ -1597,7 +1597,7 @@
   },
   {
    "fam": 0.8000000000000002,
-   "clan": 0.2554517133956386,
+   "clan": 0.3894080996884735,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003ADB_1_C.cif",
    "family": "RF01852",
    "clan_acc": "CL00001",
@@ -1620,7 +1620,7 @@
    "fold": 2
   },
   {
-   "fam": 0.5,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008K2Z_1_A.cif",
    "family": "RF01684",
@@ -1644,8 +1644,8 @@
    "fold": 2
   },
   {
-   "fam": 0.6,
-   "clan": 0.3426791277258567,
+   "fam": 0.8666666666666667,
+   "clan": 0.5420560747663551,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007UR5_1_v.cif",
    "family": "RF01852",
    "clan_acc": "CL00001",
@@ -1661,7 +1661,7 @@
   },
   {
    "fam": 0.25,
-   "clan": 0.0,
+   "clan": 0.14285714285714285,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZJ3_1_LJ.cif",
    "family": "RF02543",
    "clan_acc": "CL00112",
@@ -1677,14 +1677,14 @@
   },
   {
    "fam": 1.0,
-   "clan": 0.041666666666666664,
+   "clan": 0.125,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006AGB_1_A.cif",
    "family": "RF00009",
    "clan_acc": "CL00002",
    "fold": 2
   },
   {
-   "fam": 0.0,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005VSU_1_I.cif",
    "family": "RF00026",
@@ -1693,7 +1693,7 @@
   },
   {
    "fam": 1.0,
-   "clan": 0.125,
+   "clan": 0.2916666666666667,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006AHR_1_A.cif",
    "family": "RF00009",
    "clan_acc": "CL00002",
@@ -1709,15 +1709,15 @@
   },
   {
    "fam": 0.25,
-   "clan": 0.0,
+   "clan": 0.3439153439153439,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008OVA_1_BG.cif",
    "family": "RF02543",
    "clan_acc": "CL00112",
    "fold": 2
   },
   {
-   "fam": 0.34814814814814815,
-   "clan": 0.0909090909090909,
+   "fam": 0.35555555555555557,
+   "clan": 0.10606060606060606,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005D6G_1_0.cif",
    "family": "RF02540",
    "clan_acc": "CL00112",
@@ -1732,8 +1732,8 @@
    "fold": 2
   },
   {
-   "fam": 0.5333333333333333,
-   "clan": 0.29906542056074764,
+   "fam": 0.6,
+   "clan": 0.2866043613707165,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005LZD_1_y.cif",
    "family": "RF01852",
    "clan_acc": "CL00001",
@@ -1741,7 +1741,7 @@
   },
   {
    "fam": 0.0,
-   "clan": 0.0,
+   "clan": 0.12727272727272726,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006Q95_1_4.cif",
    "family": "RF00023",
    "clan_acc": "CL00001",
@@ -1756,7 +1756,7 @@
    "fold": 3
   },
   {
-   "fam": 0.20000000000000004,
+   "fam": 0.6,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00009L5R_1_5.cif",
    "family": "RF00020",
@@ -1781,14 +1781,14 @@
   },
   {
    "fam": 1.0,
-   "clan": 0.041666666666666664,
+   "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001NBS_1_B.cif",
    "family": "RF00011",
    "clan_acc": "CL00002",
    "fold": 3
   },
   {
-   "fam": 0.0,
+   "fam": 0.5,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004XW7_1_A.cif",
    "family": "RF01750",
@@ -1796,7 +1796,7 @@
    "fold": 3
   },
   {
-   "fam": 0.5,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006WZR_1_A.cif",
    "family": "RF01750",
@@ -1804,15 +1804,15 @@
    "fold": 3
   },
   {
-   "fam": 0.0,
-   "clan": 0.0,
+   "fam": 0.6666666666666666,
+   "clan": 1.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003IVN_1_A.cif",
    "family": "RF00167",
    "clan_acc": "CL00123",
    "fold": 3
   },
   {
-   "fam": 0.20000000000000004,
+   "fam": 0.6,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006J6G_1_D.cif",
    "family": "RF00020",
@@ -1821,7 +1821,7 @@
   },
   {
    "fam": 1.0,
-   "clan": 0.25,
+   "clan": 0.5,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001MFQ_1_A.cif",
    "family": "RF00017",
    "clan_acc": "CL00003",
@@ -1868,7 +1868,7 @@
    "fold": 3
   },
   {
-   "fam": 0.5,
+   "fam": 0.0,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007DAS_1_C.cif",
    "family": "RF00030",
@@ -1876,8 +1876,8 @@
    "fold": 3
   },
   {
-   "fam": 0.0,
-   "clan": 0.0,
+   "fam": 1.0,
+   "clan": 1.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003DS7_1_B.cif",
    "family": "RF00167",
    "clan_acc": "CL00123",
@@ -1892,7 +1892,7 @@
    "fold": 3
   },
   {
-   "fam": 0.20000000000000004,
+   "fam": 0.6,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008RO0_1_5.cif",
    "family": "RF00020",
@@ -1901,14 +1901,14 @@
   },
   {
    "fam": 1.0,
-   "clan": 0.25757575757575757,
+   "clan": 0.4090909090909091,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006SXO_1_L8.cif",
    "family": "RF00002",
    "clan_acc": "CL00112",
    "fold": 3
   },
   {
-   "fam": 0.20000000000000004,
+   "fam": 0.4000000000000001,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008XI2_1_B.cif",
    "family": "RF00020",
@@ -1916,7 +1916,7 @@
    "fold": 3
   },
   {
-   "fam": 0.5,
+   "fam": 0.0,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007DA7_1_C.cif",
    "family": "RF00030",
@@ -1925,7 +1925,7 @@
   },
   {
    "fam": 1.0,
-   "clan": 0.06060606060606061,
+   "clan": 0.36868686868686873,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008ONZ_1_2.cif",
    "family": "RF00002",
    "clan_acc": "CL00112",
@@ -1940,7 +1940,7 @@
    "fold": 3
   },
   {
-   "fam": 1.0,
+   "fam": 0.5,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004ZNP_1_A.cif",
    "family": "RF01750",
@@ -1949,7 +1949,7 @@
   },
   {
    "fam": 0.0,
-   "clan": 0.0,
+   "clan": 0.17272727272727273,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004V8Q_1_BY.cif",
    "family": "RF00023",
    "clan_acc": "CL00001",
@@ -1972,7 +1972,7 @@
    "fold": 3
   },
   {
-   "fam": 0.5,
+   "fam": 1.0,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006P2H_1_A.cif",
    "family": "RF00167",
@@ -1980,7 +1980,7 @@
    "fold": 3
   },
   {
-   "fam": 0.20000000000000004,
+   "fam": 0.6,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005GAM_1_U.cif",
    "family": "RF00020",
@@ -2004,8 +2004,8 @@
    "fold": 3
   },
   {
-   "fam": 0.3137254901960784,
-   "clan": 0.21666666666666667,
+   "fam": 0.7254901960784315,
+   "clan": 0.3416666666666666,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008RG0_1_A.cif",
    "family": "RF01960",
    "clan_acc": "CL00111",
@@ -2028,7 +2028,7 @@
    "fold": 4
   },
   {
-   "fam": 0.0,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007D7V_1_A.cif",
    "family": "RF03013",
@@ -2036,8 +2036,8 @@
    "fold": 4
   },
   {
-   "fam": 0.7647058823529411,
-   "clan": 0.275,
+   "fam": 0.7941176470588235,
+   "clan": 0.375,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006ZOL_1_2.cif",
    "family": "RF01960",
    "clan_acc": "CL00111",
@@ -2045,14 +2045,14 @@
   },
   {
    "fam": 0.45454545454545453,
-   "clan": 0.28846153846153844,
+   "clan": 0.4423076923076923,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006SWE_1_2.cif",
    "family": "RF01959",
    "clan_acc": "CL00111",
    "fold": 4
   },
   {
-   "fam": 0.3333333333333333,
+   "fam": 0.5555555555555555,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006SG9_1_CA.cif",
    "family": "RF02545",
@@ -2100,7 +2100,7 @@
    "fold": 4
   },
   {
-   "fam": 0.3333333333333333,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005U3G_1_B.cif",
    "family": "RF00442",
@@ -2109,14 +2109,14 @@
   },
   {
    "fam": 0.6666666666666666,
-   "clan": 0.6901408450704225,
+   "clan": 0.755868544600939,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006HIY_1_CA.cif",
    "family": "RF02545",
    "clan_acc": "CL00111",
    "fold": 4
   },
   {
-   "fam": 0.3333333333333333,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007MLW_1_F.cif",
    "family": "RF00442",
@@ -2124,7 +2124,7 @@
    "fold": 4
   },
   {
-   "fam": 0.0,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006DLR_1_A.cif",
    "family": "RF00442",
@@ -2133,7 +2133,7 @@
   },
   {
    "fam": 0.0,
-   "clan": 0.025000000000000005,
+   "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005A8L_1_B.cif",
    "family": "RF01960",
    "clan_acc": "CL00111",
@@ -2141,14 +2141,14 @@
   },
   {
    "fam": 0.5,
-   "clan": 0.14285714285714285,
+   "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007UO0_1_B.cif",
    "family": "RF00010",
    "clan_acc": "CL00002",
    "fold": 4
   },
   {
-   "fam": 1.0,
+   "fam": 0.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006VMY_1_A.cif",
    "family": "RF00174",
@@ -2156,7 +2156,7 @@
    "fold": 4
   },
   {
-   "fam": 0.0,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00001X8W_1_B.cif",
    "family": "RF00028",
@@ -2188,7 +2188,7 @@
    "fold": 4
   },
   {
-   "fam": 0.02941176470588235,
+   "fam": 0.0,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005OSG_1_2.cif",
    "family": "RF01960",
@@ -2196,7 +2196,7 @@
    "fold": 4
   },
   {
-   "fam": 0.8333333333333334,
+   "fam": 0.5,
    "clan": 0.0,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007UO2_1_B.cif",
    "family": "RF00010",
@@ -2204,7 +2204,7 @@
    "fold": 4
   },
   {
-   "fam": 0.6666666666666666,
+   "fam": 1.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00005T83_1_A.cif",
    "family": "RF00442",
@@ -2212,16 +2212,16 @@
    "fold": 4
   },
   {
-   "fam": 0.676470588235294,
-   "clan": 0.325,
+   "fam": 0.7352941176470589,
+   "clan": 0.375,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00007QIY_1_2.cif",
    "family": "RF01960",
    "clan_acc": "CL00111",
    "fold": 4
   },
   {
-   "fam": 0.13636363636363635,
-   "clan": 0.0,
+   "fam": 0.3181818181818182,
+   "clan": 0.019230769230769232,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00008CA7_1_A.cif",
    "family": "RF01959",
    "clan_acc": "CL00111",
@@ -2229,14 +2229,14 @@
   },
   {
    "fam": 0.0,
-   "clan": 0.0,
+   "clan": 0.1286549707602339,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00003U4M_1_B.cif",
    "family": "RF02541",
    "clan_acc": "CL00112",
    "fold": 4
   },
   {
-   "fam": 1.0,
+   "fam": 0.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00004GMA_1_Z.cif",
    "family": "RF00174",
@@ -2244,15 +2244,15 @@
    "fold": 4
   },
   {
-   "fam": 0.22727272727272727,
-   "clan": 0.019230769230769232,
+   "fam": 0.3636363636363636,
+   "clan": 0.038461538461538464,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006WUA_1_a.cif",
    "family": "RF01959",
    "clan_acc": "CL00111",
    "fold": 4
   },
   {
-   "fam": 0.5,
+   "fam": 0.0,
    "clan": null,
    "id": "/Users/cassie/Desktop/NR80_local/PDB_00006D90_1_4.cif",
    "family": "RF00458",
@@ -2269,12 +2269,12 @@
   }
  ],
  "summary": {
-  "fam_fold_mean": 0.513763909195351,
-  "fam_fold_std": 0.14038223306617634,
-  "clan_fold_mean": 0.11206366091504756,
-  "clan_fold_std": 0.018489702003422977,
-  "fam_pooled": 0.4714434902707066,
-  "clan_pooled": 0.0951731874035264,
+  "fam_fold_mean": 0.6004562283130201,
+  "fam_fold_std": 0.10020961977494595,
+  "clan_fold_mean": 0.20697827084149545,
+  "clan_fold_std": 0.057872077337951876,
+  "fam_pooled": 0.5766269602587607,
+  "clan_pooled": 0.2006394420868276,
   "nqf": 237,
   "nqc": 157
  }

@@ -101,14 +101,15 @@ def run_token(sets, manifest):
     first = next(iter(sets.values()))[0]    # warm up numba on any query
     s.search(np.asarray(first["entry"]["tokens"], dtype=np.int64), top_k=5)
     res = {k: {} for k in sets}
-    for name, top_n, rerank in (("RFoldseek n200", 200, "sw"), ("RFoldseek n500", 500, "sw"),
-                                ("RFoldseek n2000", 2000, "sw"), ("RFoldseek-TM n200", 200, "tm"),
+    for name, top_n, rerank in (("RFoldseek n500", 500, "atm"), ("RFoldseek-TM n200", 200, "tm"),
                                 ("RFoldseek-TM n500", 500, "tm")):
         for qs, queries in sets.items():
             out = {}
             for q in queries:
                 tok = np.asarray(q["entry"]["tokens"], dtype=np.int64)
-                kw = dict(rerank="tm", usalign=USALIGN, query_entry=q["entry"]) if rerank == "tm" else {}
+                kw = dict(rerank=rerank, query_entry=q["entry"])
+                if rerank == "tm":
+                    kw["usalign"] = USALIGN
                 t = time.perf_counter()
                 hits = s.search(tok, top_k=top_n, top_n=top_n, self_idx=q["self_idx"], **kw)
                 out[q["id"]] = dict(seconds=time.perf_counter() - t, ranking=[ti[h["target"]] for h in hits])

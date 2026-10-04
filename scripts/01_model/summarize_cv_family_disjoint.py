@@ -1,15 +1,4 @@
-"""Seed-replicated summary of family- vs PDB-disjoint CV.
-
-For each VQ-VAE training seed: family / clan Sens@1FP macro-averaged over Rfam
-families or clans, and the paired Δ (family-disjoint − PDB-disjoint). Reports
-mean ± SD across seeds, the per-seed Δ, and a family/clan-block bootstrap of Δ
-on seed-averaged per-query sensitivities.
-
-Sensitivity analyses (when present): homology-disjoint folds (--split homology;
-labelled and unlabelled training chains related to a held-out chain removed) and
-the matched random-removal control on PDB-disjoint folds (--split pdb-random),
-written under "sensitivity".
-"""
+"""Seed-replicated summary of family- vs PDB-disjoint CV."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))

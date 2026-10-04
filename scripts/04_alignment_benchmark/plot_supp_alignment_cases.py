@@ -3,11 +3,6 @@
 
 For each pair: the C4' traces superposed on the Rfam reference correspondences
 (not the RFoldseek traceback), and the Rfam reference and RFoldseek alignments.
-Alignment rows are read from alignment_cases.json, written by
-build_alignment_cases.py (which reconstructs the benchmark alignments and checks
-their scores). Everything is drawn with matplotlib, so the PDFs are vector.
-
-Writes figures/supp_alignment_cases.{png,pdf}.
 """
 
 from __future__ import annotations

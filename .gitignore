@@ -218,6 +218,13 @@ __marimo__/
 .streamlit/secrets.toml
 
 # ---------------------------------------------------------------
+
+# macOS metadata and machine-local generated artifacts
+Icon?
+files/ablation/cv_cache/
+files/predicted_retrieval/db
+files/predicted_retrieval/usalign
+files/predicted_retrieval/rmalign/
 # Project-specific
 # ---------------------------------------------------------------
 .DS_Store

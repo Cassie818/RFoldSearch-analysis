@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Draw a Foldseek-style RFoldseek alignment example from experimental RNA.
-
-The figure combines a C4'-trace superposition with the exact affine-gap
-Smith--Waterman traceback.  Structural-token similarity and nucleotide
-identity are shown on separate rows so that the two are not conflated.
-"""
+"""RFoldseek alignment example from experimental RNA."""
 
 from __future__ import annotations
 

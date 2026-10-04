@@ -1,20 +1,4 @@
-"""Supplementary figure: retrieval under the annotation (Rfam family) truth.
-
-The annotation-truth counterpart of the structure-truth sweep. Because the
-annotation truth is a single definition (a positive shares the query Rfam
-family; for predicted queries it must also come from a different organism),
-there is no threshold to sweep -- instead the x-axis is the sequence filter,
-neutralising same-family targets that BLASTN or nhmmer report at E < 0.01 or,
-more stringently, at E < 10. Only the two annotated query sets have this truth.
-
-Two rows, two columns: the top row is Sens@1FP, the bottom row Recall@1;
-columns are the annotated experimental and the predicted query sets. Bars,
-colours, markers and the shared legend follow the main figure; here US-align is
-a competing method, not an oracle, so it is a bar like the rest.
-
-Reads per_query.json (written by `evaluate.py`).
-Writes figures/supp_predicted_rfam_truth.png
-"""
+"""Supplementary figure: retrieval under the annotation (Rfam family) truth."""
 import json
 import os
 
@@ -30,7 +14,7 @@ FIG = os.path.join(E.REPO, "figures")
 BAR_METHODS = ["RFoldseek n500", "RFoldseek-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal",
                "US-align (exhaustive)"]
 REF = "RFoldseek n500"
-FILTERS = [("none", "All"), ("E<0.01", "$E<0.01$"), ("E<10", "$E<10$")]
+FILTERS = [("none", "None"), ("E<0.01", "$E<0.01$"), ("E<=10", "$E\\leq10$")]
 COLS = [("exp", "Experimental queries"), ("p2p", "Predicted queries")]
 ROWS = ["Sens@1FP", "Recall@1"]
 

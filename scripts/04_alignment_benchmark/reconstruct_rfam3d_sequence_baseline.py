@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
-"""Reconstruct the sequence baseline on the saved 313 Rfam-3D structure pairs.
-
-Chain-level first-model mmCIF files are parsed with RFoldseek's own backbone
-extractor. The original benchmark is never overwritten. Reconstructed
-reference column counts, family-region lengths and sequence identities are
-audited against the saved benchmark, and only verified pairs enter the paired
-method summary.
-"""
+"""Reconstruct the sequence baseline on the saved 313 Rfam-3D structure pairs."""
 
 from __future__ import annotations
 

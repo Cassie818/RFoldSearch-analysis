@@ -1,18 +1,4 @@
-"""Supplementary figure: retrieval under the structure-defined ground truth.
-
-The structural truth follows Fig. 2 -- a positive is a non-self target whose
-symmetric US-align TM-score reaches tau -- swept over tau in {0.40, 0.45, 0.50}.
-Bars follow Fig. 2C,D: grouped bars per method, block-bootstrap intervals,
-US-align as the dashed oracle ceiling rather than a competing method, RFoldseek
-labelled numerically and stars marking methods that differ from it.
-
-Two rows, two columns: the top row is Sens@1FP, the bottom row Recall@1;
-columns are the experimental and predicted query sets. The method ordering is
-stable across every threshold and both metrics.
-
-Reads per_query.json (written by `evaluate.py`).
-Writes figures/supp_predicted_structure_truth.png and files/predicted_retrieval/structure_truth_table.tex
-"""
+"""Supplementary figure: retrieval under the structure-defined ground truth."""
 import json
 import os
 
@@ -26,9 +12,7 @@ from figstyle import plt  # noqa: E402
 
 FIG = os.path.join(E.REPO, "figures")
 BAR_METHODS = ["RFoldseek n500", "RFoldseek-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal"]
-ORACLE = "US-align (exhaustive)"
 REF = "RFoldseek n500"
-GROUPS = [(f"structure t{t:.2f}", f"{t:.2f}") for t in E.TM_TAUS]
 SETS = [("exp", "Experimental queries"),
         ("p2p", "Predicted queries")]
 COLS = ["exp", "p2p"]
@@ -37,8 +21,18 @@ ROWS = ["Sens@1FP", "Recall@1"]
 
 def main():
     pq = json.load(open(os.path.join(E.HERE, "per_query.json")))
+    report = json.load(open(os.path.join(E.HERE, "evaluation.json")))
+    rthr = report.get("rmscore_thresholds", {})
+    plot(pq, report, "structure", [(f"structure t{t:.2f}", f"{t:.2f}") for t in E.TM_TAUS], BAR_METHODS)
+    if rthr:
+        methods = BAR_METHODS[:2] + ["US-align (exhaustive)"] + BAR_METHODS[2:]
+        plot(pq, report, "rmscore", [(f"rmscore t{t:.2f}", f"{rthr[f'{t:.2f}']:.2f}") for t in E.TM_TAUS], methods)
+
+
+def plot(pq, report, truth_name, groups, bar_methods):
     fams = pq["families"]
-    groups = list(GROUPS)
+    ORACLE = E.ORACLE[truth_name]
+    BAR_METHODS = bar_methods
 
     def cells(qs, truth, method, metric):
         d = pq.get(qs, {}).get(f"{truth}|none", {}).get(method, {})
@@ -76,13 +70,14 @@ def main():
                     top = v + hi[j] + 0.012
                     if m == REF:
                         ax.text(b.get_x() + b.get_width() / 2, top, f"{v:.2f}", ha="center",
-                                va="bottom", fontsize=8, color=S.TEXT[REF])
+                                va="bottom", fontsize=8, color=S.TEXT[REF], zorder=5,
+                                bbox=dict(facecolor="white", edgecolor="none", pad=0.4, alpha=0.85))
                     elif sig[j]:
                         ax.text(b.get_x() + b.get_width() / 2, top, "*", ha="center", va="bottom",
                                 fontsize=10, color=S.GREY_TEXT, fontweight="bold")
             oracle = cells(qs, groups[0][0], ORACLE, metric)
             if oracle:
-                S.ceiling(ax, float(np.mean(list(oracle.values()))), -0.5, len(groups) - 0.5)
+                S.ceiling(ax, float(np.mean(list(oracle.values()))), -0.5, len(groups) - 0.5, ORACLE)
             ax.set_xticks(x, [lab for _, lab in groups])
             counts.setdefault(qs, {}).update({lab: n for (_, lab), n in zip(groups, ns)})
             ax.set_xlim(-0.5, len(groups) - 0.5)
@@ -92,16 +87,15 @@ def main():
             if r_i == 0:
                 ax.set_title(dict(SETS)[qs], fontsize=11, pad=6, color="black")
     S.panel_letters(axes.ravel(), "ABCD", x=-0.14)
-    S.shared_legend(fig, BAR_METHODS, ncol=4, y=-0.004,
-                    extra=[S.oracle_handle()])
+    S.shared_legend(fig, BAR_METHODS, ncol=5 if len(BAR_METHODS) > 7 else 4, y=-0.004,
+                    extra=[S.oracle_handle(ORACLE)])
     fig.tight_layout(rect=(0, 0.075, 1, 1), pad=0.5, w_pad=0.6, h_pad=0.7)
     for ext in ("png",):
-        fig.savefig(os.path.join(FIG, f"supp_predicted_structure_truth.{ext}"), dpi=200,
+        fig.savefig(os.path.join(FIG, f"supp_predicted_{truth_name}_truth.{ext}"), dpi=200,
                     bbox_inches="tight")
-    json.dump(counts, open(os.path.join(E.HERE, "structure_truth_counts.json"), "w"), indent=1)
+    json.dump(counts, open(os.path.join(E.HERE, f"{truth_name}_truth_counts.json"), "w"), indent=1)
 
     # ---------------------------------------------------------------- table
-    report = json.load(open(os.path.join(E.HERE, "evaluation.json")))
 
     def cell(qs, truth, method, metric):
         d = report.get(qs, {}).get(f"{truth}|none", {}).get(method)
@@ -127,9 +121,9 @@ def main():
         lines.append("\\midrule")
     lines[-1] = "\\bottomrule"
     lines.append("\\end{tabular}")
-    out = os.path.join(E.HERE, "structure_truth_table.tex")
+    out = os.path.join(E.HERE, f"{truth_name}_truth_table.tex")
     open(out, "w").write("\n".join(lines) + "\n")
-    print("wrote", os.path.join(FIG, "supp_predicted_structure_truth.png"))
+    print("wrote", os.path.join(FIG, f"supp_predicted_{truth_name}_truth.png"))
     print("wrote", out)
 
 

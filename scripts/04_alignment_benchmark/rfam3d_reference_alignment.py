@@ -1,11 +1,5 @@
 #!/usr/bin/env python3
-"""Rfam-3D reference benchmark for RNA structural alphabets and alignments.
-
-The benchmark mirrors Foldseek's HOMSTRAD analysis without treating a
-structure aligner as ground truth.  Curated Rfam-3D seed columns define the
-reference nucleotide correspondence.  One locally available experimental
-PDB chain is retained for each distinct seed-alignment row.
-"""
+"""Rfam-3D reference benchmark for RNA structural alphabets and alignments."""
 
 from __future__ import annotations
 

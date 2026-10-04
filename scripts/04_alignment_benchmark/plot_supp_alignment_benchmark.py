@@ -6,9 +6,6 @@ alignments (313 within-family pairs, 24 families).
     C-E  Per-pair view: 3Dr token vs nucleotide identity, and RFoldseek exact F1
          against US-align and the global sequence baseline; cases 1-4 are the
          RF00015 examples of the alignment case figure (panels A-D there)
-
-Colours and labels are those of Fig. 2 (scripts/02_rnasolo_retrieval/plot_fig2.py).
-Writes figures/supp_alignment_benchmark.png.
 """
 import json
 import os

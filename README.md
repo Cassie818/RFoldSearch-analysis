@@ -23,9 +23,8 @@ scripts/04_alignment_benchmark/   nucleotide-level alignment benchmark against R
 scripts/05_runtime/               runtime on the predicted-structure databases
 scripts/06_predicted_retrieval/   retrieval on the predicted-structure databases
 scripts/07_motifs/                recurrent token words and motif cores
-scripts/08_evalue_calibration/    E-value calibration of the experimental and predicted databases
 files/models/                     deployed model artifacts used by analyses
-files/production/                 RNAsolo retrieval results and the deployed E-value calibrations
+files/production/                 RNAsolo retrieval results
 files/ablation/                   ablation, cross-validation and alignment-benchmark results
 files/predicted_runtime/          predicted-database runtime results
 files/predicted_retrieval/        predicted-database retrieval results
@@ -49,7 +48,7 @@ python scripts/07_motifs/plot_fig6.py
 
 - Sequence-divergent zone summaries: `files/production/retrieval/sequence_divergent/zone_checks.json`.
 - Sequence-filtered family and clan results: `family_perquery.json` and `clan_perquery.json` in the same directory. The `B/N E<=10` key denotes positives reported by BLASTN or nhmmer at $E \leq 10$.
-- Canonical 313-pair nucleotide-alignment summary: `files/ablation/rfam3d_reference_disjoint_independent_3dseed/rfam3d_reference_alignment_common_313.json` (2,000 family-block bootstrap replicates; seed 20260924).
+- Canonical 313-pair nucleotide-alignment summary: `files/ablation/rfam3d_reference_disjoint_independent_3dseed/rfam3d_reference_alignment_common_313.json`.
 
 All plotting scripts run from the bundled files, except the alphabet-states and
 predicted-database supplements, which need the raw structures.

@@ -5,31 +5,12 @@ Query sets
        query's Rfam family and comes from a different organism; same-family
        targets from the query organism and every entry with the query's
        RNAcentral sequence (URS, including the query itself) are neutral.
-  exp  experimental queries; positives share the query's Rfam family.
+  exp  experimental queries; positives share the query's Rfam family. The
+       queries are not in the benchmark, but targets whose sequence is
+       identical to the query's are query-equivalent and neutral.
   exp_unlabelled  experimental queries without an Rfam family; structure truth
        only, each query its own bootstrap block.
-In the labelled sets unlabelled entries are neutral under label truth.
 
-Structure truth (queries whose exhaustive US-align output exists) follows the
-definition used for Fig. 2: a non-self target is a positive if its SYMMETRIC
-US-align TM-score -- the mean of the query- and target-normalised scores, the
-same quantity by which US-align and RFoldseek-TM rank -- is at least
-tau in {0.40, 0.45, 0.50}; every other target is a negative, with no neutral
-band. The query itself, entries with its URS, and targets US-align could not
-score are neutral. Queries with no positive at a given tau are dropped.
-
-Sequence filters: same-family (label) or TM-positive (structure) targets that
-BLASTN or nhmmer report at E < 0.01 (filter "E<0.01") or at any E < 10
-(filter "E<10") are made neutral. "none" applies no filter.
-
-Metrics: neutral targets are removed from each method's full ranked output and
-the first 200 remaining hits are scored (Recall@1, Prec@10, Sens@1FP, AP;
-Sens@1FP and AP normalised by min(#positives, 200)). Aggregates are query means
-(for exp also family macro-averages). CIs: hierarchical block bootstrap with
-Rfam families as units (2,000 replicates), paired between methods.
-
-    python evaluate.py            # everything available
-    python evaluate.py --label    # skip structure truth
 """
 import argparse
 import csv
@@ -50,15 +31,16 @@ TOPN = 200
 TM_TAUS = (0.40, 0.45, 0.50)     # Fig. 2 thresholds on the symmetric TM-score
 TM_MAIN = 0.45                    # tau used for the pLDDT breakdown
 METRICS = ("Recall@1", "Prec@10", "Sens@1FP", "AP")
-METHODS = ["RFoldseek n200", "RFoldseek n500", "RFoldseek n2000", "RFoldseek-TM n200",
+METHODS = ["RFoldseek n500", "RFoldseek-TM n200",
            "RFoldseek-TM n500", "RiboSeek c200", "RiboSeek c500", "RiboSeek RS-80 c500",
            "BLASTN", "nhmmer",
-           "Infernal", "US-align (exhaustive)"]
-PAIRS = [("RFoldseek n200", "RiboSeek c200"), ("RFoldseek n500", "RiboSeek c500"),
+           "Infernal", "US-align (exhaustive)", "RMalign (exhaustive)"]
+ORACLE = {"structure": "US-align (exhaustive)", "rmscore": "RMalign (exhaustive)"}
+PAIRS = [("RFoldseek n500", "RiboSeek c500"),
          ("RFoldseek n500", "RiboSeek RS-80 c500"),
-         ("RFoldseek n200", "BLASTN"), ("RFoldseek n200", "nhmmer"),
-         ("RFoldseek-TM n500", "nhmmer"), ("RFoldseek-TM n200", "RFoldseek n200"),
-         ("RFoldseek n2000", "RFoldseek n200"), ("US-align (exhaustive)", "RFoldseek-TM n500")]
+         ("RFoldseek n500", "BLASTN"), ("RFoldseek n500", "nhmmer"),
+         ("RFoldseek-TM n500", "nhmmer"), ("RFoldseek-TM n500", "RFoldseek n500"),
+         ("US-align (exhaustive)", "RFoldseek-TM n500")]
 PLDDT_BINS = [(0, 70), (70, 80), (80, 90), (90, 101)]
 
 
@@ -98,6 +80,38 @@ def load_usalign(path, row_of_file, n):
     return tm1, tm2
 
 
+def load_rmalign(path, row_of_file, n):
+    rq = np.full(n, np.nan)
+    rt = np.full(n, np.nan)
+    for line in open(path):
+        f = line.rstrip("\n").split("\t")
+        j = row_of_file.get(f[0])
+        if j is not None:
+            rq[j], rt[j] = float(f[1]), float(f[2])
+    return rq, rt
+
+
+def rmscore_thresholds(row_of_file, n):
+    """RMscore thresholds marking the same fraction of query-target pairs as each TM tau,
+    over every query with both exhaustive outputs."""
+    tms, rms = [], []
+    for qs in ("p2p", "exp", "exp_unlabelled"):
+        d = os.path.join(HERE, "rmalign", qs)
+        for f in sorted(os.listdir(d)) if os.path.isdir(d) else []:
+            us = os.path.join(HERE, "usalign", qs, f)
+            if not f.endswith(".tsv") or not os.path.exists(us):
+                continue
+            tm1, tm2 = load_usalign(us, row_of_file, n)
+            rq, rt = load_rmalign(os.path.join(d, f), row_of_file, n)
+            ok = ~np.isnan(tm1) & ~np.isnan(rq)
+            tms.append(sym_tm(tm1, tm2)[ok])
+            rms.append(sym_tm(rq, rt)[ok])
+    if not tms:
+        return {}
+    tm, rm = np.concatenate(tms), np.concatenate(rms)
+    return {tau: float(np.quantile(rm, 1 - np.mean(tm >= tau))) for tau in TM_TAUS}
+
+
 def sym_tm(tm1, tm2):
     """Symmetric TM-score: mean of the query- and target-normalised scores."""
     return 0.5 * (np.nan_to_num(tm1) + np.nan_to_num(tm2))
@@ -109,6 +123,19 @@ def structure_truth(tm1, tm2, excl, tau):
     valid = ~np.isnan(tm1)
     pos = (sym_tm(tm1, tm2) >= tau) & valid & ~excl
     return pos, (~valid) | excl
+
+
+def identical_targets(queries):
+    """For experimental queries (not in the benchmark): {qid: indices of targets
+    whose sequence is identical to the query's}."""
+    from run_searches import DB, NR80, seq_from_cif
+    by_seq = defaultdict(list)
+    seqs = [l.strip().upper().replace("T", "U") for l in open(os.path.join(DB, "sequences.fa"))
+            if not l.startswith(">")]
+    for i, s in enumerate(seqs):
+        by_seq[s].append(i)
+    return {q["id"]: by_seq.get(seq_from_cif(os.path.join(NR80, q["id"] + ".cif")), [])
+            for q in queries}
 
 
 def block_boot(values_by_query, families, reps=2000, seed=0):
@@ -151,7 +178,10 @@ def main():
     row_of = {r["urs_id"]: i for i, r in enumerate(rows)}
     row_of_file = {f"{r['urs_id']}_rank_1.pdb": i for i, r in enumerate(rows)}
 
-    report = {}
+    rthr = {} if args.label else rmscore_thresholds(row_of_file, n)
+    for tau, r in rthr.items():
+        print(f"TM >= {tau:.2f} <-> RMscore >= {r:.3f}")
+    report = {"rmscore_thresholds": {f"{t:.2f}": r for t, r in rthr.items()}}
     per_query = {"families": {}}                       # qs -> "truth|filter" -> method -> qid -> metrics
     struct_pool = defaultdict(lambda: defaultdict(dict))  # experimental sets pooled, structure truth
     pool_families = {}
@@ -173,15 +203,19 @@ def main():
             # no Rfam family: no label truth, and each query is its own bootstrap block
             queries = [dict(id=q["id"], family=q["id"], taxon=None, urs=None) for q in qlist]
         families = {q["id"]: q["family"] for q in queries}
+        ident = identical_targets(queries) if qs != "p2p" else {}
+        print(f"{qs}: {sum(map(len, ident.values()))} sequence-identical targets neutralised")
         pool_families.update(families)
         per_query["families"].update(families)
 
         per = defaultdict(lambda: defaultdict(dict))     # (truth, filter) -> method -> qid -> metrics
-        invisible = defaultdict(lambda: [0, 0])           # pLDDT bin -> [TM-similar, total] (label positives, E<10 filter)
+        invisible = defaultdict(lambda: [0, 0])           # pLDDT bin -> [TM-similar, total] (label positives, E<=10 filter)
         n_struct = 0
         for q in queries:
             qid = q["id"]
             excl = (urs == q["urs"]) if q["urs"] else np.zeros(n, bool)
+            if q["urs"] is None:
+                excl[ident[qid]] = True
             same = (fam == q["family"]) & ~excl
             if q["taxon"] is not None:
                 label_pos = same & (tax != q["taxon"])
@@ -210,6 +244,14 @@ def main():
                 mean_tm = sym_tm(tm1, tm2)
                 mean_tm[excl] = -1
                 rank["US-align (exhaustive)"] = [i for i in np.lexsort((np.arange(n), -mean_tm)) if not excl[i]]
+                rm_path = os.path.join(HERE, "rmalign", qs, f"{qid}.tsv")
+                if rthr and os.path.exists(rm_path):
+                    rq, rt = load_rmalign(rm_path, row_of_file, n)
+                    for tau, r in rthr.items():
+                        truths[f"rmscore t{tau:.2f}"] = structure_truth(rq, rt, excl, r)
+                    mean_rm = sym_tm(rq, rt)
+                    mean_rm[excl] = -1
+                    rank["RMalign (exhaustive)"] = [i for i in np.lexsort((np.arange(n), -mean_rm)) if not excl[i]]
                 if qs != "exp_unlabelled":
                     inv = label_pos & ~seen10
                     for lo, hi in PLDDT_BINS:
@@ -218,13 +260,13 @@ def main():
                         invisible[(lo, hi)][1] += int(m.sum())
 
             for truth, (pos, neu) in truths.items():
-                for filt, seen in (("none", None), ("E<0.01", seen01), ("E<10", seen10)):
+                for filt, seen in (("none", None), ("E<0.01", seen01), ("E<=10", seen10)):
                     p, nu = (pos, neu) if seen is None else (pos & ~seen, neu | (pos & seen))
                     for m, r in rank.items():
                         res = metrics(r, p, nu)
                         if res is not None:
                             per[(truth, filt)][m][qid] = res
-                            if qs.startswith("exp") and truth.startswith("structure"):
+                            if qs.startswith("exp") and truth.startswith(("structure", "rmscore")):
                                 struct_pool[(truth, filt)][m][qid] = res
 
         per_query[qs] = {f"{t}|{f}": {m: dict(v) for m, v in d.items()}
@@ -249,7 +291,7 @@ def main():
                         byf[families[i]].append(pq[i])
                     fm = {k: float(np.mean([np.mean([x[k] for x in v]) for v in byf.values()])) for k in ("Recall@1", "AP")}
                     line += f"   | family-macro Recall@1 {fm['Recall@1']:.3f} AP {fm['AP']:.3f}"
-                tag = "  (near-circular)" if truth.startswith("structure") and m.startswith("US-align") else ""
+                tag = "  (near-circular)" if ORACLE.get(truth.split()[0]) == m else ""
                 print(f"    {m:22s} n={len(pq):3d}  {line}{tag}")
                 report[qs][f"{truth}|{filt}"][m] = dict(n=len(pq), mean=qmean)
             for a, b in PAIRS:
@@ -264,7 +306,7 @@ def main():
                 print(f"      {a} - {b} (n={len(ids)}): " + "  ".join(cells))
 
         if any(v[1] for v in invisible.values()):
-            print("\n  sequence-invisible label positives (no BLASTN/nhmmer hit at E<10): "
+            print("\n  sequence-invisible label positives (no BLASTN/nhmmer hit at E<=10): "
                   f"fraction with symmetric TM >= {TM_MAIN} by target pLDDT")
             for (lo, hi), (sim, tot) in sorted(invisible.items()):
                 name = f"<{hi}" if lo == 0 else f"{lo}-{hi-1}"
@@ -288,7 +330,7 @@ def main():
                 if not pq:
                     continue
                 qmean = {k: float(np.mean([pq[i][k] for i in pq])) for k in METRICS}
-                tag = "  (near-circular)" if m.startswith("US-align") else ""
+                tag = "  (near-circular)" if ORACLE.get(truth.split()[0]) == m else ""
                 print(f"    {m:22s} n={len(pq):3d}  " + "  ".join(f"{k} {qmean[k]:.3f}" for k in METRICS) + tag)
                 report["exp_pooled"][f"{truth}|{filt}"][m] = dict(n=len(pq), mean=qmean)
             for a, b in PAIRS:

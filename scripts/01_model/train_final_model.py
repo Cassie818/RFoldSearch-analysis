@@ -1,14 +1,4 @@
-"""Final VQ-VAE tokenizer training:
- - 30 independently initialised seeds trained on TRAIN partition (n=610)
- - deployed A4 arch (2-enc, 4-dec, 128/128, L2 normalize, EMA 0.99, β=1.0)
- - descriptor_loss active_blocks={g_ctx, g_nn1}, cosine LR + 200 warmup, clip 1
- - val-loss best checkpoint per seed
- - final selection by val-retrieval (fam + clan Sens@1FP, expansion prefilter,
-   Structure-BLOSUM diagmean-1 reranker built from train US-align TM>=0.5 pairs)
- - retokenise all 885 db chains with best seed
- - build final Structure-BLOSUM from TRAIN US-align pairs only
- - save files/models/{db.pt, sub_matrix.pt, checkpoint.pt}
-"""
+"""Final VQ-VAE tokenizer training"""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))

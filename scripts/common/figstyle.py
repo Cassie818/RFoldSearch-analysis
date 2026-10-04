@@ -16,8 +16,6 @@ import numpy as np
 
 # ---- colour and marker, as in Fig. 2 ----------------------------------------
 BASE = {"RFoldseek n500": "#1F9BD8",      # Fig. 2 RFoldseek
-        "RFoldseek n200": "#1F9BD8",      # other depths: same method, same hue
-        "RFoldseek n2000": "#1F9BD8",
         "RFoldseek-TM n500": "#009E9E",   # Fig. 2 RFoldseek-TM
         "RFoldseek-TM n200": "#009E9E",
         "RiboSeek c500": "#E377C2",       # Fig. 2 RiboSeek
@@ -26,23 +24,22 @@ BASE = {"RFoldseek n500": "#1F9BD8",      # Fig. 2 RFoldseek
         "BLASTN": "#FFC107",              # Fig. 2 BLASTN
         "nhmmer": "#8C564B",              # not in Fig. 2: brown, absent from the Fig. 2 palette
         "Infernal": "#BCBD22",            # not in Fig. 2 or elsewhere: olive (unused tab10 slot)
-        "US-align (exhaustive)": "#D62728"}   # Fig. 2 US-align
-MARKER = {"RFoldseek n500": "o", "RFoldseek n200": "o", "RFoldseek n2000": "o",
+        "US-align (exhaustive)": "#D62728",   # Fig. 2 US-align
+        "RMalign (exhaustive)": "#2CA02C"}    # Fig. 2 RMalign
+MARKER = {"RFoldseek n500": "o",
           "RFoldseek-TM n500": "*", "RFoldseek-TM n200": "*",
           "RiboSeek c500": "v", "RiboSeek c200": "v", "RiboSeek RS-80 c500": "v", "BLASTN": "D", "nhmmer": "h", "Infernal": "p",
-          "US-align (exhaustive)": "s"}
+          "US-align (exhaustive)": "s", "RMalign (exhaustive)": "^"}
 LINESTYLE = {m: "-" for m in BASE}
 LINESTYLE["BLASTN"] = "--"
-OPEN = {"RFoldseek n2000"}                # lines: white face; bars: hatched
-HATCH = {"RFoldseek n2000": "///"}        # only where two depths share a panel
+OPEN = set()                              # lines: white face; bars: hatched
+HATCH = {}                                # only where two depths share a panel
 MSIZE = {"RFoldseek-TM n500": 11, "RFoldseek-TM n200": 11}         # the star needs to be bigger, as in Fig. 2
 SHORT = {"RFoldseek n500": "RFoldseek", "RFoldseek-TM n500": "RFoldseek-TM",
          "RiboSeek c500": "RiboSeek (RS-20)", "RiboSeek RS-80 c500": "RiboSeek (RS-80)",
          "BLASTN": "BLASTN", "nhmmer": "nhmmer",
-         "US-align (exhaustive)": "US-align", "Infernal": "Infernal",
+         "US-align (exhaustive)": "US-align", "RMalign (exhaustive)": "RMalign", "Infernal": "Infernal",
          # other candidate depths, named only where the depth itself is the point
-         "RFoldseek n200": "RFoldseek (depth 200)",
-         "RFoldseek n2000": "RFoldseek (depth 2000)",
          "RFoldseek-TM n200": "RFoldseek-TM (depth 200)",
          "RiboSeek c200": "RiboSeek (RS-20, depth 200)"}
 
@@ -107,12 +104,11 @@ def bars(ax, x, vals, width, method, yerr=None, label=None):
                   label=SHORT[method] if label is None else label)
 
 
-def ceiling(ax, value, x0, x1, text="US-align (oracle ceiling)"):
-    """Fig. 2's dashed oracle line with its red annotation."""
-    ax.plot([x0, x1], [value, value], ls="--", color=COLOR["US-align (exhaustive)"],
-            lw=1.5, zorder=2)
-    ax.text(x0 + 0.06, value + 0.012, text, ha="left", va="bottom", fontsize=8.5,
-            color=TEXT["US-align (exhaustive)"])
+def ceiling(ax, value, x0, x1, oracle="US-align (exhaustive)"):
+    """Fig. 2's dashed oracle line with its annotation, in the oracle's colour."""
+    ax.plot([x0, x1], [value, value], ls="--", color=COLOR[oracle], lw=1.5, zorder=2)
+    ax.text(x0 + 0.06, value + 0.012, f"{SHORT[oracle]} (oracle ceiling)", ha="left", va="bottom",
+            fontsize=8.5, color=TEXT[oracle])
 
 
 def bar_handle(method):
@@ -122,9 +118,8 @@ def bar_handle(method):
                  hatch=HATCH.get(method), label=SHORT[method])
 
 
-def oracle_handle(text="US-align (oracle ceiling)"):
-    return plt.Line2D([], [], color=COLOR["US-align (exhaustive)"], lw=2.0, ls="--",
-                      label=text)
+def oracle_handle(oracle="US-align (exhaustive)"):
+    return plt.Line2D([], [], color=COLOR[oracle], lw=2.0, ls="--", label=f"{SHORT[oracle]} (oracle ceiling)")
 
 
 def shared_legend(fig, methods, ncol=4, y=-0.004, extra=(), kind="line"):

@@ -19,7 +19,7 @@ Sequence hits come from cv_unlabelled_homology.py (--seq-hits).
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, RFOLDSEEK_REPO, SRC_MODELS, SRC_SEARCH, resolve
+from paths import CV_DESC, DATA_ROOT, PRODUCTION_DB, RFOLDSEEK_REPO, SRC_MODELS, SRC_SEARCH, resolve
 
 _sys.path.insert(0, SRC_SEARCH)
 _sys.path.insert(0, SRC_MODELS)
@@ -35,6 +35,7 @@ from numba import njit
 from vqvae import DescriptorVQVAE, descriptor_loss
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
 from smith_waterman import smith_waterman_numba
+from rfoldseek.structure_score import c4_coords, score_pair
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--split", choices=["pdb", "family", "homology", "pdb-random"], required=True)
@@ -68,7 +69,7 @@ BLOSUM_GAP_EXTEND = -1.0
 STRUCT_TM_THRESH = 0.5
 SW_GAP_OPEN = -2.0
 SW_GAP_EXTEND = -0.5
-db = torch.load("files/production/db.pt", map_location="cpu", weights_only=False)
+db = torch.load(PRODUCTION_DB, map_location="cpu", weights_only=False)
 ents = db["entries"]
 id2i = {str(e["id"]): i for i, e in enumerate(ents)}
 fams = attach_labels(ents, load_labels("Splits/labels.tsv"))
@@ -82,7 +83,9 @@ def idl(p):
 pool = [
     id2i[c] for c in idl("Splits/pdb_out/train.json") + idl("Splits/pdb_out/val.json") if c in id2i
 ]
-DESC = "files/ablation/kmeans_baseline/current_desc/pdb_out"
+DESC = CV_DESC
+# Per-fold tokens and Structure-BLOSUM, so the search can be re-scored without retraining.
+CACHE = _os.path.join(_REPO, "files", "ablation", "cv_cache")
 KEEP = set(list(range(42, 49)) + list(range(0, 10)))
 MASK = np.array([1.0 if i in KEEP else 0.0 for i in range(49)], dtype=np.float32)
 desc_raw = {}
@@ -489,9 +492,10 @@ def expand_kmer(qk, sub, K_, thresh):
     return out
 
 
-def retrieval_eval(sub, tok_list, fam_pool, clan_pool, q_positions):
-    """Per-query family/clan Sens@1FP with the deployed search settings."""
-    n = len(tok_list)
+def rank_queries(sub, tok_list, q_positions, xyz_list):
+    """Deployed search for every query: the similar-k-mer prefilter (top 200), then ranking
+    by the structure score S * aTM (Smith-Waterman score times alignment TM-score); one
+    ranking per tie-breaking seed (ties at the top-N cut and in the ranking)."""
     k = KMER_K
     powers = np.array([K ** (k - 1 - i) for i in range(k)], dtype=np.int64)
     idx = defaultdict(list)
@@ -499,7 +503,8 @@ def retrieval_eval(sub, tok_list, fam_pool, clan_pool, q_positions):
         for p in range(len(tt) - k + 1):
             idx[int(np.dot(tt[p : p + k], powers))].append((ti, p))
     thresh = THRESH_FRAC * k
-    recs = []
+    go, ge = np.float32(SW_GAP_OPEN), np.float32(SW_GAP_EXTEND)
+    out = {}
     for q in q_positions:
         tt = tok_list[q]
         td = defaultdict(dict)
@@ -513,30 +518,52 @@ def retrieval_eval(sub, tok_list, fam_pool, clan_pool, q_positions):
         sc = [x for x in sc if x[1] > 0]
         c0 = np.array([x[0] for x in sc], np.int64)
         s0 = np.array([x[1] for x in sc])
+        score_cache = {}
+        out[q] = []
+        for keys in tie_keys_by_seed:
+            cand = c0[np.lexsort((keys[c0], -s0))][:TOPN] if len(c0) else c0
+            for t in cand:
+                if int(t) not in score_cache:
+                    s_, atm, _ = score_pair(tt, xyz_list[q], tok_list[t], xyz_list[t], sub, go, ge)
+                    score_cache[int(t)] = s_ * atm
+            s = np.array([score_cache[int(t)] for t in cand])
+            out[q].append(cand[np.lexsort((keys[cand], -s))] if len(cand) else cand)
+    return out
+
+
+def score_queries(rankings, fam_pool, clan_pool):
+    """Per-query family/clan Sens@1FP (Section 2.2 definitions, unlabelled targets neutral),
+    mean over tie-breaking seeds."""
+    n = len(fam_pool)
+    unlabelled = fam_pool == ""
+    recs = []
+    for q, runs in rankings.items():
         va = np.arange(n) != q
         has_clan = bool(clan_pool[q])
         rel_c = (clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va if has_clan else None
         clan_q = has_clan and bool(rel_c.any())
-        if len(c0) == 0:
-            recs.append({"pos": int(q), "fam": 0.0, "clan": 0.0 if clan_q else None})
-            continue
         rel_f = (fam_pool == fam_pool[q]) & va
-        neu_f = ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if has_clan else None
-        sw_cache = {}
-        fam_v, clan_v = [], []
-        # Seeded ties at the top-N cut and in the SW ranking; SW scores are shared across seeds.
-        for keys in tie_keys_by_seed:
-            cand = c0[np.lexsort((keys[c0], -s0))][:TOPN]
-            s = np.array([sw_cache.setdefault(int(t), smith_waterman_numba(
-                tt, tok_list[t], sub, SW_GAP_OPEN, SW_GAP_EXTEND)) for t in cand])
-            r = cand[np.lexsort((keys[cand], -s))]
-            fam_v.append(first_fp_sensitivity(r, rel_f, neu_f))
-            if clan_q:
-                clan_v.append(first_fp_sensitivity(r, rel_c, (fam_pool == fam_pool[q]) & va))
-        rec = {"pos": int(q), "fam": float(np.mean(fam_v)),
-               "clan": float(np.mean(clan_v)) if clan_q else None}
-        recs.append(rec)
+        neu_f = unlabelled | (((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if has_clan else False)
+        neu_c = unlabelled | ((fam_pool == fam_pool[q]) & va)
+        sens = lambda r, rel, neu: first_fp_sensitivity(r, rel, neu) if len(r) else 0.0  # noqa: E731
+        recs.append({"pos": int(q), "fam": float(np.mean([sens(r, rel_f, neu_f) for r in runs])),
+                     "clan": float(np.mean([sens(r, rel_c, neu_c) for r in runs])) if clan_q else None})
     return recs
+
+
+def load_rankings(path):
+    z = np.load(path)
+    out = defaultdict(list)
+    for q, a, b in zip(z["query"], z["offsets"][:-1], z["offsets"][1:]):
+        out[int(q)].append(z["flat"][a:b].astype(np.int64))
+    return dict(out)
+
+
+def save_rankings(path, rankings):
+    rows = [(q, r) for q, runs in rankings.items() for r in runs]
+    np.savez_compressed(path, query=np.array([q for q, _ in rows], np.int32),
+                        offsets=np.concatenate([[0], np.cumsum([len(r) for _, r in rows])]),
+                        flat=np.concatenate([r for _, r in rows] or [np.zeros(0)]).astype(np.int32))
 
 
 from rfoldseek.tiebreak import tie_keys  # noqa: E402
@@ -553,27 +580,51 @@ def eval_fold(fi):
     cut = int(len(tr_dis) * 0.8)
     val_dis = set(tr_dis[cut:])
     tr_set = set(tr_dis[:cut])
-    raw_tr = np.vstack([desc_raw[d] for d in tr_set if len(desc_raw[d]) > 0])
-    mn = raw_tr.mean(0)
-    sd = raw_tr.std(0) + 1e-9
-    desc_all = build_desc_all(mn, sd)
-    Xtr = np.vstack([desc_all[d] for d in tr_set if len(desc_all[d]) > 0])
-    Xval = np.vstack([desc_all[d] for d in val_dis if len(desc_all[d]) > 0])
-    m, _ = train_one(args.seed, Xtr, Xval)
-    toks = {}
-    cb = None
-    for d in pool:
-        if len(desc_all[d]) == 0:
-            toks[d] = np.zeros(0, np.int64)
-            continue
-        toks[d], cb = get_codes(m, desc_all[d])
-    tok_list = [toks[d] for d in pool]
+    cache = _os.path.join(CACHE, f"{args.split}_seed{args.seed}_fold{fi}.npz")
+    if _os.path.exists(cache):
+        z = np.load(cache)
+        assert len(z["offsets"]) == len(pool) + 1, f"{cache} was written for another pool"
+        tok_list = [z["tokens"][z["offsets"][i]:z["offsets"][i + 1]] for i in range(len(pool))]
+        toks = dict(zip(pool, tok_list))
+        S, n_pairs = z["matrix"], int(z["n_pairs"])
+        print(f"  fold {fi + 1}: tokens and matrix from {cache}", flush=True)
+    else:
+        raw_tr = np.vstack([desc_raw[d] for d in tr_set if len(desc_raw[d]) > 0])
+        mn = raw_tr.mean(0)
+        sd = raw_tr.std(0) + 1e-9
+        desc_all = build_desc_all(mn, sd)
+        Xtr = np.vstack([desc_all[d] for d in tr_set if len(desc_all[d]) > 0])
+        Xval = np.vstack([desc_all[d] for d in val_dis if len(desc_all[d]) > 0])
+        m, _ = train_one(args.seed, Xtr, Xval)
+        toks = {}
+        cb = None
+        for d in pool:
+            if len(desc_all[d]) == 0:
+                toks[d] = np.zeros(0, np.int64)
+                continue
+            toks[d], cb = get_codes(m, desc_all[d])
+        tok_list = [toks[d] for d in pool]
+        S, n_pairs = make_struct_blosum(toks, tr_set, K)
+        _os.makedirs(CACHE, exist_ok=True)
+        np.savez_compressed(cache, tokens=np.concatenate(tok_list).astype(np.int16),
+                            offsets=np.concatenate([[0], np.cumsum([len(t) for t in tok_list])]),
+                            matrix=np.asarray(S, np.float32), n_pairs=n_pairs)
+    tok_list = [np.asarray(t, np.int64) for t in tok_list]
+    S = np.asarray(S, np.float32)
+    xyz_list = [c4_coords(ents[d], len(t)) if len(t) else np.zeros((0, 3)) for d, t in zip(pool, tok_list)]
+    assert all(x is not None for x in xyz_list), "fold tokens do not match the chains' resolved nucleotides"
     fam_pool = np.array([fams[d] for d in pool], dtype=object)
     clan_pool = np.array([clans[d] for d in pool], dtype=object)
-    S, n_pairs = make_struct_blosum(toks, tr_set, K)
     smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), S, SW_GAP_OPEN, SW_GAP_EXTEND)
     q_pos = [i for i, d in enumerate(pool) if d in heldout and is_query(d)]
-    recs = retrieval_eval(S, tok_list, fam_pool, clan_pool, q_pos)
+    rank_cache = cache.replace(".npz", "_rankings.npz")
+    if _os.path.exists(rank_cache):
+        rankings = load_rankings(rank_cache)
+        assert sorted(rankings) == sorted(q_pos), f"{rank_cache} was written for other queries"
+    else:
+        rankings = rank_queries(S, tok_list, q_pos, xyz_list)
+        save_rankings(rank_cache, rankings)
+    recs = score_queries(rankings, fam_pool, clan_pool)
     for r in recs:
         d = pool[r["pos"]]
         r.update({"id": str(ents[d]["id"]), "family": fams[d], "clan": r["clan"], "clan_acc": clans[d] or None, "fold": fi})

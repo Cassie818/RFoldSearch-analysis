@@ -71,7 +71,7 @@ def draw_kv(ax, km, vq, ann_fn, level, title):
     ax.minorticks_off()
     ax.set_xlabel("Codebook size $K$", fontsize=10.5)
     ax.set_ylabel("Sens@1FP", fontsize=10.5)
-    ax.set_title(title, fontsize=12)
+    ax.set_title(title, fontsize=10.5)
     ax.tick_params(labelsize=9)
     lo, hi = min(km + [vq]), max(km + [vq])
     pad = (hi - lo) * 0.42 + 0.008
@@ -102,7 +102,7 @@ def draw_sel(ax, km_x, km_y, vq_x, vq_y, ylab, title):
     ax.set_xscale("log")
     ax.set_xlabel("Postings per query", fontsize=10.5)
     ax.set_ylabel(ylab, fontsize=10.5)
-    ax.set_title(title, fontsize=12)
+    ax.set_title(title, fontsize=10.5)
     ax.tick_params(labelsize=9)
     ax.set_xlim(6.5e3, 2.4e6)
     ys = list(km_y) + [vq_y]
