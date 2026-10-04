@@ -17,7 +17,7 @@ def load_labels(tsv_path: str, label_column: str = "rfam_acc") -> dict[str, str]
 
 
 def attach_labels(entries: list[dict], labels: dict[str, str]) -> np.ndarray:
-    """Return per-entry class labels; empty string means unlabeled distractor."""
+    """Return per-entry class labels; empty string means Rfam-unassigned."""
     return np.array([labels.get(str(e["id"]), "") for e in entries], dtype=object)
 
 
@@ -61,11 +61,16 @@ def rfam_relevance_masks(
     clans: np.ndarray,
     level: str,
 ) -> tuple[np.ndarray, np.ndarray]:
-    """Return Rfam true-positive and neutral masks for the benchmark hierarchy."""
+    """Return Rfam true-positive and neutral masks for the benchmark hierarchy.
+
+    Rfam-unassigned targets are neutral at both family and clan levels because
+    absence of an annotation is not evidence that a target is unrelated.
+    """
     valid = np.ones(len(fams), dtype=bool)
     valid[q_idx] = False
     rel = np.zeros(len(fams), dtype=bool)
     neu = ~valid
+    neu |= (fams == "") & valid
 
     if level == "family":
         if fams[q_idx]:

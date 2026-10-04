@@ -31,7 +31,12 @@ from paths import DATA_ROOT, RFOLDSEEK_REPO, SRC_SEARCH  # noqa: E402
 
 sys.path.insert(0, SRC_SEARCH)
 sys.path.insert(0, RFOLDSEEK_REPO)
-from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels  # noqa: E402
+from prefilter_rfam_benchmark import (  # noqa: E402
+    attach_labels,
+    first_fp_sensitivity,
+    load_labels,
+    rfam_relevance_masks,
+)
 
 RET = os.path.join(DATA_ROOT, "files", "production", "retrieval")
 RANKINGS = os.path.join(RET, "rankings")
@@ -85,14 +90,7 @@ def load():
 
 def rfam_masks(b, q, level):
     """(positives, neutrals) of query q under the Rfam truth; unlabelled targets are neutral."""
-    other = np.arange(b.n) != q
-    if level == "family":
-        pos = (b.fam == b.fam[q]) & other
-        neu = ((b.clan == b.clan[q]) & (b.fam != b.fam[q]) & other) if b.clan[q] else None
-    else:
-        pos = (b.clan == b.clan[q]) & (b.fam != b.fam[q]) & other
-        neu = (b.fam == b.fam[q]) & other
-    return pos, (b.fam == "") if neu is None else neu | (b.fam == "")
+    return rfam_relevance_masks(q, b.fam, b.clan, level)
 
 
 def structure_masks(b, q, tau, level, score=None):
