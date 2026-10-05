@@ -16,7 +16,7 @@ Outputs:
     Console: summary statistics
 """
 from __future__ import annotations
-import argparse, csv, json, os, re, sys
+import argparse, csv, json, re
 from collections import defaultdict
 from pathlib import Path
 
@@ -28,7 +28,7 @@ REPO = Path(__file__).resolve().parents[2]
 DB = REPO / "files" / "models" / "db.pt"
 IL_CSV = REPO / "files" / "motifs" / "bgsu_il_current_2026-08-03.csv"
 HL_CSV = REPO / "files" / "motifs" / "bgsu_hl_current_2026-08-03.csv"
-CIF_DIR = Path("/Users/cassie/Desktop/NR80_local")
+DEFAULT_CIF_DIR = Path.home() / "Desktop" / "NR80_local"
 CAND_TSV = REPO / "files" / "motifs" / "kmer_candidates_production_new_k4_aa.tsv"
 OUT_TSV = REPO / "files" / "motifs" / "kmer_bgsu_overlap_production_new_k4_aa.tsv"
 CACHE_JSON = REPO / "files" / "motifs" / "chain_residue_map.json"
@@ -80,15 +80,15 @@ def parse_bgsu(csv_path: Path, kind: str):
     return motifs
 
 
-def build_chain_residue_map(stems):
+def build_chain_residue_map(stems, cif_dir: Path, cache_json: Path):
     """For each chain stem we have a CIF for, return a list of author
     residue numbers in the order produced by our parser. If cached, reuse."""
-    if CACHE_JSON.exists():
-        return json.load(open(CACHE_JSON))
+    if cache_json.exists():
+        return json.load(open(cache_json))
     out = {}
     n_ok = n_miss = 0
     for stem in stems:
-        cif = CIF_DIR / f"{stem}.cif"
+        cif = cif_dir / f"{stem}.cif"
         if not cif.exists():
             n_miss += 1
             continue
@@ -110,14 +110,12 @@ def build_chain_residue_map(stems):
             n_ok += 1
         except Exception as e:
             n_miss += 1
-    json.dump(out, open(CACHE_JSON, "w"))
-    print(f"residue map: {n_ok} chains cached, {n_miss} skipped → {CACHE_JSON}")
+    json.dump(out, open(cache_json, "w"))
+    print(f"residue map: {n_ok} chains cached, {n_miss} skipped → {cache_json}")
     return out
 
 
 def main():
-    global CACHE_JSON
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidates", type=Path, default=CAND_TSV)
     parser.add_argument("--output", type=Path, default=OUT_TSV)
@@ -125,6 +123,7 @@ def main():
     parser.add_argument("--il_csv", type=Path, default=IL_CSV)
     parser.add_argument("--hl_csv", type=Path, default=HL_CSV)
     parser.add_argument("--cache", type=Path, default=CACHE_JSON)
+    parser.add_argument("--cif-dir", type=Path, default=DEFAULT_CIF_DIR)
     args = parser.parse_args()
 
     print("parsing BGSU IL ...")
@@ -152,8 +151,7 @@ def main():
     print(f"  our db: {len(stem2idx)} chains")
 
     # Build residue-number mapping (cached)
-    CACHE_JSON = args.cache
-    residue_map = build_chain_residue_map(list(stem2idx.keys()))
+    residue_map = build_chain_residue_map(list(stem2idx.keys()), args.cif_dir, args.cache)
 
     # How many of our chains have ANY BGSU annotation?
     annotated = 0

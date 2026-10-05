@@ -1,0 +1,14 @@
+metric	value
+random_seed	260810
+n_repeats	25
+n_bgsu_covered_chains	175
+n_chains_skipped_mapping_mismatch	0
+n_eligible_random_windows	15974
+n_candidate_occurrences_on_bgsu_covered_chains	3560
+background_overlap_median_fraction	0.6219101123595505
+background_overlap_p10_fraction	0.6109550561797753
+background_overlap_p90_fraction	0.6313483146067416
+candidate_word_median_overlap_fraction	0.8571428571428571
+candidate_minus_background_median_fraction	0.23523274478330658
+overlap_rule	any residue intersection; imported from scripts/07_motifs/bgsu_overlap.py
+sampling_scope	uniform 4-nt windows from BGSU-covered chains with valid residue mapping

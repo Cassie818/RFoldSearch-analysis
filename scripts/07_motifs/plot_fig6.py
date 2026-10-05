@@ -1,607 +1,570 @@
-"""Plot the Fig. 5 motif analysis for the production token database."""
+"""Draw Fig. 6 from the recurrent-word control tables."""
 from __future__ import annotations
 
+import argparse
 import csv
-import itertools
-import json
-import os
-import random
-from collections import Counter, defaultdict
+import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
-import torch
+from matplotlib.font_manager import FontProperties
 from matplotlib.lines import Line2D
-from matplotlib.patches import Circle, FancyBboxPatch, Patch, Rectangle
+from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch, PathPatch, Rectangle
+from matplotlib.textpath import TextPath
+from matplotlib.transforms import Affine2D
 from mpl_toolkits.mplot3d import proj3d
-import math
-from scipy.stats import beta
 
 
 REPO = Path(__file__).resolve().parents[2]
-DATA_ROOT = Path(os.environ.get("RFOLDSEEK_DATA", "/Users/cassie/Desktop/RFoldSeek"))
-MOTIF_DIR = REPO / "files" / "motifs"
-FIG_DIR = REPO / "figures" / "motifs"
-FIG_DIR.mkdir(parents=True, exist_ok=True)
+sys.path.insert(0, str(REPO / "scripts" / "common"))
+import figstyle as S  # noqa: E402  (palette and type sizes shared with Figs 2-5)
+sys.path.insert(0, str(REPO / "scripts" / "07_motifs" / "word_controls"))
+from common import expected_atoms, parse_atom_site, stem_parts  # noqa: E402
+MOTIF = REPO / "files" / "motifs"
+CONTROLS = MOTIF / "word_controls"
+FIGURES = REPO / "figures"
+DEFAULT_CIF_DIR = Path.home() / "Desktop" / "NR80_local"
 
-DB_PATH = REPO / "files" / "models" / "db.pt"
-KMER_CANDIDATES = MOTIF_DIR / "kmer_candidates_production_new_k4_aa.tsv"
-RANDOM_CONTROL = MOTIF_DIR / "random_control_rmsd_production_new_k4_aa.tsv"
-GLOBAL_SEQ_CONTROL = MOTIF_DIR / "global_sequence_matched_control_production_new_k4_aa.tsv"
-DSSR_SUMMARY = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_summary_production_new.tsv"
-STRICT_CLEAN_MANIFEST = MOTIF_DIR / "known_motif_core_matches_production_new_relabel_manifest.tsv"
-SEQ_CONTROL = MOTIF_DIR / "sequence_matched_control_44-48-62-71_exact_strict.tsv"
-SEQ_CONTROL_SUMMARY = MOTIF_DIR / "sequence_matched_control_44-48-62-71_exact_strict_summary.tsv"
+FREQUENCY = CONTROLS / "frequency_matched_random_words.tsv"
+FREQUENCY_SUMMARY = CONTROLS / "frequency_matched_random_words_summary.tsv"
+BASE = CONTROLS / "base_inclusive_rmsd.tsv"
+BASE_SUMMARY = CONTROLS / "base_inclusive_rmsd_summary.tsv"
+RANDOM = MOTIF / "random_control_rmsd_production_new_k4_aa.tsv"
+SEQUENCE = MOTIF / "global_sequence_matched_control_production_new_k4_aa.tsv"
+PAIRING = CONTROLS / "pairing_pattern_words.tsv"
+BACKGROUND_SUMMARY = CONTROLS / "bgsu_random_window_background_summary.tsv"
+HAIRPIN = MOTIF / "overlapping_hairpin_44-48-62-71-66-12_instances.tsv"
+DSSR = MOTIF / "known_motif_core_dssr_pair_conservation_instances_production_new.tsv"
 
-PRIMARY_KMER = "44-48-62-71"
-TARGETS = [
-    ("44-48-62-71", "HL_34789.6"),
-    ("62-71-66-12", "HL_34789.6"),
-    ("48-24-39-39", "HL_33597.6"),
-]
-C4_INDEX = 1
-
-KMER_COLORS = {
-    "44-48-62-71": "#5B7C99",
-    "62-71-66-12": "#7DA087",
-    "48-24-39-39": "#9B6B8A",
-}
-GREY_FILL, GREY_LINE = "#D9D9D9", "#7F7F7F"
+# Palette of Figs 2-5 (figstyle): RFoldseek blue for the 3Dr words, Fig. 2's greys for
+# controls, and the same tab10-derived hues, lightened, for everything else.
 INK = "#333333"
-SOFT_BG = "#F5F5F5"
-GRID = "#E6E6E6"
-POS_COLORS = ["#5B7C99", "#B76E5A", "#C4A35A", "#7DA087"]
-LW_COLORS = {
-    "cWW": "#5B7C99",
-    "tSH": "#B76E5A",
-    "tWH": "#9B6B8A",
-    "tWS": "#C4A35A",
-    ".": "#E6E6E6",
-}
+GRID = "#DDDDDD"
+BLUE, ORANGE = S.BASE["RFoldseek n500"], "#FF7F0E"
 
+# A/B: the 3Dr words in RFoldseek blue, controls in neutral greys.
+CANDIDATE = S.COLOR["RFoldseek n500"]
+CONTROL_GREYS = {"frequency": "#8C8C8C", "random": "#B3B3B3", "sequence": "#D9D9D9"}
 
-def read_column(path: Path, column: str) -> np.ndarray:
-    return np.asarray([float(row[column]) for row in csv.DictReader(path.open(), delimiter="\t")])
+# C/E: the two overlapping words and the six GNRA positions, blue to orange.
+WORD_COLORS = {"left": BLUE, "right": ORANGE}
+POSITION_COLORS = [S.lighten(c, 0.1) for c in ("#1F9BD8", "#4FA8C9", "#86B4A6", "#C9A86B", "#F0913A", "#D9661F")]
 
-
-def read_key_value(path: Path) -> dict[str, str]:
-    return {row["metric"]: row["value"] for row in csv.DictReader(path.open(), delimiter="\t")}
+# F: Leontis-Westhof classes.
+LW_COLORS = {"cWW": S.lighten("#9467BD"), "tSH": S.lighten("#E377C2"), "tWH": S.lighten("#17BECF"),
+             "tWS": S.lighten("#BCBD22"), ".": "#E6E6E6"}
+TLOOP_COLOR = S.lighten("#2CA02C", 0.1)   # G: one hue, so its positions are not read as the GNRA's
+LOGO_COLOR = "#A6A6A6"                     # D: one colour; the letters name the nucleotides
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
-    return list(csv.DictReader(path.open(), delimiter="\t"))
+    with path.open() as handle:
+        return list(csv.DictReader(handle, delimiter="\t"))
 
 
-def load_db():
-    db = torch.load(DB_PATH, map_location="cpu", weights_only=False)
-    sources = {}
-    # Recent compact production databases omit the original JSONL source list;
-    # all panels can still be redrawn from entries plus the cached controls.
-    for data_path in db.get("data", []):
-        path = REPO / data_path if not Path(data_path).is_absolute() else Path(data_path)
-        if not path.exists() and not Path(data_path).is_absolute():
-            path = DATA_ROOT / data_path
-        with path.open() as handle:
-            for line in handle:
-                source = json.loads(line)
-                sources[str(source["id"])] = source
-    entries = db["entries"]
-    return entries, {Path(entry["id"]).stem: entry for entry in entries}, sources
+def read_metrics(path: Path) -> dict[str, str]:
+    return {row["metric"]: row["value"] for row in read_tsv(path)}
 
 
-def compact_coords(entry: dict) -> np.ndarray:
-    coords = np.asarray(entry["coords"], dtype=np.float32)
-    mask = np.asarray(entry["mask"], dtype=bool)
-    coords = coords[mask]
-    if len(coords) != len(entry["tokens"]):
-        raise ValueError(f"coordinate/token length mismatch for {entry['id']}")
-    return coords
+def numeric(rows: list[dict[str, str]], column: str) -> np.ndarray:
+    return np.asarray([float(row[column]) for row in rows if row[column] not in {"", "nan", "NaN"}], dtype=float)
 
 
-def kabsch_transform(points: np.ndarray, reference: np.ndarray) -> np.ndarray:
-    pc = points - points.mean(0, keepdims=True)
-    qc = reference - reference.mean(0, keepdims=True)
-    u, _, vt = np.linalg.svd(pc.T @ qc)
-    d = np.sign(np.linalg.det(vt.T @ u.T))
-    rotation = vt.T @ np.diag([1.0, 1.0, d]) @ u.T
-    return pc @ rotation.T
+def panel_label(ax, label: str, top=None, left=None, dy=0.0) -> None:
+    """Panel letter a fixed distance left of the axes' top-left corner, as in Figs 2-5;
+    `top`/`left` take that edge from another axes, `dy` shifts the letter (inches)."""
+    fig = ax.figure
+    w, h = fig.get_size_inches()
+    x0 = (left or ax).get_position().x0
+    y1 = (top or ax).get_position().y1
+    fig.text(x0 - 0.62 / w, y1 + (0.14 + dy) / h, label, fontsize=15, fontweight="bold",
+             va="bottom", ha="right")
 
 
-def kabsch_rmsd(points: np.ndarray, reference: np.ndarray) -> float:
-    ref = reference - reference.mean(0, keepdims=True)
-    aligned = kabsch_transform(points, reference)
-    return float(np.sqrt(np.mean(np.sum((aligned - ref) ** 2, axis=1))))
+def style_axis(ax, title=None, xlabel=None, ylabel=None) -> None:
+    S.style_axes(ax, title=title, xlabel=xlabel, ylabel=ylabel)
 
 
-def all_pair_rmsd(fragments: list[np.ndarray]) -> np.ndarray:
-    arr = np.asarray(fragments, dtype=np.float64)
-    n = len(arr)
-    if n < 2:
-        return np.asarray([], dtype=float)
-    left, right = np.triu_indices(n, k=1)
-    p = arr[left]
-    q = arr[right]
-    pc = p - p.mean(axis=1, keepdims=True)
-    qc = q - q.mean(axis=1, keepdims=True)
-    h = np.einsum("bni,bnj->bij", pc, qc)
-    u, _, vt = np.linalg.svd(h)
-    det = np.linalg.det(np.einsum("bij,bjk->bik", np.swapaxes(vt, 1, 2), np.swapaxes(u, 1, 2)))
-    sign = np.where(det < 0, -1.0, 1.0)
-    d = np.zeros((len(h), 3, 3), dtype=np.float64)
-    d[:, 0, 0] = 1.0
-    d[:, 1, 1] = 1.0
-    d[:, 2, 2] = sign
-    rotation = np.einsum(
-        "bij,bjk,bkl->bil",
-        np.swapaxes(vt, 1, 2),
-        d,
-        np.swapaxes(u, 1, 2),
+def subhead(ax, x, y, text, transform=None) -> None:
+    """Grey in-panel heading, as in Fig. 5G."""
+    ax.text(x, y, text, ha="center", va="bottom", fontsize=9.5, color=S.GREY_TEXT,
+            transform=transform or ax.transAxes)
+
+
+def atom_a_fragment(row: dict[str, str], n_residues: int, cif_dir: Path) -> np.ndarray:
+    _pdb, model, chain = stem_parts(row["pdb_chain"])
+    residues = parse_atom_site(cif_dir / f"{row['pdb_chain']}.cif", chain, model)
+    coordinates = []
+    for number in [int(value) for value in row["author_residues"].split(",")][:n_residues]:
+        base, atoms = residues[number]
+        names = expected_atoms(base)
+        missing = [name for name in names if name not in atoms]
+        if missing:
+            raise RuntimeError(f"{row['pdb_chain']} residue {number}: missing {','.join(missing)}")
+        coordinates.extend(atoms[name] for name in names)
+    return np.asarray(coordinates, dtype=np.float64)
+
+
+def kabsch_align(points: np.ndarray, reference: np.ndarray) -> np.ndarray:
+    centered = points - points.mean(axis=0, keepdims=True)
+    target = reference - reference.mean(axis=0, keepdims=True)
+    u, _, vt = np.linalg.svd(centered.T @ target)
+    reflection = np.sign(np.linalg.det(vt.T @ u.T))
+    rotation = vt.T @ np.diag([1.0, 1.0, reflection]) @ u.T
+    return centered @ rotation.T
+
+
+def preflight(cif_dir: Path) -> dict:
+    frequency = read_tsv(FREQUENCY)
+    base = read_tsv(BASE)
+    random_rows = read_tsv(RANDOM)
+    sequence_rows = [row for row in read_tsv(SEQUENCE) if row["status"] == "ok"]
+    pairing = read_tsv(PAIRING)
+    background = read_metrics(BACKGROUND_SUMMARY)
+    hairpin = read_tsv(HAIRPIN)
+    dssr = read_tsv(DSSR)
+
+    a_distributions = {
+        "five_candidate": numeric(frequency, "candidate_all_pair_median_rmsd"),
+        "five_frequency": numeric(frequency, "matched_control_median_rmsd"),
+        "five_random": numeric(random_rows, "rmsd"),
+        "five_sequence": numeric(sequence_rows, "control_median_of_medians"),
+        "atom_candidate": numeric(base, "atom_set_A_candidate_sampled_pair_median_rmsd"),
+        "atom_random": numeric(base, "atom_set_A_length_random_median_rmsd"),
+        "atom_sequence": numeric(base, "atom_set_A_sequence_matched_median_rmsd"),
+    }
+    a_medians = {key: float(np.median(values)) for key, values in a_distributions.items()}
+    frequency_summary = read_metrics(FREQUENCY_SUMMARY)
+    base_summary = read_metrics(BASE_SUMMARY)
+    expected_a = {
+        "five_candidate": float(frequency_summary["candidate_all_pair_median_rmsd"]),
+        "five_frequency": float(frequency_summary["frequency_matched_control_median_rmsd"]),
+        "five_random": float(base_summary["five_anchor_length_random_median_rmsd"]),
+        "five_sequence": float(base_summary["five_anchor_sequence_matched_median_rmsd"]),
+        "atom_candidate": float(base_summary["atom_set_A_candidate_median_rmsd"]),
+        "atom_random": float(base_summary["atom_set_A_length_random_median_rmsd"]),
+        "atom_sequence": float(base_summary["atom_set_A_sequence_matched_median_rmsd"]),
+    }
+    for key in a_medians:
+        if not np.isclose(a_medians[key], expected_a[key], atol=1e-12, rtol=1e-10):
+            raise SystemExit(f"STOP: panel A {key} median {a_medians[key]} != summary {expected_a[key]}")
+
+    helix = [row for row in pairing if row["word_category"] == "a" and row["bgsu_overlap_fraction"] not in {"", "nan", "NaN"}]
+    other = [row for row in pairing if row["word_category"] in {"b", "c", "d"} and row["bgsu_overlap_fraction"] not in {"", "nan", "NaN"}]
+    if (len(helix), len(other)) != (514, 419):
+        raise SystemExit(f"STOP: panel B n={(len(helix), len(other))}, expected (514, 419)")
+
+    sequences = [row["sequence"].upper().replace("T", "U") for row in hairpin]
+    n_gnra = sum(len(seq) == 6 and seq[1] == "G" and seq[3] in "AG" and seq[4] == "A" for seq in sequences)
+    n_gc = sum(len(seq) == 6 and seq[0] + seq[5] in {"GC", "CG"} for seq in sequences)
+    if (n_gnra, len(sequences), n_gc) != (44, 48, 37):
+        raise SystemExit(f"STOP: panel D counts={(n_gnra, len(sequences), n_gc)}, expected (44, 48, 37)")
+
+    exact_hairpin = [row for row in hairpin if row["dssr_lw_signature"]]
+    n_gnra_signature = sum(row["dssr_lw_signature"] == "cWW,tSH,.,.,tSH,cWW" for row in exact_hairpin)
+    tloop = [row for row in dssr if row["kmer"] == "48-24-39-39"]
+    n_tloop_signature = sum(row["dssr_lw_pattern"] == "tWH,tWS,cWW,." for row in tloop)
+    if (n_gnra_signature, len(exact_hairpin), n_tloop_signature, len(tloop)) != (11, 12, 10, 10):
+        raise SystemExit("STOP: panel G signature counts do not equal 11/12 and 10/10")
+
+    topology_count = sum(
+        row["left_pair_orient_pattern"].split(",")[0] == "cis"
+        and row["left_pair_orient_pattern"].split(",")[1] == "trans"
+        and row["right_pair_orient_pattern"].split(",")[2] == "trans"
+        and row["right_pair_orient_pattern"].split(",")[3] == "cis"
+        for row in hairpin
     )
-    aligned = np.einsum("bni,bji->bnj", pc, rotation)
-    return np.sqrt(np.mean(np.sum((aligned - qc) ** 2, axis=2), axis=1))
+    if topology_count != len(hairpin):
+        raise SystemExit(f"STOP: panel C topology count {topology_count}/{len(hairpin)}")
+
+    if not cif_dir.is_dir():
+        raise SystemExit(f"STOP: missing mmCIF directory {cif_dir}")
+    gnra_coords = [atom_a_fragment(row, 6, cif_dir) for row in exact_hairpin]
+    tloop_coords = [atom_a_fragment(row, 4, cif_dir) for row in tloop]
+
+    return {
+        "a_distributions": a_distributions,
+        "a_medians": a_medians,
+        "helix_values": np.asarray([float(row["bgsu_overlap_fraction"]) for row in helix]),
+        "other_values": np.asarray([float(row["bgsu_overlap_fraction"]) for row in other]),
+        "background": float(background["background_overlap_median_fraction"]),
+        "jitter_seed": int(background["random_seed"]),
+        "hairpin": hairpin,
+        "sequences": sequences,
+        "n_gnra": n_gnra,
+        "n_gc": n_gc,
+        "topology_count": topology_count,
+        "exact_hairpin": exact_hairpin,
+        "n_gnra_signature": n_gnra_signature,
+        "tloop": tloop,
+        "n_tloop_signature": n_tloop_signature,
+        "gnra_coords": gnra_coords,
+        "tloop_coords": tloop_coords,
+    }
 
 
-def scan_occurrences(kmer: str, entries: list[dict], sources: dict[str, dict]) -> list[dict[str, object]]:
-    target = tuple(int(value) for value in kmer.split("-"))
-    rows = []
-    for entry in entries:
-        tokens = np.asarray(entry["tokens"], dtype=np.int32)
-        source = sources.get(str(entry["id"]))
-        if source is None:
-            continue
-        seq = str(source.get("seq", ""))
-        mask = np.asarray(source.get("mask", entry["mask"]), dtype=bool)
-        raw_indices = np.flatnonzero(mask)
-        coords = compact_coords(entry)
-        if len(raw_indices) != len(tokens):
-            continue
-        stem = Path(entry["id"]).stem
-        for start in range(max(0, len(tokens) - len(target) + 1)):
-            if tuple(int(value) for value in tokens[start:start + len(target)]) != target:
-                continue
-            raw_window = raw_indices[start:start + len(target)]
-            rows.append({
-                "pdb_chain": stem,
-                "start": start,
-                "sequence": "".join(seq[index] for index in raw_window if index < len(seq)),
-                "fragment": coords[start:start + len(target)].reshape(-1, 3),
-            })
-    return rows
+POOLED = {"five_random"}   # A: a single pooled value, not one value per word
 
 
-def strict_clean_rows(kmer: str) -> list[dict[str, str]]:
-    return [
-        row for row in csv.DictReader(STRICT_CLEAN_MANIFEST.open(), delimiter="\t")
-        if row["kmer"] == kmer and row["strict_clean"] == "1"
-    ]
+def boxplot(ax, values: list[np.ndarray], positions: list[float], colors: list[str],
+            widths: float = 0.55, alpha: float = 0.90) -> None:
+    parts = ax.boxplot(values, positions=positions, widths=widths, patch_artist=True,
+                       showfliers=False, whis=(10, 90),
+                       medianprops={"color": INK, "linewidth": 1.7},
+                       whiskerprops={"color": INK, "linewidth": 0.9},
+                       capprops={"color": INK, "linewidth": 0.9},
+                       boxprops={"edgecolor": INK, "linewidth": 0.9})
+    for patch, color in zip(parts["boxes"], colors):
+        patch.set_facecolor(color)
+        patch.set_alpha(alpha)
 
 
-def motif_fragments(rows: list[dict[str, str]], entries_by_stem: dict[str, dict]) -> list[np.ndarray]:
-    fragments = []
-    for row in rows:
-        entry = entries_by_stem[row["pdb_chain"]]
-        start = int(row["token_start_1based"]) - 1
-        fragments.append(compact_coords(entry)[start:start + 4])
-    return fragments
+def panel_a(ax, data: dict) -> None:
+    keys = ["five_candidate", "five_frequency", "five_random", "five_sequence",
+            "atom_candidate", "atom_random", "atom_sequence"]
+    labels = ["3Dr\nword", "Freq.\nmatched", "Random", "Seq.\nmatched",
+              "3Dr\nword", "Random", "Seq.\nmatched"]
+    positions = [0.8, 2.0, 3.2, 4.4, 6.2, 7.4, 8.6]
+    colors = [CANDIDATE, CONTROL_GREYS["frequency"], CONTROL_GREYS["random"], CONTROL_GREYS["sequence"],
+              CANDIDATE, CONTROL_GREYS["random"], CONTROL_GREYS["sequence"]]
+    # The five-anchor random control is one pooled median over fragment pairs, not a
+    # per-word distribution, so it is drawn as a single point.
+    boxed = [i for i, key in enumerate(keys) if key not in POOLED]
+    boxplot(ax, [data["a_distributions"][keys[i]] for i in boxed], [positions[i] for i in boxed],
+            [colors[i] for i in boxed])
+    for i, key in enumerate(keys):
+        if key in POOLED:
+            ax.scatter([positions[i]], [data["a_medians"][key]], s=46, marker="D", color=colors[i],
+                       edgecolors=INK, linewidths=0.9, zorder=3)
+    ax.axvline(5.3, color=GRID, lw=0.9, zorder=1)
+    subhead(ax, 2.6, 0.95, "Five anchors", ax.get_xaxis_transform())
+    subhead(ax, 7.4, 0.95, "Atom set A", ax.get_xaxis_transform())
+    for x, key in zip(positions, keys):
+        top = data["a_medians"][key] if key in POOLED else float(np.percentile(data["a_distributions"][key], 90))
+        ax.text(x, top + 0.14, f"{data['a_medians'][key]:.2f}",
+                color=S.TEXT["RFoldseek n500"] if "candidate" in key else S.GREY_TEXT,
+                ha="center", va="bottom", fontsize=8.5)
+    ax.set_xticks(positions)
+    ax.set_xticklabels(labels, fontsize=8.5, linespacing=1.0)
+    ax.set_xlim(0.15, 9.15)
+    ax.set_ylim(0, 4.8)
+    style_axis(ax, ylabel=r"Median RMSD, $\AA$")
 
 
-def median_all_pair_rmsd(fragments: list[np.ndarray]) -> float:
-    return float(np.median(all_pair_rmsd([fragment.reshape(-1, 3) for fragment in fragments])))
+def panel_b(ax, data: dict) -> None:
+    groups = [data["helix_values"], data["other_values"]]
+    rng = np.random.default_rng(data["jitter_seed"])
+    ax.axhline(data["background"], color=S.NEUTRAL_LIGHT, lw=1.4, ls="--", zorder=0)
+    for x, values in zip([1, 2], groups):
+        jitter = rng.uniform(-0.28, 0.28, len(values))
+        ax.scatter(x + jitter, values, s=9, color=CANDIDATE, alpha=0.30, edgecolors="none", rasterized=True, zorder=1)
+        median = float(np.median(values))
+        ax.plot([x - 0.36, x + 0.36], [median, median], color=INK, lw=2.2, solid_capstyle="butt", zorder=3)
+        ax.text(x + 0.40, median, f"{median * 100:.0f}%", ha="left", va="center",
+                color=S.TEXT["RFoldseek n500"], fontsize=9)
+    ax.text(1.5, data["background"] + 0.015, f"background\n{data['background'] * 100:.1f}%",
+            ha="center", va="bottom", fontsize=8.5, color=S.GREY_TEXT)
+    ax.set_xticks([1, 2])
+    ax.set_xticklabels(["Standard helix", "All other words"])
+    ax.set_xlim(0.55, 2.68)
+    ax.set_ylim(-0.04, 1.1)
+    style_axis(ax, ylabel="BGSU motif overlap fraction")
 
 
-def ensure_sequence_control(entries: list[dict], sources: dict[str, dict]) -> None:
-    if SEQ_CONTROL.exists() and SEQ_CONTROL_SUMMARY.exists():
-        return
-    occurrences = scan_occurrences(PRIMARY_KMER, entries, sources)
-    observed_fragments = [row["fragment"] for row in occurrences]
-    observed_values = all_pair_rmsd(observed_fragments)
-    variant_counts = Counter(str(row["sequence"]) for row in occurrences)
-    target = tuple(int(value) for value in PRIMARY_KMER.split("-"))
-    pool = defaultdict(list)
-    for entry in entries:
-        source = sources.get(str(entry["id"]))
-        if source is None:
-            continue
-        seq = str(source.get("seq", ""))
-        mask = np.asarray(source.get("mask", entry["mask"]), dtype=bool)
-        raw_indices = np.flatnonzero(mask)
-        tokens = np.asarray(entry["tokens"], dtype=np.int32)
-        coords = compact_coords(entry)
-        if len(raw_indices) != len(tokens):
-            continue
-        stem = Path(entry["id"]).stem
-        for start in range(max(0, len(tokens) - 4 + 1)):
-            token_window = tuple(int(value) for value in tokens[start:start + 4])
-            if token_window == target:
-                continue
-            raw_window = raw_indices[start:start + 4]
-            if len(raw_window) != 4 or raw_window[-1] >= len(seq):
-                continue
-            window_seq = "".join(seq[index] for index in raw_window)
-            if window_seq in variant_counts:
-                label = f"{window_seq}:{stem}:{start + 1}"
-                pool[window_seq].append((label, coords[start:start + 4].reshape(-1, 3)))
-    missing = [seq for seq in variant_counts if not pool.get(seq)]
-    if missing:
-        raise RuntimeError(f"missing sequence-matched pools for {missing}")
-    draw_order = []
-    for seq, count in variant_counts.items():
-        draw_order.extend([seq] * count)
-    rng = random.Random(260807)
-    medians = []
-    SEQ_CONTROL.parent.mkdir(parents=True, exist_ok=True)
-    with SEQ_CONTROL.open("w", newline="") as handle:
-        fieldnames = ["replicate", "median_rmsd", "p90_rmsd", "n_fragments", "n_pairs", "sampled_windows"]
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter="\t")
-        writer.writeheader()
-        for rep in range(1, 2001):
-            sampled = [rng.choice(pool[seq]) for seq in draw_order]
-            values = all_pair_rmsd([item[1] for item in sampled])
-            medians.append(float(np.median(values)))
-            writer.writerow({
-                "replicate": rep,
-                "median_rmsd": medians[-1],
-                "p90_rmsd": float(np.percentile(values, 90)),
-                "n_fragments": len(sampled),
-                "n_pairs": len(values),
-                "sampled_windows": ";".join(item[0] for item in sampled),
-            })
-    n_le = int(np.sum(np.asarray(medians) <= np.median(observed_values)))
-    rows = [
-        ("kmer", PRIMARY_KMER),
-        ("n_observed_occurrences", len(occurrences)),
-        ("observed_sequence_counts", ";".join(f"{seq}:{count}" for seq, count in variant_counts.most_common())),
-        ("observed_all_pair_median_rmsd", float(np.median(observed_values))),
-        ("observed_all_pair_p90_rmsd", float(np.percentile(observed_values, 90))),
-        ("observed_n_pairs", len(observed_values)),
-        ("n_replicates", 2000),
-        ("control_median_of_medians", float(np.median(medians))),
-        ("control_p10_median_rmsd", float(np.percentile(medians, 10))),
-        ("control_p90_median_rmsd", float(np.percentile(medians, 90))),
-        ("empirical_one_sided_p_le_observed", n_le / 2000),
-        ("n_replicates_le_observed", n_le),
-        ("random_seed", 260807),
-    ]
-    with SEQ_CONTROL_SUMMARY.open("w", newline="") as handle:
-        writer = csv.writer(handle, delimiter="\t")
-        writer.writerow(["metric", "value"])
-        writer.writerows(rows)
-
-
-def dssr_rows() -> list[dict[str, object]]:
-    rows = read_tsv(DSSR_SUMMARY)
-    out = []
-    for kmer, bgsu in TARGETS:
-        rec = next(row for row in rows if row["kmer"] == kmer and row["metric"] == "dssr_lw_pattern")
-        count = int(float(rec["dominant_count"]))
-        n = int(rec["n_instances"])
-        lo = 0.0 if count == 0 else beta.ppf(0.025, count, n - count + 1)
-        hi = 1.0 if count == n else beta.ppf(0.975, count + 1, n - count)
-        out.append({
-            "kmer": kmer,
-            "bgsu": bgsu,
-            "signature": rec["dominant_state"],
-            "count": count,
-            "n": n,
-            "frac": count / n,
-            "lo": lo,
-            "hi": hi,
-        })
-    return out
-
-
-def set_panel_label(ax, label: str) -> None:
-    if hasattr(ax, "text2D"):
-        ax.text2D(-0.08, 1.06, label, transform=ax.transAxes, fontsize=14, fontweight="bold")
-    else:
-        ax.text(-0.08, 1.06, label, transform=ax.transAxes, fontsize=14, fontweight="bold")
-
-
-def set_panel_title(ax, title: str) -> None:
-    """Consistent, compact within-panel heading."""
-    if hasattr(ax, "text2D"):
-        ax.text2D(0.0, 1.035, title, transform=ax.transAxes, fontsize=10.5,
-                  fontweight="bold", color=INK, ha="left", va="bottom")
-    else:
-        ax.set_title(title, loc="left", fontsize=10.5, fontweight="bold",
-                     color=INK, pad=9)
-
-
-def panel_a(ax) -> None:
-    token_rmsd = read_column(KMER_CANDIDATES, "cross_med_rmsd")
-    random_rmsd = read_column(RANDOM_CONTROL, "rmsd")
-    seq_rmsd = read_column(GLOBAL_SEQ_CONTROL, "control_median_of_medians")
-    seq_rmsd = seq_rmsd[np.isfinite(seq_rmsd)]
-    rng = np.random.default_rng(7)
-    random_sample = rng.choice(random_rmsd, size=min(30000, len(random_rmsd)), replace=False)
-    bins = np.linspace(0, 4.5, 70)
-    blue = KMER_COLORS[PRIMARY_KMER]
-    seq_color = "#B76E5A"
-    ax.hist(random_sample, bins=bins, density=True, color=GREY_FILL, alpha=0.72,
-            edgecolor="none", label="length-matched random")
-    ax.hist(seq_rmsd, bins=bins, density=True, histtype="step", linewidth=1.8,
-            color=seq_color, label="sequence-matched non-target")
-    ax.hist(token_rmsd, bins=bins, density=True, histtype="step", linewidth=2.0,
-            color=blue, label="token words")
-    med_token, med_random, med_seq = (np.median(token_rmsd), np.median(random_rmsd),
-                                      np.median(seq_rmsd))
-    ax.axvline(med_token, color=blue, linewidth=1.15)
-    ax.axvline(med_random, color=GREY_LINE, linewidth=1.15, linestyle=(0, (4, 3)))
-    ax.axvline(med_seq, color=seq_color, linewidth=1.15, linestyle=(0, (2, 2)))
-    ymax = ax.get_ylim()[1]
-    ax.text(med_token + 0.05, ymax * 0.83, rf"{med_token:.2f} $\AA$", color=blue,
-            fontsize=8.6, fontweight="bold")
-    ax.text(med_random + 0.06, ymax * 0.74, rf"{med_random:.2f} $\AA$", color=GREY_LINE,
-            fontsize=8.6, fontweight="bold")
-    ax.text(med_seq + 0.06, ymax * 0.64, rf"{med_seq:.2f} $\AA$", color=seq_color,
-            fontsize=8.6, fontweight="bold")
-    ax.set_xlim(0, 4.5)
-    ax.set_xlabel(r"Median RMSD ($\AA$)")
-    ax.set_ylabel("Density")
-    ax.legend(frameon=False, fontsize=7.8, loc="upper right", handlelength=2.3,
-              labelspacing=0.35)
-    for spine in ("top", "right"):
-        ax.spines[spine].set_visible(False)
-    set_panel_label(ax, "A")
-
-
-def draw_superposition(ax, ax_txt, frags: list[np.ndarray], tag: str, note: str) -> None:
-    ref = frags[0].reshape(-1, 3)
-    for frag in frags:
-        aligned = kabsch_transform(frag.reshape(-1, 3), ref).reshape(4, 5, 3)
-        c4 = aligned[:, C4_INDEX, :]
-        ax.plot(c4[:, 0], c4[:, 1], c4[:, 2], color="#A6ADB6", alpha=0.4, linewidth=1.0)
-        ax.scatter(c4[:, 0], c4[:, 1], c4[:, 2], c=POS_COLORS, s=13, depthshade=False, edgecolors="white", linewidths=0.3)
-    ax.view_init(elev=21, azim=-58)
-    ax.set_axis_off()
-    ax_txt.axis("off")
-    ax_txt.text(0.0, 0.62, tag, transform=ax_txt.transAxes, fontsize=9.2, color=KMER_COLORS[tag], fontweight="bold", va="center", ha="left")
-    ax_txt.text(0.0, 0.34, note, transform=ax_txt.transAxes, fontsize=8.0, va="center", ha="left", linespacing=1.35)
-
-
-def add_horizontal_scale_bar(ax, length_ang: float = 2.0) -> None:
-    """Draw a horizontal 2D scale bar at the bottom-left of a 3D axes.
-
-    Length is chosen so the bar spans `length_ang` in world units along the
-    world axis that projects most strongly to the screen for the current
-    view — this keeps the bar horizontal on screen while still faithfully
-    representing length_ang angstroms in the plot's visible plane.
-    """
-    xlim = ax.get_xlim3d(); ylim = ax.get_ylim3d(); zlim = ax.get_zlim3d()
-    cx = 0.5 * (xlim[0] + xlim[1])
-    cy = 0.5 * (ylim[0] + ylim[1])
-    cz = 0.5 * (zlim[0] + zlim[1])
-    M = ax.get_proj()
-    p0 = proj3d.proj_transform(cx, cy, cz, M)
-    d_center = ax.transData.transform((p0[0], p0[1]))
-    pixel_lengths = []
-    for vx, vy, vz in [(length_ang, 0, 0), (0, length_ang, 0), (0, 0, length_ang)]:
-        p1 = proj3d.proj_transform(cx + vx, cy + vy, cz + vz, M)
-        d_end = ax.transData.transform((p1[0], p1[1]))
-        pixel_lengths.append(math.hypot(d_end[0] - d_center[0], d_end[1] - d_center[1]))
-    pixel_length = max(pixel_lengths)
-    bbox = ax.get_window_extent()
-    frac_length = pixel_length / bbox.width if bbox.width > 0 else 0.15
-    x0, y0 = 0.06, 0.10
-    ax.add_line(Line2D(
-        [x0, x0 + frac_length], [y0, y0],
-        transform=ax.transAxes, color=INK, linewidth=2.2,
-        solid_capstyle="butt", clip_on=False, zorder=10,
-    ))
-    text_fn = ax.text2D if hasattr(ax, "text2D") else ax.text
-    text_fn(
-        x0 + frac_length / 2, y0 - 0.045,
-        rf"{length_ang:g} $\AA$",
-        transform=ax.transAxes, color=INK, fontsize=7.5,
-        ha="center", va="top", clip_on=False, zorder=10,
-    )
-
-
-def add_lw_color_legend(ax_e) -> None:
-    """Base-pair geometry color legend, placed below panel E."""
-    handles = [
-        Patch(facecolor=LW_COLORS[k], edgecolor="white", label=k)
-        for k in ("cWW", "tSH", "tWH", "tWS")
-    ]
-    ax_e.legend(
-        handles=handles,
-        loc="upper center",
-        bbox_to_anchor=(0.5, -0.12),
-        ncol=4,
-        frameon=False,
-        fontsize=8.0,
-        handlelength=1.2,
-        handleheight=0.9,
-        columnspacing=1.8,
-        borderpad=0.0,
-    )
-
-
-def panel_b(rows, entries, entries_by_stem, sources) -> None:
-    frags_18 = motif_fragments(strict_clean_rows(PRIMARY_KMER), entries_by_stem)
-    frags_62 = motif_fragments(strict_clean_rows("62-71-66-12"), entries_by_stem)
-    frags_48 = motif_fragments(strict_clean_rows("48-24-39-39"), entries_by_stem)
-    specs = [
-        (frags_18, PRIMARY_KMER, f"{len(frags_18)} clean matches\n" + rf"median = {median_all_pair_rmsd(frags_18):.2f} $\AA$"),
-        (frags_62, "62-71-66-12", f"{len(frags_62)} clean matches\n" + rf"median = {median_all_pair_rmsd(frags_62):.2f} $\AA$"),
-        (frags_48, "48-24-39-39", f"{len(frags_48)} clean matches\n" + rf"median = {median_all_pair_rmsd(frags_48):.2f} $\AA$"),
-    ]
-    for (ax3d, ax_txt), (frags, tag, note) in zip(rows, specs):
-        draw_superposition(ax3d, ax_txt, frags, tag, note)
-    rows[0][0].text2D(-0.10, 1.06, "B", transform=rows[0][0].transAxes,
-                      fontsize=14, fontweight="bold", ha="left", va="bottom")
-
-
-def panel_c(ax) -> None:
-    vals = read_column(SEQ_CONTROL, "median_rmsd")
-    summary = read_key_value(SEQ_CONTROL_SUMMARY)
-    observed = float(summary["observed_all_pair_median_rmsd"])
-    parts = ax.violinplot([vals], positions=[1], widths=0.7, showmeans=False, showmedians=False, showextrema=False)
-    for body in parts["bodies"]:
-        body.set_facecolor(GREY_FILL)
-        body.set_edgecolor(GREY_LINE)
-        body.set_alpha(0.95)
-    q1, med, q3 = np.percentile(vals, [25, 50, 75])
-    lo, hi = np.percentile(vals, [5, 95])
-    ax.plot([0.82, 1.18], [med, med], color=INK, linewidth=2)
-    ax.add_patch(Rectangle((0.88, q1), 0.24, q3 - q1, facecolor="none", edgecolor=INK, linewidth=1))
-    ax.plot([1, 1], [lo, hi], color=INK, linewidth=1)
-    color = KMER_COLORS[PRIMARY_KMER]
-    ax.scatter([1], [observed], s=72, color=color, zorder=5, edgecolors="white", linewidths=0.8)
-    ax.plot([1, 1], [observed + 0.08, med - 0.08], color=color, linewidth=1.0, linestyle=(0, (3, 3)), alpha=0.8)
-    ax.text(1.055, observed, rf"Observed  {observed:.2f} $\AA$", color=color,
-            fontsize=8.5, fontweight="bold", va="center", ha="left")
-    ax.text(1.47, med + 0.18, rf"Control median  {med:.2f} $\AA$", color=INK,
-            fontsize=8.0, va="bottom", ha="right")
-    ax.set_xlim(0.45, 1.55)
-    ax.set_xticks([1])
-    ax.set_xticklabels(["Sequence-matched\nnon-target windows"])
-    ax.set_ylabel(r"Median all-pair RMSD ($\AA$)")
-    for spine in ("top", "right"):
-        ax.spines[spine].set_visible(False)
-    set_panel_label(ax, "C")
-
-
-def draw_motif_core(ax, y: float, label: str, core_start: int, motif_len: int, signature: str, color: str) -> None:
-    x0 = 2.18
-    spacing = 0.40 if motif_len > 6 else 0.52
-    radius = 0.12 if motif_len > 6 else 0.14
-    for i in range(motif_len):
-        x = x0 + i * spacing
-        face = color if core_start <= i < core_start + 4 else "white"
-        edge = color if core_start <= i < core_start + 4 else "#5b6470"
-        circ = Circle((x, y), radius, facecolor=face, edgecolor=edge, linewidth=1.3)
-        ax.add_patch(circ)
-        ax.text(x, y, str(i + 1), ha="center", va="center", fontsize=8, color="white" if face != "white" else "#4b5563")
-    ax.add_patch(FancyBboxPatch((x0 + core_start * spacing - radius - 0.09, y - 0.31), spacing * 3 + 2 * radius + 0.18, 0.62, boxstyle="round,pad=0.02,rounding_size=0.04", facecolor="none", edgecolor=color, linewidth=1.2))
-    ax.text(0.05, y, label, ha="left", va="center", fontsize=8.5, color=color, fontweight="bold")
-    signature_x = x0 + (motif_len - 1) * spacing + 0.34
-    ax.text(signature_x, y, signature, ha="left", va="center", fontsize=8.2,
-            family="monospace")
-
-
-def panel_d(ax) -> None:
-    ax.set_xlim(0, 9.6)
-    ax.set_ylim(0, 4.25)
+def panel_c(ax, data: dict) -> None:
+    """Arc diagram of the two overlapping 3Dr words on the six-nucleotide GNRA hairpin."""
+    from matplotlib.patches import Arc
+    first = data["hairpin"][0]
+    left, right = first["left_kmer"].split("-"), first["right_kmer"].split("-")
+    tokens = left + right[2:]
+    w, h = 0.76, 0.62
+    for x, token in enumerate(tokens):
+        ax.add_patch(FancyBboxPatch((x - w / 2, -h / 2), w, h, boxstyle="round,pad=0,rounding_size=0.08",
+                                    facecolor="white", edgecolor=INK, lw=1.1, zorder=3))
+        ax.text(x, 0, token, ha="center", va="center", fontsize=11, color=INK, zorder=4)
+        ax.text(x, -h / 2 - 0.16, str(x + 1), ha="center", va="top", fontsize=9, color=S.GREY_TEXT)
+    # the two words: brackets above the token track
+    for (start, end), y, color, word, ha in (((0, 3), 0.62, WORD_COLORS["left"], first["left_kmer"], "left"),
+                                             ((2, 5), 1.36, WORD_COLORS["right"], first["right_kmer"], "right")):
+        x0, x1 = start - w / 2, end + w / 2
+        ax.plot([x0, x0, x1, x1], [y - 0.14, y, y, y - 0.14], color=color, lw=1.6, solid_capstyle="butt")
+        ax.text(x0 if ha == "left" else x1, y + 0.10, word.replace("-", "–"), ha=ha, va="bottom",
+                fontsize=9.5, color=color)
+    # base pairs: arcs below the track
+    y0 = -h / 2 - 0.55
+    for i, j, label in ((0, 5, "cis"), (1, 4, "trans")):
+        span = j - i
+        ax.add_patch(Arc(((i + j) / 2, y0), span, span * 0.62, theta1=180, theta2=360, color=INK, lw=1.3))
+        ax.text((i + j) / 2, y0 - span * 0.31 - 0.12, label, ha="center", va="top",
+                fontsize=9, color=INK)
+    ax.set_xlim(-0.75, 5.75)
+    ax.set_ylim(y0 - 5 * 0.31 - 0.55, 2.05)
+    ax.set_aspect("equal")
+    ax.set_anchor("C")
     ax.axis("off")
-    # symbol legend: filled circle / open circle / rounded box, spacing handled by legend layout
-    open_edge = "#5b6470"
-    legend_handles = [
-        Line2D([], [], marker="o", markerfacecolor=INK, markeredgecolor=INK,
-               markersize=7, linestyle="None", label="token-covered residue"),
-        Line2D([], [], marker="o", markerfacecolor="white", markeredgecolor=open_edge,
-               markeredgewidth=1.4, markersize=7, linestyle="None", label="other motif residue"),
-        Patch(facecolor="none", edgecolor=INK, linewidth=1.2, label="recovered core"),
+
+
+def draw_logo(ax, probabilities: list[dict[str, float]], colors: dict[str, str], width: float = 0.9) -> None:
+    """Probability sequence logo: letters stacked by probability, the most frequent at the bottom."""
+    font = FontProperties(family="Arial", weight="bold")
+    for position, column in enumerate(probabilities):
+        y = 0.0
+        for base, p in sorted(column.items(), key=lambda kv: -kv[1]):
+            if p <= 0:
+                continue
+            path = TextPath((0, 0), base, size=1, prop=font)
+            box = path.get_extents()
+            shape = (Affine2D().translate(-box.x0, -box.y0)
+                     .scale(width / box.width, p / box.height)
+                     .translate(position - width / 2, y))
+            ax.add_patch(PathPatch(shape.transform_path(path), facecolor=colors[base], edgecolor="white", lw=0.8))
+            y += p
+
+
+def panel_d(ax, data: dict) -> None:
+    n = len(data["sequences"])
+    probabilities = [{base: sum(seq[position] == base for seq in data["sequences"]) / n for base in "ACGU"}
+                     for position in range(6)]
+    draw_logo(ax, probabilities, dict.fromkeys("ACGU", LOGO_COLOR))
+    ax.set_xlim(-0.5, 5.5)
+    ax.set_ylim(0, 1.05)
+    ax.set_xticks(np.arange(6))
+    ax.set_xticklabels(["1", "2", "3", "4", "5", "6"])
+    ax.set_yticks([0, 0.5, 1.0])
+    style_axis(ax, xlabel="Hairpin position", ylabel="Probability")
+
+
+def panel_e(ax, data: dict) -> None:
+    rows = [
+        (["cWW", "tSH", ".", ".", "tSH", "cWW"],
+         f"{data['n_gnra_signature']}/{len(data['exact_hairpin'])}", "HL_34789.6"),
+        (["tWH", "tWS", "cWW", "."],
+         f"{data['n_tloop_signature']}/{len(data['tloop'])}", "HL_33597.6"),
     ]
-    ax.legend(
-        handles=legend_handles,
-        loc="upper center",
-        bbox_to_anchor=(0.5, -0.02),
-        ncol=3,
-        frameon=False,
-        fontsize=7.8,
-        handlelength=1.1,
-        handletextpad=0.5,
-        columnspacing=2.6,
-        borderpad=0.0,
-    )
-    ax.text(0.02, 3.67, "HL_34789.6 annotated motif  ·  6 nt", fontsize=8.8,
-            color=INK, fontweight="bold")
-    draw_motif_core(ax, 2.95, PRIMARY_KMER, 0, 6, "PPUU | cWW,tSH,.,.", KMER_COLORS[PRIMARY_KMER])
-    draw_motif_core(ax, 2.15, "62-71-66-12", 2, 6, "UUPP | .,.,tSH,cWW", KMER_COLORS["62-71-66-12"])
-    ax.plot([0.0, 9.35], [1.69, 1.69], color=GRID, lw=0.8, zorder=0)
-    ax.text(0.02, 1.38, "HL_33597.6 annotated motif  ·  9 nt", fontsize=8.8,
-            color=INK, fontweight="bold")
-    draw_motif_core(ax, 0.75, "48-24-39-39", 0, 9, "PPPU | tWH,tWS,cWW,.", KMER_COLORS["48-24-39-39"])
-    set_panel_label(ax, "D")
-
-
-def panel_e(ax) -> None:
-    rows = dssr_rows()
-    ax.set_xlim(0, 5.2)
-    ax.set_ylim(-0.5, len(rows) - 0.5)
-    ax.set_xticks(np.arange(4) + 0.5)
-    ax.set_xticklabels(["1", "2", "3", "4"])
-    ax.set_yticks(np.arange(len(rows)))
-    ax.set_yticklabels([row["kmer"] for row in rows], fontsize=8)
+    ax.set_xlim(0, 8.7)
+    ax.set_ylim(-0.32, 1.32)
     ax.invert_yaxis()
-    ax.set_xlabel("core position")
-    for y, row in enumerate(rows):
-        sig = str(row["signature"]).split(",")
-        for x, value in enumerate(sig):
-            ax.add_patch(Rectangle((x, y - 0.36), 0.88, 0.72, facecolor=LW_COLORS.get(value, "#bfc5cc"), edgecolor="white", linewidth=1.2))
-            ax.text(x + 0.44, y, value, ha="center", va="center", fontsize=8, color="white" if value != "." else "#5b6470")
-        ax.text(4.2, y, f"{row['count']}/{row['n']}", va="center", fontsize=9)
+    for y, (signature, count, label) in enumerate(rows):
+        for x, state in enumerate(signature):
+            ax.add_patch(Rectangle((x + 0.05, y - 0.27), 0.90, 0.54,
+                                   facecolor=LW_COLORS[state], edgecolor="white", lw=1.2))
+            ax.text(x + 0.50, y, state, ha="center", va="center", fontsize=8.5, color=INK)
+        ax.text(6.35, y - 0.12, count, ha="left", va="center", fontsize=10)
+        ax.text(6.35, y + 0.16, label, ha="left", va="center", fontsize=8.5, color=S.GREY_TEXT)
+    ax.set_xticks(np.arange(6) + 0.50)
+    ax.set_xticklabels(["1", "2", "3", "4", "5", "6"])
+    ax.set_yticks([])
+    style_axis(ax, xlabel="Position")
     for spine in ax.spines.values():
         spine.set_visible(False)
     ax.tick_params(length=0)
-    set_panel_label(ax, "E")
+    handles = [Patch(facecolor=LW_COLORS[state], edgecolor="none", label=state) for state in ("cWW", "tSH", "tWH", "tWS")]
+    ax.legend(handles=handles, loc="center right", bbox_to_anchor=(1.0, 0.5), ncol=1,
+              frameon=False, fontsize=9.5, columnspacing=1.2, handlelength=1.1)
 
 
-def panel_f(ax) -> None:
-    rows = dssr_rows()
-    y = np.arange(len(rows))
-    frac = np.asarray([float(row["frac"]) for row in rows])
-    lo = np.asarray([float(row["lo"]) for row in rows])
-    hi = np.asarray([float(row["hi"]) for row in rows])
-    ax.barh(y, frac, color=[KMER_COLORS[str(row["kmer"])] for row in rows], height=0.54, zorder=2)
-    ax.errorbar(frac, y, xerr=np.vstack([frac - lo, hi - frac]), fmt="none", ecolor=INK, capsize=3, linewidth=1.2, zorder=4)
-    for yi, row in enumerate(rows):
-        ax.text(max(float(row["frac"]), float(row["hi"])) + 0.035, yi, f"{float(row['frac']) * 100:.1f}%", va="center", fontsize=9, ha="left", clip_on=False)
-    ax.set_xlim(0, 1.16)
-    ax.set_yticks(y)
-    ax.set_yticklabels([f"{row['kmer']}\n{row['bgsu']}" for row in rows], fontsize=7.7)
-    ax.invert_yaxis()
-    ax.set_xlabel("dominant signature frequency")
-    for spine in ["top", "right", "left"]:
-        ax.spines[spine].set_visible(False)
-    set_panel_label(ax, "F")
+def align_to_medoid(fragments: list[np.ndarray]) -> np.ndarray:
+    """Superpose every instance on the medoid (lowest mean RMSD to the others); medoid first."""
+    n = len(fragments)
+    rmsd = np.zeros((n, n))
+    for i in range(n):
+        for j in range(i + 1, n):
+            diff = kabsch_align(fragments[i], fragments[j]) - (fragments[j] - fragments[j].mean(axis=0))
+            rmsd[i, j] = rmsd[j, i] = np.sqrt((diff ** 2).sum(axis=1).mean())
+    medoid = int(np.argmin(rmsd.sum(axis=1)))
+    order = [medoid] + [i for i in range(n) if i != medoid]
+    return np.asarray([kabsch_align(fragments[i], fragments[medoid]) for i in order])
+
+
+# Atom set A per residue: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1', then three base locators.
+P, O5, C5, C4, O4, C3, O3, C2, C1 = 0, 3, 4, 5, 6, 7, 8, 9, 11
+BASE_TRI = slice(12, 15)
+
+
+BASE_SCALE = 2.2   # base triangles enlarged about the glycosidic atom to roughly the base's size
+
+
+def base_triangle(residue: np.ndarray) -> np.ndarray:
+    tri = residue[BASE_TRI]
+    return tri[0] + (tri - tri[0]) * BASE_SCALE
+
+
+def backbone_trace(residues: np.ndarray) -> np.ndarray:
+    """P-O5'-C5'-C4'-C3'-O3' through every residue."""
+    return np.vstack([r[[P, O5, C5, C4, C3, O3]] for r in residues])
+
+
+def draw_atom_a_overlay(ax, aligned: np.ndarray, title: str, colors: list[str]) -> None:
+    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+    n_residues = aligned.shape[1] // 15
+    for fragment in aligned[1:]:                       # other instances: thin translucent lines
+        residues = fragment.reshape(n_residues, 15, 3)
+        trace = backbone_trace(residues)
+        ax.plot(*trace.T, color=S.NEUTRAL_LIGHT, alpha=0.45, lw=0.6)
+        for position, residue in enumerate(residues):
+            color = colors[position]
+            tri = base_triangle(residue)
+            tri = np.vstack([tri, tri[:1]])
+            ax.plot(*np.vstack([residue[C1], residue[12]]).T, color=color, alpha=0.35, lw=0.6)
+            ax.plot(*tri.T, color=color, alpha=0.35, lw=0.6)
+    medoid = aligned[0].reshape(n_residues, 15, 3)
+    for position, residue in enumerate(medoid):        # medoid: thick backbone, filled base triangles
+        color = colors[position]
+        segment = residue[[P, O5, C5, C4, C3, O3]]
+        if position + 1 < n_residues:
+            segment = np.vstack([segment, medoid[position + 1][P]])
+        ax.plot(*segment.T, color=color, lw=2.6, solid_capstyle="round")
+        ax.plot(*residue[[C4, O4, C1, C2, C3]].T, color=color, lw=1.2)
+        ax.plot(*np.vstack([residue[C1], residue[12]]).T, color=color, lw=1.8)
+        ax.add_collection3d(Poly3DCollection([base_triangle(residue)], facecolor=color, edgecolor=INK,
+                                             linewidths=0.6, alpha=0.85))
+    ax.text2D(0.5, 0.98, title, transform=ax.transAxes, ha="center", va="top", fontsize=10.5)
+    if len(set(colors)) > 1:                           # position key only when positions are coloured
+        legend_x0 = 0.5 - (n_residues - 1) * 0.042
+        for position in range(n_residues):
+            ax.text2D(legend_x0 + position * 0.084, 0.90, str(position + 1), transform=ax.transAxes,
+                      ha="center", va="center", fontsize=9, color=colors[position])
+    ax.set_axis_off()
+    ax.set_box_aspect((1, 1, 1), zoom=1.75)
+    ax.view_init(elev=24, azim=-62)
+
+
+def same_physical_limits(axes: list, aligned_sets: list[np.ndarray]) -> None:
+    full_span = max(float(np.ptp(aligned.reshape(-1, 3), axis=0).max()) for aligned in aligned_sets)
+    half_range = full_span * 0.55
+    for ax, aligned in zip(axes, aligned_sets):
+        center = aligned.reshape(-1, 3).mean(axis=0)
+        ax.set_xlim(center[0] - half_range, center[0] + half_range)
+        ax.set_ylim(center[1] - half_range, center[1] + half_range)
+        ax.set_zlim(center[2] - half_range, center[2] + half_range)
+
+
+def add_scale_bar(ax, length: float = 2.0) -> None:
+    center = np.asarray([np.mean(ax.get_xlim3d()), np.mean(ax.get_ylim3d()), np.mean(ax.get_zlim3d())])
+    projected = proj3d.proj_transform(*center, ax.get_proj())
+    origin = ax.transData.transform(projected[:2])
+    pixels = []
+    for delta in np.eye(3) * length:
+        endpoint = proj3d.proj_transform(*(center + delta), ax.get_proj())
+        pixels.append(np.linalg.norm(ax.transData.transform(endpoint[:2]) - origin))
+    fraction = max(pixels) / ax.get_window_extent().width
+    x0, y0 = 0.08, 0.10
+    ax.add_line(Line2D([x0, x0 + fraction], [y0, y0], transform=ax.transAxes, color=INK, lw=2.1))
+    ax.text2D(x0 + fraction / 2, y0 - 0.025, r"2 $\AA$", transform=ax.transAxes, ha="center", va="top", fontsize=9)
+
+
+def panel_f(fig, cells, data: dict) -> tuple[list, list[np.ndarray]]:
+    """The two Atom-set-A superpositions, one per grid cell."""
+    gnra = align_to_medoid(data["gnra_coords"])
+    tloop = align_to_medoid(data["tloop_coords"])
+    axes = [fig.add_subplot(cells[0], projection="3d"), fig.add_subplot(cells[1], projection="3d")]
+    draw_atom_a_overlay(axes[0], gnra, "GNRA hairpin", POSITION_COLORS)
+    draw_atom_a_overlay(axes[1], tloop, "T-loop core", [TLOOP_COLOR] * 4)
+    same_physical_limits(axes, [gnra, tloop])
+    return axes, [gnra, tloop]
+
+
+def write_numbers(data: dict) -> Path:
+    rows = []
+    def add(panel, item, value, source, column, statistic):
+        rows.append({"panel": panel, "item": item, "value": value, "source_file": str(source.relative_to(REPO)),
+                     "source_column": column, "statistic_or_rule": statistic})
+    a_sources = {
+        "five_candidate": (FREQUENCY, "candidate_all_pair_median_rmsd"),
+        "five_frequency": (FREQUENCY, "matched_control_median_rmsd"),
+        "five_random": (RANDOM, "rmsd"),
+        "five_sequence": (SEQUENCE, "control_median_of_medians"),
+        "atom_candidate": (BASE, "atom_set_A_candidate_sampled_pair_median_rmsd"),
+        "atom_random": (BASE, "atom_set_A_length_random_median_rmsd"),
+        "atom_sequence": (BASE, "atom_set_A_sequence_matched_median_rmsd"),
+    }
+    for key, value in data["a_medians"].items():
+        source, column = a_sources[key]
+        add("A", key, value, source, column, "median")
+    add("B", "standard_helix_n", len(data["helix_values"]), PAIRING, "word_category,bgsu_overlap_fraction", "category a with finite BGSU denominator")
+    add("B", "other_words_n", len(data["other_values"]), PAIRING, "word_category,bgsu_overlap_fraction", "categories b+c+d with finite BGSU denominator")
+    add("B", "standard_helix_median_percent", np.median(data["helix_values"]) * 100, PAIRING, "bgsu_overlap_fraction", "median × 100")
+    add("B", "other_words_median_percent", np.median(data["other_values"]) * 100, PAIRING, "bgsu_overlap_fraction", "median × 100")
+    add("B", "random_background_percent", data["background"] * 100, BACKGROUND_SUMMARY, "value where metric=background_overlap_median_fraction", "× 100")
+    add("C", "six_token_string", data["hairpin"][0]["left_kmer"] + "-" + "-".join(data["hairpin"][0]["right_kmer"].split("-")[2:]), HAIRPIN, "left_kmer,right_kmer", "overlap positions 3–4")
+    add("C", "cis_trans_topology_count", data["topology_count"], HAIRPIN, "left_pair_orient_pattern,right_pair_orient_pattern", "cis 1↔6 and trans 2↔5")
+    add("C", "topology_denominator", len(data["hairpin"]), HAIRPIN, "sequence", "row count")
+    add("D", "GNRA_loop_count", data["n_gnra"], HAIRPIN, "sequence", "positions 2–5 match GNRA")
+    add("D", "GC_closing_pair_count", data["n_gc"], HAIRPIN, "sequence", "positions 1 and 6 are G–C/C–G")
+    add("D", "sequence_count", len(data["sequences"]), HAIRPIN, "sequence", "row count")
+    add("E", "GNRA_superposition_n", len(data["gnra_coords"]), HAIRPIN, "pdb_chain,author_residues,dssr_lw_signature", "successfully parsed Atom set A")
+    add("E", "scale_bar_angstrom", 2, HAIRPIN, "pdb_chain,author_residues", "physical coordinate scale")
+    add("F", "T_loop_superposition_n", len(data["tloop_coords"]), DSSR, "pdb_chain,author_residues,kmer", "successfully parsed Atom set A")
+    add("F", "scale_bar_angstrom", 2, DSSR, "pdb_chain,author_residues", "physical coordinate scale")
+    add("G", "GNRA_signature_count", data["n_gnra_signature"], HAIRPIN, "dssr_lw_signature", "equals cWW,tSH,.,.,tSH,cWW")
+    add("G", "GNRA_signature_denominator", len(data["exact_hairpin"]), HAIRPIN, "dssr_lw_signature", "non-empty")
+    add("G", "T_loop_signature_count", data["n_tloop_signature"], DSSR, "kmer,dssr_lw_pattern", "kmer 48-24-39-39; equals tWH,tWS,cWW,.")
+    add("G", "T_loop_signature_denominator", len(data["tloop"]), DSSR, "kmer", "kmer 48-24-39-39 row count")
+    path = FIGURES / "fig6_numbers.tsv"
+    with path.open("w", newline="") as handle:
+        writer = csv.DictWriter(handle, fieldnames=list(rows[0]), delimiter="\t")
+        writer.writeheader()
+        writer.writerows(rows)
+    return path
 
 
 def main() -> None:
-    plt.rcParams.update({
-        "font.family": "sans-serif",
-        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
-        "font.size": 10,
-        "axes.labelsize": 9.5,
-        "xtick.labelsize": 8.5,
-        "ytick.labelsize": 8.5,
-        "axes.edgecolor": "#4b5563",
-        "axes.linewidth": 0.8,
-        "pdf.fonttype": 42,
-        "ps.fonttype": 42,
-    })
-    entries, entries_by_stem, sources = load_db()
-    ensure_sequence_control(entries, sources)
-    fig = plt.figure(figsize=(12.0, 8.25), constrained_layout=False)
-    gs = fig.add_gridspec(2, 3, width_ratios=[1.18, 1.0, 1.08],
-                          height_ratios=[1.17, 1.0], hspace=0.30, wspace=0.25)
-    ax_a = fig.add_subplot(gs[0, 0])
-    gs_b = gs[0, 1].subgridspec(3, 2, width_ratios=[1.0, 0.8], hspace=0.12, wspace=0.0)
-    b_rows = [(fig.add_subplot(gs_b[r, 0], projection="3d"), fig.add_subplot(gs_b[r, 1])) for r in range(3)]
-    ax_c = fig.add_subplot(gs[0, 2])
-    ax_d = fig.add_subplot(gs[1, 0])
-    ax_e = fig.add_subplot(gs[1, 1])
-    ax_f = fig.add_subplot(gs[1, 2])
-    panel_a(ax_a)
-    panel_b(b_rows, entries, entries_by_stem, sources)
-    panel_c(ax_c)
-    panel_d(ax_d)
-    panel_e(ax_e)
-    panel_f(ax_f)
-    fig.subplots_adjust(left=0.065, right=0.975, bottom=0.095, top=0.93,
-                        wspace=0.25, hspace=0.30)
-    # LW color legend below panel E
-    add_lw_color_legend(ax_e)
-    # horizontal 2 Å scale bars for the three Kabsch superpositions in panel B
-    # (needs a first draw so axes bboxes are final)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--cif-dir", type=Path, default=DEFAULT_CIF_DIR)
+    args = parser.parse_args()
+    plt.rcParams.update({"font.family": "Arial", "font.sans-serif": ["Arial"], "font.size": 10,
+                         "pdf.fonttype": 42, "ps.fonttype": 42})
+    data = preflight(args.cif_dir)
+    FIGURES.mkdir(parents=True, exist_ok=True)
+
+    # Row 1: A (wide) and B. Row 2, the GNRA example: word diagram, sequences, structure.
+    # Row 3: base-pairing signatures of both motifs and the T-loop structure.
+    fig = plt.figure(figsize=(14.4, 9.2), constrained_layout=False)
+    grid = fig.add_gridspec(3, 3, width_ratios=[1.0, 1.0, 1.0], height_ratios=[1.0, 1.0, 0.55],
+                            hspace=0.30, wspace=0.26)
+    ax_a = fig.add_subplot(grid[0, 0:2])
+    ax_b = fig.add_subplot(grid[0, 2])
+    ax_c = fig.add_subplot(grid[1, 0])
+    ax_d = fig.add_subplot(grid[1, 1])
+    ax_e = fig.add_subplot(grid[2, 0:2])
+    right = grid[1:3, 2].subgridspec(2, 1, hspace=0.05)      # the two structures share the right column equally
+    f_axes, _aligned = panel_f(fig, (right[0], right[1]), data)
+    panel_a(ax_a, data)
+    panel_b(ax_b, data)
+    panel_c(ax_c, data)
+    panel_d(ax_d, data)
+    panel_e(ax_e, data)
+
+    fig.subplots_adjust(left=0.065, right=0.99, bottom=0.06, top=0.97)
+    shift = 0.035                            # right column moved in towards A and D
+    pb = ax_b.get_position()                 # a narrower B
+    ax_b.set_position([pb.x1 - pb.width * 0.8 - shift, pb.y0, pb.width * 0.8, pb.height])
+    for ax in f_axes:
+        p = ax.get_position(original=True)
+        ax.set_position([p.x0 - shift, p.y0, p.width, p.height])
     fig.canvas.draw()
-    for ax3d, _ in b_rows:
-        add_horizontal_scale_bar(ax3d, 2.0)
-    out_png = REPO / "figures" / "fig6.png"
-    fig.savefig(out_png, bbox_inches="tight", facecolor="white", dpi=350)
-    print(f"Wrote {out_png}")
+    for ax in f_axes:
+        add_scale_bar(ax, 2.0)
+    # letters in reading order, row by row
+    panel_label(ax_a, "A")
+    panel_label(ax_b, "B")
+    panel_label(ax_c, "C", top=ax_d, dy=-0.12)
+    panel_label(ax_d, "D", dy=-0.12)
+    panel_label(f_axes[0], "E", top=ax_d, left=ax_b, dy=-0.12)   # GNRA structure
+    panel_label(f_axes[1], "F", left=ax_b)                        # T-loop structure
+    panel_label(ax_e, "G")                                       # interaction signatures
+
+    png = FIGURES / "fig6.png"
+    pdf = FIGURES / "fig6.pdf"
+    fig.savefig(png, dpi=300, bbox_inches="tight", facecolor="white")
+    fig.savefig(pdf, bbox_inches="tight", facecolor="white")
+    numbers = write_numbers(data)
+    print(f"FIG6_CAPTION_N_GNRA={len(data['gnra_coords'])}")
+    print(f"FIG6_CAPTION_N_TLOOP={len(data['tloop_coords'])}")
+    print(f"Wrote {png}")
+    print(f"Wrote {pdf}")
+    print(f"Wrote {numbers}")
 
 
 if __name__ == "__main__":

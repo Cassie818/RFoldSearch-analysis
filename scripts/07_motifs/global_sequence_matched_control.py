@@ -25,11 +25,10 @@ import torch
 
 
 REPO = Path(__file__).resolve().parents[2]
-SOURCE_REPO = Path("/Users/cassie/Desktop/RFoldSeek")
 DB_PATH = REPO / "files" / "models" / "db.pt"
 MOTIF_DIR = REPO / "files" / "motifs"
 FIG_DIR = REPO / "figures" / "motifs"
-LABELS_PATH = Path("/Users/cassie/Desktop/RFoldSeek/Splits/labels.tsv")
+LABELS_PATH = REPO / "Splits" / "labels.tsv"
 
 
 def read_labels(path: Path) -> dict[str, tuple[str, str]]:
@@ -54,8 +53,14 @@ def load_db(db_path: Path) -> tuple[list[dict], dict[str, dict]]:
     for data_path in db["data"]:
         path = Path(data_path)
         if not path.is_absolute():
-            candidates = [REPO / path, SOURCE_REPO / path, Path("/Users/cassie/Desktop") / path]
-            path = next((candidate for candidate in candidates if candidate.exists()), candidates[0])
+            path = REPO / path
+        elif not path.exists():
+            for marker in ("Splits", "preprocessing", "files"):
+                if marker in path.parts:
+                    candidate = REPO / Path(*path.parts[path.parts.index(marker):])
+                    if candidate.exists():
+                        path = candidate
+                        break
         with path.open() as handle:
             for line in handle:
                 source = json.loads(line)
