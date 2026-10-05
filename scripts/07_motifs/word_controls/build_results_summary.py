@@ -31,11 +31,11 @@ def main() -> None:
     base_complete = base.get("status") == "complete"
     if base_complete:
         base_key_result = (
-            f"- Base-inclusive RMSD: Atom-set-A candidate median RMSD was "
-            f"{number(base['atom_set_A_candidate_median_rmsd'])} Å, versus "
-            f"{number(base['atom_set_A_length_random_median_rmsd'])} Å for length-matched random windows "
-            f"and {number(base['atom_set_A_sequence_matched_median_rmsd'])} Å for sequence-matched windows "
-            f"({base['n_candidates_with_atom_set_A']} candidate words). Source: "
+            f"- Base-inclusive RMSD: the candidate median was "
+            f"{number(base['base_inclusive_candidate_median_rmsd'])} Å, versus "
+            f"{number(base['base_inclusive_length_random_median_rmsd'])} Å for length-matched random windows "
+            f"and {number(base['base_inclusive_sequence_matched_median_rmsd'])} Å for sequence-matched windows "
+            f"({base['n_candidates_with_base_inclusive']} candidate words). Source: "
             "`base_inclusive_rmsd_summary.tsv`."
         )
         base_comparison_lines = [
@@ -44,15 +44,15 @@ def main() -> None:
             "| Coordinates | Candidate median RMSD (Å) | Length-matched random (Å) | Sequence-matched (Å) |",
             "|---|---:|---:|---:|",
             f"| Five anchors | {number(base['five_anchor_candidate_all_pair_median_rmsd'])} | {number(base['five_anchor_length_random_median_rmsd'])} | {number(base['five_anchor_sequence_matched_median_rmsd'])} |",
-            f"| Atom set A | {number(base['atom_set_A_candidate_median_rmsd'])} | {number(base['atom_set_A_length_random_median_rmsd'])} | {number(base['atom_set_A_sequence_matched_median_rmsd'])} |",
+            f"| Base-inclusive atoms | {number(base['base_inclusive_candidate_median_rmsd'])} | {number(base['base_inclusive_length_random_median_rmsd'])} | {number(base['base_inclusive_sequence_matched_median_rmsd'])} |",
             "",
             "Source: `base_inclusive_rmsd_summary.tsv`.",
         ]
         base_results_text = (
-            f"> With the identity-independent base-inclusive atom set A, recurrent-word occurrences retained a "
-            f"median RMSD of {number(base['atom_set_A_candidate_median_rmsd'])} Å, substantially below both "
-            f"length-matched random windows ({number(base['atom_set_A_length_random_median_rmsd'])} Å) and "
-            f"sequence-matched windows ({number(base['atom_set_A_sequence_matched_median_rmsd'])} Å)."
+            f"> With the identity-independent base-inclusive atom set, recurrent-word occurrences retained a "
+            f"median RMSD of {number(base['base_inclusive_candidate_median_rmsd'])} Å, substantially below both "
+            f"length-matched random windows ({number(base['base_inclusive_length_random_median_rmsd'])} Å) and "
+            f"sequence-matched windows ({number(base['base_inclusive_sequence_matched_median_rmsd'])} Å)."
         )
         base_methods_heading = "**Base-inclusive RMSD.**"
     else:
@@ -116,7 +116,7 @@ def main() -> None:
         "",
         f"> **BGSU background.** Four-nucleotide windows were sampled uniformly from the {bgsu['n_bgsu_covered_chains']} database chains covered by the downloaded BGSU Hairpin and Internal Loop Motif Atlas files. Each replicate contained {bgsu['n_candidate_occurrences_on_bgsu_covered_chains']} windows, matching the number of candidate occurrences on those chains, and overlap was defined as any residue intersection, as in `bgsu_overlap.py`. Sampling was repeated {bgsu['n_repeats']} times with random seed {bgsu['random_seed']}.",
         "",
-        f"> {base_methods_heading} Atom set A comprises P, OP1, OP2, O5′, C5′, C4′, O4′, C3′, O3′, C2′, O2′ and C1′ plus N9/C4/C8 for purines or N1/C2/C6 for pyrimidines. Occurrences with missing required atoms or non-mappable modified residues are excluded with reason-specific counts. Candidate estimates use at most {base.get('max_pairs_per_comparison', 'NA')} occurrence pairs per word; each of the {base.get('n_repeats', 'NA')} length- and sequence-matched control replicates uses at most {base.get('max_pairs_per_control_replicate', 'NA')} pairs, with random seed {base.get('random_seed', 'NA')}.",
+        f"> {base_methods_heading} The base-inclusive atom set comprises P, OP1, OP2, O5′, C5′, C4′, O4′, C3′, O3′, C2′, O2′ and C1′ plus N9/C4/C8 for purines or N1/C2/C6 for pyrimidines. Occurrences with missing required atoms or non-mappable modified residues are excluded with reason-specific counts. Candidate estimates use at most {base.get('max_pairs_per_comparison', 'NA')} occurrence pairs per word; each of the {base.get('n_repeats', 'NA')} length- and sequence-matched control replicates uses at most {base.get('max_pairs_per_control_replicate', 'NA')} pairs, with random seed {base.get('random_seed', 'NA')}.",
     ]
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text("\n".join(lines) + "\n")

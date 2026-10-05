@@ -92,7 +92,7 @@ def subhead(ax, x, y, text, transform=None) -> None:
             transform=transform or ax.transAxes)
 
 
-def atom_a_fragment(row: dict[str, str], n_residues: int, cif_dir: Path) -> np.ndarray:
+def base_inclusive_fragment(row: dict[str, str], n_residues: int, cif_dir: Path) -> np.ndarray:
     _pdb, model, chain = stem_parts(row["pdb_chain"])
     residues = parse_atom_site(cif_dir / f"{row['pdb_chain']}.cif", chain, model)
     coordinates = []
@@ -130,9 +130,9 @@ def preflight(cif_dir: Path) -> dict:
         "five_frequency": numeric(frequency, "matched_control_median_rmsd"),
         "five_random": numeric(random_rows, "rmsd"),
         "five_sequence": numeric(sequence_rows, "control_median_of_medians"),
-        "atom_candidate": numeric(base, "atom_set_A_candidate_sampled_pair_median_rmsd"),
-        "atom_random": numeric(base, "atom_set_A_length_random_median_rmsd"),
-        "atom_sequence": numeric(base, "atom_set_A_sequence_matched_median_rmsd"),
+        "base_candidate": numeric(base, "base_inclusive_candidate_sampled_pair_median_rmsd"),
+        "base_random": numeric(base, "base_inclusive_length_random_median_rmsd"),
+        "base_sequence": numeric(base, "base_inclusive_sequence_matched_median_rmsd"),
     }
     a_medians = {key: float(np.median(values)) for key, values in a_distributions.items()}
     frequency_summary = read_metrics(FREQUENCY_SUMMARY)
@@ -142,9 +142,9 @@ def preflight(cif_dir: Path) -> dict:
         "five_frequency": float(frequency_summary["frequency_matched_control_median_rmsd"]),
         "five_random": float(base_summary["five_anchor_length_random_median_rmsd"]),
         "five_sequence": float(base_summary["five_anchor_sequence_matched_median_rmsd"]),
-        "atom_candidate": float(base_summary["atom_set_A_candidate_median_rmsd"]),
-        "atom_random": float(base_summary["atom_set_A_length_random_median_rmsd"]),
-        "atom_sequence": float(base_summary["atom_set_A_sequence_matched_median_rmsd"]),
+        "base_candidate": float(base_summary["base_inclusive_candidate_median_rmsd"]),
+        "base_random": float(base_summary["base_inclusive_length_random_median_rmsd"]),
+        "base_sequence": float(base_summary["base_inclusive_sequence_matched_median_rmsd"]),
     }
     for key in a_medians:
         if not np.isclose(a_medians[key], expected_a[key], atol=1e-12, rtol=1e-10):
@@ -180,8 +180,8 @@ def preflight(cif_dir: Path) -> dict:
 
     if not cif_dir.is_dir():
         raise SystemExit(f"STOP: missing mmCIF directory {cif_dir}")
-    gnra_coords = [atom_a_fragment(row, 6, cif_dir) for row in exact_hairpin]
-    tloop_coords = [atom_a_fragment(row, 4, cif_dir) for row in tloop]
+    gnra_coords = [base_inclusive_fragment(row, 6, cif_dir) for row in exact_hairpin]
+    tloop_coords = [base_inclusive_fragment(row, 4, cif_dir) for row in tloop]
 
     return {
         "a_distributions": a_distributions,
@@ -222,7 +222,7 @@ def boxplot(ax, values: list[np.ndarray], positions: list[float], colors: list[s
 
 def panel_a(ax, data: dict) -> None:
     keys = ["five_candidate", "five_frequency", "five_random", "five_sequence",
-            "atom_candidate", "atom_random", "atom_sequence"]
+            "base_candidate", "base_random", "base_sequence"]
     labels = ["3Dr\nword", "Freq.\nmatched", "Random", "Seq.\nmatched",
               "3Dr\nword", "Random", "Seq.\nmatched"]
     positions = [0.8, 2.0, 3.2, 4.4, 6.2, 7.4, 8.6]
@@ -239,7 +239,7 @@ def panel_a(ax, data: dict) -> None:
                        edgecolors=INK, linewidths=0.9, zorder=3)
     ax.axvline(5.3, color=GRID, lw=0.9, zorder=1)
     subhead(ax, 2.6, 0.95, "Five anchors", ax.get_xaxis_transform())
-    subhead(ax, 7.4, 0.95, "Atom set A", ax.get_xaxis_transform())
+    subhead(ax, 7.4, 0.95, "Base-inclusive atoms", ax.get_xaxis_transform())
     for x, key in zip(positions, keys):
         top = data["a_medians"][key] if key in POOLED else float(np.percentile(data["a_distributions"][key], 90))
         ax.text(x, top + 0.14, f"{data['a_medians'][key]:.2f}",
@@ -377,7 +377,7 @@ def align_to_medoid(fragments: list[np.ndarray]) -> np.ndarray:
     return np.asarray([kabsch_align(fragments[i], fragments[medoid]) for i in order])
 
 
-# Atom set A per residue: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1', then three base locators.
+# Base-inclusive atoms per residue: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1', then three base locators.
 P, O5, C5, C4, O4, C3, O3, C2, C1 = 0, 3, 4, 5, 6, 7, 8, 9, 11
 BASE_TRI = slice(12, 15)
 
@@ -395,7 +395,7 @@ def backbone_trace(residues: np.ndarray) -> np.ndarray:
     return np.vstack([r[[P, O5, C5, C4, C3, O3]] for r in residues])
 
 
-def draw_atom_a_overlay(ax, aligned: np.ndarray, title: str, colors: list[str]) -> None:
+def draw_base_inclusive_overlay(ax, aligned: np.ndarray, title: str, colors: list[str]) -> None:
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     n_residues = aligned.shape[1] // 15
     for fragment in aligned[1:]:                       # other instances: thin translucent lines
@@ -455,12 +455,12 @@ def add_scale_bar(ax, length: float = 2.0) -> None:
 
 
 def panel_f(fig, cells, data: dict) -> tuple[list, list[np.ndarray]]:
-    """The two Atom-set-A superpositions, one per grid cell."""
+    """The two base-inclusive superpositions, one per grid cell."""
     gnra = align_to_medoid(data["gnra_coords"])
     tloop = align_to_medoid(data["tloop_coords"])
     axes = [fig.add_subplot(cells[0], projection="3d"), fig.add_subplot(cells[1], projection="3d")]
-    draw_atom_a_overlay(axes[0], gnra, "GNRA hairpin", POSITION_COLORS)
-    draw_atom_a_overlay(axes[1], tloop, "T-loop core", [TLOOP_COLOR] * 4)
+    draw_base_inclusive_overlay(axes[0], gnra, "GNRA hairpin", POSITION_COLORS)
+    draw_base_inclusive_overlay(axes[1], tloop, "T-loop core", [TLOOP_COLOR] * 4)
     same_physical_limits(axes, [gnra, tloop])
     return axes, [gnra, tloop]
 
@@ -475,9 +475,9 @@ def write_numbers(data: dict) -> Path:
         "five_frequency": (FREQUENCY, "matched_control_median_rmsd"),
         "five_random": (RANDOM, "rmsd"),
         "five_sequence": (SEQUENCE, "control_median_of_medians"),
-        "atom_candidate": (BASE, "atom_set_A_candidate_sampled_pair_median_rmsd"),
-        "atom_random": (BASE, "atom_set_A_length_random_median_rmsd"),
-        "atom_sequence": (BASE, "atom_set_A_sequence_matched_median_rmsd"),
+        "base_candidate": (BASE, "base_inclusive_candidate_sampled_pair_median_rmsd"),
+        "base_random": (BASE, "base_inclusive_length_random_median_rmsd"),
+        "base_sequence": (BASE, "base_inclusive_sequence_matched_median_rmsd"),
     }
     for key, value in data["a_medians"].items():
         source, column = a_sources[key]
@@ -493,9 +493,9 @@ def write_numbers(data: dict) -> Path:
     add("D", "GNRA_loop_count", data["n_gnra"], HAIRPIN, "sequence", "positions 2–5 match GNRA")
     add("D", "GC_closing_pair_count", data["n_gc"], HAIRPIN, "sequence", "positions 1 and 6 are G–C/C–G")
     add("D", "sequence_count", len(data["sequences"]), HAIRPIN, "sequence", "row count")
-    add("E", "GNRA_superposition_n", len(data["gnra_coords"]), HAIRPIN, "pdb_chain,author_residues,dssr_lw_signature", "successfully parsed Atom set A")
+    add("E", "GNRA_superposition_n", len(data["gnra_coords"]), HAIRPIN, "pdb_chain,author_residues,dssr_lw_signature", "successfully parsed base-inclusive atoms")
     add("E", "scale_bar_angstrom", 2, HAIRPIN, "pdb_chain,author_residues", "physical coordinate scale")
-    add("F", "T_loop_superposition_n", len(data["tloop_coords"]), DSSR, "pdb_chain,author_residues,kmer", "successfully parsed Atom set A")
+    add("F", "T_loop_superposition_n", len(data["tloop_coords"]), DSSR, "pdb_chain,author_residues,kmer", "successfully parsed base-inclusive atoms")
     add("F", "scale_bar_angstrom", 2, DSSR, "pdb_chain,author_residues", "physical coordinate scale")
     add("G", "GNRA_signature_count", data["n_gnra_signature"], HAIRPIN, "dssr_lw_signature", "equals cWW,tSH,.,.,tSH,cWW")
     add("G", "GNRA_signature_denominator", len(data["exact_hairpin"]), HAIRPIN, "dssr_lw_signature", "non-empty")

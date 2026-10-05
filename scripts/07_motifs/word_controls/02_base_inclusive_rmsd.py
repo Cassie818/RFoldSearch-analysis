@@ -1,8 +1,4 @@
-"""Recompute recurrent-word RMSD with the base-inclusive Atom set A.
-
-Atom set A is identity-independent: 12 phosphate/sugar atoms plus three
-purine/pyrimidine base-locating atoms per nucleotide.
-"""
+"""Recompute recurrent-word RMSD with identity-independent base-inclusive atoms."""
 from __future__ import annotations
 
 import argparse
@@ -76,7 +72,7 @@ def main() -> None:
             ("random_seed", SEED),
             ("expected_mmcif_directory", args.cif_dir),
             ("n_mmcif_files_found", 0),
-            ("atom_set_A", ",".join(BACKBONE_SUGAR) + "; purine:N9,C4,C8; pyrimidine:N1,C2,C6"),
+            ("base_inclusive_atoms", ",".join(BACKBONE_SUGAR) + "; purine:N9,C4,C8; pyrimidine:N1,C2,C6"),
         ])
         print(f"blocked: missing {args.cif_dir}")
         return
@@ -121,22 +117,22 @@ def main() -> None:
             if any(base not in BASE_LOCATORS for base in bases):
                 skips["modified_or_noncanonical_residue"] += 1
                 continue
-            coords_a = []
-            missing_a = False
+            coordinates = []
+            missing = False
             for base, (_name, atoms) in zip(bases, selected):
-                names_a = expected_atoms(base)
-                if any(name not in atoms for name in names_a):
-                    missing_a = True
+                names = expected_atoms(base)
+                if any(name not in atoms for name in names):
+                    missing = True
                 else:
-                    coords_a.extend(atoms[name] for name in names_a)
-            if missing_a:
-                skips["missing_atom_set_A"] += 1
+                    coordinates.extend(atoms[name] for name in names)
+            if missing:
+                skips["missing_base_inclusive_atoms"] += 1
                 continue
             sequence = "".join(bases)
-            array_a = np.asarray(coords_a, dtype=np.float32)
-            pools_by_sequence[sequence].append((word, array_a))
+            coordinate_array = np.asarray(coordinates, dtype=np.float32)
+            pools_by_sequence[sequence].append((word, coordinate_array))
             if word in candidate_lookup:
-                observed[word].append((sequence, array_a))
+                observed[word].append((sequence, coordinate_array))
         if entry_number % 100 == 0:
             print(f"parsed {entry_number}/{len(entries)} mmCIF chains", flush=True)
 
@@ -145,17 +141,17 @@ def main() -> None:
     rows = []
     for word, candidate in candidate_lookup.items():
         occurrences = observed.get(word, [])
-        arrays_a = [item[1] for item in occurrences]
-        candidate_a, n_pairs_a = sampled_pair_median(arrays_a, rmsd, pair_rng, args.max_pairs)
+        arrays = [item[1] for item in occurrences]
+        candidate_rmsd, n_pairs = sampled_pair_median(arrays, rmsd, pair_rng, args.max_pairs)
         length_values = []
         sequence_values = []
         for _repeat in range(args.repeats):
-            if len(arrays_a) >= 2:
-                sampled = [all_pool[int(rng.integers(len(all_pool)))][1] for _ in arrays_a]
+            if len(arrays) >= 2:
+                sampled = [all_pool[int(rng.integers(len(all_pool)))][1] for _ in arrays]
                 length_values.append(sampled_pair_median(sampled, rmsd, pair_rng, args.max_control_pairs)[0])
                 sequence_sample = []
                 valid = True
-                for sequence, _array_a in occurrences:
+                for sequence, _coordinates in occurrences:
                     cache_key = (sequence, word)
                     if cache_key not in non_target_pool_cache:
                         non_target_pool_cache[cache_key] = [item for item in pools_by_sequence[sequence] if item[0] != word]
@@ -168,11 +164,11 @@ def main() -> None:
                     sequence_values.append(sampled_pair_median(sequence_sample, rmsd, pair_rng, args.max_control_pairs)[0])
         rows.append({
             "kmer": word_string(word),
-            "n_occurrences_atom_set_A": len(arrays_a),
-            "atom_set_A_candidate_sampled_pair_median_rmsd": candidate_a,
-            "atom_set_A_candidate_n_pairs": n_pairs_a,
-            "atom_set_A_length_random_median_rmsd": float(np.median(length_values)) if length_values else float("nan"),
-            "atom_set_A_sequence_matched_median_rmsd": float(np.median(sequence_values)) if sequence_values else float("nan"),
+            "n_occurrences_base_inclusive": len(arrays),
+            "base_inclusive_candidate_sampled_pair_median_rmsd": candidate_rmsd,
+            "base_inclusive_candidate_n_pairs": n_pairs,
+            "base_inclusive_length_random_median_rmsd": float(np.median(length_values)) if length_values else float("nan"),
+            "base_inclusive_sequence_matched_median_rmsd": float(np.median(sequence_values)) if sequence_values else float("nan"),
             "five_anchor_all_pair_median_rmsd": frequency[word_string(word)]["candidate_all_pair_median_rmsd"],
             "five_anchor_cross_family_median_rmsd": candidate["cross_med_rmsd"],
             "five_anchor_length_random_median_rmsd": five_anchor_summary["length_matched_random_median_rmsd"],
@@ -186,17 +182,17 @@ def main() -> None:
             print(f"computed base-inclusive RMSD for {len(rows)}/{len(candidate_lookup)} words", flush=True)
     write_tsv(args.output, rows)
     write_tsv(args.skip_log, [{"reason": reason, "count": count, "detail": "."} for reason, count in sorted(skips.items())])
-    complete_a = [row for row in rows if np.isfinite(float(row["atom_set_A_candidate_sampled_pair_median_rmsd"]))]
+    complete = [row for row in rows if np.isfinite(float(row["base_inclusive_candidate_sampled_pair_median_rmsd"]))]
     metrics = [
         ("status", "complete"), ("random_seed", SEED), ("n_repeats", args.repeats),
         ("max_pairs_per_comparison", args.max_pairs),
         ("max_pairs_per_control_replicate", args.max_control_pairs),
         ("n_mmcif_files_found", len(list(args.cif_dir.glob("*.cif")))),
-        ("n_candidates", len(rows)), ("n_candidates_with_atom_set_A", len(complete_a)),
-        ("atom_set_A_candidate_median_rmsd", float(np.median([float(row["atom_set_A_candidate_sampled_pair_median_rmsd"]) for row in complete_a]))),
-        ("atom_set_A_length_random_median_rmsd", float(np.median([float(row["atom_set_A_length_random_median_rmsd"]) for row in complete_a]))),
-        ("atom_set_A_sequence_matched_median_rmsd", float(np.median([float(row["atom_set_A_sequence_matched_median_rmsd"]) for row in complete_a if np.isfinite(float(row["atom_set_A_sequence_matched_median_rmsd"]))]))),
-        ("five_anchor_candidate_all_pair_median_rmsd", float(np.median([float(row["five_anchor_all_pair_median_rmsd"]) for row in complete_a]))),
+        ("n_candidates", len(rows)), ("n_candidates_with_base_inclusive", len(complete)),
+        ("base_inclusive_candidate_median_rmsd", float(np.median([float(row["base_inclusive_candidate_sampled_pair_median_rmsd"]) for row in complete]))),
+        ("base_inclusive_length_random_median_rmsd", float(np.median([float(row["base_inclusive_length_random_median_rmsd"]) for row in complete]))),
+        ("base_inclusive_sequence_matched_median_rmsd", float(np.median([float(row["base_inclusive_sequence_matched_median_rmsd"]) for row in complete if np.isfinite(float(row["base_inclusive_sequence_matched_median_rmsd"]))]))),
+        ("five_anchor_candidate_all_pair_median_rmsd", float(np.median([float(row["five_anchor_all_pair_median_rmsd"]) for row in complete]))),
         ("five_anchor_length_random_median_rmsd", five_anchor_summary["length_matched_random_median_rmsd"]),
         ("five_anchor_sequence_matched_median_rmsd", five_anchor_summary["global_sequence_matched_control_median_rmsd"]),
         ("rmsd_definition_source", "scripts/07_motifs/cross_family_kmer_mining.py:kabsch_rmsd/pairwise_rmsd"),
