@@ -437,14 +437,14 @@ def retrieval_eval(
         ]
         va = np.arange(order_len) != q
         rel_f = (fam_pool == fam_pool[q]) & va
-        neu_f = (
-            ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if clan_pool[q] else None
+        neu_f = (fam_pool == "") | (
+            ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if clan_pool[q] else False
         )
         famS.append(first_fp_sensitivity(r, rel_f, neu_f))
         if clan_pool[q]:
             rel_c = (clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va
             if rel_c.any():
-                neu_c = (fam_pool == fam_pool[q]) & va
+                neu_c = (fam_pool == "") | ((fam_pool == fam_pool[q]) & va)
                 clanS.append(first_fp_sensitivity(r, rel_c, neu_c))
     fam_m = float(np.mean(famS)) if famS else 0.0
     clan_m = float(np.mean(clanS)) if clanS else 0.0

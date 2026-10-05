@@ -391,22 +391,23 @@ def val_retrieval_sens(m):
             )
         ]
         va = np.arange(n_pool) != q
-        # Family Sens@1FP (Foldseek convention): TP=same family,
-        # neutral=same clan different family, FP=different/absent clan.
+        # Family Sens@1FP: TP=same family; neutral=same-clan other-family
+        # or Rfam-unassigned; FP=all other Rfam-assigned targets.
         rel_f = (fam_pool == fam_pool[q]) & va
-        neu_f = (
-            ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if clan_pool[q] else None
+        neu_f = (fam_pool == "") | (
+            ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if clan_pool[q] else False
         )
         famS.append(first_fp_sensitivity(r, rel_f, neu_f))
-        # Clan Sens@1FP (Foldseek convention): TP=same clan *different* family,
-        # neutral=same family, FP=different clan. Only over queries that have
-        # >=1 same-clan-different-family target.
+        # Clan Sens@1FP: TP=same-clan other-family; neutral=same-family or
+        # Rfam-unassigned; FP=all other Rfam-assigned targets. Only evaluate
+        # queries with at least one same-clan other-family target.
         if clan_pool[q]:
             rel_c = (clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va
             if rel_c.any():
-                neu_c = (fam_pool == fam_pool[q]) & va
+                neu_c = (fam_pool == "") | ((fam_pool == fam_pool[q]) & va)
                 clanS.append(first_fp_sensitivity(r, rel_c, neu_c))
-        r1s.append(int(fam_pool[r[0]] == fam_pool[q]))
+        labelled_r = r[fam_pool[r] != ""]
+        r1s.append(int(len(labelled_r) > 0 and fam_pool[labelled_r[0]] == fam_pool[q]))
     fam_m = float(np.mean(famS)) if famS else 0.0
     clan_m = float(np.mean(clanS)) if clanS else 0.0
     r1_m = float(np.mean(r1s)) if r1s else 0.0
