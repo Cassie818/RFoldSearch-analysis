@@ -33,7 +33,9 @@ BASE_SUMMARY = CONTROLS / "base_inclusive_rmsd_summary.tsv"
 RANDOM = MOTIF / "random_control_rmsd_production_new_k4_aa.tsv"
 SEQUENCE = MOTIF / "global_sequence_matched_control_production_new_k4_aa.tsv"
 PAIRING = CONTROLS / "pairing_pattern_words.tsv"
+BGSU_SENSITIVITY = CONTROLS / "bgsu_candidate_overlap_sensitivity.tsv"
 BACKGROUND_SUMMARY = CONTROLS / "bgsu_random_window_background_summary.tsv"
+BACKGROUND_REPLICATES = CONTROLS / "bgsu_random_window_background.tsv"
 HAIRPIN = MOTIF / "overlapping_hairpin_44-48-62-71-66-12_instances.tsv"
 DSSR = MOTIF / "known_motif_core_dssr_pair_conservation_instances_production_new.tsv"
 
@@ -118,30 +120,25 @@ def kabsch_align(points: np.ndarray, reference: np.ndarray) -> np.ndarray:
 def preflight(cif_dir: Path) -> dict:
     frequency = read_tsv(FREQUENCY)
     base = read_tsv(BASE)
-    random_rows = read_tsv(RANDOM)
-    sequence_rows = [row for row in read_tsv(SEQUENCE) if row["status"] == "ok"]
     pairing = read_tsv(PAIRING)
+    bgsu_sensitivity = read_tsv(BGSU_SENSITIVITY)
     background = read_metrics(BACKGROUND_SUMMARY)
     hairpin = read_tsv(HAIRPIN)
     dssr = read_tsv(DSSR)
 
     a_distributions = {
-        "five_candidate": numeric(frequency, "candidate_all_pair_median_rmsd"),
-        "five_frequency": numeric(frequency, "matched_control_median_rmsd"),
-        "five_random": numeric(random_rows, "rmsd"),
-        "five_sequence": numeric(sequence_rows, "control_median_of_medians"),
-        "base_candidate": numeric(base, "base_inclusive_candidate_sampled_pair_median_rmsd"),
-        "base_random": numeric(base, "base_inclusive_length_random_median_rmsd"),
-        "base_sequence": numeric(base, "base_inclusive_sequence_matched_median_rmsd"),
+        "five_candidate": numeric(frequency, "candidate_cross_clan_median_rmsd"),
+        "five_frequency": numeric(frequency, "cross_clan_matched_control_median_rmsd"),
+        "base_candidate": numeric(base, "base_inclusive_candidate_cross_clan_median_rmsd"),
+        "base_random": numeric(base, "base_inclusive_length_random_cross_clan_median_rmsd"),
+        "base_sequence": numeric(base, "base_inclusive_sequence_matched_cross_clan_median_rmsd"),
     }
     a_medians = {key: float(np.median(values)) for key, values in a_distributions.items()}
     frequency_summary = read_metrics(FREQUENCY_SUMMARY)
     base_summary = read_metrics(BASE_SUMMARY)
     expected_a = {
-        "five_candidate": float(frequency_summary["candidate_all_pair_median_rmsd"]),
-        "five_frequency": float(frequency_summary["frequency_matched_control_median_rmsd"]),
-        "five_random": float(base_summary["five_anchor_length_random_median_rmsd"]),
-        "five_sequence": float(base_summary["five_anchor_sequence_matched_median_rmsd"]),
+        "five_candidate": float(frequency_summary["candidate_cross_clan_median_rmsd"]),
+        "five_frequency": float(frequency_summary["cross_clan_matched_control_median_rmsd"]),
         "base_candidate": float(base_summary["base_inclusive_candidate_median_rmsd"]),
         "base_random": float(base_summary["base_inclusive_length_random_median_rmsd"]),
         "base_sequence": float(base_summary["base_inclusive_sequence_matched_median_rmsd"]),
@@ -150,10 +147,12 @@ def preflight(cif_dir: Path) -> dict:
         if not np.isclose(a_medians[key], expected_a[key], atol=1e-12, rtol=1e-10):
             raise SystemExit(f"STOP: panel A {key} median {a_medians[key]} != summary {expected_a[key]}")
 
-    helix = [row for row in pairing if row["word_category"] == "a" and row["bgsu_overlap_fraction"] not in {"", "nan", "NaN"}]
-    other = [row for row in pairing if row["word_category"] in {"b", "c", "d"} and row["bgsu_overlap_fraction"] not in {"", "nan", "NaN"}]
-    if (len(helix), len(other)) != (514, 419):
-        raise SystemExit(f"STOP: panel B n={(len(helix), len(other))}, expected (514, 419)")
+    category = {row["kmer"]: row["word_category"] for row in pairing}
+    helix = [row for row in bgsu_sensitivity if category.get(row["kmer"]) == "a" and row["fraction_ge_1"] not in {"", "nan", "NaN"}]
+    other = [row for row in bgsu_sensitivity if category.get(row["kmer"]) in {"b", "c", "d"} and row["fraction_ge_1"] not in {"", "nan", "NaN"}]
+    expected_b = (int(background["threshold_1_group_a_n_words"]), int(background["threshold_1_group_nonhelix_n_words"]))
+    if (len(helix), len(other)) != expected_b:
+        raise SystemExit(f"STOP: panel B n={(len(helix), len(other))}, expected {expected_b}")
 
     sequences = [row["sequence"].upper().replace("T", "U") for row in hairpin]
     n_gnra = sum(len(seq) == 6 and seq[1] == "G" and seq[3] in "AG" and seq[4] == "A" for seq in sequences)
@@ -186,9 +185,33 @@ def preflight(cif_dir: Path) -> dict:
     return {
         "a_distributions": a_distributions,
         "a_medians": a_medians,
-        "helix_values": np.asarray([float(row["bgsu_overlap_fraction"]) for row in helix]),
-        "other_values": np.asarray([float(row["bgsu_overlap_fraction"]) for row in other]),
-        "background": float(background["background_overlap_median_fraction"]),
+        "a_permutation_p": float(frequency_summary["permutation_candidate_vs_cross_clan_control_p"]),
+        "a_permutations": int(frequency_summary["permutation_candidate_vs_cross_clan_control_n_permutations"]),
+        "helix_values": np.asarray([float(row["fraction_ge_1"]) for row in helix]),
+        "other_values": np.asarray([float(row["fraction_ge_1"]) for row in other]),
+        "bgsu_null": {
+            "a": (
+                float(background["threshold_1_group_a_null_word_median_p10_fraction"]),
+                float(background["threshold_1_group_a_null_word_median_fraction"]),
+                float(background["threshold_1_group_a_null_word_median_p90_fraction"]),
+            ),
+            "nonhelix": (
+                float(background["threshold_1_group_nonhelix_null_word_median_p10_fraction"]),
+                float(background["threshold_1_group_nonhelix_null_word_median_fraction"]),
+                float(background["threshold_1_group_nonhelix_null_word_median_p90_fraction"]),
+            ),
+        },
+        "bgsu_null_ci95": {
+            group: tuple(float(value) for value in np.percentile([
+                float(row[f"null_{group}_word_median_fraction"])
+                for row in read_tsv(BACKGROUND_REPLICATES) if row["overlap_threshold_residues"] == "1"
+            ], [2.5, 97.5]))
+            for group in ("a", "nonhelix")
+        },
+        "bgsu_p": {
+            "a": float(background["threshold_1_group_a_empirical_p_ge"]),
+            "nonhelix": float(background["threshold_1_group_nonhelix_empirical_p_ge"]),
+        },
         "jitter_seed": int(background["random_seed"]),
         "hairpin": hairpin,
         "sequences": sequences,
@@ -204,7 +227,7 @@ def preflight(cif_dir: Path) -> dict:
     }
 
 
-POOLED = {"five_random"}   # A: a single pooled value, not one value per word
+POOLED = set()
 
 
 def boxplot(ax, values: list[np.ndarray], positions: list[float], colors: list[str],
@@ -221,15 +244,11 @@ def boxplot(ax, values: list[np.ndarray], positions: list[float], colors: list[s
 
 
 def panel_a(ax, data: dict) -> None:
-    keys = ["five_candidate", "five_frequency", "five_random", "five_sequence",
-            "base_candidate", "base_random", "base_sequence"]
-    labels = ["3Dr\nword", "Freq.\nmatched", "Random", "Seq.\nmatched",
-              "3Dr\nword", "Random", "Seq.\nmatched"]
-    positions = [0.8, 2.0, 3.2, 4.4, 6.2, 7.4, 8.6]
-    colors = [CANDIDATE, CONTROL_GREYS["frequency"], CONTROL_GREYS["random"], CONTROL_GREYS["sequence"],
-              CANDIDATE, CONTROL_GREYS["random"], CONTROL_GREYS["sequence"]]
-    # The five-anchor random control is one pooled median over fragment pairs, not a
-    # per-word distribution, so it is drawn as a single point.
+    keys = ["five_candidate", "five_frequency", "base_candidate", "base_random", "base_sequence"]
+    labels = ["3Dr\nword", "Frequency\nmatched", "3Dr\nword", "Random", "Sequence\nmatched"]
+    positions = [0.9, 2.4, 4.9, 6.3, 7.7]
+    colors = [CANDIDATE, CONTROL_GREYS["frequency"], CANDIDATE,
+              CONTROL_GREYS["random"], CONTROL_GREYS["sequence"]]
     boxed = [i for i, key in enumerate(keys) if key not in POOLED]
     boxplot(ax, [data["a_distributions"][keys[i]] for i in boxed], [positions[i] for i in boxed],
             [colors[i] for i in boxed])
@@ -237,39 +256,64 @@ def panel_a(ax, data: dict) -> None:
         if key in POOLED:
             ax.scatter([positions[i]], [data["a_medians"][key]], s=46, marker="D", color=colors[i],
                        edgecolors=INK, linewidths=0.9, zorder=3)
-    ax.axvline(5.3, color=GRID, lw=0.9, zorder=1)
-    subhead(ax, 2.6, 0.95, "Five anchors", ax.get_xaxis_transform())
-    subhead(ax, 7.4, 0.95, "Base-inclusive atoms", ax.get_xaxis_transform())
+    ax.axvline(3.65, color=GRID, lw=0.9, zorder=1)
+    subhead(ax, 1.65, 0.95, "Five anchors", ax.get_xaxis_transform())
+    subhead(ax, 6.3, 0.95, "Base-inclusive atoms", ax.get_xaxis_transform())
     for x, key in zip(positions, keys):
         top = data["a_medians"][key] if key in POOLED else float(np.percentile(data["a_distributions"][key], 90))
         ax.text(x, top + 0.14, f"{data['a_medians'][key]:.2f}",
                 color=S.TEXT["RFoldseek n500"] if "candidate" in key else S.GREY_TEXT,
                 ha="center", va="bottom", fontsize=8.5)
+    # Unique-word permutation test of the five-anchor candidate-control comparison.
+    p_value, n_permutations = data["a_permutation_p"], data["a_permutations"]
+    floor = 1 / (n_permutations + 1)
+    exponent = int(round(np.log10(n_permutations)))
+    p_label = rf"P < $10^{{-{exponent}}}$" if p_value <= floor + 1e-12 else f"P = {p_value:.3g}"
+    bracket = max(float(np.percentile(data["a_distributions"][key], 90)) for key in keys[:2]) + 0.55
+    ax.plot([positions[0], positions[0], positions[1], positions[1]],
+            [bracket, bracket + 0.08, bracket + 0.08, bracket], color=INK, lw=0.8)
+    ax.text((positions[0] + positions[1]) / 2, bracket + 0.12, p_label, ha="center", va="bottom",
+            fontsize=8.2, color=S.GREY_TEXT)
     ax.set_xticks(positions)
     ax.set_xticklabels(labels, fontsize=8.5, linespacing=1.0)
-    ax.set_xlim(0.15, 9.15)
+    ax.set_xlim(0.15, 8.5)
     ax.set_ylim(0, 4.8)
-    style_axis(ax, ylabel=r"Median RMSD, $\AA$")
+    style_axis(ax, ylabel="Median pairwise RMSD (Å)")
 
 
 def panel_b(ax, data: dict) -> None:
-    groups = [data["helix_values"], data["other_values"]]
-    rng = np.random.default_rng(data["jitter_seed"])
-    ax.axhline(data["background"], color=S.NEUTRAL_LIGHT, lw=1.4, ls="--", zorder=0)
-    for x, values in zip([1, 2], groups):
-        jitter = rng.uniform(-0.28, 0.28, len(values))
-        ax.scatter(x + jitter, values, s=9, color=CANDIDATE, alpha=0.30, edgecolors="none", rasterized=True, zorder=1)
-        median = float(np.median(values))
-        ax.plot([x - 0.36, x + 0.36], [median, median], color=INK, lw=2.2, solid_capstyle="butt", zorder=3)
-        ax.text(x + 0.40, median, f"{median * 100:.0f}%", ha="left", va="center",
-                color=S.TEXT["RFoldseek n500"], fontsize=9)
-    ax.text(1.5, data["background"] + 0.015, f"background\n{data['background'] * 100:.1f}%",
-            ha="center", va="bottom", fontsize=8.5, color=S.GREY_TEXT)
-    ax.set_xticks([1, 2])
-    ax.set_xticklabels(["Standard helix", "All other words"])
-    ax.set_xlim(0.55, 2.68)
-    ax.set_ylim(-0.04, 1.1)
-    style_axis(ax, ylabel="BGSU motif overlap fraction")
+    """Observed per-word median overlap versus the word-size-matched random expectation."""
+    groups = ["a", "nonhelix"]
+    observed = [float(np.median(data["helix_values"])), float(np.median(data["other_values"]))]
+    expected = [data["bgsu_null"][group][1] for group in groups]
+    low, high = zip(*(data["bgsu_null_ci95"][group] for group in groups))
+    yerr = np.asarray([np.subtract(expected, low), np.subtract(high, expected)])
+    x = np.arange(2)
+    width = 0.36
+    bar_style = dict(edgecolor="#666666", linewidth=0.6, zorder=3)
+    ax.bar(x - width / 2, observed, width, color=CANDIDATE, label="3Dr words", **bar_style)
+    ax.bar(x + width / 2, expected, width, color=CONTROL_GREYS["random"], label="Random expectation",
+           yerr=yerr, capsize=2.5, error_kw={"elinewidth": 0.9, "ecolor": S.GREY_TEXT}, **bar_style)
+    for xi, value in zip(x - width / 2, observed):
+        ax.text(xi, value + 0.015, f"{value * 100:.0f}%", ha="center", va="bottom", fontsize=8.5,
+                color=S.TEXT["RFoldseek n500"])
+    for xi, group, top_obs, top_exp in zip(x, groups, observed, high):
+        top = max(top_obs + 0.08, top_exp + 0.04)
+        p_value = data["bgsu_p"][group]
+        if p_value >= 0.05:
+            p_label = "n.s."
+        else:
+            p_label = f"P = {p_value:.3f}" if p_value >= 0.001 else "P < 0.001"
+        ax.plot([xi - width / 2, xi - width / 2, xi + width / 2, xi + width / 2],
+                [top, top + 0.02, top + 0.02, top], color=INK, lw=0.8)
+        ax.text(xi, top + 0.03, p_label, ha="center", va="bottom", fontsize=8.2, color=S.GREY_TEXT)
+    ax.set_xticks(x)
+    ax.set_xticklabels(["Standard helix", "Other words"])
+    ax.set_xlim(-0.6, 1.6)
+    ax.set_ylim(0, 1.25)
+    ax.set_yticks(np.linspace(0, 1, 6))
+    ax.legend(frameon=False, fontsize=8.5, loc="upper left", bbox_to_anchor=(0.0, 1.02))
+    style_axis(ax, ylabel="Fraction overlapping BGSU motifs")
 
 
 def panel_c(ax, data: dict) -> None:
@@ -471,22 +515,36 @@ def write_numbers(data: dict) -> Path:
         rows.append({"panel": panel, "item": item, "value": value, "source_file": str(source.relative_to(REPO)),
                      "source_column": column, "statistic_or_rule": statistic})
     a_sources = {
-        "five_candidate": (FREQUENCY, "candidate_all_pair_median_rmsd"),
-        "five_frequency": (FREQUENCY, "matched_control_median_rmsd"),
-        "five_random": (RANDOM, "rmsd"),
-        "five_sequence": (SEQUENCE, "control_median_of_medians"),
-        "base_candidate": (BASE, "base_inclusive_candidate_sampled_pair_median_rmsd"),
-        "base_random": (BASE, "base_inclusive_length_random_median_rmsd"),
-        "base_sequence": (BASE, "base_inclusive_sequence_matched_median_rmsd"),
+        "five_candidate": (FREQUENCY, "candidate_cross_clan_median_rmsd"),
+        "five_frequency": (FREQUENCY, "cross_clan_matched_control_median_rmsd"),
+        "base_candidate": (BASE, "base_inclusive_candidate_cross_clan_median_rmsd"),
+        "base_random": (BASE, "base_inclusive_length_random_cross_clan_median_rmsd"),
+        "base_sequence": (BASE, "base_inclusive_sequence_matched_cross_clan_median_rmsd"),
     }
     for key, value in data["a_medians"].items():
         source, column = a_sources[key]
         add("A", key, value, source, column, "median")
-    add("B", "standard_helix_n", len(data["helix_values"]), PAIRING, "word_category,bgsu_overlap_fraction", "category a with finite BGSU denominator")
-    add("B", "other_words_n", len(data["other_values"]), PAIRING, "word_category,bgsu_overlap_fraction", "categories b+c+d with finite BGSU denominator")
-    add("B", "standard_helix_median_percent", np.median(data["helix_values"]) * 100, PAIRING, "bgsu_overlap_fraction", "median × 100")
-    add("B", "other_words_median_percent", np.median(data["other_values"]) * 100, PAIRING, "bgsu_overlap_fraction", "median × 100")
-    add("B", "random_background_percent", data["background"] * 100, BACKGROUND_SUMMARY, "value where metric=background_overlap_median_fraction", "× 100")
+    add("A", "five_anchor_permutation_p", data["a_permutation_p"], FREQUENCY_SUMMARY,
+        "permutation_candidate_vs_cross_clan_control_p", "two-sided unique-word stratified permutation P")
+    add("B", "standard_helix_n", len(data["helix_values"]), BGSU_SENSITIVITY, "kmer,fraction_ge_1", "pairing category a with finite denominator")
+    add("B", "other_words_n", len(data["other_values"]), BGSU_SENSITIVITY, "kmer,fraction_ge_1", "pairing categories b+c+d with finite denominator")
+    add("B", "standard_helix_median_percent", np.median(data["helix_values"]) * 100, BGSU_SENSITIVITY, "fraction_ge_1", "median × 100")
+    add("B", "other_words_median_percent", np.median(data["other_values"]) * 100, BGSU_SENSITIVITY, "fraction_ge_1", "median × 100")
+    for group in ("a", "nonhelix"):
+        low95, high95 = data["bgsu_null_ci95"][group]
+        add("B", f"{group}_matched_null_ci95_low_percent", low95 * 100, BACKGROUND_REPLICATES,
+            f"null_{group}_word_median_fraction (threshold 1)", "2.5th percentile × 100; error bar")
+        add("B", f"{group}_matched_null_ci95_high_percent", high95 * 100, BACKGROUND_REPLICATES,
+            f"null_{group}_word_median_fraction (threshold 1)", "97.5th percentile × 100; error bar")
+        add("B", f"{group}_empirical_p", data["bgsu_p"][group], BACKGROUND_SUMMARY,
+            f"threshold_1_group_{group}_empirical_p_ge", "one-sided Monte Carlo P")
+        p10, median, p90 = data["bgsu_null"][group]
+        add("B", f"{group}_matched_null_median_percent", median * 100, BACKGROUND_SUMMARY,
+            f"threshold_1_group_{group}_null_word_median_fraction", "word-size-matched null median × 100")
+        add("B", f"{group}_matched_null_p10_percent", p10 * 100, BACKGROUND_SUMMARY,
+            f"threshold_1_group_{group}_null_word_median_p10_fraction", "null P10 × 100")
+        add("B", f"{group}_matched_null_p90_percent", p90 * 100, BACKGROUND_SUMMARY,
+            f"threshold_1_group_{group}_null_word_median_p90_fraction", "null P90 × 100")
     add("C", "six_token_string", data["hairpin"][0]["left_kmer"] + "-" + "-".join(data["hairpin"][0]["right_kmer"].split("-")[2:]), HAIRPIN, "left_kmer,right_kmer", "overlap positions 3–4")
     add("C", "cis_trans_topology_count", data["topology_count"], HAIRPIN, "left_pair_orient_pattern,right_pair_orient_pattern", "cis 1↔6 and trans 2↔5")
     add("C", "topology_denominator", len(data["hairpin"]), HAIRPIN, "sequence", "row count")
@@ -537,12 +595,12 @@ def main() -> None:
     panel_e(ax_e, data)
 
     fig.subplots_adjust(left=0.065, right=0.99, bottom=0.06, top=0.97)
-    shift = 0.035                            # right column moved in towards A and D
-    pb = ax_b.get_position()                 # a narrower B
-    ax_b.set_position([pb.x1 - pb.width * 0.8 - shift, pb.y0, pb.width * 0.8, pb.height])
+    shift = 0.055                            # right column moved in towards A and D
     for ax in f_axes:
         p = ax.get_position(original=True)
         ax.set_position([p.x0 - shift, p.y0, p.width, p.height])
+    pb = ax_b.get_position()                 # a narrower B, left-aligned with E and F
+    ax_b.set_position([f_axes[0].get_position().x0, pb.y0, pb.width * 0.8, pb.height])
     fig.canvas.draw()
     for ax in f_axes:
         add_scale_bar(ax, 2.0)

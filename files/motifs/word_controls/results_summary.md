@@ -1,56 +1,47 @@
-# Recurrent 3Dr word controls: results summary
+# Recurrent 3Dr word controls: corrected results summary
 
-Every numerical value below is read from a generated TSV file.
+Every numerical value below is read from a generated TSV. Primary RMSD comparisons use only pairs from different Rfam clans on both sides; a family without a clan is its own clan.
 
 ## Key results
 
-- Frequency-matched control: candidate all-pair median RMSD was 0.542 Å (P10–P90 0.324–1.060) versus 0.308 Å (P10–P90 0.280–0.347) for matched non-candidate words. 8.6% of candidates were below their matched control (Wilcoxon P = 9.8841743046906e-311). Source: `frequency_matched_random_words_summary.tsv`.
-- Shuffled-word control: 1080 candidates had an observed shuffled word; its median RMSD was 0.582 Å and the paired Wilcoxon P value was 0.3879094363892127. Source: `frequency_matched_random_words_summary.tsv`.
-- Pairing strata: category (a) contained 986 words and the remaining categories contained 1066 words. After removing (a), candidate all-pair median RMSD was 0.599 Å versus 0.308 Å for matched controls; 12.5% of candidates were lower (Wilcoxon P = 2.0493608249617758e-152). Source: `pairing_pattern_stratification_summary.tsv`.
-- BGSU background: the candidate-word median overlap fraction was 85.7%, compared with a random-window median of 62.2% (P10–P90 61.1%–63.1%). Source: `bgsu_random_window_background_summary.tsv`.
-- Base-inclusive RMSD: the candidate median was 0.769 Å, versus 2.964 Å for length-matched random windows and 2.839 Å for sequence-matched windows (2052 candidate words). Source: `base_inclusive_rmsd_summary.tsv`.
+- Cross-clan RMSD: recurrent candidates had median 0.616 Å, versus 0.989 Å for occurrence-frequency-standardised non-candidate words; 78.5% of candidates were below the descriptive matched-control median. A unique-word permutation test stratified by occurrence-frequency bin gave P = 1.00e-04 (2052 candidate and 515 control words; 10000 permutations).
+- Control homology audit: among the 3392 non-candidate words occurring at least eight times, 43.1% had no cross-family pair and 84.8% had no cross-clan pair. For the median control word, 100.0% of its cross-family pairs fell within one clan. The primary pool retained 515 words (by frequency bin 8-15:455;16-31:50;>=32:10); their median number of sampled cross-clan pairs was 11, versus 35 for candidates.
+- Minimum-pair sensitivity: requiring at least 5 cross-clan pairs per control word (pool 8-15:423;16-31:42;>=32:8) gave a control median of 0.873 Å; 75.5% of candidates were lower (stratified permutation P = 1.00e-04).
+- Cross-family diagnostic (homologous same-clan pairs allowed): 0.586 versus 0.370 Å; 13.9% of candidates were lower.
+- Pairing-matched analysis: after excluding standard helices, 1066 recurrent words had median cross-clan RMSD 0.754 Å, versus 1.022 Å for controls matched by frequency bin and modal pairing category; 69.1% were lower (unique-word stratified permutation P = 1.00e-04).
+- BGSU, word-level statistic: under the permissive ≥1-residue rule, the observed median per-word overlap was 85.7%, versus 66.7% under the word-size-matched null (P10–P90 66.7%–71.5%; Monte Carlo P = 0.001).
+- BGSU, pooled diagnostic: the same candidate occurrences gave 50.0%, below the random-window rate of 62.1%. The word-level and pooled summaries answer different questions and must not be compared as if they were the same statistic.
+- BGSU sensitivity: with ≥3/4 residues required, the pooled candidate fraction was 15.9% versus 31.2% for random windows; with 4/4 residues it was 7.9% versus 13.5%. Per-word medians were 0.0% and 0.0% (Monte Carlo P = 1.000 and 1.000).
 
-### Coordinate-set comparison
+### Pairing-stratum comparison
 
-| Coordinates | Candidate median RMSD (Å) | Length-matched random (Å) | Sequence-matched (Å) |
-|---|---:|---:|---:|
-| Five anchors | 0.542 | 2.312 | 2.247 |
-| Base-inclusive atoms | 0.769 | 2.964 | 2.839 |
-
-Source: `base_inclusive_rmsd_summary.tsv`.
-
-### Pairing-stratum details
-
-| Category | Words | Cross-family median RMSD (Å) | Matched-control median RMSD (Å) | Median BGSU overlap | Words with BGSU denominator |
+| Category | Candidate words | Candidate cross-clan median RMSD (Å) | Category-matched control (Å) | Candidate lower | Holm-adjusted permutation P |
 |---|---:|---:|---:|---:|---:|
-| (a) standard_helix_PPPP_cis_antiparallel | 986 | 0.538 | 0.309 | 50.0% | 514 |
-| (b) all_paired_nonstandard | 309 | 0.598 | 0.306 | 100.0% | 126 |
-| (c) partly_unpaired_1_to_3_U | 715 | 0.734 | 0.309 | 100.0% | 268 |
-| (d) all_unpaired_UUUU | 42 | 2.357 | 0.310 | 100.0% | 25 |
-
-Source: `pairing_pattern_stratification_summary.tsv`.
+| (a) standard_helix_PPPP_cis_antiparallel | 986 | 0.548 | 0.613 | 68.7% | 0.047 |
+| (b) all_paired_nonstandard | 309 | 0.663 | 0.771 | 64.1% | 0.212 |
+| (c) partly_unpaired_1_to_3_U | 715 | 0.800 | 1.130 | 71.6% | 4.00e-04 |
+| (d) all_unpaired_UUUU | 42 | 2.424 | 2.778 | 64.3% | 0.212 |
 
 ## Interpretation
 
-The frequency-matched analysis weakens the claim that recurrent cross-family words are unusually geometrically coherent merely because they pass the candidate filter: non-candidate words matched by occurrence frequency had lower, not higher, all-pair RMSD. The shuffled-word comparison also did not show a significant paired difference. The conservative conclusion is therefore that a 3Dr word identifies a reproducible local geometry, but recurrence across families does not by itself make that geometry tighter than other equally frequent token words.
+When comparisons are restricted to different-clan occurrence pairs, recurrent words are geometrically tighter than occurrence-frequency-matched non-candidate words, and the direction holds when control words must have more cross-clan pairs and when controls are additionally matched by pairing category. The cross-family diagnostic uses a broader eligible control pool and is therefore not a fixed-pool estimate of the clan restriction.
 
-Removing standard-helical words does not rescue the original comparison: non-helical candidates remained higher than their frequency-matched controls. In contrast, enrichment within BGSU-annotated motifs remains supported relative to random windows sampled from the same BGSU-covered chains.
-Base-inclusive coordinates support a narrower claim that identical recurrent words preserve whole-nucleotide geometry relative to random windows, even though candidate selection does not outperform equally frequent non-candidate token words under the five-anchor comparison.
+The BGSU result is statistic-dependent. A typical sparsely observed word is more likely than its size-matched null to have a high permissive overlap fraction, driven by non-helical words, but the pooled occurrence fraction is lower than background and stricter overlap definitions show no enrichment. The defensible conclusion is therefore limited to word-level enrichment under the ≥1-residue rule; broad motif enrichment is not supported.
 
-## Replacement text for Results todos
+## Suggested Results text
 
-> Across 2052 recurrent words, the median all-pair five-anchor RMSD was 0.542 Å, compared with 0.308 Å for non-candidate words matched by occurrence-frequency bin; only 8.6% of candidates were lower than their matched controls (paired Wilcoxon P = 9.8841743046906e-311). Thus, cross-family recurrence did not confer tighter geometry than frequency-matched token words. The same conclusion held after excluding standard cis-paired helices (0.599 versus 0.308 Å; 12.5% lower).
+> Comparing only occurrence pairs from different Rfam clans, recurrent 3Dr words had a median five-anchor RMSD of 0.616 Å, compared with 0.989 Å for occurrence-frequency-standardised non-candidate words; 78.5% of candidates were lower than the descriptive matched-control median. A unique-word permutation test stratified by occurrence-frequency bin gave P = 1.00e-04. Among non-helical words with controls additionally stratified by modal pairing category, the medians were 0.754 and 1.022 Å (stratified permutation P = 1.00e-04). Thus, recurrent words were lower in RMSD than the matched cross-clan token-word background.
 
-> Candidate words overlapped BGSU hairpin or internal-loop annotations with a median fraction of 85.7%, compared with 62.2% for random four-nucleotide windows sampled from BGSU-covered chains.
+> Using the permissive criterion that at least one of four residues intersected a BGSU hairpin or internal-loop annotation, the median overlap fraction across candidate words was 85.7%, compared with 66.7% in a null distribution that matched each word's number of observable occurrences (Monte Carlo P = 0.001). In contrast, the pooled candidate occurrence fraction was 50.0%, below the 62.1% background window rate, and no enrichment was detected when at least three or all four residues were required to overlap. We therefore interpret this as limited word-level enrichment under the permissive overlap definition.
 
-> With the identity-independent base-inclusive atom set, recurrent-word occurrences retained a median RMSD of 0.769 Å, substantially below both length-matched random windows (2.964 Å) and sequence-matched windows (2.839 Å).
+## Updated Methods text
 
-## Methods text
+> **Frequency-matched word controls.** We enumerated all non-candidate four-token words occurring at least eight times. Different Rfam families within one clan are treated as related, and 84.8% of these words had no occurrence pair from different clans; the primary control pool therefore retained only words with at least 1 cross-clan pair (families without a clan were treated as singleton clans). For descriptive frequency standardisation, 25 controls were sampled with replacement for each candidate from the same occurrence-frequency bin (8-15;16-31;>=32) using random seed 260810. Candidate and control RMSDs were calculated only between occurrences assigned to different clans, using at most 400 pairs per word. Statistical inference treated each candidate and control word as one independent unit: word labels were permuted 10000 times within occurrence-frequency bins while preserving the observed candidate and control counts, using the candidate-count-weighted mean of stratum-specific median RMSD differences as the test statistic. Two-sided empirical P values used the plus-one correction. A sensitivity analysis required at least 5 cross-clan pairs per control word. Cross-family, all-pair and token-order permutation results were retained as diagnostics rather than primary tests.
 
-> **Frequency-matched word controls.** We enumerated all four-token words occurring at least eight times in the 3Dr database and excluded the 2052 recurrent candidates. For each candidate, one non-candidate word was sampled from the same occurrence-frequency bin (8-15;16-31;>=32) in each of 25 replicates using random seed 260810. Candidate and control geometry was compared using the all-pair median RMSD over the five stored anchors, with Kabsch alignment and RMSD imported from `cross_family_kmer_mining.py`. As a secondary control, token order was permuted and retained when the permuted word occurred at least eight times. Paired differences were tested with a two-sided Wilcoxon signed-rank test.
+> **Pairing-pattern stratification.** Candidate and eligible control words were assigned to standard helical, fully paired non-standard, partially unpaired or fully unpaired categories from their modal Biotite pairing pattern. Descriptive controls were matched jointly by occurrence-frequency bin and modal pairing category. Statistical inference permuted unique word labels within the same frequency-bin-by-category strata using 10000 permutations. Category-specific P values were adjusted across the four categories by the Holm method. Both sides used only different-clan occurrence pairs. Pair annotations were available for 41911 candidate occurrences; 0 occurrences were excluded for missing annotations.
 
-> **Pairing-pattern stratification.** Pairing state and cis/trans orientation were taken from the pipeline Biotite annotations. Each occurrence was encoded as a four-position paired/unpaired pattern together with its partner-index geometry. Words were assigned their modal occurrence signature and divided into standard cis-paired antiparallel helices, other fully paired words, partly unpaired words, and fully unpaired words. Pair annotations were available for 41911 enumerated candidate occurrences; 0 occurrences lacked these arrays in the compact inputs and were excluded from modal-signature estimation.
+> **BGSU background and sensitivity analysis.** For every candidate word observed on BGSU-covered chains, each null replicate sampled the same number of random four-nucleotide windows as that word's observed denominator. The median overlap fraction across words was then calculated, preserving the candidate word as the inferential unit. Sampling used 1000 replicates, replacement, random seed 260810 and 15974 eligible windows from 175 chains. Overlap thresholds of at least one, at least three and all four residues within the same BGSU motif occurrence were evaluated. Pooled occurrence fractions were reported separately as descriptive sensitivity checks.
 
-> **BGSU background.** Four-nucleotide windows were sampled uniformly from the 175 database chains covered by the downloaded BGSU Hairpin and Internal Loop Motif Atlas files. Each replicate contained 3560 windows, matching the number of candidate occurrences on those chains, and overlap was defined as any residue intersection, as in `bgsu_overlap.py`. Sampling was repeated 25 times with random seed 260810.
+## Base-inclusive coordinate diagnostic
 
-> **Base-inclusive RMSD.** The base-inclusive atom set comprises P, OP1, OP2, O5′, C5′, C4′, O4′, C3′, O3′, C2′, O2′ and C1′ plus N9/C4/C8 for purines or N1/C2/C6 for pyrimidines. Occurrences with missing required atoms or non-mappable modified residues are excluded with reason-specific counts. Candidate estimates use at most 400 occurrence pairs per word; each of the 25 length- and sequence-matched control replicates uses at most 25 pairs, with random seed 260810.
+Using only occurrence pairs from different Rfam clans on every side, the candidate median was 0.876 Å (2052 words), versus 2.961 Å for length-matched random windows and 2.838 Å for sequence-matched windows (2052 words with a sequence-matched pool). This whole-nucleotide comparison uses random and sequence-matched windows rather than frequency-matched token words.

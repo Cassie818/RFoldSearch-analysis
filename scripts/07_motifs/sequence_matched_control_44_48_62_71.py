@@ -1,6 +1,6 @@
 """Exact-sequence-matched RMSD control for token word 44-48-62-71.
 
-This script reproduces the strict sequence-matched control used in Section 2.4.
+This script reproduces the strict sequence-matched control used in Section 2.7.
 For each observed occurrence of 44-48-62-71, it samples one non-target
 four-nucleotide window with the same exact RNA sequence, computes all-pair
 all-anchor Kabsch RMSD, and repeats this procedure for 2,000 replicates.

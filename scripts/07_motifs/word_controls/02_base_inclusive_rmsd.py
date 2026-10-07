@@ -1,4 +1,9 @@
-"""Recompute recurrent-word RMSD with identity-independent base-inclusive atoms."""
+"""Recompute recurrent-word RMSD with identity-independent base-inclusive atoms.
+
+As in the five-anchor frequency control, candidate and control RMSDs use only
+occurrence pairs from different Rfam clans (an unclanned family is its own
+clan), so homologous pairs do not enter either side of the comparison.
+"""
 from __future__ import annotations
 
 import argparse
@@ -20,6 +25,7 @@ from common import (
     BASE_LOCATORS,
     expected_atoms,
     load_db_pickle,
+    load_labels,
     load_reference_rmsd_module,
     parse_word,
     parse_atom_site,
@@ -31,18 +37,23 @@ from common import (
 )
 
 
-def sampled_pair_median(arrays: list[np.ndarray], rmsd, rng: random.Random, max_pairs: int) -> tuple[float, int]:
+def cross_clan_pair_median(
+    arrays: list[np.ndarray], clans: list[str], rmsd, rng: random.Random, max_pairs: int,
+) -> tuple[float, int]:
+    """Median RMSD over sampled occurrence pairs whose clans differ."""
     n = len(arrays)
-    if n < 2:
-        return float("nan"), 0
     n_all = n * (n - 1) // 2
-    if n_all <= max_pairs:
-        pairs = list(itertools.combinations(range(n), 2))
+    n_eligible = n_all - sum(count * (count - 1) // 2 for count in Counter(clans).values())
+    if n_eligible <= 0:
+        return float("nan"), 0
+    if n_eligible <= max_pairs:
+        pairs = [(left, right) for left, right in itertools.combinations(range(n), 2) if clans[left] != clans[right]]
     else:
         pairs = set()
         while len(pairs) < max_pairs:
             left, right = rng.sample(range(n), 2)
-            pairs.add((min(left, right), max(left, right)))
+            if clans[left] != clans[right]:
+                pairs.add((min(left, right), max(left, right)))
     values = [rmsd.kabsch_rmsd(arrays[left], arrays[right]) for left, right in pairs]
     return float(np.median(values)), len(values)
 
@@ -54,8 +65,7 @@ def main() -> None:
     parser.add_argument("--residue-map", type=Path, default=MOTIF_DIR / "chain_residue_map.json")
     parser.add_argument("--cif-dir", type=Path, default=Path.home() / "Desktop" / "NR80_local")
     parser.add_argument("--frequency-controls", type=Path, default=OUT_DIR / "frequency_matched_random_words.tsv")
-    parser.add_argument("--five-anchor-sequence-controls", type=Path, default=MOTIF_DIR / "global_sequence_matched_control_production_new_k4_aa.tsv")
-    parser.add_argument("--five-anchor-control-summary", type=Path, default=MOTIF_DIR / "global_sequence_matched_control_production_new_k4_aa_summary.tsv")
+    parser.add_argument("--frequency-control-summary", type=Path, default=OUT_DIR / "frequency_matched_random_words_summary.tsv")
     parser.add_argument("--output", type=Path, default=OUT_DIR / "base_inclusive_rmsd.tsv")
     parser.add_argument("--skip-log", type=Path, default=OUT_DIR / "base_inclusive_rmsd_skips.tsv")
     parser.add_argument("--summary", type=Path, default=OUT_DIR / "base_inclusive_rmsd_summary.tsv")
@@ -82,17 +92,22 @@ def main() -> None:
     candidates = read_tsv(args.candidates)
     candidate_lookup = {parse_word(row["kmer"]): row for row in candidates}
     frequency = {row["kmer"]: row for row in read_tsv(args.frequency_controls)}
-    five_anchor_sequence = {row["kmer"]: row for row in read_tsv(args.five_anchor_sequence_controls)}
-    five_anchor_summary = {row["metric"]: row["value"] for row in read_tsv(args.five_anchor_control_summary)}
     residue_map = json.load(args.residue_map.open())
+    labels = load_labels()
     rng = np.random.default_rng(SEED)
     pair_rng = random.Random(SEED)
-    pools_by_sequence: dict[str, list[tuple[tuple[int, ...], np.ndarray]]] = defaultdict(list)
-    observed: dict[tuple[int, ...], list[tuple[str, np.ndarray]]] = defaultdict(list)
+    # Pool items and observed occurrences carry the clan of their chain.
+    pools_by_sequence: dict[str, list[tuple[tuple[int, ...], np.ndarray, str]]] = defaultdict(list)
+    observed: dict[tuple[int, ...], list[tuple[str, np.ndarray, str]]] = defaultdict(list)
     skips = Counter()
 
     for entry_number, entry in enumerate(entries, start=1):
         stem = Path(entry["id"]).stem
+        family, clan = labels.get(str(entry["id"]), labels.get(Path(entry["id"]).name, ("", "")))
+        if not family:
+            skips["unlabelled_chain"] += max(0, len(entry["tokens"]) - 3)
+            continue
+        clan = clan or f"family:{family}"
         cif_path = args.cif_dir / f"{stem}.cif"
         if not cif_path.exists() or stem not in residue_map:
             skips["missing_cif_or_residue_map"] += max(0, len(entry["tokens"]) - 3)
@@ -130,28 +145,34 @@ def main() -> None:
                 continue
             sequence = "".join(bases)
             coordinate_array = np.asarray(coordinates, dtype=np.float32)
-            pools_by_sequence[sequence].append((word, coordinate_array))
+            pools_by_sequence[sequence].append((word, coordinate_array, clan))
             if word in candidate_lookup:
-                observed[word].append((sequence, coordinate_array))
+                observed[word].append((sequence, coordinate_array, clan))
         if entry_number % 100 == 0:
             print(f"parsed {entry_number}/{len(entries)} mmCIF chains", flush=True)
 
     all_pool = [item for pool in pools_by_sequence.values() for item in pool]
-    non_target_pool_cache: dict[tuple[str, tuple[int, ...]], list[tuple[tuple[int, ...], np.ndarray]]] = {}
+    non_target_pool_cache: dict[tuple[str, tuple[int, ...]], list[tuple[tuple[int, ...], np.ndarray, str]]] = {}
+    frequency_summary = {row["metric"]: row["value"] for row in read_tsv(args.frequency_control_summary)}
     rows = []
     for word, candidate in candidate_lookup.items():
         occurrences = observed.get(word, [])
         arrays = [item[1] for item in occurrences]
-        candidate_rmsd, n_pairs = sampled_pair_median(arrays, rmsd, pair_rng, args.max_pairs)
+        clans = [item[2] for item in occurrences]
+        candidate_rmsd, n_pairs = cross_clan_pair_median(arrays, clans, rmsd, pair_rng, args.max_pairs)
         length_values = []
         sequence_values = []
         for _repeat in range(args.repeats):
-            if len(arrays) >= 2:
-                sampled = [all_pool[int(rng.integers(len(all_pool)))][1] for _ in arrays]
-                length_values.append(sampled_pair_median(sampled, rmsd, pair_rng, args.max_control_pairs)[0])
+            if np.isfinite(candidate_rmsd):
+                sampled = [all_pool[int(rng.integers(len(all_pool)))] for _ in arrays]
+                value = cross_clan_pair_median(
+                    [item[1] for item in sampled], [item[2] for item in sampled], rmsd, pair_rng, args.max_control_pairs
+                )[0]
+                if np.isfinite(value):
+                    length_values.append(value)
                 sequence_sample = []
                 valid = True
-                for sequence, _coordinates in occurrences:
+                for sequence, _coordinates, _clan in occurrences:
                     cache_key = (sequence, word)
                     if cache_key not in non_target_pool_cache:
                         non_target_pool_cache[cache_key] = [item for item in pools_by_sequence[sequence] if item[0] != word]
@@ -159,20 +180,25 @@ def main() -> None:
                     if not choices:
                         valid = False
                         break
-                    sequence_sample.append(choices[int(rng.integers(len(choices)))][1])
+                    sequence_sample.append(choices[int(rng.integers(len(choices)))])
                 if valid:
-                    sequence_values.append(sampled_pair_median(sequence_sample, rmsd, pair_rng, args.max_control_pairs)[0])
+                    value = cross_clan_pair_median(
+                        [item[1] for item in sequence_sample], [item[2] for item in sequence_sample],
+                        rmsd, pair_rng, args.max_control_pairs,
+                    )[0]
+                    if np.isfinite(value):
+                        sequence_values.append(value)
         rows.append({
             "kmer": word_string(word),
             "n_occurrences_base_inclusive": len(arrays),
-            "base_inclusive_candidate_sampled_pair_median_rmsd": candidate_rmsd,
-            "base_inclusive_candidate_n_pairs": n_pairs,
-            "base_inclusive_length_random_median_rmsd": float(np.median(length_values)) if length_values else float("nan"),
-            "base_inclusive_sequence_matched_median_rmsd": float(np.median(sequence_values)) if sequence_values else float("nan"),
-            "five_anchor_all_pair_median_rmsd": frequency[word_string(word)]["candidate_all_pair_median_rmsd"],
-            "five_anchor_cross_family_median_rmsd": candidate["cross_med_rmsd"],
-            "five_anchor_length_random_median_rmsd": five_anchor_summary["length_matched_random_median_rmsd"],
-            "five_anchor_sequence_matched_median_rmsd": five_anchor_sequence[word_string(word)]["control_median_of_medians"],
+            "base_inclusive_candidate_cross_clan_median_rmsd": candidate_rmsd,
+            "base_inclusive_candidate_cross_clan_n_pairs": n_pairs,
+            "base_inclusive_length_random_cross_clan_median_rmsd": float(np.median(length_values)) if length_values else float("nan"),
+            "base_inclusive_length_random_n_replicates": len(length_values),
+            "base_inclusive_sequence_matched_cross_clan_median_rmsd": float(np.median(sequence_values)) if sequence_values else float("nan"),
+            "base_inclusive_sequence_matched_n_replicates": len(sequence_values),
+            "five_anchor_candidate_cross_clan_median_rmsd": frequency[word_string(word)]["candidate_cross_clan_median_rmsd"],
+            "five_anchor_frequency_matched_cross_clan_median_rmsd": frequency[word_string(word)]["cross_clan_matched_control_median_rmsd"],
             "random_seed": SEED,
             "n_repeats": args.repeats,
             "max_pairs_per_comparison": args.max_pairs,
@@ -182,19 +208,25 @@ def main() -> None:
             print(f"computed base-inclusive RMSD for {len(rows)}/{len(candidate_lookup)} words", flush=True)
     write_tsv(args.output, rows)
     write_tsv(args.skip_log, [{"reason": reason, "count": count, "detail": "."} for reason, count in sorted(skips.items())])
-    complete = [row for row in rows if np.isfinite(float(row["base_inclusive_candidate_sampled_pair_median_rmsd"]))]
+    complete = [row for row in rows if np.isfinite(float(row["base_inclusive_candidate_cross_clan_median_rmsd"]))]
+
+    def median_of(column: str) -> float:
+        values = [float(row[column]) for row in complete if np.isfinite(float(row[column]))]
+        return float(np.median(values))
+
     metrics = [
         ("status", "complete"), ("random_seed", SEED), ("n_repeats", args.repeats),
         ("max_pairs_per_comparison", args.max_pairs),
         ("max_pairs_per_control_replicate", args.max_control_pairs),
         ("n_mmcif_files_found", len(list(args.cif_dir.glob("*.cif")))),
         ("n_candidates", len(rows)), ("n_candidates_with_base_inclusive", len(complete)),
-        ("base_inclusive_candidate_median_rmsd", float(np.median([float(row["base_inclusive_candidate_sampled_pair_median_rmsd"]) for row in complete]))),
-        ("base_inclusive_length_random_median_rmsd", float(np.median([float(row["base_inclusive_length_random_median_rmsd"]) for row in complete]))),
-        ("base_inclusive_sequence_matched_median_rmsd", float(np.median([float(row["base_inclusive_sequence_matched_median_rmsd"]) for row in complete if np.isfinite(float(row["base_inclusive_sequence_matched_median_rmsd"]))]))),
-        ("five_anchor_candidate_all_pair_median_rmsd", float(np.median([float(row["five_anchor_all_pair_median_rmsd"]) for row in complete]))),
-        ("five_anchor_length_random_median_rmsd", five_anchor_summary["length_matched_random_median_rmsd"]),
-        ("five_anchor_sequence_matched_median_rmsd", five_anchor_summary["global_sequence_matched_control_median_rmsd"]),
+        ("n_candidates_with_sequence_matched_control", sum(np.isfinite(float(row["base_inclusive_sequence_matched_cross_clan_median_rmsd"])) for row in complete)),
+        ("base_inclusive_candidate_median_rmsd", median_of("base_inclusive_candidate_cross_clan_median_rmsd")),
+        ("base_inclusive_length_random_median_rmsd", median_of("base_inclusive_length_random_cross_clan_median_rmsd")),
+        ("base_inclusive_sequence_matched_median_rmsd", median_of("base_inclusive_sequence_matched_cross_clan_median_rmsd")),
+        ("five_anchor_candidate_cross_clan_median_rmsd", frequency_summary["candidate_cross_clan_median_rmsd"]),
+        ("five_anchor_frequency_matched_cross_clan_median_rmsd", frequency_summary["cross_clan_matched_control_median_rmsd"]),
+        ("pair_scope", "different Rfam clans on candidate and control sides; unclanned families are singleton clans; unlabelled chains excluded"),
         ("rmsd_definition_source", "scripts/07_motifs/cross_family_kmer_mining.py:kabsch_rmsd/pairwise_rmsd"),
     ]
     for reason, count in sorted(skips.items()):

@@ -1,12 +1,4 @@
-"""Extract DSSR interaction signatures for known motif-core token words.
-
-The input manifest lists clean BGSU motif-core matches. For each occurrence,
-this script reads the DSSR JSON output, extracts base-pair annotations for the
-four token residues, and summarizes dominant position-specific signatures.
-
-If a DSSR JSON file is missing and DSSR_BIN is set, the script runs DSSR with
-JSON output on the source mmCIF file. Otherwise it fails with a clear message.
-"""
+"""Extract DSSR interaction signatures for known motif-core token words."""
 from __future__ import annotations
 
 import argparse
@@ -195,7 +187,9 @@ def write_instances(path: Path, rows: list[dict[str, str]]) -> None:
         "dssr_partner_nt_pattern", "dssr_pair_index_pattern",
     ]
     with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter="\t")
+        writer = csv.DictWriter(
+            handle, fieldnames=fieldnames, delimiter="\t", lineterminator="\n"
+        )
         writer.writeheader()
         for row in rows:
             writer.writerow({name: row.get(name, "") for name in fieldnames})
@@ -221,7 +215,9 @@ def write_summary(path: Path, rows: list[dict[str, str]]) -> None:
         "dominant_count", "dominant_fraction", "all_states",
     ]
     with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter="\t")
+        writer = csv.DictWriter(
+            handle, fieldnames=fieldnames, delimiter="\t", lineterminator="\n"
+        )
         writer.writeheader()
         for kmer in sorted(rows_by_kmer):
             kmer_rows = rows_by_kmer[kmer]

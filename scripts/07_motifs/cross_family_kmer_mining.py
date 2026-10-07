@@ -1,22 +1,4 @@
-"""Cross-family k-mer motif mining.
-
-For each token k-mer that occurs in >= MIN_FAM distinct Rfam families,
->= MIN_CLAN distinct Rfam clans, >= MIN_CHAINS distinct chains, and
->= MIN_OCC total occurrences, extract the RFoldseek anchor atoms of every
-occurrence, perform Kabsch alignment, and report the pairwise-RMSD
-distribution. A length-matched random-window control is also produced.
-
-Outputs (written to files/motifs/):
-  kmer_candidates{suffix}.tsv        all k-mers passing the frequency filter
-  motif_rmsd_validation{suffix}.tsv  per-candidate RMSD statistics
-  random_control_rmsd{suffix}.tsv    random length-matched window control
-
-Usage:
-    python evaluation/motif/cross_family_kmer_mining.py --out_suffix _production_new_k4_aa
-
-The defaults reproduce the Section 2.4 analysis: k=4, min_fam=3,
-min_clan=2, min_chains=5, min_occ=8, and all five RFoldseek anchor atoms.
-"""
+"""Cross-family k-mer motif mining."""
 from __future__ import annotations
 import argparse, csv, json, os, random
 from collections import Counter, defaultdict

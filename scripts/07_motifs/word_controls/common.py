@@ -116,7 +116,9 @@ def write_tsv(path: Path, rows: list[dict], fieldnames: list[str] | None = None)
     if fieldnames is None:
         fieldnames = list(rows[0])
     with path.open("w", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=fieldnames, delimiter="\t", extrasaction="ignore")
+        writer = csv.DictWriter(
+            handle, fieldnames=fieldnames, delimiter="\t", extrasaction="ignore", lineterminator="\n"
+        )
         writer.writeheader()
         writer.writerows(rows)
 
@@ -124,7 +126,7 @@ def write_tsv(path: Path, rows: list[dict], fieldnames: list[str] | None = None)
 def write_metrics(path: Path, rows: list[tuple[str, object]]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with path.open("w", newline="") as handle:
-        writer = csv.writer(handle, delimiter="\t")
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
         writer.writerow(["metric", "value"])
         writer.writerows(rows)
 
@@ -194,6 +196,63 @@ def all_pair_median(fragments: list[np.ndarray], rmsd_module) -> tuple[float, in
 def quantiles(values: list[float] | np.ndarray) -> tuple[float, float, float]:
     array = np.asarray(values, dtype=float)
     return tuple(map(float, np.percentile(array, [10, 50, 90])))
+
+
+def stratified_median_permutation_test(
+    strata: dict[object, tuple[list[float], list[float]]],
+    n_permutations: int,
+    seed: int,
+) -> dict[str, float | int | str]:
+    """Unique-word permutation test for a candidate/control median difference.
+
+    Candidate and control labels are permuted independently within each
+    matching stratum while preserving the observed group sizes.  The test
+    statistic is the candidate-count-weighted mean of the stratum-specific
+    ``median(control) - median(candidate)`` differences.  Positive values mean
+    that candidates have lower RMSD.  Every input value is used once per
+    permutation; repeated descriptive control draws are deliberately excluded.
+    """
+    prepared = []
+    for name, (candidate_values, control_values) in strata.items():
+        candidate = np.asarray(candidate_values, dtype=float)
+        control = np.asarray(control_values, dtype=float)
+        candidate = candidate[np.isfinite(candidate)]
+        control = control[np.isfinite(control)]
+        if not len(candidate) or not len(control):
+            raise ValueError(f"empty candidate or control group in stratum {name!r}")
+        prepared.append((name, candidate, control))
+    total_candidates = sum(len(candidate) for _name, candidate, _control in prepared)
+    weights = [len(candidate) / total_candidates for _name, candidate, _control in prepared]
+
+    def statistic(groups) -> float:
+        return float(sum(
+            weight * (float(np.median(control)) - float(np.median(candidate)))
+            for weight, (_name, candidate, control) in zip(weights, groups)
+        ))
+
+    observed = statistic(prepared)
+    rng = np.random.default_rng(seed)
+    null = np.empty(n_permutations, dtype=float)
+    for repeat in range(n_permutations):
+        permuted = []
+        for name, candidate, control in prepared:
+            pooled = np.concatenate((candidate, control)).copy()
+            rng.shuffle(pooled)
+            split = len(candidate)
+            permuted.append((name, pooled[:split], pooled[split:]))
+        null[repeat] = statistic(permuted)
+    two_sided_p = (1 + int(np.sum(np.abs(null) >= abs(observed)))) / (n_permutations + 1)
+    one_sided_p = (1 + int(np.sum(null >= observed))) / (n_permutations + 1)
+    return {
+        "statistic_control_minus_candidate_rmsd": observed,
+        "two_sided_p": float(two_sided_p),
+        "one_sided_p_candidates_lower": float(one_sided_p),
+        "n_permutations": n_permutations,
+        "n_candidate_words": total_candidates,
+        "n_control_words": sum(len(control) for _name, _candidate, control in prepared),
+        "n_strata": len(prepared),
+        "method": "unique_word_stratified_permutation_two_sided",
+    }
 
 
 def occurrence_bin(n_occ: int) -> str:

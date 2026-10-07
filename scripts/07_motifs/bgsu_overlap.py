@@ -1,20 +1,4 @@
-"""BGSU 3D Motif Atlas overlap analysis for cross-family k-mer candidates.
-
-For each k-mer candidate (from cross_family_kmer_mining), check whether
-its occurrence (chain, residue range) overlaps with any annotated
-internal-loop (IL_*) or hairpin-loop (HL_*) motif from the BGSU 3D
-Motif Atlas. Report per-candidate overlap rate and aggregate statistics.
-
-Inputs:
-    files/motifs/bgsu_il_current_2026-08-03.csv
-    files/motifs/bgsu_hl_current_2026-08-03.csv
-    files/motifs/kmer_candidates_production_new_k4_aa.tsv
-
-Outputs:
-    files/motifs/kmer_bgsu_overlap_production_new_k4_aa.tsv
-    files/motifs/chain_residue_map.json residue-number cache
-    Console: summary statistics
-"""
+"""BGSU 3D Motif Atlas overlap analysis for cross-family k-mer candidates."""
 from __future__ import annotations
 import argparse, csv, json, re
 from collections import defaultdict

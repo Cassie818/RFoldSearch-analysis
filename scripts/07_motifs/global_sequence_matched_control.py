@@ -1,10 +1,4 @@
-"""Global exact-sequence-matched RMSD control for recurrent token words.
-
-For each recurrent length-four RFoldseek token word, this script samples
-non-target four-nucleotide windows with the same exact 4-nt RNA sequences as
-the observed occurrences. It computes all-anchor Kabsch RMSD medians for the
-sampled windows and summarizes the control distribution across all candidates.
-"""
+"""Global exact-sequence-matched RMSD control for recurrent token words."""
 from __future__ import annotations
 
 import argparse

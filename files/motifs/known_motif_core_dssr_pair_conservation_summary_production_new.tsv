@@ -1,14 +1,14 @@
 kmer	metric	n_instances	n_states	dominant_state	dominant_count	dominant_fraction	all_states
-18-48-62-71	n_motif_core_matches	9					
-18-48-62-71	n_strict_clean_core_matches	9					
-18-48-62-71	dssr_pair_mask	9	1	PPUU	9	1.0000	PPUU (9)
-18-48-62-71	dssr_partner_delta_pattern	9	2	5,3,.,.	8	0.8889	5,3,.,. (8); 39,3,.,. (1)
-18-48-62-71	dssr_lw_pattern	9	2	cWW,tSH,.,.	8	0.8889	cWW,tSH,.,. (8); cWW,tWH,.,. (1)
-18-48-62-71	dssr_dssr_pattern	9	2	cW-W,tm-M,.,.	8	0.8889	cW-W,tm-M,.,. (8); cW-W,tW-M,.,. (1)
-18-48-62-71	dssr_name_pattern	9	3	WC,Sheared,.,.	7	0.7778	WC,Sheared,.,. (7); Wobble,Sheared,.,. (1); WC,--,.,. (1)
-18-48-62-71	dssr_bp_pattern	9	3	C-G,G-A,.,.	5	0.5556	C-G,G-A,.,. (5); G-C,G-A,.,. (3); U-G,G-A,.,. (1)
-18-48-62-71	dssr_stack_links_between_core_neighbors	9	3	12,34	4	0.4444	12,34 (4); 34 (4); . (1)
-18-48-62-71	sequence	9	5	CGAA	4	0.4444	CGAA (4); GGAA (2); CGAG (1); GGUA (1); UGAA (1)
+18-48-62-71	n_motif_core_matches	14					
+18-48-62-71	n_strict_clean_core_matches	14					
+18-48-62-71	dssr_pair_mask	14	1	PPUU	14	1.0000	PPUU (14)
+18-48-62-71	dssr_partner_delta_pattern	14	2	5,3,.,.	13	0.9286	5,3,.,. (13); 39,3,.,. (1)
+18-48-62-71	dssr_lw_pattern	14	2	cWW,tSH,.,.	13	0.9286	cWW,tSH,.,. (13); cWW,tWH,.,. (1)
+18-48-62-71	dssr_dssr_pattern	14	2	cW-W,tm-M,.,.	13	0.9286	cW-W,tm-M,.,. (13); cW-W,tW-M,.,. (1)
+18-48-62-71	dssr_name_pattern	14	3	WC,Sheared,.,.	12	0.8571	WC,Sheared,.,. (12); Wobble,Sheared,.,. (1); WC,--,.,. (1)
+18-48-62-71	dssr_bp_pattern	14	4	C-G,G-A,.,.	8	0.5714	C-G,G-A,.,. (8); G-C,G-A,.,. (4); A-U,G-A,.,. (1); U-G,G-A,.,. (1)
+18-48-62-71	dssr_stack_links_between_core_neighbors	14	3	34	7	0.5000	34 (7); 12,34 (6); . (1)
+18-48-62-71	sequence	14	7	CGAA	6	0.4286	CGAA (6); GGAA (3); CGAG (1); AGAA (1); GGUA (1); CGGG (1); UGAA (1)
 22-22-18-32	n_motif_core_matches	1					
 22-22-18-32	n_strict_clean_core_matches	1					
 22-22-18-32	dssr_pair_mask	1	1	PPPP	1	1.0000	PPPP (1)
