@@ -4,7 +4,7 @@ This repository contains the analysis and figure-plotting code used for the RFol
 It is intentionally scoped to the paper analyses: model training/evaluation scripts, bundled result tables,
 plotting scripts, and the small helper modules needed to reproduce the reported figures.
 
-## Repository layout
+## Overview
 
 Scripts are grouped by the part of the paper they support. Each figure has one
 plotting script that reads only bundled result files; the analyses that produce
@@ -15,7 +15,7 @@ paths.py                          shared path resolution
 preprocessing/                    dataset construction and structure preprocessing
 src/models/                       tokenizer model, descriptors and training utilities
 src/search/                       evaluation metrics and Smith-Waterman helper code
-scripts/common/                   plot style shared across figures (figstyle.py)
+scripts/common/                   plot style shared across figures
 scripts/01_model/                 final tokenizer training, ablations, family-disjoint CV
 scripts/02_rnasolo_retrieval/     RNAsolo retrieval benchmark and baselines
 scripts/03_sequence_divergent/    retrieval of sequence-divergent homologues
@@ -29,7 +29,6 @@ files/ablation/                   ablation, cross-validation and alignment-bench
 files/predicted_runtime/          predicted-database runtime results
 files/predicted_retrieval/        predicted-database retrieval results
 files/motifs/                     motif-analysis tables
-figures/                          figure outputs
 ```
 
 ## Quick start

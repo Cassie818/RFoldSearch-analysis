@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
-"""Alignment rows of the four RF00015 case pairs (query 5O9Z_4).
-
-Reconstructs the benchmark's RFoldseek alignment of each pair, checks its score
-against the benchmark table, and writes the Rfam reference and RFoldseek
-alignment rows to alignment_cases.json, which plot_supp_alignment_cases.py draws.
-"""
+"""Alignment rows of the four RF00015 case pairs (query 5O9Z_4)."""
 
 from __future__ import annotations
 

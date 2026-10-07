@@ -1,29 +1,4 @@
-"""Shared plotting style for the runtime figures. Originally:
-
-Fig. 4: what a search costs, and how that cost scales.
-
-Cost per target -- per-query time divided by database size -- so a horizontal
-line is cost strictly proportional to database size and a falling line is
-sublinear, while the vertical position of each curve stays its actual cost.
-
-That last clause is the whole reason this view is the main figure. An earlier
-draft normalised each curve by its own value at 1,000 structures, which shows
-scaling shape cleanly but ranks methods by how far they fell rather than by
-what they cost: BLASTN starts 39x more expensive than RFoldseek on NuFold, so
-it falls 336x against RFoldseek's 179x and lands below it on the page, while
-in fact costing 20.6x more per target at full scale. The normalised view is
-kept as a supplementary figure (plot_supp_runtime_scaling.py), where the ranking cannot be misread as the
-headline.
-
-The RhoFold+ panels break the axis beneath the coordinate-aligner band: the
-band sits at 8.4-26.7 s per 1,000 targets and the next method up, GTalign,
-reaches 1.5, so three quarters of a decade in between holds nothing. Both
-segments carry the same decades per unit height.
-
-Panels C and F are the Riboseek search-time rail (Park et al. 2026, Fig. 2b/g)
-anchored to whole-query time rather than cost per target, so they complement
-the curves instead of restating them.
-"""
+"""Shared plotting style for the runtime figures. """
 import os
 
 import matplotlib

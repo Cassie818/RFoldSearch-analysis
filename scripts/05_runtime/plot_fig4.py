@@ -1,15 +1,4 @@
-"""Fig 3 variant: one curve panel per corpus, dual RFoldseek lines.
-
-The median/mean panel pairs of the released Fig 3 duplicate every
-competitor curve (their mean/median ratios are 1.0-1.1); only RFoldseek
-separates (11.7x on RhoFold+). This variant draws competitors once, at
-the mean, and RFoldseek twice -- mean solid, median dashed -- so the
-heavy-tail gap is the visible feature rather than a between-panel
-comparison. Layout 2x2: curves + ladder per corpus.
-
-Renders to fig3_v2.{png,pdf} in FIGDIR only when run with --commit;
-default target is the scratchpad preview path given as argv[1].
-"""
+"""Fig 3 variant: one curve panel per corpus, dual RFoldseek lines."""
 import os
 import sys
 

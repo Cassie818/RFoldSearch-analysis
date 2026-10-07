@@ -1,16 +1,4 @@
-"""Supplementary figure: where RFoldseek's speed advantage over RiboSeek comes from.
-
-The two methods share the pipeline shape -- k-mer prefilter then
-Smith-Waterman rerank -- and differ in the alphabet, so the runtime
-comparison is a scaling comparison rather than a constant factor.
-Panel A shows that RiboSeek is the faster of the two on small
-databases and that the ratio crosses one near 25,000 structures;
-panel B shows the crossing is population-wide at full scale, not
-carried by a subset of queries.
-
-Data: the NuFold ladder, 300 queries held constant across every size
-and both methods (files/predicted_runtime/nufold).
-"""
+"""Supplementary figure: where RFoldseek's speed advantage over RiboSeek comes from"""
 import json
 import os
 import sys

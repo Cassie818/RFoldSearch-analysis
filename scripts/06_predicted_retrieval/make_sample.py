@@ -45,8 +45,8 @@ import numpy as np
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
 sys.path.insert(0, REPO)
-import paths                                                   # noqa: E402
-HERE = paths.NUFOLD_ROOT                                       # NuFold release: metadata/, structures/
+import paths
+HERE = paths.NUFOLD_ROOT
 META = os.path.join(HERE, "metadata", "data.csv")
 OUT = os.path.join(REPO, "files", "predicted_retrieval", "sample")
 SEED = 20260917

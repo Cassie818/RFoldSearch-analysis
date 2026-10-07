@@ -1,13 +1,4 @@
-"""Supplementary figure replacing Table S10: the two predicted databases.
-
-Panel A: chain-length distributions of the RhoFold+ (83,156) and NuFold
-(1-13-2026 catalogue, length >= 20) collections. Panel B: predicted
-confidence against length, binned median with interquartile band.
-RhoFold+ reports pLDDT on 0-1 and is shown x100 so both databases share
-one axis. Data: data/nufold_catalog/ in the analysis workspace, pulled
-from the AutoDL server copy of the NuFold 1-13-2026 catalogue (no
-longer downloadable upstream) and the RhoFold+ fold metadata.
-"""
+"""Supplementary figure replacing Table S10: the two predicted databases."""
 import csv
 import gzip
 import os

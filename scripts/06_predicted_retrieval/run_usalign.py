@@ -1,8 +1,5 @@
 """Exhaustive US-align: every query of both sets against all entries of the
-sampled accuracy database (-mol RNA -outfmt 2). Longest queries first;
-completed queries are skipped on restart.
-Output: usalign/<queryset>/<query id>.tsv
-"""
+sampled accuracy database (-mol RNA -outfmt 2)."""
 import csv
 import json
 import os

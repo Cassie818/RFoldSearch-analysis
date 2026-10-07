@@ -1,9 +1,5 @@
 #!/usr/bin/env python3
-"""Alignment case figures for the four RF00015 pairs (query 5O9Z_4).
-
-For each pair: the C4' traces superposed on the Rfam reference correspondences
-(not the RFoldseek traceback), and the Rfam reference and RFoldseek alignments.
-"""
+"""Alignment case figures for the four RF00015 pairs (query 5O9Z_4)."""
 
 from __future__ import annotations
 

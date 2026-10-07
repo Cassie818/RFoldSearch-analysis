@@ -9,14 +9,14 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "scripts", "common"))
-import figstyle as S                                               # noqa: E402
-from figstyle import plt                                           # noqa: E402
+import figstyle as S
+from figstyle import plt
 
 DATA = os.path.join(REPO, "files", "production", "retrieval", "sequence_divergent")
 FIG_DIR = os.path.join(REPO, "figures")
 B, SEED = 2000, 124
 
-ZONES = ("above", "twilight", "midnight")      # identity zones, defined from the unrelated-pair background
+ZONES = ("above", "twilight", "midnight")
 
 _KEY = {"RFoldseek": "RFoldseek n500", "RFoldseek-TM": "RFoldseek-TM n500", "US-align": "US-align (exhaustive)",
         "Infernal": "Infernal", "nhmmer": "nhmmer", "BLASTN": "BLASTN",

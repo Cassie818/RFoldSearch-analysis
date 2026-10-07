@@ -1,25 +1,4 @@
-"""Shared data loading and constants for the runtime figures (Fig. 4 and the
-runtime supplements). Originally the ladder variant of Fig. 4:
-
-Fig. 4 with a Riboseek-style search-time ladder (Park et al. 2026, Fig. 2b/g).
-
-Same data, same methods and the same four normalised scaling panels as
-plot_fig4.py; what is added is a third column that answers the question the
-normalised view deliberately suppresses -- what does one query actually cost at
-full database size, and by what factor do the baselines differ.
-
-The ladder follows the Riboseek idiom: a single logarithmic time axis, one
-marker per method, the reference method annotated with its absolute time and
-everything else annotated as a multiple of it. Ratios are mean per-query time,
-matching the ratios quoted in the Results text; the median column is the
-per-corpus median and is reported in the caption instead, because RFoldseek's
-median is small enough that the coordinate-aligner ratios there run to five
-figures and stop being readable as a comparison.
-
-Coordinate aligners were measured to 50,000 targets only and least-squares
-extrapolated to 83,156, so they are drawn with open markers and their labels
-carry a dagger, exactly as the dashed segments do in panels A and B.
-"""
+"""Shared data loading and constants for the runtime figures."""
 import json
 import os
 

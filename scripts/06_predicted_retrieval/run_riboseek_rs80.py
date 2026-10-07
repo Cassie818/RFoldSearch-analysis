@@ -1,19 +1,4 @@
-"""RiboSeek 0.2.0 RS-80 (its default alphabet) on the predicted-structure benchmark.
-
-The RS-20 database built by build_databases.py carries no sequences, which
-RS-80 needs, so the sampled database is re-encoded with riboseek 0.2.0 exactly
-as build_databases.build_riboseek does (pdb_to_features, keep_modified=False,
-same keys and entry order) and the sequence is stored with the RS-20 labels.
-The queries are searched as in run_searches.run_riboseek at candidate depth 500:
-
-    Searcher(Alphabet.from_pretrained("rs80"), db, gap_penalty=-2.0, prefilter_k=6)
-        .search(query, top_n=500, prefilter=True, prefilter_candidates=500)
-
-Two checks run first: the re-encoded RS-20 labels must equal the existing
-database, and RS-20 searched with 0.2.0 must reproduce the stored
-"RiboSeek c500" rankings. The RS-80 rankings are then added to runs/<set>.json
-as "RiboSeek RS-80 c500".
-"""
+"""RiboSeek 0.2.0 RS-80 (its default alphabet) on the predicted-structure benchmark."""
 import csv
 import json
 import os

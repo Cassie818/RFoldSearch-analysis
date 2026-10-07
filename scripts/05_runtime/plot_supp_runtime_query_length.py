@@ -1,27 +1,4 @@
-"""Supplementary figure: per-query cost against query length.
-
-Sec 2.3 argues that mean and median per-query times diverge because prefilter
-work grows with query length, so a minority of long queries carries the mean
-while barely moving the median. Until the 300-query re-run recorded a length
-per query that had to be inferred from the size of the gap; with 300 points
-per corpus it can be drawn.
-
-One point per query at full database size, both axes logarithmic, with the
-mean and median of the same points as horizontal rules -- the mean sits among
-the slowest tenth rather than among typical queries.
-
-The trend line is a binned median, not a fitted power law, because at a given
-length the cost spans up to 150-fold: length is a strong but incomplete
-predictor (r^2 = 0.63 on RhoFold+), and a single exponent would imply a
-tightness the data does not have.
-
-What the bins show is a threshold rather than a smooth law. On RhoFold+ the
-median holds between 12 and 30 ms from 35 to 109 tokens and then jumps
-16-fold, to 475 ms, in the next bin: the point at which posting volume
-overtakes the reranking pool, which is capped at top-N and therefore
-length-bound rather than database-bound. NuFold crosses the same threshold
-more gently, since its queries are shorter and most remain rerank-bound.
-"""
+"""Supplementary figure: per-query cost against query length."""
 import json
 import os
 

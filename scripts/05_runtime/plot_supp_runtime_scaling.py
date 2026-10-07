@@ -1,27 +1,4 @@
-"""Supplementary figure: the Fig. 4 measurements as scaling shape alone.
-
-Each curve is divided by its own value at 1,000 structures, so every method
-starts at 1 and the panels show only how cost per target moves with database
-size: horizontal is cost strictly proportional to database size, falling is
-sublinear. That compresses the RhoFold+ row from 4.58 decades to 1.89 and the
-NuFold row from 4.76 to 2.53, which is why the scaling claim is easiest to
-check here.
-
-It is supplementary rather than the main figure because normalising by each
-method's own starting point ranks methods by how far they fell, not by what
-they cost. BLASTN begins 39x more expensive than RFoldseek on NuFold, falls
-336x against RFoldseek's 179x, and so ends up the lowest curve in every panel
--- while in fact costing 20.6x more per target at full scale. Fig. 4 keeps the
-absolute levels and is the figure to read for ranking.
-
-The band is RFoldseek's interquartile range with each quartile normalised by
-its own value at 1,000, so it shows the spread in scaling rather than the
-spread in cost, which is what the band means in Fig. 4.
-
-The coordinate aligners collapse onto the 1.0 line here -- strict linearity is
-exactly cost per target unchanged with scale -- so they are one gray band, and
-their extrapolated points at 83,156 are omitted as elsewhere.
-"""
+"""Supplementary figure: the Fig. 4 measurements as scaling shape alone."""
 import os
 
 import matplotlib

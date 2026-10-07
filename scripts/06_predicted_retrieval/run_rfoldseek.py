@@ -1,16 +1,4 @@
-"""RFoldseek on the Fig. 5 benchmark at the reported candidate depth (500).
-
-Rewrites the "RFoldseek n500" entries of runs/p2p.json, runs/exp.json and
-runs/exp_unlabelled.json with the deployed search (rfoldseek.search.Searcher): the
-similar-k-mer prefilter to depth 500, then ranking by the structure score
-S * aTM (token Smith-Waterman score times alignment TM-score), which needs the query's
-coordinates (passed as query_entry). The other methods' entries are left untouched.
-
-RFoldseek-TM is not rerun here: it reranks by US-align TM-score and is unaffected by
-the ranking change.
-
-    python run_rfoldseek.py
-"""
+"""RFoldseek on the Fig. 5 benchmark at the reported candidate depth (500)"""
 import json
 import os
 import sys

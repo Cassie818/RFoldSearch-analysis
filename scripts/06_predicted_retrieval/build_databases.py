@@ -1,16 +1,5 @@
 """Build the RFoldseek, RiboSeek and sequence databases for the sampled
-NuFold 9-14-2026 accuracy database (sample/accuracy_db.tsv).
-
-1. RFoldseek: structure_to_entry -> encode_entry with the shipped checkpoint
-   (the build_database code path), in parallel; afterwards 20 random entries
-   are re-encoded independently and compared.
-2. RiboSeek 0.1.0: pdb_to_features -> Alphabet("sa20").encode, key = file stem
-   + "_" + chain id, as `riboseek build-db` does.
-3. Sequences: residues of the first model/chain read from the structure file
-   (A/C/G/U kept, anything else N), written as FASTA and indexed for BLASTN.
-
-Each step aborts if more than 1% of entries fail after the first 500.
-Entry order in every output follows the manifest.
+NuFold 9-14-2026 accuracy database.
 """
 import csv
 import json
@@ -26,11 +15,11 @@ import torch
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
-import sys as _sys                                             # noqa: E402
+import sys as _sys
 _sys.path.insert(0, REPO)
-import paths                                                   # noqa: E402
-HERE = os.path.join(REPO, "files", "predicted_retrieval")      # results; reruns write db/, usalign/, runs/ here
-ROOT = HERE                                                    # holds sample/
+import paths
+HERE = os.path.join(REPO, "files", "predicted_retrieval")
+ROOT = HERE
 MANIFEST = os.path.join(ROOT, "sample", "accuracy_db.tsv")
 STRUCTURES = os.path.join(paths.NUFOLD_ROOT, "structures", "rank1")
 UP = paths.RFOLDSEEK_REPO
