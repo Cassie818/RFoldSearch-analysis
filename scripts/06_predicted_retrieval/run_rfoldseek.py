@@ -8,9 +8,9 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import run_searches as RS                             # noqa: E402
+import run_searches as RS
 
-DEPTHS = (500,)          # the depth reported in Fig. 5 and its supplementary figures
+DEPTHS = (500,)
 
 
 def main():

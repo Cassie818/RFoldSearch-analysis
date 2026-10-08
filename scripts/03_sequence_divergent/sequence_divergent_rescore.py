@@ -1,16 +1,4 @@
-"""Re-score saved rankings of the sequence-divergent analysis under any identity stratification.
-
-Reads files/production/retrieval/sequence_divergent/family_rankings.json (rankings of every
-method for the 106 family-evaluable RNAsolo test queries; RFoldseek and RFoldseek-TM one
-ranking per tie-breaking seed) and family_pair_identity.json (query--target identity for
-every same-family pair). Section 2.2 family-level definitions: within a stratum only
-same-family targets in the stratum are positives, same-family targets outside it and
-same-clan targets of other families and unlabelled chains are neutral, all other targets
-are false positives.
-
-    from sequence_divergent_rescore import rescore
-    per = rescore([("bg", 0.0, 0.67), ("mid", 0.67, 0.80)])   # {stratum: {method: {query: Sens@1FP}}}
-"""
+"""Re-score saved rankings of the sequence-divergent analysis under any identity stratification."""
 import json
 import os
 import sys
@@ -21,10 +9,10 @@ import numpy as np
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(REPO, "src", "search"))
-from prefilter_rfam_benchmark import first_fp_sensitivity         # noqa: E402
+from prefilter_rfam_benchmark import first_fp_sensitivity
 
 DATA = os.path.join(REPO, "files", "production", "retrieval", "sequence_divergent")
-SEEDED = ("RFoldseek", "RFoldseek-TM", "Shuffled")                # several rankings, averaged
+SEEDED = ("RFoldseek", "RFoldseek-TM", "Shuffled")
 
 
 def load():

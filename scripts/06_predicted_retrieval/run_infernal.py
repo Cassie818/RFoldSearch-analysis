@@ -1,21 +1,4 @@
-"""Infernal single-query-CM baseline for the NuFold benchmark.
-
-The fair per-query analogue of BLASTN/nhmmer, but sequence + secondary
-structure rather than sequence alone: for each query we derive its secondary
-structure from the 3D coordinates (base pairs by the same geometric criterion
-used elsewhere; secondary_structure.detect_pairs), drop crossing pairs to a
-nested set, write a single-sequence Stockholm alignment with an SS_cons line,
-build a covariance model with cmbuild, and search the database FASTA with
-cmsearch. A single-sequence CM carries no covariation, so its only advantage
-over nhmmer is the secondary-structure prior. Targets are ranked by descending
-bit score, best hit per target, self excluded -- exactly as for BLASTN/nhmmer.
-Models are calibrated with a short random-sequence length (``-L 0.01``) so
-``cmsearch`` can run; we rank by bit score and neutralise by the sequence
-tools' E-values, so Infernal E-values are unused.
-
-Outputs runs/infernal_<queryset>.json  {qid: {"ranking": [...], "seconds": s}}
-and, merged into the existing runs/<queryset>.json, an "Infernal" method.
-"""
+"""Infernal single-query-CM baseline for the NuFold benchmark."""
 import json
 import os
 import subprocess
@@ -28,17 +11,17 @@ import numpy as np
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
-import sys as _sys                                             # noqa: E402
+import sys as _sys
 _sys.path.insert(0, REPO)
-import paths                                                   # noqa: E402
-HERE = os.path.join(REPO, "files", "predicted_retrieval")      # results; reruns write db/, usalign/, runs/ here
-ROOT = HERE                                                    # holds sample/
+import paths
+HERE = os.path.join(REPO, "files", "predicted_retrieval")
+ROOT = HERE
 sys.path.insert(0, paths.RFOLDSEEK_REPO)
 sys.path.insert(0, SCRIPT_DIR)
 sys.path.insert(0, os.path.join(REPO, "src", "search"))
-import run_searches as R                                            # noqa: E402
-from build_databases import path_of                                 # noqa: E402
-from secondary_structure import detect_pairs, WC_NITROGEN           # noqa: E402
+import run_searches as R
+from build_databases import path_of
+from secondary_structure import detect_pairs, WC_NITROGEN
 
 INF = paths.INFERNAL_BIN         # Infernal 1.1.5 bin dir; empty -> PATH
 CMBUILD, CMSEARCH = os.path.join(INF, "cmbuild"), os.path.join(INF, "cmsearch")
@@ -175,7 +158,7 @@ def one_query(job):
                 if line.startswith("#") or not line.strip():
                     continue
                 f = line.split()
-                i, bits = int(f[0][1:]), float(f[14])     # target name = t<row>
+                i, bits = int(f[0][1:]), float(f[14])
                 if i == self_idx:
                     continue
                 if i not in best or bits > best[i]:

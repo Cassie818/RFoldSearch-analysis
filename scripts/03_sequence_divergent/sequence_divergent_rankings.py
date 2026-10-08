@@ -1,7 +1,4 @@
-"""Rankings and per-query Sens@1FP behind Fig. 3 (sequence-divergent homologues).
-
-RNAsolo benchmark (885 chains), Section 2.2 definitions; unlabelled chains are
-neutral."""
+"""Rankings and per-query Sens@1FP behind Fig. 3 (sequence-divergent homologues)."""
 import argparse
 import csv
 import json
@@ -17,16 +14,16 @@ import torch
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, REPO)
-from paths import BLAST_BIN, RFOLDSEEK_REPO, SRC_SEARCH  # noqa: E402
+from paths import BLAST_BIN, RFOLDSEEK_REPO, SRC_SEARCH
 
 sys.path.insert(0, SRC_SEARCH)
 sys.path.insert(0, RFOLDSEEK_REPO)
-from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels  # noqa: E402
-from rfoldseek.structure_score import c4_coords, score_pair  # noqa: E402
-from rfoldseek.tiebreak import tie_keys  # noqa: E402
-from smith_waterman import smith_waterman_numba  # noqa: E402
+from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
+from rfoldseek.structure_score import c4_coords, score_pair
+from rfoldseek.tiebreak import tie_keys
+from smith_waterman import smith_waterman_numba
 
-from sequence_divergent_rescore import seq_identity  # noqa: E402
+from sequence_divergent_rescore import seq_identity
 
 HMMER_BIN = os.environ.get("RFOLDSEEK_HMMER_BIN", "")
 RET = os.path.join(REPO, "files", "production", "retrieval")

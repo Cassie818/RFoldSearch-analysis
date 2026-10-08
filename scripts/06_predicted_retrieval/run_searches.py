@@ -26,15 +26,15 @@ import torch
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
-import sys as _sys                                             # noqa: E402
+import sys as _sys
 _sys.path.insert(0, REPO)
-import paths                                                   # noqa: E402
-HERE = os.path.join(REPO, "files", "predicted_retrieval")      # results; reruns write db/, usalign/, runs/ here
-ROOT = HERE                                                    # holds sample/
+import paths
+HERE = os.path.join(REPO, "files", "predicted_retrieval")
+ROOT = HERE
 UP = paths.RFOLDSEEK_REPO
 sys.path.insert(0, UP)
 sys.path.insert(0, SCRIPT_DIR)
-from build_databases import MAKEBLASTDB, TOOLS, path_of, seq_from_pdb   # noqa: E402
+from build_databases import MAKEBLASTDB, TOOLS, path_of, seq_from_pdb
 
 BLASTN = os.path.join(TOOLS, "blastn")
 NHMMER = os.path.join(TOOLS, "hmmer", "bin", "nhmmer")

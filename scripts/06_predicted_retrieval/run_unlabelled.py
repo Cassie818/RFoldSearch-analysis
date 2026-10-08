@@ -12,14 +12,14 @@ import torch
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
-import sys as _sys                                             # noqa: E402
+import sys as _sys
 _sys.path.insert(0, REPO)
-import paths                                                   # noqa: E402
-HERE = os.path.join(REPO, "files", "predicted_retrieval")      # results; reruns write db/, usalign/, runs/ here
-ROOT = HERE                                                    # holds sample/
+import paths
+HERE = os.path.join(REPO, "files", "predicted_retrieval")
+ROOT = HERE
 sys.path.insert(0, SCRIPT_DIR)
 sys.path.insert(0, paths.RFOLDSEEK_REPO)
-import run_searches as R                                      # noqa: E402
+import run_searches as R
 
 QUERIES = os.path.join(ROOT, "sample", "exp_unlabelled_queries.json")
 OUT = os.path.join(HERE, "runs", "exp_unlabelled.json")

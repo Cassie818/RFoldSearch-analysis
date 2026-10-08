@@ -8,10 +8,10 @@ from multiprocessing import Pool
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, SCRIPT_DIR)
-from build_databases import MANIFEST, WORKERS, guard, path_of   # noqa: E402
-from run_searches import DB, OUT, REPO, load_queries           # noqa: E402
+from build_databases import MANIFEST, WORKERS, guard, path_of
+from run_searches import DB, OUT, REPO, load_queries
 
-import torch                                                   # noqa: E402
+import torch
 
 DB020 = os.path.join(DB, "riboseek020_sa20_seq.json")
 METHOD = "RiboSeek RS-80 c500"
