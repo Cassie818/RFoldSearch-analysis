@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.join(REPO, "src", "search"))
 from prefilter_rfam_benchmark import first_fp_sensitivity
 
 DATA = os.path.join(REPO, "files", "production", "retrieval", "sequence_divergent")
-SEEDED = ("RFoldseek", "RFoldseek-TM", "Shuffled")
+SEEDED = ("RFoldSearch", "RFoldSearch-TM", "Shuffled")
 
 
 def load():

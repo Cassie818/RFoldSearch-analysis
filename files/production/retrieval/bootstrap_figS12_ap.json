@@ -1,10 +1,10 @@
 {
-  "_anchor": "RFoldseek",
+  "_anchor": "RFoldSearch",
   "_n_replicates": 2000,
   "_seed": 123,
   "_metric": "per-query average precision",
   "family": {
-    "RFoldseek-TM": {
+    "RFoldSearch-TM": {
       "anchor_mean": 0.7246005762531785,
       "method_mean": 0.7355253525579474,
       "diff_mean": -0.010924776304768846,
@@ -78,7 +78,7 @@
     }
   },
   "clan": {
-    "RFoldseek-TM": {
+    "RFoldSearch-TM": {
       "anchor_mean": 0.45205706330255396,
       "method_mean": 0.44923679962741947,
       "diff_mean": 0.0028202636751344934,

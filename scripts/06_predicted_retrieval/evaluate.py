@@ -31,16 +31,16 @@ TOPN = 200
 TM_TAUS = (0.40, 0.45, 0.50)     # Fig. 2 thresholds on the symmetric TM-score
 TM_MAIN = 0.45                    # tau used for the pLDDT breakdown
 METRICS = ("Recall@1", "Prec@10", "Sens@1FP", "AP")
-METHODS = ["RFoldseek n500", "RFoldseek-TM n200",
-           "RFoldseek-TM n500", "RiboSeek c200", "RiboSeek c500", "RiboSeek RS-80 c500",
+METHODS = ["RFoldSearch n500", "RFoldSearch-TM n200",
+           "RFoldSearch-TM n500", "RiboSeek c200", "RiboSeek c500", "RiboSeek RS-80 c500",
            "BLASTN", "nhmmer",
            "Infernal", "US-align (exhaustive)", "RMalign (exhaustive)"]
 ORACLE = {"structure": "US-align (exhaustive)", "rmscore": "RMalign (exhaustive)"}
-PAIRS = [("RFoldseek n500", "RiboSeek c500"),
-         ("RFoldseek n500", "RiboSeek RS-80 c500"),
-         ("RFoldseek n500", "BLASTN"), ("RFoldseek n500", "nhmmer"),
-         ("RFoldseek-TM n500", "nhmmer"), ("RFoldseek-TM n500", "RFoldseek n500"),
-         ("US-align (exhaustive)", "RFoldseek-TM n500")]
+PAIRS = [("RFoldSearch n500", "RiboSeek c500"),
+         ("RFoldSearch n500", "RiboSeek RS-80 c500"),
+         ("RFoldSearch n500", "BLASTN"), ("RFoldSearch n500", "nhmmer"),
+         ("RFoldSearch-TM n500", "nhmmer"), ("RFoldSearch-TM n500", "RFoldSearch n500"),
+         ("US-align (exhaustive)", "RFoldSearch-TM n500")]
 PLDDT_BINS = [(0, 70), (70, 80), (80, 90), (90, 101)]
 
 

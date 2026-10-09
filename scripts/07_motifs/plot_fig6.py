@@ -39,14 +39,14 @@ BACKGROUND_REPLICATES = CONTROLS / "bgsu_random_window_background.tsv"
 HAIRPIN = MOTIF / "overlapping_hairpin_44-48-62-71-66-12_instances.tsv"
 DSSR = MOTIF / "known_motif_core_dssr_pair_conservation_instances_production_new.tsv"
 
-# Palette of Figs 2-5 (figstyle): RFoldseek blue for the 3Dr words, Fig. 2's greys for
+# Palette of Figs 2-5 (figstyle): RFoldSearch blue for the 3Dr words, Fig. 2's greys for
 # controls, and the same tab10-derived hues, lightened, for everything else.
 INK = "#333333"
 GRID = "#DDDDDD"
-BLUE, ORANGE = S.BASE["RFoldseek n500"], "#FF7F0E"
+BLUE, ORANGE = S.BASE["RFoldSearch n500"], "#FF7F0E"
 
-# A/B: the 3Dr words in RFoldseek blue, controls in neutral greys.
-CANDIDATE = S.COLOR["RFoldseek n500"]
+# A/B: the 3Dr words in RFoldSearch blue, controls in neutral greys.
+CANDIDATE = S.COLOR["RFoldSearch n500"]
 CONTROL_GREYS = {"frequency": "#8C8C8C", "random": "#B3B3B3", "sequence": "#D9D9D9"}
 
 # C/E: the two overlapping words and the six GNRA positions, blue to orange.
@@ -262,7 +262,7 @@ def panel_a(ax, data: dict) -> None:
     for x, key in zip(positions, keys):
         top = data["a_medians"][key] if key in POOLED else float(np.percentile(data["a_distributions"][key], 90))
         ax.text(x, top + 0.14, f"{data['a_medians'][key]:.2f}",
-                color=S.TEXT["RFoldseek n500"] if "candidate" in key else S.GREY_TEXT,
+                color=S.TEXT["RFoldSearch n500"] if "candidate" in key else S.GREY_TEXT,
                 ha="center", va="bottom", fontsize=8.5)
     # Unique-word permutation test of the five-anchor candidate-control comparison.
     p_value, n_permutations = data["a_permutation_p"], data["a_permutations"]
@@ -296,7 +296,7 @@ def panel_b(ax, data: dict) -> None:
            yerr=yerr, capsize=2.5, error_kw={"elinewidth": 0.9, "ecolor": S.GREY_TEXT}, **bar_style)
     for xi, value in zip(x - width / 2, observed):
         ax.text(xi, value + 0.015, f"{value * 100:.0f}%", ha="center", va="bottom", fontsize=8.5,
-                color=S.TEXT["RFoldseek n500"])
+                color=S.TEXT["RFoldSearch n500"])
     for xi, group, top_obs, top_exp in zip(x, groups, observed, high):
         top = max(top_obs + 0.08, top_exp + 0.04)
         p_value = data["bgsu_p"][group]

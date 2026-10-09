@@ -11,7 +11,7 @@ import benchmark as BM
 RET = BM.RET
 THRESHOLDS = BM.THRESHOLDS
 B, SEED = 2000, 123
-METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign",
+METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "US-align", "RMalign",
            "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]                   # Fig. 2 order
 
 
@@ -68,7 +68,7 @@ def bootstrap(per, fam, clan):
     res = {}
     rng = np.random.default_rng(SEED)
     for level, labels in (("family", fam), ("clan", clan)):
-        qs = sorted(per["RFoldseek"][level])
+        qs = sorted(per["RFoldSearch"][level])
         blocks = defaultdict(list)
         for q in qs:
             if labels[q]:
@@ -76,7 +76,7 @@ def bootstrap(per, fam, clan):
         names = list(blocks)
         reps = [rng.choice(names, size=len(names), replace=True) for _ in range(B)]
         res[level] = {}
-        rf = per["RFoldseek"][level]
+        rf = per["RFoldSearch"][level]
         for m in METHODS:
             v = per[m][level]
             est = float(np.mean([v[q] for q in qs]))
@@ -85,7 +85,7 @@ def bootstrap(per, fam, clan):
             lo, hi = np.percentile(boots, [2.5, 97.5])
             dlo, dhi = np.percentile(diffs, [2.5, 97.5])
             res[level][m] = {"estimate": est, "ci_lower": float(lo), "ci_upper": float(hi),
-                             "sig_vs_rf": None if m == "RFoldseek" else bool(dlo > 0 or dhi < 0),
+                             "sig_vs_rf": None if m == "RFoldSearch" else bool(dlo > 0 or dhi < 0),
                              "n_queries": len(qs), "n_blocks": len(names)}
     return res
 

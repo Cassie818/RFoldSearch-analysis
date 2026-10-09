@@ -1,4 +1,4 @@
-"""RiboSeek alphabet control under the RFoldseek search pipeline."""
+"""RiboSeek alphabet control under the RFoldSearch search pipeline."""
 from __future__ import annotations
 
 import json
@@ -16,8 +16,8 @@ from numba import njit
 from riboseek import Searcher
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-from paths import DATA_ROOT, RFOLDSEEK_REPO, SPLITS_DESC, SRC_SEARCH, resolve  # noqa: E402
-sys.path.insert(0, RFOLDSEEK_REPO)
+from paths import DATA_ROOT, RFOLDSEARCH_REPO, SPLITS_DESC, SRC_SEARCH, resolve  # noqa: E402
+sys.path.insert(0, RFOLDSEARCH_REPO)
 from rfoldseek.structure_score import c4_coords, score_pair  # noqa: E402
 
 sys.path.insert(0, SRC_SEARCH)
@@ -87,7 +87,8 @@ def provenance() -> dict:
         "python": sys.executable,
         "python_version": sys.version,
         "data_root": DATA_ROOT,
-        "prefer_external": os.environ.get("RFOLDSEEK_PREFER_EXTERNAL", "") == "1",
+        "prefer_external": os.environ.get(
+            "RFOLDSEARCH_PREFER_EXTERNAL", os.environ.get("RFOLDSEEK_PREFER_EXTERNAL", "")) == "1",
         "matrix_mode": MATRIX_MODE,
         "resolved_paths": {**paths, **extra_paths},
         "input_hashes_md5": input_hashes,
@@ -297,7 +298,7 @@ class SamePipelineRanker:
         xyz: list[np.ndarray] | None = None,
     ) -> None:
         """``xyz`` (per-token C4' coordinates) switches the ranking from the
-        Smith-Waterman score to RFoldseek's structure score S * aTM; without it
+        Smith-Waterman score to RFoldSearch's structure score S * aTM; without it
         candidates are ranked by Smith-Waterman score, as for alphabets whose
         tokens are not one per resolved nucleotide."""
         self.tokens = [np.asarray(seq, dtype=np.int64) for seq in tokens]
@@ -474,13 +475,13 @@ def main() -> None:
             f"with symmetric TM>={BLOSUM_TM_THRESH}",
             flush=True,
         )
-        print("Building RFoldseek self-BLOSUM", flush=True)
+        print("Building RFoldSearch self-BLOSUM", flush=True)
         rf_matrix, rf_meta = build_self_blosum(rf_tokens, train_pairs, 80)
         print("Building RiboSeek self-BLOSUM", flush=True)
         ribo_matrix, ribo_meta = build_self_blosum(ribo_tokens, train_pairs, int(ribo_matrix_raw.shape[0]))
         self_blosum_meta = {
             "train_pair_pool": pair_meta,
-            "RFoldseek_tokens_same_pipeline": rf_meta,
+            "RFoldSearch_tokens_same_pipeline": rf_meta,
             "RiboSeek_sa20_same_pipeline": ribo_meta,
         }
     else:
@@ -489,7 +490,7 @@ def main() -> None:
         ribo_matrix = normalize_matrix(ribo_matrix_raw, target_diag)
 
     configs = {
-        "RFoldseek_tokens_same_pipeline": (rf_tokens, rf_matrix),
+        "RFoldSearch_tokens_same_pipeline": (rf_tokens, rf_matrix),
         "RiboSeek_sa20_same_pipeline": (ribo_tokens, ribo_matrix),
     }
     summaries = {}
@@ -515,7 +516,7 @@ def main() -> None:
                     else (
                         "alphabet-specific Structure-BLOSUM learned from the same train US-align pairs"
                         if MATRIX_MODE == "self_blosum"
-                        else "native matrix scaled to RFoldseek diagonal mean"
+                        else "native matrix scaled to RFoldSearch diagonal mean"
                     )
                 ),
                 "matrix_diag_mean_after_scaling": float(np.mean(np.diag(matrix))),

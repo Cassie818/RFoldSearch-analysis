@@ -1,6 +1,6 @@
-# RFoldseek
+# RFoldSearch
 
-This repository contains the analysis and figure-plotting code used for the RFoldseek manuscript.
+This repository contains the analysis and figure-plotting code used for the RFoldSearch manuscript.
 It is intentionally scoped to the paper analyses: model training/evaluation scripts, bundled result tables,
 plotting scripts, and the small helper modules needed to reproduce the reported figures.
 
@@ -53,9 +53,9 @@ All plotting scripts run from the bundled files, except the alphabet-states and
 predicted-database supplements, which need the raw structures.
 Analyses that need data outside the repository (raw structures, the full
 training and validation splits, external binaries) read them from the directory
-given by `RFOLDSEEK_DATA`; leave it unset when regenerating figures, so that the
+given by `RFOLDSEARCH_DATA`; leave it unset when regenerating figures, so that the
 bundled results are used. External binaries are located through
-`RFOLDSEEK_BLAST_BIN`, `RFOLDSEEK_HMMER_BIN` and `RFOLDSEEK_INFERNAL_BIN`
+`RFOLDSEARCH_BLAST_BIN`, `RFOLDSEARCH_HMMER_BIN` and `RFOLDSEARCH_INFERNAL_BIN`
 (directories; empty means `PATH`).
 
 ## Dataset construction

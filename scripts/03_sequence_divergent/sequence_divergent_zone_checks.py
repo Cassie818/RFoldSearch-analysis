@@ -4,7 +4,7 @@ Zones after Rost (1999), from the identity of unrelated chains (different Rfam f
 clan): above background (> 99th percentile, pairs above 80% excluded), twilight (50th-99th),
 midnight (< 50th).
 
-  1  paired differences RFoldseek - comparator in each zone, all families and with tRNA
+  1  paired differences RFoldSearch - comparator in each zone, all families and with tRNA
      (RF00005) excluded; 95% hierarchical block-bootstrap CIs over families
   2  sensitivity of the midnight result to the cut-off (30th-70th percentile of the background)
   3  length-stratified zones: the background is taken separately for the length of the
@@ -27,7 +27,7 @@ from sequence_divergent_rescore import (DATA, REPO, _aligner, background_identit
                                         seq_identity, unrelated)
 
 CMP = ["Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80", "Composition", "Length", "Shuffled", "US-align"]
-MEANS = ["RFoldseek", "RFoldseek-TM", "US-align"] + CMP[:-1]
+MEANS = ["RFoldSearch", "RFoldSearch-TM", "US-align"] + CMP[:-1]
 LBINS = [(0, 100), (100, 200), (200, 1000), (1000, 100000)]
 MAXPAIRS = 3000
 CAP = 0.80
@@ -38,13 +38,13 @@ def summarise(per, blocks, zones):
     for z in zones:
         out[z] = {}
         for lab, keep in (("all", lambda q: True), ("tRNA excluded", lambda q: blocks[q] != "RF00005")):
-            qs = [q for q in per[z].get("RFoldseek", {}) if keep(q)]
+            qs = [q for q in per[z].get("RFoldSearch", {}) if keep(q)]
             if not qs:
                 continue
             r = dict(n=len(qs), families=len({blocks[q] for q in qs}),
                      family_counts={f: sum(blocks[q] == f for q in qs) for f in sorted({blocks[q] for q in qs})},
                      mean={m: float(np.mean([per[z][m][q] for q in qs])) for m in MEANS},
-                     diff={m: boot({q: per[z]["RFoldseek"][q] - per[z][m][q] for q in qs}, blocks) for m in CMP})
+                     diff={m: boot({q: per[z]["RFoldSearch"][q] - per[z][m][q] for q in qs}, blocks) for m in CMP})
             out[z][lab] = r
     return out
 
@@ -54,7 +54,7 @@ def show(title, res):
     for z, d in res.items():
         for lab, r in d.items():
             print(f"  {z:9s} {lab:14s} n={r['n']:3d} ({r['families']:2d} fam)  "
-                  + "  ".join(f"{m}={r['mean'][m]:.3f}" for m in ("RFoldseek", "Infernal", "nhmmer", "RS-80")))
+                  + "  ".join(f"{m}={r['mean'][m]:.3f}" for m in ("RFoldSearch", "Infernal", "nhmmer", "RS-80")))
             print(" " * 28 + "  ".join(f"-{m} {d_:+.3f}[{lo:+.3f},{hi:+.3f}]" for m, (d_, lo, hi) in r["diff"].items()
                                         if m in ("Infernal", "nhmmer", "RS-80", "Composition", "US-align")))
 
@@ -97,7 +97,7 @@ def main():
     cuts = {f"p{int(100 * c)}": float(np.quantile(v, c)) for c in (0.3, 0.4, 0.5, 0.6, 0.7)}
     per, _ = rescore([(k, 0.0, t) for k, t in cuts.items()])
     report["midnight_cutoff"] = {k: dict(cutoff=cuts[k], **summarise(per, blocks, [k])[k]) for k in cuts}
-    print("\n#### 2  midnight cut-off sensitivity (RFoldseek - Infernal)")
+    print("\n#### 2  midnight cut-off sensitivity (RFoldSearch - Infernal)")
     for k, d in report["midnight_cutoff"].items():
         print(f"  <{k} ({d['cutoff']:.3f}): " + "   ".join(
             f"{lab} n={d[lab]['n']} ({d[lab]['families']} fam) {d[lab]['diff']['Infernal'][0]:+.3f}"

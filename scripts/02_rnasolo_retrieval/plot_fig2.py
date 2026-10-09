@@ -23,13 +23,13 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ---- shared style (identical to plot_fig2.py) --------------------------------
-METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign",
+METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "US-align", "RMalign",
            "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
 # RiboSeek 0.2.0: RS-20 (geometry only; the "RiboSeek" key) and the default
 # RS-80 (RS-20 x nucleotide identity) share one hue, RS-80 in the deeper shade.
 METHOD_COLOR = {
-    "RFoldseek": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
-    "RFoldseek-TM": "#009E9E", "US-align": "#D62728", "RMalign": "#2CA02C",
+    "RFoldSearch": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
+    "RFoldSearch-TM": "#009E9E", "US-align": "#D62728", "RMalign": "#2CA02C",
     "RiboSeek": "#E377C2", "RiboSeek RS-80": "#A8327F",
     "BLASTN": "#FFC107", "Infernal": "#BCBD22",
 }
@@ -49,14 +49,14 @@ METHOD_COLOR = {k: _lighten(v) for k, v in METHOD_COLOR.items()}
 METHOD_COLOR["Infernal"] = METHOD_BASE["Infernal"]
 LINESTYLE = {m: "-" for m in METHODS}
 LINESTYLE["BLASTN"] = "--"
-MARKER = {"RFoldseek": "o", "RFoldseek-TM": "*", "GTalign": "X", "RTM-align": "P", "US-align": "s",
+MARKER = {"RFoldSearch": "o", "RFoldSearch-TM": "*", "GTalign": "X", "RTM-align": "P", "US-align": "s",
           "RMalign": "^", "RiboSeek": "v", "RiboSeek RS-80": "v", "BLASTN": "D", "Infernal": "p"}
 # C/D: US-align defines the structural truth (ceiling 1). GTalign and RTM-align
 # rank by their own TM-scores and are near-oracles, shown for completeness.
-# RFoldseek-TM ranks the RFoldseek prefilter candidates by the truth TM-score, so
-# its Sens@1FP equals the prefilter recall (rankings/run_rfoldseek.py); it is
-# drawn but not tested against RFoldseek.
-BAR_METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "RMalign",
+# RFoldSearch-TM ranks the RFoldSearch prefilter candidates by the truth TM-score, so
+# its Sens@1FP equals the prefilter recall (rankings/run_rfoldsearch.py); it is
+# drawn but not tested against RFoldSearch.
+BAR_METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "RMalign",
                "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
 
 def sorted_curve(arr):
@@ -69,7 +69,7 @@ def curve_panel(ax, data, level, title, band):
     for m in METHODS:
         x, y = sorted_curve(data[m][level]["sens"])
         step = max(1, len(x) // 18)
-        marker_size = 11 if m == "RFoldseek-TM" else 7
+        marker_size = 11 if m == "RFoldSearch-TM" else 7
         ax.plot(x, y, LINESTYLE[m], color=METHOD_COLOR[m], linewidth=2.4, marker=MARKER[m],
                 markevery=step, markersize=marker_size, markeredgecolor="white", markeredgewidth=0.9,
                 label=LABEL.get(m, m), zorder=3)
@@ -97,11 +97,11 @@ def bar_panel(ax, boot, level, methods, oracle, xticks, xlabel, title):
                       error_kw={"elinewidth": 0.9, "ecolor": "#555555"})
         for j, (b, v) in enumerate(zip(bars, e)):
             top = v["ci_upper"] + 0.012
-            # Only annotate RFoldseek numerically (others read from the y-axis);
-            # significance stars sit on non-RFoldseek bars.
-            if m == "RFoldseek":
+            # Only annotate RFoldSearch numerically (others read from the y-axis);
+            # significance stars sit on non-RFoldSearch bars.
+            if m == "RFoldSearch":
                 ax.text(b.get_x() + b.get_width() / 2, top, f"{v['estimate']:.2f}",
-                        ha="center", va="bottom", fontsize=8.5, color=METHOD_BASE["RFoldseek"])
+                        ha="center", va="bottom", fontsize=8.5, color=METHOD_BASE["RFoldSearch"])
             elif v.get("sig_vs_rf"):
                 ax.text(b.get_x() + b.get_width() / 2, top, "*", ha="center", va="bottom",
                         fontsize=10, color="#555555", fontweight="bold")
@@ -148,9 +148,9 @@ def main():
                 va="bottom", ha="right")
 
     handles, labels = axes[0, 0].get_legend_handles_labels()
-    # Column-major, one pair per column: RFoldseek variants, structure aligners,
+    # Column-major, one pair per column: RFoldSearch variants, structure aligners,
     # RiboSeek alphabets, sequence methods.
-    order = ["RFoldseek", "RFoldseek-TM", "US-align", "GTalign", "RTM-align", "RMalign",
+    order = ["RFoldSearch", "RFoldSearch-TM", "US-align", "GTalign", "RTM-align", "RMalign",
              "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
     by = dict(zip(labels, handles))
     labels = [LABEL.get(m, m) for m in order]

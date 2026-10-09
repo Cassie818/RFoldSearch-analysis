@@ -16,7 +16,7 @@ _sys.path.insert(0, REPO)
 import paths
 HERE = os.path.join(REPO, "files", "predicted_retrieval")
 ROOT = HERE
-sys.path.insert(0, paths.RFOLDSEEK_REPO)
+sys.path.insert(0, paths.RFOLDSEARCH_REPO)
 sys.path.insert(0, SCRIPT_DIR)
 sys.path.insert(0, os.path.join(REPO, "src", "search"))
 import run_searches as R

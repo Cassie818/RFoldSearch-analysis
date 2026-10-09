@@ -28,15 +28,15 @@ r1 = json.load(open(RET / "recall1_rfam_test.json"))
 wp = json.load(open(RET / "weighted_pr_rfam_test.json"))
 ap_sig = json.load(open(RET / "bootstrap_figS12_ap.json"))
 
-METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign",
+METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "US-align", "RMalign",
            "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
 METHOD_COLOR = {
-    "RFoldseek": "#1F9BD8", "RFoldseek-TM": "#009E9E", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
+    "RFoldSearch": "#1F9BD8", "RFoldSearch-TM": "#009E9E", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
     "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "RiboSeek RS-80": "#A8327F",
     "BLASTN": "#FFC107",
     "Infernal": "#BCBD22",
 }
-MARKER = {"RFoldseek": "o", "RFoldseek-TM": "*", "GTalign": "X", "RTM-align": "P", "US-align": "s",
+MARKER = {"RFoldSearch": "o", "RFoldSearch-TM": "*", "GTalign": "X", "RTM-align": "P", "US-align": "s",
           "RMalign": "^", "RiboSeek": "v", "RiboSeek RS-80": "v", "BLASTN": "D", "Infernal": "p"}
 # RiboSeek 0.2.0: RS-20 (the "RiboSeek" key) and the default RS-80 share one hue,
 # RS-80 in the deeper shade, as in Fig. 2.

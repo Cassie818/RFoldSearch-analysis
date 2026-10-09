@@ -1,5 +1,5 @@
 {
-  "_anchor": "RFoldseek-TM",
+  "_anchor": "RFoldSearch-TM",
   "_n_replicates": 2000,
   "_seed": 123,
   "_metric": "Sens@1FP",
@@ -28,7 +28,7 @@
       "diff_ci_hi": -0.021297892935918737,
       "sig": true
     },
-    "RFoldseek": {
+    "RFoldSearch": {
       "anchor_mean": 0.6865354296669343,
       "method_mean": 0.6553135976951837,
       "diff_mean": 0.031221831971750547,
@@ -62,7 +62,7 @@
       "diff_ci_hi": -0.0394001175555792,
       "sig": true
     },
-    "RFoldseek": {
+    "RFoldSearch": {
       "anchor_mean": 0.31811031068431633,
       "method_mean": 0.29510750912485356,
       "diff_mean": 0.02300280155946277,

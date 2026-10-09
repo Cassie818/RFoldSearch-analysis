@@ -1,6 +1,6 @@
 {
  "scale": 0.6810860561435803,
- "note": "2080 300q coordinate times scaled by RFoldseek_ref/RFoldseek_2080 for paired ratio on reference baseline",
+ "note": "2080 300q coordinate times scaled by RFoldSearch_ref/RFoldSearch_2080 for paired ratio on reference baseline",
  "sizes": {
   "1000": {
    "usalign": {

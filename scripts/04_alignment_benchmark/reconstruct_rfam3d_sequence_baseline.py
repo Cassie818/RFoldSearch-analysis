@@ -29,10 +29,13 @@ from rfam3d_reference_alignment import (
 def load_backbone_extractor(upstream: Path):
     # Import the original extraction module without importing the upstream
     # package's unrelated database/prefilter modules.
-    package = types.ModuleType("rfoldseek")
-    package.__path__ = [str(upstream / "rfoldseek")]
-    sys.modules["rfoldseek"] = package
-    from rfoldseek.backbone import RNA_RESIDUE_NAMES, extract_backbone_coords
+    package_name = "rfoldsearch" if (upstream / "rfoldsearch").is_dir() else "rfoldseek"
+    package = types.ModuleType(package_name)
+    package.__path__ = [str(upstream / package_name)]
+    sys.modules[package_name] = package
+    backbone = __import__(f"{package_name}.backbone", fromlist=["*"])
+    RNA_RESIDUE_NAMES = backbone.RNA_RESIDUE_NAMES
+    extract_backbone_coords = backbone.extract_backbone_coords
     import biotite.structure as struc
     import biotite.structure.io.pdbx as pdbx
 
@@ -214,9 +217,9 @@ def main() -> None:
         summary[f"{key}_all_reconstructed"] = family_bootstrap(
             rows, key, args.bootstrap, args.seed)
     for key, left, right in (
-        ("rfoldseek_minus_sequence_alignment_f1", "rfoldseek_f1", "sequence_alignment_f1"),
-        ("rfoldseek_minus_sequence_alignment_tolerant_f1",
-         "rfoldseek_tolerant_f1", "sequence_alignment_tolerant_f1"),
+        ("rfoldsearch_minus_sequence_alignment_f1", "rfoldsearch_f1", "sequence_alignment_f1"),
+        ("rfoldsearch_minus_sequence_alignment_tolerant_f1",
+         "rfoldsearch_tolerant_f1", "sequence_alignment_tolerant_f1"),
     ):
         augmented = [{**row, key: row[left] - row[right]} for row in verified]
         summary[f"{key}_strictly_verified"] = family_bootstrap(
@@ -235,8 +238,8 @@ def main() -> None:
                           summary["sequence_alignment_f1_strictly_verified"],
                       "sequence_alignment_f1_all_reconstructed":
                           summary["sequence_alignment_f1_all_reconstructed"],
-                      "rfoldseek_minus_sequence_alignment_f1_strictly_verified":
-                          summary["rfoldseek_minus_sequence_alignment_f1_strictly_verified"]},
+                      "rfoldsearch_minus_sequence_alignment_f1_strictly_verified":
+                          summary["rfoldsearch_minus_sequence_alignment_f1_strictly_verified"]},
                      indent=2))
 
 

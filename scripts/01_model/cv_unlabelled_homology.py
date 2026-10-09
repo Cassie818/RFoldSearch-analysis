@@ -10,7 +10,7 @@ Writes one TSV row per detected unlabelled chain -> labelled chain / family:
           cut-offs, no --rfam filter tuning, E < 0.1); a hit counts toward
           the fold whose test families include the hit's family
 
-Binaries: RFOLDSEEK_BLAST_BIN, RFOLDSEEK_HMMER_BIN, RFOLDSEEK_INFERNAL_BIN
+Binaries: RFOLDSEARCH_BLAST_BIN, RFOLDSEARCH_HMMER_BIN, RFOLDSEARCH_INFERNAL_BIN
 (directories; empty = PATH). Rfam CM: data/ref/rfam/Rfam.cm under DATA_ROOT.
 """
 import sys as _sys, os as _os
@@ -29,7 +29,8 @@ import torch
 
 from prefilter_rfam_benchmark import attach_labels, load_labels
 
-HMMER_BIN = _os.environ.get("RFOLDSEEK_HMMER_BIN", "")
+HMMER_BIN = _os.environ.get(
+    "RFOLDSEARCH_HMMER_BIN", _os.environ.get("RFOLDSEEK_HMMER_BIN", ""))
 SEQ_E = 0.01
 CMSCAN_E = 0.1
 CPU = str(_os.cpu_count() or 4)

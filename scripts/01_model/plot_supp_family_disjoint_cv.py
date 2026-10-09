@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 
 SPLITS = [("pdb", "PDB-disjoint"), ("family", "Family-disjoint")]
-# both bars are RFoldseek: Fig. 2 RFoldseek blue, lighter tint for the family-disjoint split
+# both bars are RFoldSearch: Fig. 2 RFoldSearch blue, lighter tint for the family-disjoint split
 COL = {"pdb": "#1F9BD8", "family": "#9FD3EE"}
 # metric -> block unit used for macro-averaging and bootstrap
 BLOCK = {"fam": "family", "clan": "clan_acc"}

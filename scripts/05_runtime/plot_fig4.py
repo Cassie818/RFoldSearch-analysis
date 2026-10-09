@@ -1,4 +1,4 @@
-"""Fig 3 variant: one curve panel per corpus, dual RFoldseek lines."""
+"""Fig 3 variant: one curve panel per corpus, dual RFoldSearch lines."""
 import os
 import sys
 
@@ -12,7 +12,7 @@ import runtime_style as P
 
 MM = F.MM
 WIDTH_MM, HEIGHT_MM = 180.0, 110.0
-CURVES = ["GTalign", "RiboSeek", "BLASTN", "RFoldseek"]
+CURVES = ["GTalign", "RiboSeek", "BLASTN", "RFoldSearch"]
 
 
 def dual_labels(ax, sizes, ends, ylim):
@@ -22,33 +22,33 @@ def dual_labels(ax, sizes, ends, ylim):
                              min_gap=0.052 * span)
     for m, ly in zip(names, placed):
         base = m.split(" ")[0]
-        bold = base == "RFoldseek"
+        bold = base == "RFoldSearch"
         ax.text(sizes[-1] * 1.14, 10 ** ly, m, color=P.COLOR[base],
                 fontsize=6.0, va="center", ha="left",
                 fontweight="bold" if bold else "normal", clip_on=False)
 
 
 def rf_dual(ax, data, iqr, sizes):
-    """RFoldseek mean (solid) + median (dashed) + IQR band."""
-    if iqr and "RFoldseek" in iqr:
-        ns = np.array(sorted(iqr["RFoldseek"]))
-        lo = np.array([iqr["RFoldseek"][n][0] for n in ns]) / ns * 1000
-        hi = np.array([iqr["RFoldseek"][n][1] for n in ns]) / ns * 1000
-        ax.fill_between(ns, lo, hi, color=P.COLOR["RFoldseek"], alpha=0.13,
+    """RFoldSearch mean (solid) + median (dashed) + IQR band."""
+    if iqr and "RFoldSearch" in iqr:
+        ns = np.array(sorted(iqr["RFoldSearch"]))
+        lo = np.array([iqr["RFoldSearch"][n][0] for n in ns]) / ns * 1000
+        hi = np.array([iqr["RFoldSearch"][n][1] for n in ns]) / ns * 1000
+        ax.fill_between(ns, lo, hi, color=P.COLOR["RFoldSearch"], alpha=0.13,
                         lw=0, zorder=3)
     out = {}
     for stat, style in ((0, "-"), (1, "--")):
-        xs, ys = P.per_thousand(data["RFoldseek"], stat)
-        ax.plot(xs, ys, style, color=P.COLOR["RFoldseek"], lw=1.9,
+        xs, ys = P.per_thousand(data["RFoldSearch"], stat)
+        ax.plot(xs, ys, style, color=P.COLOR["RFoldSearch"], lw=1.9,
                 marker="o" if stat == 0 else None, ms=3.2,
                 mec="white", mew=0.4, zorder=8)
-        out["RFoldseek (mean)" if stat == 0 else "RFoldseek (median)"] = ys[-1]
+        out["RFoldSearch (mean)" if stat == 0 else "RFoldSearch (median)"] = ys[-1]
     return out
 
 
 def curves_panel(ax_t, ax, data, iqr, sizes, top, bot, coord=None,
                  methods=("GTalign", "RiboSeek", "BLASTN")):
-    """Mean curves for competitors, dual RFoldseek, optional broken top."""
+    """Mean curves for competitors, dual RFoldSearch, optional broken top."""
     ends = {}
     for m in methods:
         if m not in data:
@@ -135,20 +135,20 @@ def main():
     # keeps its parent's colour and is distinguished by the hollow marker
     F.COLOR["US-align-fast"] = F.COLOR["US-align"]
     F.COLOR["GTalign-fast"] = P.COLOR["GTalign"]
-    # RFoldseek-TM: same prefilter, US-align rerank of the candidate pool.
+    # RFoldSearch-TM: same prefilter, US-align rerank of the candidate pool.
     # Measured at full scale only (timing protocol, 300 queries, top_n 500).
     import json as _json
     _tmr = _json.load(open(os.path.join(F.RHO_DIR,
                                         "rhofold_tm_timing_83156.json")))
     _tmn = _json.load(open(os.path.join(F.NU_DIR,
                                         "nufold_tm_timing_531888.json")))
-    rho["RFoldseek-TM"] = {F.FULL: (_tmr["mean_s"], _tmr["median_s"])}
-    nu["RFoldseek-TM"] = {F.NU_FULL: (_tmn["mean_s"], _tmn["median_s"])}
+    rho["RFoldSearch-TM"] = {F.FULL: (_tmr["mean_s"], _tmr["median_s"])}
+    nu["RFoldSearch-TM"] = {F.NU_FULL: (_tmn["mean_s"], _tmn["median_s"])}
     for m in (P.COLOR, F.COLOR):
-        m["RFoldseek-TM"] = P.COLOR["RFoldseek"]
+        m["RFoldSearch-TM"] = P.COLOR["RFoldSearch"]
     for m in (P.MARKER, F.MARKER):
-        m["RFoldseek-TM"] = "s"
-    P.LADDER_NAME["RFoldseek-TM"] = "RFoldseek-TM"
+        m["RFoldSearch-TM"] = "s"
+    P.LADDER_NAME["RFoldSearch-TM"] = "RFoldSearch-TM"
     b = fig.add_subplot(gs[0, 1]); d = fig.add_subplot(gs[1, 1])
     P.ladder(b, F.full_size_values(rho, 0, F.FULL), "Search time",
              (5e-2, 1.2e4), "per query, at 83,156 targets")
@@ -158,9 +158,9 @@ def main():
     for ax in (a, c):
         ax.set_ylabel("Search time per\n1,000 targets (s)")
         ax.set_xlabel("Database size (structures)")
-        ax.text(0.035, 0.055, "shaded: RFoldseek interquartile range",
+        ax.text(0.035, 0.055, "shaded: RFoldSearch interquartile range",
                 transform=ax.transAxes, fontsize=5.5,
-                color=P.COLOR["RFoldseek"], alpha=0.75, va="bottom")
+                color=P.COLOR["RFoldSearch"], alpha=0.75, va="bottom")
     a_t.text(0.0, 1.28, "RhoFold+ database (83,156 structures)",
              transform=a_t.transAxes, fontsize=6.4, color=P.INK, va="baseline")
     c.text(0.0, 1.045, "NuFold database (531,888 structures)",

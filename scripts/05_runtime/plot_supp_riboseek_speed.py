@@ -1,4 +1,4 @@
-"""Supplementary figure: where RFoldseek's speed advantage over RiboSeek comes from"""
+"""Supplementary figure: where RFoldSearch's speed advantage over RiboSeek comes from"""
 import json
 import os
 import sys
@@ -15,7 +15,7 @@ import runtime_style as P          # noqa: E402
 MM = F.MM
 SIZES = [1000, 5000, 10000, 20000, 50000, 100000, 200000, 531888]
 NU = F.NU_DIR
-BLUE, PINK = P.COLOR["RFoldseek"], P.COLOR["RiboSeek"]
+BLUE, PINK = P.COLOR["RFoldSearch"], P.COLOR["RiboSeek"]
 INK, MUTED = P.INK, P.MUTED
 
 
@@ -59,7 +59,7 @@ def main():
     a.set_xscale("log"); a.set_yscale("log")
     a.set_ylim(0.45, 12)
     a.set_xlabel("Database size (structures)")
-    a.set_ylabel("RiboSeek time / RFoldseek time")
+    a.set_ylabel("RiboSeek time / RFoldSearch time")
     a.set_xticks([1000, 10000, 100000, 531888])
     a.set_xticklabels(["1k", "10k", "100k", "532k"])
     a.set_yticks([0.5, 1, 2, 5, 10])
@@ -71,12 +71,12 @@ def main():
                xytext=(-4, 7), textcoords="offset points", fontsize=7,
                color=BLUE, fontweight="bold", ha="right")
     a.text(0.035, 0.955,
-           f"cost $\\propto N^{{{a_rf:.2f}}}$  RFoldseek\n"
+           f"cost $\\propto N^{{{a_rf:.2f}}}$  RFoldSearch\n"
            f"cost $\\propto N^{{{a_rs:.2f}}}$  RiboSeek",
            transform=a.transAxes, fontsize=6.0, va="top", color=INK,
            linespacing=1.5)
-    # the shaded half is where RFoldseek wins; label each side of the 1.0 line
-    a.text(0.985, 1.22, "RFoldseek faster", transform=a.get_yaxis_transform(),
+    # the shaded half is where RFoldSearch wins; label each side of the 1.0 line
+    a.text(0.985, 1.22, "RFoldSearch faster", transform=a.get_yaxis_transform(),
            fontsize=5.8, color=BLUE, ha="right", va="bottom")
     a.text(0.985, 0.82, "RiboSeek faster", transform=a.get_yaxis_transform(),
            fontsize=5.8, color=PINK, ha="right", va="top")
@@ -89,7 +89,7 @@ def main():
                    alpha=0.85, zorder=5, norm=matplotlib.colors.LogNorm())
     b.set_xscale("log"); b.set_yscale("log")
     b.set_xlim(*lim); b.set_ylim(*lim)
-    b.set_xlabel("RFoldseek time per query (s)")
+    b.set_xlabel("RFoldSearch time per query (s)")
     b.set_ylabel("RiboSeek time per query (s)")
     cb = fig.colorbar(sc, ax=b, pad=0.02, fraction=0.045)
     cb.set_label("Query length (tokens)", fontsize=6.0)

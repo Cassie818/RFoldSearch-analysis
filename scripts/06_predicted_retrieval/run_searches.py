@@ -2,8 +2,8 @@
 
 For both query sets (predicted, experimental) every method returns its complete
 ranked output, so that neutral targets can be removed before evaluation:
-    RFoldseek      candidate depth 200 / 500 / 2000 (whole pool ranked)
-    RFoldseek-TM   candidate depth 200 / 500
+    RFoldSearch      candidate depth 200 / 500 / 2000 (whole pool ranked)
+    RFoldSearch-TM   candidate depth 200 / 500
     RiboSeek       candidate depth 200 / 500 (RS-20)
     BLASTN, nhmmer every hit at E < 10, best bit score per target
 Every query is timed. Methods run one after another in a single process on an
@@ -31,7 +31,7 @@ _sys.path.insert(0, REPO)
 import paths
 HERE = os.path.join(REPO, "files", "predicted_retrieval")
 ROOT = HERE
-UP = paths.RFOLDSEEK_REPO
+UP = paths.RFOLDSEARCH_REPO
 sys.path.insert(0, UP)
 sys.path.insert(0, SCRIPT_DIR)
 from build_databases import MAKEBLASTDB, TOOLS, path_of, seq_from_pdb
@@ -42,6 +42,9 @@ USALIGN = paths.USALIGN
 NR80 = paths.NR80_DIR
 DB = os.path.join(HERE, "db")
 OUT = os.path.join(HERE, "runs")
+RFOLDSEARCH_DB = os.path.join(DB, "rfoldsearch.pt")
+if not os.path.exists(RFOLDSEARCH_DB):
+    RFOLDSEARCH_DB = os.path.join(DB, "rfoldseek.pt")  # pre-rename compatibility
 
 
 def seq_from_cif(path):
@@ -92,8 +95,8 @@ def load_queries(paper):
 def run_token(sets, manifest):
     from rfoldseek.search import Searcher
     t0 = time.perf_counter()
-    s = Searcher(os.path.join(DB, "rfoldseek.pt"), evalue_params_path=os.path.join(DB, "__none__.json"))
-    print(f"rfoldseek load+index {time.perf_counter()-t0:.1f}s", flush=True)
+    s = Searcher(RFOLDSEARCH_DB, evalue_params_path=os.path.join(DB, "__none__.json"))
+    print(f"rfoldsearch load+index {time.perf_counter()-t0:.1f}s", flush=True)
     assert [e["id"] for e in s.ents] == [path_of(r["urs_id"]) for r in manifest], "db order != manifest"
     ti = {cid: i for i, cid in enumerate(s.ids)}
     for q in sets.get("p2p", []):          # predicted queries live in the database
@@ -101,8 +104,8 @@ def run_token(sets, manifest):
     first = next(iter(sets.values()))[0]    # warm up numba on any query
     s.search(np.asarray(first["entry"]["tokens"], dtype=np.int64), top_k=5)
     res = {k: {} for k in sets}
-    for name, top_n, rerank in (("RFoldseek n500", 500, "atm"), ("RFoldseek-TM n200", 200, "tm"),
-                                ("RFoldseek-TM n500", 500, "tm")):
+    for name, top_n, rerank in (("RFoldSearch n500", 500, "atm"), ("RFoldSearch-TM n200", 200, "tm"),
+                                ("RFoldSearch-TM n500", 500, "tm")):
         for qs, queries in sets.items():
             out = {}
             for q in queries:

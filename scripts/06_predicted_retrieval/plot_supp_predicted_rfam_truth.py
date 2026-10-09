@@ -11,9 +11,9 @@ import figstyle as S
 from figstyle import plt
 
 FIG = os.path.join(E.REPO, "figures")
-BAR_METHODS = ["RFoldseek n500", "RFoldseek-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal",
+BAR_METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal",
                "US-align (exhaustive)"]
-REF = "RFoldseek n500"
+REF = "RFoldSearch n500"
 FILTERS = [("none", "None"), ("E<0.01", "$E<0.01$"), ("E<=10", "$E\\leq10$")]
 COLS = [("exp", "Experimental queries"), ("p2p", "Predicted queries")]
 ROWS = ["Sens@1FP", "Recall@1"]

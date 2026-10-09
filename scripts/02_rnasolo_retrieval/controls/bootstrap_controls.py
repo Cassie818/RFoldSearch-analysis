@@ -11,7 +11,7 @@ from prefilter_rfam_benchmark import attach_labels, load_labels
 B, SEED = 2000, 123
 LEVEL_SEED = {"family": SEED + 1, "clan": SEED + 2}
 
-ALPHABET = {  # attribution controls: RFoldseek tokens vs RiboSeek sa20, same pipeline
+ALPHABET = {  # attribution controls: RFoldSearch tokens vs RiboSeek sa20, same pipeline
     "native": "riboseek_alphabet_same_pipeline_control_per_query.json",
     "identity": "riboseek_alphabet_same_pipeline_control_identity_per_query.json",
     "self_blosum": "riboseek_alphabet_same_pipeline_control_self_blosum_per_query.json",
@@ -52,7 +52,7 @@ def main():
     out["alphabet_control"] = {}
     for regime, f in ALPHABET.items():
         d = json.load(open(resolve("files/ablation/" + f)))
-        R, S = d["RFoldseek_tokens_same_pipeline"], d["RiboSeek_sa20_same_pipeline"]
+        R, S = d["RFoldSearch_tokens_same_pipeline"], d["RiboSeek_sa20_same_pipeline"]
         out["alphabet_control"][regime] = {}
         for level in ("family", "clan"):
             a = {x["query"]: x["sens"] for x in R[level]}

@@ -1,4 +1,4 @@
-"""Attribution of the RiboSeek -> RFoldseek gap, along two orderings.
+"""Attribution of the RiboSeek -> RFoldSearch gap, along two orderings.
 
 Forward : pipeline -> matrix -> alphabet
 Reverse : alphabet -> pipeline -> matrix
@@ -76,7 +76,7 @@ def ribo_pipeline(toks, mat, name):
 
 
 def rf_pipeline(toks, mat, name, xyz=None):
-    """RFoldseek pipeline: expansion 4-mer prefilter + affine-gap local SW,
+    """RFoldSearch pipeline: expansion 4-mer prefilter + affine-gap local SW,
     ranked by the structure score S * aTM when C4' coordinates are given."""
     _, pq = F.evaluate_ranker(name, F.SamePipelineRanker(toks, mat.astype(np.float32), xyz=xyz),
                               fam_q, clan_q, fam, clan)
@@ -92,7 +92,7 @@ cfg["A_ribo_published"] = ribo_pipeline(sa20, M_sa20, "A sa20 | RiboSeek pipelin
 cfg["B_fwd_pipeline"] = rf_pipeline(sa20, M_sa20, "B sa20 | RF pipeline | own matrix")
 cfg["C_fwd_matrix"] = rf_pipeline(sa20, M_sa20_sb, "C sa20 | RF pipeline | learned matrix")
 cfg["D_3dr_sw"] = rf_pipeline(tdr, M_3dr, "D' 3Dr | RF pipeline, SW ranking | learned matrix")
-cfg["D_rfoldseek"] = rf_pipeline(tdr, M_3dr, "D 3Dr | RF pipeline, structure score | learned matrix",
+cfg["D_rfoldsearch"] = rf_pipeline(tdr, M_3dr, "D 3Dr | RF pipeline, structure score | learned matrix",
                                  xyz=[F.c4_coords(e, len(t)) for e, t in zip(ents, tdr)])
 M_3dr_id = F.normalize_matrix(F.identity_matrix(80), 1.0).astype(np.float64)   # +2/-1, unit diagonal mean
 cfg["E0_rev_alphabet"] = ribo_pipeline(tdr, M_3dr_id, "E0 3Dr | RiboSeek pipeline | identity matrix")
@@ -113,15 +113,15 @@ def ci(a, b, level, seed):
             "lo": float(lo), "hi": float(hi), "n_blocks": len(names),
             "sig": bool(lo > 0 or hi < 0)}
 
-FWD = [("+ RFoldseek pipeline", "B_fwd_pipeline", "A_ribo_published"),
+FWD = [("+ RFoldSearch pipeline", "B_fwd_pipeline", "A_ribo_published"),
        ("+ learned matrix", "C_fwd_matrix", "B_fwd_pipeline"),
        ("+ 3Dr alphabet", "D_3dr_sw", "C_fwd_matrix"),
-       ("+ structure score", "D_rfoldseek", "D_3dr_sw")]
+       ("+ structure score", "D_rfoldsearch", "D_3dr_sw")]
 # Reverse order: the 3Dr alphabet first (scored with an unlearned identity matrix),
-# then its learned Structure-BLOSUM, then the RFoldseek pipeline.
+# then its learned Structure-BLOSUM, then the RFoldSearch pipeline.
 REV = [("+ 3Dr alphabet", "E0_rev_alphabet", "A_ribo_published"),
        ("+ learned matrix", "E_rev_alphabet", "E0_rev_alphabet"),
-       ("+ RFoldseek pipeline", "D_rfoldseek", "E_rev_alphabet")]
+       ("+ RFoldSearch pipeline", "D_rfoldsearch", "E_rev_alphabet")]
 out = {"levels": {}, "_config": {"B": B, "seed": SEED}}
 for level in ("family", "clan"):
     means = {k: float(np.mean(list(v[level].values()))) for k, v in cfg.items()}

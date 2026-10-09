@@ -22,19 +22,19 @@ FULL = 83156
 NU_SIZES = [1000, 5000, 10000, 20000, 50000, 100000, 200000, 531888]
 NU_FULL = 531888
 
-COLOR = {"RFoldseek": "#0072B2", "GTalign": "#7E5AB6", "RTM-align": "#E69F00",
+COLOR = {"RFoldSearch": "#0072B2", "GTalign": "#7E5AB6", "RTM-align": "#E69F00",
          "US-align": "#D55E00", "RMalign": "#009E73", "RiboSeek": "#CC79A7",
          "BLASTN": "#B58900"}
-MARKER = {"RFoldseek": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
+MARKER = {"RFoldSearch": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
           "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}
 COLOR["US-align-fast"] = COLOR["US-align"]
 COLOR["GTalign-fast"] = COLOR["GTalign"]
 MARKER["US-align-fast"] = "s"
 MARKER["GTalign-fast"] = "X"
 LINES_RHO = ["RMalign", "US-align", "RTM-align", "GTalign", "GTalign-fast",
-             "RiboSeek", "BLASTN", "RFoldseek"]
-LINES_NU = ["GTalign", "GTalign-fast", "RiboSeek", "BLASTN", "RFoldseek"]
-LEGEND_ORDER = ["RFoldseek", "GTalign", "RTM-align", "US-align",
+             "RiboSeek", "BLASTN", "RFoldSearch"]
+LINES_NU = ["GTalign", "GTalign-fast", "RiboSeek", "BLASTN", "RFoldSearch"]
+LEGEND_ORDER = ["RFoldSearch", "GTalign", "RTM-align", "US-align",
                 "RMalign", "RiboSeek", "BLASTN"]
 LABEL = {m: (m + " (GPU)" if m == "GTalign" else m) for m in LEGEND_ORDER}
 LABEL["US-align-fast"] = "US-align $-$fast"
@@ -46,12 +46,12 @@ BENCH_KEY = {"GTalign": "gtalign", "US-align": "usalign", "RMalign": "rmalign",
 # on the same 20-query set as its default mode; GTalign --speed=13 on the
 # same 300-query NuFold ladder as --speed=8.
 RHO_FILE_EXTRA = {"GTalign-fast": "gtalign_fast_{n}.json"}
-NU_FILE = {"RFoldseek": "nufold_timing_{n}.json", "GTalign": "nufold_gtalign_{n}.json",
+NU_FILE = {"RFoldSearch": "nufold_timing_{n}.json", "GTalign": "nufold_gtalign_{n}.json",
            "GTalign-fast": "nufold_gtalign13_{n}.json",
            "RiboSeek": "nufold_riboseek_{n}.json", "BLASTN": "nufold_blastn_{n}.json"}
 EXTRAPOLATED = set()  # RhoFold+: coordinate aligners direct (2080), GTalign-fast measured at all sizes
 COORDINATE_ALIGNERS = {"US-align", "US-align-fast", "RTM-align", "RMalign"}
-REF = "RFoldseek"
+REF = "RFoldSearch"
 
 matplotlib.rcParams.update({
     "font.family": "sans-serif",
@@ -72,7 +72,7 @@ def quartiles(per_query):
 def load_rhofold(iqr=None):
     iqr = {} if iqr is None else iqr
     bench = {n: json.load(open(os.path.join(RHO_DIR, f"bench_{n}.json"))) for n in SIZES}
-    _coord2080 = json.load(open(os.path.join(RHO_DIR, "coord2080_paired.json")))["sizes"]  # US/RTM/RMalign re-timed on 2080, 300q, scaled to reference RFoldseek baseline (paired ratio)
+    _coord2080 = json.load(open(os.path.join(RHO_DIR, "coord2080_paired.json")))["sizes"]  # US/RTM/RMalign re-timed on 2080, 300q, scaled to reference RFoldSearch baseline (paired ratio)
     out = {}
     for m in LINES_RHO:
         pts = {}
@@ -82,11 +82,11 @@ def load_rhofold(iqr=None):
                 if os.path.exists(f):
                     r = json.load(open(f))
                     pts[n] = (r["mean_s"], r["median_s"])
-            elif m == "RFoldseek":
+            elif m == "RFoldSearch":
                 r = json.load(open(os.path.join(RHO_DIR, f"kernel_timing_{n}.json")))
                 assert r["top_n"] == 500 and r["n_database"] == n  # benchmark depth: 500, matching the competitors
                 pts[n] = (r["mean_s"], r["median_s"])
-                iqr.setdefault("RFoldseek", {})[n] = quartiles(r["per_query"])
+                iqr.setdefault("RFoldSearch", {})[n] = quartiles(r["per_query"])
             elif m in RHO_FILE_EXTRA:
                 f = os.path.join(RHO_DIR, RHO_FILE_EXTRA[m].format(n=n))
                 if os.path.exists(f):
@@ -121,7 +121,7 @@ def load_nufold():
             if os.path.exists(f):
                 r = json.load(open(f))
                 pts[n] = (r["mean_s"], r["median_s"])
-                if m == "RFoldseek":
+                if m == "RFoldSearch":
                     iqr.setdefault(m, {})[n] = quartiles(r["per_query"])
         out[m] = pts
     return out, iqr
@@ -137,7 +137,7 @@ def style(method):
     lw, ms, z, alpha = 1.15, 2.5, 3, 0.88
     if method in COORDINATE_ALIGNERS:
         alpha = 0.72
-    if method == "RFoldseek":
+    if method == "RFoldSearch":
         lw, ms, z, alpha = 1.8, 3.1, 5, 1.0
     if method == "RTM-align":
         lw, ms, z, alpha = 0.8, 2.25, 4, 0.72
@@ -157,13 +157,13 @@ DASHES = {"US-align": (4.6, 2.2)}
 def plot_series(ax, data, order, stat, extrapolate=False, iqr=None,
                 per_thousand=True):
     """Curves only; axis limits, ticks and spines are the caller's business."""
-    if iqr and "RFoldseek" in iqr:
-        ns = np.array(sorted(iqr["RFoldseek"]))
-        lo = np.array([iqr["RFoldseek"][n][0] for n in ns])
-        hi = np.array([iqr["RFoldseek"][n][1] for n in ns])
+    if iqr and "RFoldSearch" in iqr:
+        ns = np.array(sorted(iqr["RFoldSearch"]))
+        lo = np.array([iqr["RFoldSearch"][n][0] for n in ns])
+        hi = np.array([iqr["RFoldSearch"][n][1] for n in ns])
         lo = scale_values(ns, lo, per_thousand)
         hi = scale_values(ns, hi, per_thousand)
-        ax.fill_between(ns, lo, hi, color=COLOR["RFoldseek"], alpha=0.15, lw=0, zorder=1)
+        ax.fill_between(ns, lo, hi, color=COLOR["RFoldSearch"], alpha=0.15, lw=0, zorder=1)
     for m in order:
         pts = data[m]
         if not pts:

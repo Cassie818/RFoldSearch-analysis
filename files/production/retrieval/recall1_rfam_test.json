@@ -1,12 +1,12 @@
 {
   "_note": "Rfam family/clan Recall@1, test queries: the top-ranked labelled non-self target is a TP; family TP = same family, clan TP = same clan including the same family.",
-  "RFoldseek": {
+  "RFoldSearch": {
     "family_recall1": 0.8962264150943396,
     "clan_recall1": 0.9296296296296296,
     "n_family": 106,
     "n_clan": 81
   },
-  "RFoldseek-TM": {
+  "RFoldSearch-TM": {
     "family_recall1": 0.9150943396226415,
     "clan_recall1": 0.9469135802469136,
     "n_family": 106,

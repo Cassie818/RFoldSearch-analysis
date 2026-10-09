@@ -18,12 +18,12 @@
      "B_fwd_pipeline": 0.48261158931754927,
      "C_fwd_matrix": 0.5234763768444319,
      "D_3dr_sw": 0.6193401835725166,
-     "D_rfoldseek": 0.6777150681287392,
+     "D_rfoldsearch": 0.6777150681287392,
      "E0_rev_alphabet": 0.20464880932719112,
      "E_rev_alphabet": 0.396204329148538
     },
     "forward": {
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.1938411306112363,
       "lo": 0.1220920290498912,
       "hi": 0.29044945236223557,
@@ -67,7 +67,7 @@
       "n_blocks": 27,
       "sig": true
      },
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.281510738980201,
       "lo": 0.21920034207521052,
       "hi": 0.3636559247831076,
@@ -80,7 +80,7 @@
      "B_fwd_pipeline": 105,
      "C_fwd_matrix": 105,
      "D_3dr_sw": 105,
-     "D_rfoldseek": 105,
+     "D_rfoldsearch": 105,
      "E0_rev_alphabet": 105,
      "E_rev_alphabet": 105
     }
@@ -91,12 +91,12 @@
      "B_fwd_pipeline": 0.2400856280835804,
      "C_fwd_matrix": 0.35389083967831825,
      "D_3dr_sw": 0.487718333852404,
-     "D_rfoldseek": 0.5390859575419229,
+     "D_rfoldsearch": 0.5390859575419229,
      "E0_rev_alphabet": 0.07133889461862582,
      "E_rev_alphabet": 0.18800960490311378
     },
     "forward": {
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.1797627319320301,
       "lo": 0.030330381424131424,
       "hi": 0.3619765991503242,
@@ -140,7 +140,7 @@
       "n_blocks": 9,
       "sig": true
      },
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.36162441011513224,
       "lo": 0.2591956277362085,
       "hi": 0.49024101116251184,
@@ -153,7 +153,7 @@
      "B_fwd_pipeline": 91,
      "C_fwd_matrix": 91,
      "D_3dr_sw": 91,
-     "D_rfoldseek": 91,
+     "D_rfoldsearch": 91,
      "E0_rev_alphabet": 91,
      "E_rev_alphabet": 91
     }
@@ -166,12 +166,12 @@
      "B_fwd_pipeline": 0.49586462509358814,
      "C_fwd_matrix": 0.5365685125616213,
      "D_3dr_sw": 0.6153889400737461,
-     "D_rfoldseek": 0.6720988874551039,
+     "D_rfoldsearch": 0.6720988874551039,
      "E0_rev_alphabet": 0.213730207150358,
      "E_rev_alphabet": 0.40240464905368883
     },
     "forward": {
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.20030305252583158,
       "lo": 0.13188648490577326,
       "hi": 0.2998596144657233,
@@ -215,7 +215,7 @@
       "n_blocks": 26,
       "sig": true
      },
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.26969423840141504,
       "lo": 0.21292397074282546,
       "hi": 0.358675413848902,
@@ -228,7 +228,7 @@
      "B_fwd_pipeline": 104,
      "C_fwd_matrix": 104,
      "D_3dr_sw": 104,
-     "D_rfoldseek": 104,
+     "D_rfoldsearch": 104,
      "E0_rev_alphabet": 104,
      "E_rev_alphabet": 104
     }
@@ -239,12 +239,12 @@
      "B_fwd_pipeline": 0.2615421210631836,
      "C_fwd_matrix": 0.38808691981428634,
      "D_3dr_sw": 0.4829643894272429,
-     "D_rfoldseek": 0.4983937394347415,
+     "D_rfoldsearch": 0.4983937394347415,
      "E0_rev_alphabet": 0.0815881622818913,
      "E_rev_alphabet": 0.20790945411491935
     },
     "forward": {
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.1792645853310047,
       "lo": 0.016239137206879143,
       "hi": 0.3575069981417485,
@@ -288,7 +288,7 @@
       "n_blocks": 8,
       "sig": true
      },
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.2939017475000555,
       "lo": 0.18039817206222075,
       "hi": 0.4832673016651383,
@@ -301,7 +301,7 @@
      "B_fwd_pipeline": 86,
      "C_fwd_matrix": 86,
      "D_3dr_sw": 86,
-     "D_rfoldseek": 86,
+     "D_rfoldsearch": 86,
      "E0_rev_alphabet": 86,
      "E_rev_alphabet": 86
     }
@@ -314,12 +314,12 @@
      "B_fwd_pipeline": 0.5106150548854695,
      "C_fwd_matrix": 0.5601306996148976,
      "D_3dr_sw": 0.5985017187636759,
-     "D_rfoldseek": 0.6591485004942338,
+     "D_rfoldsearch": 0.6591485004942338,
      "E0_rev_alphabet": 0.2333295147966879,
      "E_rev_alphabet": 0.40604648136238786
     },
     "forward": {
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.19730895883519559,
       "lo": 0.11194184299971176,
       "hi": 0.3331533597395683,
@@ -363,7 +363,7 @@
       "n_blocks": 25,
       "sig": true
      },
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.2531020191318459,
       "lo": 0.19063762899296827,
       "hi": 0.3645550148467981,
@@ -376,7 +376,7 @@
      "B_fwd_pipeline": 102,
      "C_fwd_matrix": 102,
      "D_3dr_sw": 102,
-     "D_rfoldseek": 102,
+     "D_rfoldsearch": 102,
      "E0_rev_alphabet": 102,
      "E_rev_alphabet": 102
     }
@@ -387,12 +387,12 @@
      "B_fwd_pipeline": 0.2849214770855943,
      "C_fwd_matrix": 0.42474282749936637,
      "D_3dr_sw": 0.5058498968167284,
-     "D_rfoldseek": 0.523737038452524,
+     "D_rfoldsearch": 0.523737038452524,
      "E0_rev_alphabet": 0.09746635026693265,
      "E_rev_alphabet": 0.22391248416793536
     },
     "forward": {
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.20090767341997362,
       "lo": 0.0345771144278607,
       "hi": 0.4108150605124502,
@@ -436,7 +436,7 @@
       "n_blocks": 8,
       "sig": true
      },
-     "+ RFoldseek pipeline": {
+     "+ RFoldSearch pipeline": {
       "diff": 0.2998245542845885,
       "lo": 0.1549683701185584,
       "hi": 0.5241782555173503,
@@ -449,7 +449,7 @@
      "B_fwd_pipeline": 79,
      "C_fwd_matrix": 79,
      "D_3dr_sw": 79,
-     "D_rfoldseek": 79,
+     "D_rfoldsearch": 79,
      "E0_rev_alphabet": 79,
      "E_rev_alphabet": 79
     }

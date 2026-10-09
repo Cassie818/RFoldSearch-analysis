@@ -18,7 +18,7 @@ import paths
 HERE = os.path.join(REPO, "files", "predicted_retrieval")
 ROOT = HERE
 sys.path.insert(0, SCRIPT_DIR)
-sys.path.insert(0, paths.RFOLDSEEK_REPO)
+sys.path.insert(0, paths.RFOLDSEARCH_REPO)
 import run_searches as R
 
 QUERIES = os.path.join(ROOT, "sample", "exp_unlabelled_queries.json")

@@ -40,8 +40,8 @@ def args_parser() -> argparse.Namespace:
     sys.path.insert(0, str(root))
     import paths
     parser = argparse.ArgumentParser()
-    parser.add_argument("--rfoldseek-repo", type=Path,
-                        default=Path(paths.RFOLDSEEK_REPO))
+    parser.add_argument("--rfoldsearch-repo", "--rfoldseek-repo", dest="rfoldsearch_repo", type=Path,
+                        default=Path(paths.RFOLDSEARCH_REPO))
     parser.add_argument("--structure-dir", type=Path,
                         default=Path(paths.RFAM3D_STRUCTURES))
     parser.add_argument("--rfam-seed", type=Path,
@@ -222,19 +222,19 @@ def numbered_chunks(first: str, second: str, width: int,
 
 def case_rows(case: dict, width: int) -> dict:
     """Numbered alignment rows (query, 3Dr, Seq, target) of the reference and
-    RFoldseek alignments, cut into lines of `width` columns."""
+    RFoldSearch alignments, cut into lines of `width` columns."""
     reference = []
     for index, (q, t, m, q0, q1, t0, t1) in enumerate(numbered_chunks(
             case["ref_q"], case["ref_t"], width,
             start_from_row(QUERY[1]), start_from_row(case["target_row"]))):
         reference.append(dict(q=q, s=case["ref_struct"][index * width:(index + 1) * width], n=m, t=t,
                               q0=q0, q1=q1, t0=t0, t1=t1))
-    rfoldseek = []
+    rfoldsearch = []
     for start in range(0, len(case["rf_q"]), width):
         stop = start + width
         qv = [x for x in case["qnums"][start:stop] if x is not None]
         tv = [x for x in case["tnums"][start:stop] if x is not None]
-        rfoldseek.append(dict(q=case["rf_q"][start:stop], s=case["rf_s"][start:stop],
+        rfoldsearch.append(dict(q=case["rf_q"][start:stop], s=case["rf_s"][start:stop],
                               n=case["rf_n"][start:stop], t=case["rf_t"][start:stop],
                               q0=int(qv[0]) if qv else 0, q1=int(qv[-1]) if qv else 0,
                               t0=int(tv[0]) if tv else 0, t1=int(tv[-1]) if tv else 0))
@@ -242,7 +242,7 @@ def case_rows(case: dict, width: int) -> dict:
             "tol_f1", "n_ref", "n_rf", "ref_rmsd", "rf_rmsd")
     out = {k: (float(case[k]) if isinstance(case[k], (float, np.floating)) else
                int(case[k]) if isinstance(case[k], (int, np.integer)) else case[k]) for k in keys}
-    return dict(out, reference=reference, rfoldseek=rfoldseek)
+    return dict(out, reference=reference, rfoldsearch=rfoldsearch)
 
 
 def main() -> None:
@@ -253,13 +253,14 @@ def main() -> None:
     seed, rf_annotation = parse_family(args.rfam_seed, FAMILY)
     match_columns = {index for index, char in enumerate(rf_annotation) if char.isupper()}
 
-    sys.path.insert(0, str(args.rfoldseek_repo))
+    sys.path.insert(0, str(args.rfoldsearch_repo))
     from rfoldseek.database import structure_to_entry
     from rfoldseek.tokenizer import encode_entry, load_model
 
     device = torch.device("cpu")
-    checkpoint_path = args.rfoldseek_repo / "rfoldseek/assets/desc_vqvae_best.pt"
-    matrix_path = args.rfoldseek_repo / "rfoldseek/assets/sub_matrix.pt"
+    package_dir = "rfoldsearch" if (args.rfoldsearch_repo / "rfoldsearch").is_dir() else "rfoldseek"
+    checkpoint_path = args.rfoldsearch_repo / package_dir / "assets/desc_vqvae_best.pt"
+    matrix_path = args.rfoldsearch_repo / package_dir / "assets/sub_matrix.pt"
     model, checkpoint, _, _ = load_model(str(checkpoint_path), device)
     mean, std = checkpoint.get("norm_mean"), checkpoint.get("norm_std")
     active = checkpoint.get("active_blocks")
@@ -286,7 +287,7 @@ def main() -> None:
             pair_query["tokens"], pair_target["tokens"], matrix)
         rf_q, rf_t, rf_s, rf_n, qnums, tnums, pairs = helper.alignment_strings(
             path, pair_query, pair_target, matrix)
-        if not np.isclose(score, float(table["rfoldseek_score"]), atol=1e-5):
+        if not np.isclose(score, float(table["rfoldsearch_score"]), atol=1e-5):
             raise ValueError(f"{label}: reconstructed score differs from benchmark")
 
         reference_columns = [col for col in common if col in match_columns]
@@ -317,10 +318,10 @@ def main() -> None:
             "label": label, "target": target_name, "target_row": target_row,
             "seq_id": float(table["sequence_identity"]),
             "tok_id": float(table["token_identity"]),
-            "precision": float(table["rfoldseek_precision"]),
-            "recall": float(table["rfoldseek_recall"]),
-            "f1": float(table["rfoldseek_f1"]),
-            "tol_f1": float(table["rfoldseek_tolerant_f1"]),
+            "precision": float(table["rfoldsearch_precision"]),
+            "recall": float(table["rfoldsearch_recall"]),
+            "f1": float(table["rfoldsearch_f1"]),
+            "tol_f1": float(table["rfoldsearch_tolerant_f1"]),
             "n_ref": len(reference_columns), "n_rf": len(pairs),
             "ref_rmsd": rmsd(query["full_coords"][qref],
                              target["full_coords"][tref]),

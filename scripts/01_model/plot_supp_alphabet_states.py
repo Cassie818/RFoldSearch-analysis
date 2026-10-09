@@ -1,4 +1,4 @@
-"""Supplementary alphabet-states figure: the 80-state RFoldseek structural alphabet, drawn from real representatives.
+"""Supplementary alphabet-states figure: the 80-state RFoldSearch structural alphabet, drawn from real representatives.
 
 For each token, the script selects representative occurrences closest to the
 token centroid in the normalised 17-D production descriptor space. Their

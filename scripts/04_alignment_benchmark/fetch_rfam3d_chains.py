@@ -60,7 +60,7 @@ def fetch(chain: str, output_dir: Path, retries: int, source: str) -> dict:
     for attempt in range(retries):
         temporary = output.with_suffix(".cif.part")
         try:
-            request = urllib.request.Request(url, headers={"User-Agent": "RFoldseek-Rfam3D/1.0"})
+            request = urllib.request.Request(url, headers={"User-Agent": "RFoldSearch-Rfam3D/1.0"})
             with urllib.request.urlopen(request, timeout=180) as response:
                 data = response.read()
             if len(data) < 1024 or b"_atom_site." not in data:

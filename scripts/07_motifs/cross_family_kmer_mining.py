@@ -98,7 +98,7 @@ def main():
                          "must remove rRNA/tRNA occurrences before counting")
     atom_group = ap.add_mutually_exclusive_group()
     atom_group.add_argument("--use_all_atoms", dest="use_all_atoms", action="store_true",
-                            help="use all 5 RFoldseek anchor atoms for Kabsch "
+                            help="use all 5 RFoldSearch anchor atoms for Kabsch "
                                  "(default; reproduces Section 2.4)")
     atom_group.add_argument("--c4_only", dest="use_all_atoms", action="store_false",
                             help="use only C4' for Kabsch as a sensitivity analysis")

@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 KS = [10, 20, 40, 80]
 TAU = "0.45"
 C_KM = "#C56B57"   # k-means (muted terracotta)
-C_VQ = "#1F9BD8"   # deployed VQ-VAE (RFoldseek blue, as in Fig. 2)
+C_VQ = "#1F9BD8"   # deployed VQ-VAE (RFoldSearch blue, as in Fig. 2)
 
 
 def load():

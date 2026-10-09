@@ -1,8 +1,8 @@
-"""Supplementary forward-attribution figure: forward attribution of the RiboSeek-to-RFoldseek gap.
+"""Supplementary forward-attribution figure: forward attribution of the RiboSeek-to-RFoldSearch gap.
 
 The four panels are the former main-text Fig. 2E-H, moved intact to the
 supplement. Each waterfall follows the same forward replacement path:
-RiboSeek -> RFoldseek search pipeline -> Structure-BLOSUM -> 3Dr alphabet ->
+RiboSeek -> RFoldSearch search pipeline -> Structure-BLOSUM -> 3Dr alphabet ->
 structure score (ranking by S * aTM instead of the Smith-Waterman score S).
 
 Writes figures/S18.{png,pdf}.
@@ -32,8 +32,8 @@ TAU = "0.45"
 
 def forward_panel(ax, level, title):
     means, forward = level["means"], level["forward"]
-    keys = ["A_ribo_published", "B_fwd_pipeline", "C_fwd_matrix", "D_3dr_sw", "D_rfoldseek"]
-    steps = ["+ RFoldseek pipeline", "+ learned matrix", "+ 3Dr alphabet", "+ structure score"]
+    keys = ["A_ribo_published", "B_fwd_pipeline", "C_fwd_matrix", "D_3dr_sw", "D_rfoldsearch"]
+    steps = ["+ RFoldSearch pipeline", "+ learned matrix", "+ 3Dr alphabet", "+ structure score"]
     values = [means[key] for key in keys]
 
     ax.bar(0, values[0], 0.62, color=C_RB, edgecolor="#B05A94", linewidth=0.6,
@@ -73,8 +73,8 @@ def forward_panel(ax, level, title):
             ls=(0, (3, 2)), zorder=2)
 
     ax.set_xticks(range(last + 1))
-    ax.set_xticklabels(["RiboSeek", "+ RFoldseek\npipeline", "+ learned\nmatrix",
-                        "+ 3Dr\nalphabet", "+ structure\nscore", "RFoldseek"], fontsize=8)
+    ax.set_xticklabels(["RiboSeek", "+ RFoldSearch\npipeline", "+ learned\nmatrix",
+                        "+ 3Dr\nalphabet", "+ structure\nscore", "RFoldSearch"], fontsize=8)
     ax.set_ylabel("Sens@1FP", fontsize=11)
     top = max(
         max(values),

@@ -1,8 +1,8 @@
-# RFoldseek subset database rebuild
+# RFoldSearch subset database rebuild
 
 Build date: 2026-09-16
 
-Code: `DylanYang/RFoldseek`, branch `reproduce-shipped-db-tokens`, commit
+Code: `DylanYang/RFoldSearch`, branch `reproduce-shipped-db-tokens`, commit
 `2305f07cb14236c2a17e988f798100096d35f5d5`.
 
 The bundled checkpoint records `active_blocks = [g_ctx, g_nn1]`. Both databases
@@ -10,8 +10,8 @@ were encoded with those inactive descriptor blocks zeroed after normalization.
 
 ## Experimental subset
 
-- Input: `/Users/cassie/Desktop/rfoldseek_rebuild_wip/nr80.jsonl`
-- Clusters: `/Users/cassie/Desktop/rfoldseek_rebuild_wip/nr80.clstr`
+- Input: `/Users/cassie/Desktop/rfoldsearch_rebuild_wip/nr80.jsonl`
+- Clusters: `/Users/cassie/Desktop/rfoldsearch_rebuild_wip/nr80.clstr`
 - Output: `experimental/nr80_891_activeblocks.pt`
 - Input records: 891
 - Retained records (`min_len = 20`): 885
@@ -62,9 +62,9 @@ replacement for the full 531,888-target benchmark.
 
 RiboSeek was rerun on the same 66 queries and targets using its native SA20
 pipeline with a 500-candidate prefilter pool, tie seed 0, and the same neutral
-pairs. RFoldseek versus RiboSeek Recall@1/5/10 was 36/40/42 versus 32/38/39.
+pairs. RFoldSearch versus RiboSeek Recall@1/5/10 was 36/40/42 versus 32/38/39.
 On the 54-query sequence-blind intersection it was 34/38/40 versus 30/36/37.
 At rank 1, 27 queries were successes for both methods, nine only for
-RFoldseek, and five only for RiboSeek.
+RFoldSearch, and five only for RiboSeek.
 
 - RiboSeek matched result: `riboseek_experimental_to_predicted_top500.json`

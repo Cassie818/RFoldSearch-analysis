@@ -192,7 +192,7 @@
       883
     ]
   },
-  "RFoldseek": {
+  "RFoldSearch": {
     "family": {
       "sens": [
         0.6153284671532847,
@@ -417,7 +417,7 @@
       ]
     }
   },
-  "RFoldseek-TM": {
+  "RFoldSearch-TM": {
     "family": {
       "sens": [
         0.43795620437956206,
@@ -2252,8 +2252,8 @@
   },
   "_tie_break": {
     "methods": [
-      "RFoldseek",
-      "RFoldseek-TM"
+      "RFoldSearch",
+      "RFoldSearch-TM"
     ],
     "scheme": "sha256(\"<seed>:<chain_id>\"), applied at the prefilter top_n cut and at the reranking",
     "seeds": [

@@ -11,8 +11,8 @@ import figstyle as S  # noqa: E402
 from figstyle import plt  # noqa: E402
 
 FIG = os.path.join(E.REPO, "figures")
-BAR_METHODS = ["RFoldseek n500", "RFoldseek-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal"]
-REF = "RFoldseek n500"
+BAR_METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal"]
+REF = "RFoldSearch n500"
 SETS = [("exp", "Experimental queries"),
         ("p2p", "Predicted queries")]
 COLS = ["exp", "p2p"]

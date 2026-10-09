@@ -1,14 +1,14 @@
 {
   "0.4": {
     "family": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "estimate": 0.6790423554165286,
         "ci_lower": 0.5425693830423985,
         "ci_upper": 0.837904846552686,
         "sig_vs_rf": null,
         "n_blocks": 27
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "estimate": 0.8008139865129351,
         "ci_lower": 0.7021531808826709,
         "ci_upper": 0.9185675148813635,
@@ -73,14 +73,14 @@
       }
     },
     "clan": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "estimate": 0.5317124728314946,
         "ci_lower": 0.37789388955728503,
         "ci_upper": 0.8017152167430148,
         "sig_vs_rf": null,
         "n_blocks": 9
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "estimate": 0.7072241951943405,
         "ci_lower": 0.6070795306379505,
         "ci_upper": 0.9081745781650495,
@@ -147,14 +147,14 @@
   },
   "0.45": {
     "family": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "estimate": 0.6694155982913984,
         "ci_lower": 0.5268119186502671,
         "ci_upper": 0.8501235135439621,
         "sig_vs_rf": null,
         "n_blocks": 26
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "estimate": 0.820499076279931,
         "ci_lower": 0.7210372774469453,
         "ci_upper": 0.9409262178243716,
@@ -219,14 +219,14 @@
       }
     },
     "clan": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "estimate": 0.4886340225664162,
         "ci_lower": 0.2894780883597167,
         "ci_upper": 0.8372950201298839,
         "sig_vs_rf": null,
         "n_blocks": 8
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "estimate": 0.7329741873581251,
         "ci_lower": 0.6204314575329702,
         "ci_upper": 0.922242823108443,
@@ -293,14 +293,14 @@
   },
   "0.5": {
     "family": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "estimate": 0.6536202892085404,
         "ci_lower": 0.4443473425076375,
         "ci_upper": 0.896169457568122,
         "sig_vs_rf": null,
         "n_blocks": 25
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "estimate": 0.8414709744379454,
         "ci_lower": 0.7365057667553985,
         "ci_upper": 0.9607928878762365,
@@ -365,14 +365,14 @@
       }
     },
     "clan": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "estimate": 0.5016118225698302,
         "ci_lower": 0.23505855378226648,
         "ci_upper": 0.8709168091378628,
         "sig_vs_rf": null,
         "n_blocks": 8
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "estimate": 0.711079851159668,
         "ci_lower": 0.5057936507936509,
         "ci_upper": 0.9530014235777458,

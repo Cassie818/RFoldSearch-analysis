@@ -1,11 +1,11 @@
-"""RFoldseek and RFoldseek-TM rankings on the RNAsolo benchmark, ten tie-breaking seeds.
+"""RFoldSearch and RFoldSearch-TM rankings on the RNAsolo benchmark, ten tie-breaking seeds.
 
-RFoldseek is the deployed pipeline: the similar-k-mer prefilter (exact 4-mer index with
+RFoldSearch is the deployed pipeline: the similar-k-mer prefilter (exact 4-mer index with
 one-substitution Structure-BLOSUM expansion, best diagonal with >= 2 hits), the top 200
-candidates, then ranking by the structure score S * aTM (rfoldseek.structure_score).
-RFoldseek-TM ranks the same candidates by the symmetric US-align TM-score; candidates
+candidates, then ranking by the structure score S * aTM.
+RFoldSearch-TM ranks the same candidates by the symmetric US-align TM-score; candidates
 without a US-align score are dropped. Ties are broken by the seeded chain-id hash
-(rfoldseek.tiebreak), both at the prefilter cut and at the ranking."""
+both at the prefilter cut and at the ranking."""
 import os
 import sys
 from collections import defaultdict
@@ -83,8 +83,8 @@ def main():
             rtm[q].append(covered[np.lexsort((key[covered], -b.tm[q, covered]))])
         if (k + 1) % 20 == 0:
             print(f"  {k + 1}/{len(b.queries)} queries", flush=True)
-    BM.save_rankings("RFoldseek", rf, b)
-    BM.save_rankings("RFoldseek-TM", rtm, b)
+    BM.save_rankings("RFoldSearch", rf, b)
+    BM.save_rankings("RFoldSearch-TM", rtm, b)
 
 
 if __name__ == "__main__":

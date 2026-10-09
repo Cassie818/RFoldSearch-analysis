@@ -19,11 +19,11 @@ Sequence hits come from cv_unlabelled_homology.py (--seq-hits).
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import CV_DESC, DATA_ROOT, PRODUCTION_DB, RFOLDSEEK_REPO, SRC_MODELS, SRC_SEARCH, resolve
+from paths import CV_DESC, DATA_ROOT, PRODUCTION_DB, RFOLDSEARCH_REPO, SRC_MODELS, SRC_SEARCH, resolve
 
 _sys.path.insert(0, SRC_SEARCH)
 _sys.path.insert(0, SRC_MODELS)
-_sys.path.insert(0, RFOLDSEEK_REPO)
+_sys.path.insert(0, RFOLDSEARCH_REPO)
 _REPO = _os.path.abspath(_os.path.join(_os.path.dirname(__file__), "..", ".."))
 USALIGN_CACHE = resolve("files/production/retrieval/usalign_full.cache.jsonl")
 _os.chdir(DATA_ROOT)
@@ -58,7 +58,7 @@ CLIP = 1.0
 KMER_K = 4
 THRESH_FRAC = 0.75
 TOPN = 200
-TIE_SEEDS = (0, 1, 2)   # sha256 tie-breaking seeds (rfoldseek.tiebreak); per-query values are their mean
+TIE_SEEDS = (0, 1, 2)   # sha256 tie-breaking seeds (rfoldsearch.tiebreak); per-query values are their mean
 K = 80
 N_ENC, N_DEC, DH, DL = 2, 4, 128, 128
 D_DESC = 49

@@ -4,7 +4,7 @@ Everything here is taken from that script so a method keeps its colour, its
 marker and its typography across the paper: Arial, no grid, only the left and
 bottom spines, bold panel letters outside the axes, a centred panel title, and
 one shared legend at the foot of the figure. Methods that do not appear in
-Fig. 2 (nhmmer, and RFoldseek at a deeper candidate pool) take a tone and a
+Fig. 2 (nhmmer, and RFoldSearch at a deeper candidate pool) take a tone and a
 marker that Fig. 2 leaves unused.
 """
 import matplotlib
@@ -15,9 +15,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # ---- colour and marker, as in Fig. 2 ----------------------------------------
-BASE = {"RFoldseek n500": "#1F9BD8",      # Fig. 2 RFoldseek
-        "RFoldseek-TM n500": "#009E9E",   # Fig. 2 RFoldseek-TM
-        "RFoldseek-TM n200": "#009E9E",
+BASE = {"RFoldSearch n500": "#1F9BD8",      # Fig. 2 RFoldSearch
+        "RFoldSearch-TM n500": "#009E9E",   # Fig. 2 RFoldSearch-TM
+        "RFoldSearch-TM n200": "#009E9E",
         "RiboSeek c500": "#E377C2",       # Fig. 2 RiboSeek
         "RiboSeek c200": "#E377C2",
         "RiboSeek RS-80 c500": "#A8327F",  # RiboSeek 0.2.0 default RS-80: same hue, deeper shade
@@ -26,21 +26,21 @@ BASE = {"RFoldseek n500": "#1F9BD8",      # Fig. 2 RFoldseek
         "Infernal": "#BCBD22",            # not in Fig. 2 or elsewhere: olive (unused tab10 slot)
         "US-align (exhaustive)": "#D62728",   # Fig. 2 US-align
         "RMalign (exhaustive)": "#2CA02C"}    # Fig. 2 RMalign
-MARKER = {"RFoldseek n500": "o",
-          "RFoldseek-TM n500": "*", "RFoldseek-TM n200": "*",
+MARKER = {"RFoldSearch n500": "o",
+          "RFoldSearch-TM n500": "*", "RFoldSearch-TM n200": "*",
           "RiboSeek c500": "v", "RiboSeek c200": "v", "RiboSeek RS-80 c500": "v", "BLASTN": "D", "nhmmer": "h", "Infernal": "p",
           "US-align (exhaustive)": "s", "RMalign (exhaustive)": "^"}
 LINESTYLE = {m: "-" for m in BASE}
 LINESTYLE["BLASTN"] = "--"
 OPEN = set()                              # lines: white face; bars: hatched
 HATCH = {}                                # only where two depths share a panel
-MSIZE = {"RFoldseek-TM n500": 11, "RFoldseek-TM n200": 11}         # the star needs to be bigger, as in Fig. 2
-SHORT = {"RFoldseek n500": "RFoldseek", "RFoldseek-TM n500": "RFoldseek-TM",
+MSIZE = {"RFoldSearch-TM n500": 11, "RFoldSearch-TM n200": 11}         # the star needs to be bigger, as in Fig. 2
+SHORT = {"RFoldSearch n500": "RFoldSearch", "RFoldSearch-TM n500": "RFoldSearch-TM",
          "RiboSeek c500": "RiboSeek (RS-20)", "RiboSeek RS-80 c500": "RiboSeek (RS-80)",
          "BLASTN": "BLASTN", "nhmmer": "nhmmer",
          "US-align (exhaustive)": "US-align", "RMalign (exhaustive)": "RMalign", "Infernal": "Infernal",
          # other candidate depths, named only where the depth itself is the point
-         "RFoldseek-TM n200": "RFoldseek-TM (depth 200)",
+         "RFoldSearch-TM n200": "RFoldSearch-TM (depth 200)",
          "RiboSeek c200": "RiboSeek (RS-20, depth 200)"}
 
 # Query sets are never encoded by hue (hue is the method); they are encoded by

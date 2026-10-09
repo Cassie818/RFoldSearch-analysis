@@ -43,9 +43,9 @@ def main():
         ax.text(0.035, 0.945, "strictly linear", transform=ax.transAxes,
                 fontsize=5.8, color=P.MUTED, va="top")
     for ax in (a, c):
-        ax.text(0.035, 0.055, "shaded: RFoldseek interquartile range",
+        ax.text(0.035, 0.055, "shaded: RFoldSearch interquartile range",
                 transform=ax.transAxes, fontsize=5.5,
-                color=P.COLOR["RFoldseek"], alpha=0.75, va="bottom")
+                color=P.COLOR["RFoldSearch"], alpha=0.75, va="bottom")
 
     a.text(0.0, 1.16, "RhoFold+ database (83,156 structures)",
            transform=a.transAxes, fontsize=6.4, color=P.INK, va="baseline")

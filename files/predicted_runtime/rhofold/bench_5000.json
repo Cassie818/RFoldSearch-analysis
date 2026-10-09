@@ -1,7 +1,7 @@
 {
   "n_database": 5000,
   "methods": {
-    "rfoldseek@200": {
+    "rfoldsearch@200": {
       "build_s": 0.999,
       "n_queries": 20,
       "mean_s": 1.5280095927417279,
@@ -112,7 +112,7 @@
         }
       ]
     },
-    "rfoldseek@500": {
+    "rfoldsearch@500": {
       "build_s": 0.764,
       "n_queries": 20,
       "mean_s": 1.6371621262282132,

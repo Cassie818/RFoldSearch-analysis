@@ -14,10 +14,10 @@ import torch
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, REPO)
-from paths import BLAST_BIN, RFOLDSEEK_REPO, SRC_SEARCH
+from paths import BLAST_BIN, RFOLDSEARCH_REPO, SRC_SEARCH
 
 sys.path.insert(0, SRC_SEARCH)
-sys.path.insert(0, RFOLDSEEK_REPO)
+sys.path.insert(0, RFOLDSEARCH_REPO)
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
 from rfoldseek.structure_score import c4_coords, score_pair
 from rfoldseek.tiebreak import tie_keys
@@ -25,7 +25,7 @@ from smith_waterman import smith_waterman_numba
 
 from sequence_divergent_rescore import seq_identity
 
-HMMER_BIN = os.environ.get("RFOLDSEEK_HMMER_BIN", "")
+HMMER_BIN = os.environ.get("RFOLDSEARCH_HMMER_BIN", os.environ.get("RFOLDSEEK_HMMER_BIN", ""))
 RET = os.path.join(REPO, "files", "production", "retrieval")
 OUT = os.path.join(RET, "sequence_divergent")
 K, TOPN, KMER_K, THRESH_FRAC, GO, GE = 80, 200, 4, 0.75, -2.0, -0.5
@@ -67,7 +67,7 @@ GO32, GE32 = np.float32(GO), np.float32(GE)
 
 
 def structure_score(qt, qxyz, t):
-    """RFoldseek's ranking score S * aTM of query tokens qt (C4' qxyz) against chain t."""
+    """RFoldSearch's ranking score S * aTM of query tokens qt (C4' qxyz) against chain t."""
     s, atm, _ = score_pair(qt, qxyz, toks[t], XYZ[t], sub, GO32, GE32)
     return s * atm
 
@@ -119,7 +119,7 @@ for line in open(os.path.join(RET, "usalign_full.cache.jsonl")):
 
 
 def rank_seeded(q, keys_by_seed):
-    """RFoldseek and RFoldseek-TM rankings, one per tie-breaking seed."""
+    """RFoldSearch and RFoldSearch-TM rankings, one per tie-breaking seed."""
     sc = prefilter(toks[q], q)
     c0 = np.array([x[0] for x in sc], np.int64)
     s0 = np.array([x[1] for x in sc])
@@ -225,7 +225,7 @@ def score(queries, truth, keys_by_seed, cache, family=False):
                 key = (min(q, t), max(q, t))
                 if key not in pair_id:
                     pair_id[key] = seq_identity(SEQS[tags[q]], SEQS[tags[t]])
-            saved[tags[q]] = {"RFoldseek": [r.tolist() for r in rf], "RFoldseek-TM": [r.tolist() for r in tm],
+            saved[tags[q]] = {"RFoldSearch": [r.tolist() for r in rf], "RFoldSearch-TM": [r.tolist() for r in tm],
                               "Shuffled": [r.tolist() for r in shuf], **{m: r.tolist() for m, r in rank.items()},
                               "seq_detect_E": {str(i): float(min(bl.get(i, 99.0), nh.get(i, 99.0)))
                                                for i in set(bl) | set(nh)},
@@ -237,8 +237,8 @@ def score(queries, truth, keys_by_seed, cache, family=False):
                 continue
             for m, r in rank.items():
                 per[fl][m][tags[q]] = sens(r, pp, nn)
-            per[fl]["RFoldseek"][tags[q]] = float(np.mean([sens(r, pp, nn) for r in rf]))
-            per[fl]["RFoldseek-TM"][tags[q]] = float(np.mean([sens(r, pp, nn) for r in tm]))
+            per[fl]["RFoldSearch"][tags[q]] = float(np.mean([sens(r, pp, nn) for r in rf]))
+            per[fl]["RFoldSearch-TM"][tags[q]] = float(np.mean([sens(r, pp, nn) for r in tm]))
             per[fl]["Shuffled"][tags[q]] = float(np.mean([sens(r, pp, nn) for r in shuf]))
             per[fl]["_npos"][tags[q]] = int(pp.sum())
         if (n + 1) % 20 == 0:
@@ -289,7 +289,7 @@ def main():
     json.dump({"blocks": {tags[q]: fam[q] for q in FAM_Q}, "clan": {tags[q]: clan[q] for q in FAM_Q},
                "values": fam_per}, open(os.path.join(dst, "family_perquery.json"), "w"))
     json.dump({"clan": {tags[q]: clan[q] for q in CLAN_Q}, "values": clan_per,
-               "note": f"RFoldseek and RFoldseek-TM: mean over {args.seeds} sha256 tie-breaking seeds"},
+               "note": f"RFoldSearch and RFoldSearch-TM: mean over {args.seeds} sha256 tie-breaking seeds"},
               open(os.path.join(dst, "clan_perquery.json"), "w"))
     if args.check:
         compare(fam_per, os.path.join(OUT, "family_perquery.json"), "family")

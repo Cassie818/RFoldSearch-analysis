@@ -239,7 +239,7 @@ files/production/retrieval/*.cache.jsonl
 Splits/
 *.pt
 
-# Exception: the small deployed RFoldseek model, tracked so search runs
+# Exception: the small deployed RFoldSearch model, tracked so search runs
 # straight after cloning (tokenizer + Structure-BLOSUM + tokenised 885-chain db
 # + Karlin-Altschul E-value parameters for per-hit database E-values)
 !files/models/desc_vqvae_best.pt

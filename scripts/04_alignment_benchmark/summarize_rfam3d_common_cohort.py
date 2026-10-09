@@ -12,7 +12,7 @@ from pathlib import Path
 from statistics import mean
 
 
-METHODS = ("rfoldseek", "riboseek", "usalign", "sequence_alignment")
+METHODS = ("rfoldsearch", "riboseek", "usalign", "sequence_alignment")
 METRICS = ("f1", "tolerant_f1")
 
 
@@ -43,9 +43,9 @@ def summarize(rows: list[dict], reps: int, seed: int,
                                  for family in families]
     for comparator in METHODS[1:]:
         for metric in METRICS:
-            key = f"rfoldseek_minus_{comparator}_{metric}"
+            key = f"rfoldsearch_minus_{comparator}_{metric}"
             family_means[key] = [
-                mean(row[f"rfoldseek_{metric}"] - row[f"{comparator}_{metric}"]
+                mean(row[f"rfoldsearch_{metric}"] - row[f"{comparator}_{metric}"]
                      for row in grouped[family]) for family in families
             ]
 

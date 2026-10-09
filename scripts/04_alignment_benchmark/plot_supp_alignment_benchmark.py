@@ -2,8 +2,8 @@
 alignments (313 within-family pairs, 24 families).
 
     A    Exact and +/-1-column alignment F1, including a global sequence baseline
-    B    Paired family-level differences from RFoldseek on the same cohort
-    C-E  Per-pair view: 3Dr token vs nucleotide identity, and RFoldseek exact F1
+    B    Paired family-level differences from RFoldSearch on the same cohort
+    C-E  Per-pair view: 3Dr token vs nucleotide identity, and RFoldSearch exact F1
          against US-align and the global sequence baseline; cases 1-4 are the
          RF00015 examples of the alignment case figure (panels A-D there)
 """
@@ -15,8 +15,8 @@ from pathlib import Path
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "02_rnasolo_retrieval"))
 from plot_fig2 import FIG_DIR, LABEL, METHOD_BASE, METHOD_COLOR, np, plt, resolve  # noqa: E402
 
-ALIGN_METHODS = ["RFoldseek", "RiboSeek", "US-align", "Global sequence"]
-ALIGN_KEY = {"RFoldseek": "rfoldseek", "RiboSeek": "riboseek",
+ALIGN_METHODS = ["RFoldSearch", "RiboSeek", "US-align", "Global sequence"]
+ALIGN_KEY = {"RFoldSearch": "rfoldsearch", "RiboSeek": "riboseek",
              "US-align": "usalign", "Global sequence": "sequence_alignment"}
 METHOD_COLOR["Global sequence"] = "#777777"
 METHOD_BASE["Global sequence"] = "#555555"
@@ -55,15 +55,15 @@ def alignment_panel(ax, alignment):
 
 
 def alignment_difference_panel(ax, alignment):
-    """Paired family-macro RFoldseek differences with block-bootstrap CIs."""
+    """Paired family-macro RFoldSearch differences with block-bootstrap CIs."""
     summary = alignment["summary"]
     rows = [
-        ("rfoldseek_minus_usalign_f1", "US-align", "Exact", True),
-        ("rfoldseek_minus_riboseek_f1", "RiboSeek", "Exact", True),
-        ("rfoldseek_minus_sequence_alignment_f1", "Global sequence", "Exact", True),
-        ("rfoldseek_minus_usalign_tolerant_f1", "US-align", r"$\pm$1 nt", False),
-        ("rfoldseek_minus_riboseek_tolerant_f1", "RiboSeek", r"$\pm$1 nt", False),
-        ("rfoldseek_minus_sequence_alignment_tolerant_f1", "Global sequence", r"$\pm$1 nt", False),
+        ("rfoldsearch_minus_usalign_f1", "US-align", "Exact", True),
+        ("rfoldsearch_minus_riboseek_f1", "RiboSeek", "Exact", True),
+        ("rfoldsearch_minus_sequence_alignment_f1", "Global sequence", "Exact", True),
+        ("rfoldsearch_minus_usalign_tolerant_f1", "US-align", r"$\pm$1 nt", False),
+        ("rfoldsearch_minus_riboseek_tolerant_f1", "RiboSeek", r"$\pm$1 nt", False),
+        ("rfoldsearch_minus_sequence_alignment_tolerant_f1", "Global sequence", r"$\pm$1 nt", False),
     ]
     y = np.arange(len(rows))[::-1]
     for yy, (key, competitor, metric, filled) in zip(y, rows):
@@ -82,7 +82,7 @@ def alignment_difference_panel(ax, alignment):
         name = LABEL.get(competitor, competitor)
         return f"vs {name[:-1]}, {metric})" if name.endswith(")") else f"vs {name} ({metric})"
     ax.set_yticks(y, [row_label(competitor, metric) for _, competitor, metric, _ in rows])
-    ax.set_xlabel(r"$\Delta$F1 (RFoldseek $-$ comparator)", fontsize=12)
+    ax.set_xlabel(r"$\Delta$F1 (RFoldSearch $-$ comparator)", fontsize=12)
     ax.set_xlim(-0.30, 0.25)
     ax.set_ylim(-0.65, len(rows) - 0.35)
     ax.tick_params(axis="both", labelsize=10)
@@ -142,10 +142,10 @@ def main():
     alignment_difference_panel(axd["B"], alignment)
     pair_scatter(axd["C"], rows, cases, "token_identity", "sequence_identity",
                  "3Dr token identity", "Nucleotide sequence identity")
-    pair_scatter(axd["D"], rows, cases, "rfoldseek_f1", "usalign_f1",
-                 "RFoldseek exact F1", "US-align exact F1")
-    pair_scatter(axd["E"], rows, cases, "rfoldseek_f1", "sequence_alignment_f1",
-                 "RFoldseek exact F1", "Global sequence exact F1", offsets={"2": (8, -10), "3": (-4, 8)})
+    pair_scatter(axd["D"], rows, cases, "rfoldsearch_f1", "usalign_f1",
+                 "RFoldSearch exact F1", "US-align exact F1")
+    pair_scatter(axd["E"], rows, cases, "rfoldsearch_f1", "sequence_alignment_f1",
+                 "RFoldSearch exact F1", "Global sequence exact F1", offsets={"2": (8, -10), "3": (-4, 8)})
     for lab in "ABCDE":
         axd[lab].text(-0.10 if lab in "AB" else -0.22, 1.04, lab, transform=axd[lab].transAxes,
                       fontsize=16, fontweight="bold", va="bottom", ha="right")

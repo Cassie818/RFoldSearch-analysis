@@ -28,7 +28,7 @@ def load(rel):
 
 
 def draw(ax, lengths, times, xlim, ylim):
-    blue = P.COLOR["RFoldseek"]
+    blue = P.COLOR["RFoldSearch"]
     ax.set_xscale("log"); ax.set_yscale("log")
     ax.set_xlim(*xlim); ax.set_ylim(*ylim)
 

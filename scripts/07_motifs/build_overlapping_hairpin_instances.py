@@ -1,4 +1,4 @@
-"""Build six-residue instances formed by two offset RFoldseek words."""
+"""Build six-residue instances formed by two offset RFoldSearch words."""
 from __future__ import annotations
 
 import argparse

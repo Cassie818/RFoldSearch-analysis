@@ -16,8 +16,13 @@ MM = F.MM
 INK, MUTED = "#1A1A1A", "#6B6B6B"
 C_RHO, C_NU = "#D55E00", "#56B4E9"    # db identities; distinct from method hues
 # RhoFold+ metadata and NuFold catalog; not bundled (external input).
-CAT = os.environ.get("RFOLDSEEK_NUFOLD_CATALOG",
-                     "/Users/dylanyang/Documents/workspace/rfoldseek/data/nufold_catalog")
+CAT = os.environ.get(
+    "RFOLDSEARCH_NUFOLD_CATALOG",
+    os.environ.get(
+        "RFOLDSEEK_NUFOLD_CATALOG",
+        "/Users/dylanyang/Documents/workspace/rfoldseek/data/nufold_catalog",
+    ),
+)
 
 
 def load():

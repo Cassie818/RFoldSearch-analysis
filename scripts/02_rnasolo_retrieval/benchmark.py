@@ -27,10 +27,10 @@ import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(HERE, "..", ".."))
-from paths import DATA_ROOT, RFOLDSEEK_REPO, SRC_SEARCH  # noqa: E402
+from paths import DATA_ROOT, RFOLDSEARCH_REPO, SRC_SEARCH  # noqa: E402
 
 sys.path.insert(0, SRC_SEARCH)
-sys.path.insert(0, RFOLDSEEK_REPO)
+sys.path.insert(0, RFOLDSEARCH_REPO)
 from prefilter_rfam_benchmark import (  # noqa: E402
     attach_labels,
     first_fp_sensitivity,
@@ -45,7 +45,7 @@ NSEEDS = 10
 
 # method name -> rankings file slug
 METHODS = {
-    "RFoldseek": "rfoldseek", "RFoldseek-TM": "rfoldseek_tm",
+    "RFoldSearch": "rfoldsearch", "RFoldSearch-TM": "rfoldsearch_tm",
     "US-align": "usalign", "RMalign": "rmalign", "GTalign": "gtalign", "RTM-align": "rtmalign",
     "RiboSeek": "riboseek_rs20", "RiboSeek RS-80": "riboseek_rs80",
     "BLASTN": "blastn", "Infernal": "infernal",

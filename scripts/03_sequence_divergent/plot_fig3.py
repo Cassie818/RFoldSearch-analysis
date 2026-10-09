@@ -18,7 +18,7 @@ B, SEED = 2000, 124
 
 ZONES = ("above", "twilight", "midnight")
 
-_KEY = {"RFoldseek": "RFoldseek n500", "RFoldseek-TM": "RFoldseek-TM n500", "US-align": "US-align (exhaustive)",
+_KEY = {"RFoldSearch": "RFoldSearch n500", "RFoldSearch-TM": "RFoldSearch-TM n500", "US-align": "US-align (exhaustive)",
         "Infernal": "Infernal", "nhmmer": "nhmmer", "BLASTN": "BLASTN",
         "RS-20": "RiboSeek c500", "RS-80": "RiboSeek RS-80 c500"}
 COLOR = {m: S.BASE[k] for m, k in _KEY.items()}
@@ -63,13 +63,13 @@ def nfam(qs, blocks):
 
 
 def marker_size(m):
-    return S.MSIZE.get(_KEY.get(m, ""), MS) if m == "RFoldseek-TM" else (MS - 1.5 if m == "Composition" else MS)
+    return S.MSIZE.get(_KEY.get(m, ""), MS) if m == "RFoldSearch-TM" else (MS - 1.5 if m == "Composition" else MS)
 
 
 def line_panel(ax, V, blocks, strata, ticks, methods, ci, light=(), bold=()):
     """Sens@1FP of each method across strata; `light` strata are drawn faded and dashed; if `bold` is
     given, those methods are drawn thick and the others thin."""
-    dx = {"RFoldseek": -0.06, "RFoldseek-TM": -0.03, "US-align": 0.03, "Infernal": 0.06, "nhmmer": 0.02, "BLASTN": -0.02, "RS-80": 0.04}
+    dx = {"RFoldSearch": -0.06, "RFoldSearch-TM": -0.03, "US-align": 0.03, "Infernal": 0.06, "nhmmer": 0.02, "BLASTN": -0.02, "RS-80": 0.04}
     for m in methods:
         pts = []
         for k, st in enumerate(strata):
@@ -83,7 +83,7 @@ def line_panel(ax, V, blocks, strata, ticks, methods, ci, light=(), bold=()):
         solid = [p for p in pts if not p[2]]
         lw = LW if not bold else 2.2 if m in bold else 1.2
         kw = dict(marker=MARK[m], color=COLOR[m], lw=lw, ms=marker_size(m), mec="white", mew=0.8,
-                  zorder=4 if m in ("RFoldseek",) + tuple(bold) else 3)
+                  zorder=4 if m in ("RFoldSearch",) + tuple(bold) else 3)
         ax.plot([p[0] for p in solid], [p[1] for p in solid], LINE[m], label=LABEL[m], **kw)
         faded = [p for p in pts if p[2]]
         if faded and solid:
@@ -101,11 +101,11 @@ def line_panel(ax, V, blocks, strata, ticks, methods, ci, light=(), bold=()):
 
 
 def forest_panel(ax, V, blocks, stratum, rows, xlabel):
-    """RFoldseek minus each comparator in one stratum, all families (filled) and tRNA excluded (open)."""
+    """RFoldSearch minus each comparator in one stratum, all families (filled) and tRNA excluded (open)."""
     for i, m in enumerate(rows):
         for j, keep in enumerate((lambda q: True, lambda q: blocks[q] != "RF00005")):
-            qs = [q for q in V[stratum]["RFoldseek"] if keep(q) and q in V[stratum][m]]
-            diff = {q: V[stratum]["RFoldseek"][q] - V[stratum][m][q] for q in qs}
+            qs = [q for q in V[stratum]["RFoldSearch"] if keep(q) and q in V[stratum][m]]
+            diff = {q: V[stratum]["RFoldSearch"][q] - V[stratum][m][q] for q in qs}
             d, lo, hi = boot(diff, blocks)
             y = i - 0.16 if j == 0 else i + 0.16
             ax.hlines(y, lo, hi, color=COLOR[m], lw=LW, zorder=2)
@@ -136,7 +136,7 @@ def clan_panel(ax, cl):
 
     def in_group(q, g):
         return clan[q] == g if g != "other" else clan[q] not in {x for x, _ in CLANS}
-    cm = ["RFoldseek", "Infernal", "RS-80"]
+    cm = ["RFoldSearch", "Infernal", "RS-80"]
     for k, (g, glab) in enumerate(groups):
         for j, m in enumerate(cm):
             x = k + (j - 1) * 0.2
@@ -176,7 +176,7 @@ def letters(axd, keys, big=()):
 def main():
     fam = json.load(open(os.path.join(DATA, "family_perquery.json")))
     blocks, V = fam["blocks"], fam["values"]
-    methods = ["RFoldseek", "RFoldseek-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80",
+    methods = ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80",
                "Composition"]
     from sequence_divergent_rescore import background_identity, rescore
     _, bg = background_identity()
@@ -190,15 +190,15 @@ def main():
     fig, axd = plt.subplot_mosaic([["a", "b"], ["c", "c"]], figsize=(13.5, 10),
                                   gridspec_kw={"height_ratios": [1, 0.8], "hspace": 0.38, "wspace": 0.42})
     ticks = [lab for _, lab in bins]
-    line_panel(axd["a"], V, blocks, [b for b, _ in bins], ticks, methods, ci=("RFoldseek", "Infernal"),
-               bold=("RFoldseek", "RFoldseek-TM"))
+    line_panel(axd["a"], V, blocks, [b for b, _ in bins], ticks, methods, ci=("RFoldSearch", "Infernal"),
+               bold=("RFoldSearch", "RFoldSearch-TM"))
     S.style_axes(axd["a"], ylabel="Family-level Sens@1FP")
     axd["a"].set_ylim(0, 1.08)
     axd["a"].set_yticks(np.arange(0, 1.01, 0.2))
     axd["a"].legend(ncol=3, frameon=False, fontsize=9, loc="upper center", handlelength=1.8,
                     columnspacing=0.9, handletextpad=0.4)
     forest_panel(axd["b"], V, blocks, "B/N E<=10", ["Infernal", "RS-20", "RS-80", "Composition", "Length", "Shuffled"],
-                 "RFoldseek − comparator (Δ Sens@1FP)")
+                 "RFoldSearch − comparator (Δ Sens@1FP)")
     axd["b"].set_xlim(-0.25, 0.6)
     clan_panel(axd["c"], cl)
     letters(axd, "abc", big=("c",))

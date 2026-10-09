@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""RFoldseek alignment example from experimental RNA."""
+"""RFoldSearch alignment example from experimental RNA."""
 
 from __future__ import annotations
 
@@ -90,7 +90,7 @@ def torch_pickle_payload(path: Path):
 
 
 def load_float_matrix(path: Path, shape=(80, 80)) -> np.ndarray:
-    """Read the single contiguous FloatStorage in RFoldseek's matrix archive."""
+    """Read the single contiguous FloatStorage in RFoldSearch's matrix archive."""
     with zipfile.ZipFile(path) as archive:
         stores = [name for name in archive.namelist()
                   if re.search(r"/data/\d+$", name)]

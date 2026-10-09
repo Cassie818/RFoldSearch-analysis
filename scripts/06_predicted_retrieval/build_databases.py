@@ -1,4 +1,4 @@
-"""Build the RFoldseek, RiboSeek and sequence databases for the sampled
+"""Build the RFoldSearch, RiboSeek and sequence databases for the sampled
 NuFold 9-14-2026 accuracy database.
 """
 import csv
@@ -22,8 +22,9 @@ HERE = os.path.join(REPO, "files", "predicted_retrieval")
 ROOT = HERE
 MANIFEST = os.path.join(ROOT, "sample", "accuracy_db.tsv")
 STRUCTURES = os.path.join(paths.NUFOLD_ROOT, "structures", "rank1")
-UP = paths.RFOLDSEEK_REPO
-CKPT = os.path.join(UP, "rfoldseek", "assets", "desc_vqvae_best.pt")
+UP = paths.RFOLDSEARCH_REPO
+_PACKAGE_DIR = "rfoldsearch" if os.path.isdir(os.path.join(UP, "rfoldsearch")) else "rfoldseek"
+CKPT = os.path.join(UP, _PACKAGE_DIR, "assets", "desc_vqvae_best.pt")
 TOOLS = paths.BLAST_BIN          # NCBI BLAST+ 2.17 bin dir; empty -> PATH
 MAKEBLASTDB = os.path.join(TOOLS, "makeblastdb")
 WORKERS = 8
@@ -43,7 +44,7 @@ def guard(n, failures, pool):
         raise SystemExit(f"aborting: {len(failures)} failures in first {n}; first: {failures[0]}")
 
 
-# ------------------------------------------------------------------ RFoldseek
+# ------------------------------------------------------------------ RFoldSearch
 
 def _init_rfs():
     torch.set_num_threads(1)
@@ -67,7 +68,7 @@ def _enc_rfs(job):
         return i, None, f"{urs}: {type(exc).__name__}: {exc}"[:300]
 
 
-def build_rfoldseek(ids, out):
+def build_rfoldsearch(ids, out):
     t0 = time.perf_counter()
     res, failures = [None] * len(ids), []
     with Pool(WORKERS, initializer=_init_rfs) as pool:
@@ -78,7 +79,7 @@ def build_rfoldseek(ids, out):
                 res[i] = enc
             guard(n, failures, pool)
             if n % 5000 == 0:
-                print(f"  rfoldseek {n}/{len(ids)} ({(time.perf_counter()-t0)/60:.1f} min)", flush=True)
+                print(f"  rfoldsearch {n}/{len(ids)} ({(time.perf_counter()-t0)/60:.1f} min)", flush=True)
     entries = [e for e in res if e is not None]
     for k, e in enumerate(entries):
         e["cluster"] = f"_singleton_{k}"
@@ -86,12 +87,12 @@ def build_rfoldseek(ids, out):
                 "n_clusters": len(entries), "clustered": False}, out)
     json.dump(dict(failures=failures, wall_seconds=time.perf_counter() - t0, workers=WORKERS),
               open(out + ".meta.json", "w"), indent=1)
-    print(f"rfoldseek db: {len(entries)} entries, {len(failures)} failures, "
+    print(f"rfoldsearch db: {len(entries)} entries, {len(failures)} failures, "
           f"{(time.perf_counter()-t0)/60:.1f} min", flush=True)
     return entries
 
 
-def verify_rfoldseek(entries, k=20):
+def verify_rfoldsearch(entries, k=20):
     from rfoldseek.database import structure_to_entry
     from rfoldseek.tokenizer import encode_entry, load_model
     model, ckpt, _, _ = load_model(CKPT, torch.device("cpu"))
@@ -103,7 +104,7 @@ def verify_rfoldseek(entries, k=20):
                              ckpt.get("norm_mean"), ckpt.get("norm_std"),
                              active_blocks=ckpt.get("active_blocks"))
         ok += np.array_equal(np.asarray(r["tokens"]), np.asarray(e["tokens"]))
-    print(f"rfoldseek verification: {ok}/{k} identical on independent re-encoding", flush=True)
+    print(f"rfoldsearch verification: {ok}/{k} identical on independent re-encoding", flush=True)
     if ok != k:
         raise SystemExit("token verification failed")
 
@@ -189,10 +190,10 @@ def main():
 
     out = os.path.join(HERE, "db")
     os.makedirs(out, exist_ok=True)
-    rfs = os.path.join(out, "rfoldseek.pt")
-    entries = build_rfoldseek(ids, rfs) if not os.path.exists(rfs + ".meta.json") \
+    rfs = os.path.join(out, "rfoldsearch.pt")
+    entries = build_rfoldsearch(ids, rfs) if not os.path.exists(rfs + ".meta.json") \
         else torch.load(rfs, map_location="cpu", weights_only=False)["entries"]
-    verify_rfoldseek(entries)
+    verify_rfoldsearch(entries)
     rb = os.path.join(out, "riboseek_sa20.json")
     if not os.path.exists(rb + ".meta.json"):
         build_riboseek(ids, rb)

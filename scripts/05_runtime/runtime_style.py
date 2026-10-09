@@ -13,12 +13,12 @@ WIDTH_MM, HEIGHT_MM = 180.0, 104.0
 FIGDIR = F.FIGDIR
 
 # Okabe-Ito, four hues, assigned in fixed order and never cycled.
-COLOR = {"RFoldseek": "#0072B2", "GTalign": "#009E73", "GTalign-fast": "#009E73",
+COLOR = {"RFoldSearch": "#0072B2", "GTalign": "#009E73", "GTalign-fast": "#009E73",
          "RiboSeek": "#CC79A7", "BLASTN": "#E69F00"}
-MARKER = {"RFoldseek": "o", "GTalign": "X", "GTalign-fast": "X", "RiboSeek": "v", "BLASTN": "D"}
-LABEL = {"RFoldseek": "RFoldseek", "GTalign": "GTalign (GPU)", "GTalign-fast": "GTalign (GPU)-fast",
+MARKER = {"RFoldSearch": "o", "GTalign": "X", "GTalign-fast": "X", "RiboSeek": "v", "BLASTN": "D"}
+LABEL = {"RFoldSearch": "RFoldSearch", "GTalign": "GTalign (GPU)", "GTalign-fast": "GTalign (GPU)-fast",
          "RiboSeek": "RiboSeek", "BLASTN": "BLASTN"}
-CURVES = ["GTalign", "RiboSeek", "BLASTN", "RFoldseek"]
+CURVES = ["GTalign", "RiboSeek", "BLASTN", "RFoldSearch"]
 BAND = "#8A8A8A"
 INK, MUTED = "#1A1A1A", "#6B6B6B"
 
@@ -41,7 +41,7 @@ def relative(pts, stat):
 
 
 def curve_style(m):
-    if m == "RFoldseek":
+    if m == "RFoldSearch":
         return 1.9, 3.2, 6
     return 1.1, 2.4, 4
 
@@ -75,11 +75,11 @@ def draw_shape(ax, data, order, stat, sizes, ylim, iqr=None, coord=None,
     if not coord:
         ax.axhline(1.0, color=MUTED, lw=0.6, dashes=(1.3, 1.5), zorder=1)
 
-    if iqr and "RFoldseek" in iqr:
-        ns = np.array(sorted(iqr["RFoldseek"]))
-        lo = np.array([iqr["RFoldseek"][n][0] for n in ns]) / ns * 1000
-        hi = np.array([iqr["RFoldseek"][n][1] for n in ns]) / ns * 1000
-        ax.fill_between(ns, lo / lo[0], hi / hi[0], color=COLOR["RFoldseek"],
+    if iqr and "RFoldSearch" in iqr:
+        ns = np.array(sorted(iqr["RFoldSearch"]))
+        lo = np.array([iqr["RFoldSearch"][n][0] for n in ns]) / ns * 1000
+        hi = np.array([iqr["RFoldSearch"][n][1] for n in ns]) / ns * 1000
+        ax.fill_between(ns, lo / lo[0], hi / hi[0], color=COLOR["RFoldSearch"],
                         alpha=0.13, lw=0, zorder=3)
 
     ends = {}
@@ -97,7 +97,7 @@ def draw_shape(ax, data, order, stat, sizes, ylim, iqr=None, coord=None,
     for m, ly in zip(names, placed):
         ax.text(sizes[-1] * 1.14, 10 ** ly, LABEL[m], color=COLOR[m],
                 fontsize=6.0, va="center", ha="left",
-                fontweight="bold" if m == "RFoldseek" else "normal",
+                fontweight="bold" if m == "RFoldSearch" else "normal",
                 clip_on=False)
 
     decades = [n for n in (1000, 10000, 100000) if n < sizes[-1] * 0.8]
@@ -144,11 +144,11 @@ def draw_absolute(ax, data, order, stat, sizes, ylim, coord=None, band_label_y=N
                 "coordinate\naligners", color="#5F5F5F", fontsize=6.0,
                 va="center", ha="left", linespacing=1.15, clip_on=False)
 
-    if iqr and "RFoldseek" in iqr:
-        ns = np.array(sorted(iqr["RFoldseek"]))
-        lo = np.array([iqr["RFoldseek"][n][0] for n in ns]) / ns * 1000
-        hi = np.array([iqr["RFoldseek"][n][1] for n in ns]) / ns * 1000
-        ax.fill_between(ns, lo, hi, color=COLOR["RFoldseek"], alpha=0.13,
+    if iqr and "RFoldSearch" in iqr:
+        ns = np.array(sorted(iqr["RFoldSearch"]))
+        lo = np.array([iqr["RFoldSearch"][n][0] for n in ns]) / ns * 1000
+        hi = np.array([iqr["RFoldSearch"][n][1] for n in ns]) / ns * 1000
+        ax.fill_between(ns, lo, hi, color=COLOR["RFoldSearch"], alpha=0.13,
                         lw=0, zorder=3)
 
     ends = {}
@@ -167,7 +167,7 @@ def draw_absolute(ax, data, order, stat, sizes, ylim, coord=None, band_label_y=N
         for m, ly in zip(names, placed):
             ax.text(sizes[-1] * 1.14, 10 ** ly, LABEL[m], color=COLOR[m],
                     fontsize=6.0, va="center", ha="left",
-                    fontweight="bold" if m == "RFoldseek" else "normal",
+                    fontweight="bold" if m == "RFoldSearch" else "normal",
                     clip_on=False)
 
     decades = [n for n in (1000, 10000, 100000) if n < sizes[-1] * 0.8]
@@ -208,7 +208,7 @@ def draw_broken(ax_top, ax_bot, data, order, stat, sizes, ylim_top, ylim_bot,
 
 
 
-LADDER_NAME = {"RFoldseek": "RFoldseek", "GTalign": "GTalign (GPU)",
+LADDER_NAME = {"RFoldSearch": "RFoldSearch", "GTalign": "GTalign (GPU)",
                "RiboSeek": "RiboSeek", "BLASTN": "BLASTN",
                "RMalign": "RMalign", "US-align": "US-align",
                "RTM-align": "RTM-align",
@@ -216,7 +216,7 @@ LADDER_NAME = {"RFoldseek": "RFoldseek", "GTalign": "GTalign (GPU)",
                "GTalign-fast": "GTalign (GPU)-fast"}
 
 
-def ladder(ax, values, title, ylim, footer, ref="RFoldseek"):
+def ladder(ax, values, title, ylim, footer, ref="RFoldSearch"):
     """Riboseek's search-time rail, but each rung names its method.
 
     With the legend gone, a marker on the rail is otherwise unidentifiable:

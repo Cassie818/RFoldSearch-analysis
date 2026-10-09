@@ -21,7 +21,7 @@ import benchmark as BM
 from prefilter_rfam_benchmark import per_query_average_precision
 
 TIE_BREAK = {
-    "methods": ["RFoldseek", "RFoldseek-TM"],
+    "methods": ["RFoldSearch", "RFoldSearch-TM"],
     "scheme": 'sha256("<seed>:<chain_id>"), applied at the prefilter top_n cut and at the reranking',
     "seeds": list(range(BM.NSEEDS)),
     "per_query_values": "mean over seeds",

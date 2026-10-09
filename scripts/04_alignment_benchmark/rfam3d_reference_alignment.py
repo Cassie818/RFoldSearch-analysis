@@ -367,9 +367,9 @@ def plot_results(rows: list[dict], output: Path) -> None:
         ("sequence_conservation", "token_conservation",
          "Nucleotide conservation above background",
          "3Dr conservation above background", "A"),
-        ("rfoldseek_f1", "usalign_f1", "RFoldseek alignment $F_1$",
+        ("rfoldsearch_f1", "usalign_f1", "RFoldSearch alignment $F_1$",
          "US-align alignment $F_1$", "B"),
-        ("rfoldseek_f1", "riboseek_f1", "RFoldseek alignment $F_1$",
+        ("rfoldsearch_f1", "riboseek_f1", "RFoldSearch alignment $F_1$",
          "RiboSeek alignment $F_1$", "C"),
     ]
     for ax, (xkey, ykey, xlabel, ylabel, label) in zip(axes, panels):
@@ -398,7 +398,8 @@ def main() -> None:
     parser.add_argument("--checkpoint", type=Path, required=True)
     parser.add_argument("--matrix", type=Path, required=True)
     parser.add_argument("--usalign", type=Path, required=True)
-    parser.add_argument("--rfoldseek-repo", type=Path, required=True)
+    parser.add_argument("--rfoldsearch-repo", "--rfoldseek-repo",
+                        dest="rfoldsearch_repo", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
     parser.add_argument("--min-reference-pairs", type=int, default=20)
     parser.add_argument("--min-map-coverage", type=float, default=0.70)
@@ -411,7 +412,7 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    sys.path.insert(0, str(args.rfoldseek_repo))
+    sys.path.insert(0, str(args.rfoldsearch_repo))
     paper_root = Path(__file__).resolve().parents[2]
     sys.path.insert(0, str(paper_root / "src" / "search"))
     from rfoldseek.database import structure_to_entry
@@ -440,7 +441,7 @@ def main() -> None:
     mean, std = checkpoint.get("norm_mean"), checkpoint.get("norm_std")
     active = checkpoint.get("active_blocks")
     matrix_obj = torch.load(args.matrix, map_location="cpu", weights_only=False)
-    rfoldseek_matrix = np.asarray(matrix_obj["matrix"] if isinstance(matrix_obj, dict)
+    rfoldsearch_matrix = np.asarray(matrix_obj["matrix"] if isinstance(matrix_obj, dict)
                                   else matrix_obj, dtype=np.float64)
     alphabet = riboseek.Alphabet.from_pretrained("sa20")
     ribo_aligner = riboseek.NWAligner(alphabet.score_matrix, gap_penalty=-2.0)
@@ -456,7 +457,7 @@ def main() -> None:
             raw = structure_to_entry(str(path))
             encoded = encode_entry(model, raw, device, mean, std, active_blocks=active)
             if encoded is None:
-                raise ValueError("RFoldseek encoding returned None")
+                raise ValueError("RFoldSearch encoding returned None")
             encoded["seq"] = raw["seq"]
             mapping, quality = map_reference_to_structure(aligned_sequence, raw["seq"])
             if quality["coverage"] < args.min_map_coverage or quality["identity"] < args.min_map_identity:
@@ -489,7 +490,7 @@ def main() -> None:
                 "match_columns": consensus_match_columns(rf_annotation),
                 "entry": encoded, "sequence": clean_sequence(raw["seq"]),
                 "structure_by_column": structure_by_column,
-                "rfoldseek_by_column": token_by_column, "map_quality": quality,
+                "rfoldsearch_by_column": token_by_column, "map_quality": quality,
                 "riboseek_labels": np.asarray(ribo_labels, np.int64),
                 "riboseek_by_column": ribo_by_column,
                 "riboseek_map_quality": ribo_quality,
@@ -516,8 +517,8 @@ def main() -> None:
             evaluable_columns = sorted(
                 set(first["structure_by_column"])
                 & set(second["structure_by_column"])
-                & set(first["rfoldseek_by_column"])
-                & set(second["rfoldseek_by_column"])
+                & set(first["rfoldsearch_by_column"])
+                & set(second["rfoldsearch_by_column"])
                 & set(first["riboseek_by_column"])
                 & set(second["riboseek_by_column"])
             )
@@ -532,13 +533,13 @@ def main() -> None:
             # retained for alignment. Shared Rfam columns are used only below to
             # construct the post hoc reference correspondence.
             first_pos = contiguous_family_region(
-                first["rfoldseek_by_column"], len(first["entry"]["tokens"]))
+                first["rfoldsearch_by_column"], len(first["entry"]["tokens"]))
             second_pos = contiguous_family_region(
-                second["rfoldseek_by_column"], len(second["entry"]["tokens"]))
+                second["rfoldsearch_by_column"], len(second["entry"]["tokens"]))
             first_tokens = np.asarray(first["entry"]["tokens"], np.int64)[first_pos]
             second_tokens = np.asarray(second["entry"]["tokens"], np.int64)[second_pos]
             rfs_score, rfs_local = smith_waterman_traceback(
-                first_tokens, second_tokens, rfoldseek_matrix, -2.0, -0.5)
+                first_tokens, second_tokens, rfoldsearch_matrix, -2.0, -0.5)
             rfs_pairs = subset_pairs(rfs_local, first_pos, second_pos)
 
             first_ribo_pos = contiguous_family_region(
@@ -582,8 +583,8 @@ def main() -> None:
                 usa_local, first_structure_pos, second_structure_pos)
 
             common_reference = {
-                "rfoldseek": np.asarray([
-                    (first["rfoldseek_by_column"][col], second["rfoldseek_by_column"][col])
+                "rfoldsearch": np.asarray([
+                    (first["rfoldsearch_by_column"][col], second["rfoldsearch_by_column"][col])
                     for col in common_match_columns
                 ], dtype=np.int64),
                 "riboseek": np.asarray([
@@ -596,16 +597,16 @@ def main() -> None:
                 ], dtype=np.int64),
             }
             rfs_evaluable = restrict_to_evaluable_positions(
-                rfs_pairs, common_reference["rfoldseek"])
+                rfs_pairs, common_reference["rfoldsearch"])
             ribo_evaluable = restrict_to_evaluable_positions(
                 ribo_pairs, common_reference["riboseek"])
             usa_evaluable = restrict_to_evaluable_positions(
                 usa_pairs, common_reference["usalign"])
             sequence_evaluable = restrict_to_evaluable_positions(
                 sequence_pairs, common_reference["usalign"])
-            rfs_metric = metrics(rfs_evaluable, common_reference["rfoldseek"])
+            rfs_metric = metrics(rfs_evaluable, common_reference["rfoldsearch"])
             rfs_tolerant = metrics(
-                rfs_evaluable, common_reference["rfoldseek"], tolerance=1)
+                rfs_evaluable, common_reference["rfoldsearch"], tolerance=1)
             usa_metric = metrics(usa_evaluable, common_reference["usalign"])
             usa_tolerant = metrics(
                 usa_evaluable, common_reference["usalign"], tolerance=1)
@@ -626,8 +627,8 @@ def main() -> None:
             ]))
             token_columns = common_match_columns
             token_identity = float(np.mean([
-                first["entry"]["tokens"][first["rfoldseek_by_column"][column]] ==
-                second["entry"]["tokens"][second["rfoldseek_by_column"][column]]
+                first["entry"]["tokens"][first["rfoldsearch_by_column"][column]] ==
+                second["entry"]["tokens"][second["rfoldsearch_by_column"][column]]
                 for column in token_columns
             ]))
             rows.append({
@@ -637,8 +638,8 @@ def main() -> None:
                 "query_chain": first["pdb_chain"],
                 "target_chain": second["pdb_chain"],
                 "reference_pairs": len(common_match_columns),
-                "rfoldseek_query_region_length": len(first_pos),
-                "rfoldseek_target_region_length": len(second_pos),
+                "rfoldsearch_query_region_length": len(first_pos),
+                "rfoldsearch_target_region_length": len(second_pos),
                 "riboseek_query_region_length": len(first_ribo_pos),
                 "riboseek_target_region_length": len(second_ribo_pos),
                 "usalign_query_region_length": len(first_structure_pos),
@@ -651,13 +652,13 @@ def main() -> None:
                 "sequence_alignment_recall": sequence_metric[1],
                 "sequence_alignment_f1": sequence_metric[2],
                 "sequence_alignment_tolerant_f1": sequence_tolerant[2],
-                "rfoldseek_score": float(rfs_score),
-                "rfoldseek_pairs": len(rfs_evaluable),
-                "rfoldseek_pairs_raw": len(rfs_pairs),
-                "rfoldseek_precision": rfs_metric[0],
-                "rfoldseek_recall": rfs_metric[1],
-                "rfoldseek_f1": rfs_metric[2],
-                "rfoldseek_tolerant_f1": rfs_tolerant[2],
+                "rfoldsearch_score": float(rfs_score),
+                "rfoldsearch_pairs": len(rfs_evaluable),
+                "rfoldsearch_pairs_raw": len(rfs_pairs),
+                "rfoldsearch_precision": rfs_metric[0],
+                "rfoldsearch_recall": rfs_metric[1],
+                "rfoldsearch_f1": rfs_metric[2],
+                "rfoldsearch_tolerant_f1": rfs_tolerant[2],
                 "riboseek_score": float(ribo_score),
                 "riboseek_pairs": len(ribo_evaluable),
                 "riboseek_pairs_raw": len(ribo_pairs),
@@ -686,7 +687,7 @@ def main() -> None:
     for item in structures.values():
         for position in set(item["structure_by_column"].values()):
             sequence_values.append(item["sequence"][position])
-        for position in set(item["rfoldseek_by_column"].values()):
+        for position in set(item["rfoldsearch_by_column"].values()):
             token_values.append(int(item["entry"]["tokens"][position]))
     sequence_counts = np.bincount(
         np.asarray(["ACGUN".index(value) for value in sequence_values], np.int64),
@@ -707,16 +708,16 @@ def main() -> None:
         "token_minus_sequence_identity": lambda r: r["token_identity"] - r["sequence_identity"],
         "token_minus_sequence_conservation": (
             lambda r: r["token_conservation"] - r["sequence_conservation"]),
-        "rfoldseek_minus_usalign_f1": lambda r: r["rfoldseek_f1"] - r["usalign_f1"],
-        "rfoldseek_minus_riboseek_f1": lambda r: r["rfoldseek_f1"] - r["riboseek_f1"],
-        "rfoldseek_minus_usalign_tolerant_f1": (
-            lambda r: r["rfoldseek_tolerant_f1"] - r["usalign_tolerant_f1"]),
-        "rfoldseek_minus_riboseek_tolerant_f1": (
-            lambda r: r["rfoldseek_tolerant_f1"] - r["riboseek_tolerant_f1"]),
-        "rfoldseek_minus_sequence_alignment_f1": (
-            lambda r: r["rfoldseek_f1"] - r["sequence_alignment_f1"]),
-        "rfoldseek_minus_sequence_alignment_tolerant_f1": (
-            lambda r: r["rfoldseek_tolerant_f1"] - r["sequence_alignment_tolerant_f1"]),
+        "rfoldsearch_minus_usalign_f1": lambda r: r["rfoldsearch_f1"] - r["usalign_f1"],
+        "rfoldsearch_minus_riboseek_f1": lambda r: r["rfoldsearch_f1"] - r["riboseek_f1"],
+        "rfoldsearch_minus_usalign_tolerant_f1": (
+            lambda r: r["rfoldsearch_tolerant_f1"] - r["usalign_tolerant_f1"]),
+        "rfoldsearch_minus_riboseek_tolerant_f1": (
+            lambda r: r["rfoldsearch_tolerant_f1"] - r["riboseek_tolerant_f1"]),
+        "rfoldsearch_minus_sequence_alignment_f1": (
+            lambda r: r["rfoldsearch_f1"] - r["sequence_alignment_f1"]),
+        "rfoldsearch_minus_sequence_alignment_tolerant_f1": (
+            lambda r: r["rfoldsearch_tolerant_f1"] - r["sequence_alignment_tolerant_f1"]),
     }
     augmented = []
     for row in rows:
@@ -728,9 +729,9 @@ def main() -> None:
     summary = {
         "protocol": {
             "reference": "Rfam.3d.seed alignment columns mapped to experimental PDB residues",
-            "rfoldseek_repository": str(args.rfoldseek_repo),
-            "rfoldseek_commit": subprocess.run(
-                ["git", "-C", str(args.rfoldseek_repo), "rev-parse", "HEAD"],
+            "rfoldsearch_repository": str(args.rfoldsearch_repo),
+            "rfoldsearch_commit": subprocess.run(
+                ["git", "-C", str(args.rfoldsearch_repo), "rev-parse", "HEAD"],
                 check=True, capture_output=True, text=True,
             ).stdout.strip(),
             "checkpoint": str(args.checkpoint),
@@ -739,7 +740,7 @@ def main() -> None:
             "excluded_split_files": [str(path) for path in args.exclude_split],
             "excluded_pdb_entries": len(excluded_pdbs),
             "training_exposure": {
-                "rfoldseek": (
+                "rfoldsearch": (
                     "PDB entries in the supplied split files were excluded"
                     if args.exclude_split else
                     "no split exclusion was applied; training exposure was not assessed"
@@ -800,15 +801,15 @@ def main() -> None:
         )[:10],
     }
     for key in ("sequence_identity", "token_identity", "sequence_conservation",
-                "token_conservation", "rfoldseek_f1", "riboseek_f1", "usalign_f1",
+                "token_conservation", "rfoldsearch_f1", "riboseek_f1", "usalign_f1",
                 "sequence_alignment_f1", "sequence_alignment_tolerant_f1",
-                "rfoldseek_tolerant_f1", "riboseek_tolerant_f1",
+                "rfoldsearch_tolerant_f1", "riboseek_tolerant_f1",
                 "usalign_tolerant_f1", *difference_keys):
         summary[key] = family_bootstrap(augmented, key, args.bootstrap,
                                         args.seed + len(summary))
     summary["pair_level"] = {
         method: pooled_alignment_metrics(rows, method)
-        for method in ("rfoldseek", "riboseek", "usalign", "sequence_alignment")
+        for method in ("rfoldsearch", "riboseek", "usalign", "sequence_alignment")
     }
 
     output_json = args.output_dir / "rfam3d_reference_alignment.json"

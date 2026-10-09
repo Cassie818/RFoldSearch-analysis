@@ -214,8 +214,8 @@ def alignment_lines(case: dict, query: str) -> list:
     items = [("head", f"Rfam reference alignment  (RMSD {case['ref_rmsd']:.1f} \u00c5 over {case['n_ref']} nt)")]
     for c in case["reference"]:
         items += [("q", c, query), ("s", c, "3Dr"), ("n", c, "Seq"), ("t", c, case["target"])]
-    items += [("space", None), ("head", f"RFoldseek alignment  (RMSD {case['rf_rmsd']:.1f} \u00c5 over {case['n_rf']} nt)")]
-    for c in case["rfoldseek"]:
+    items += [("space", None), ("head", f"RFoldSearch alignment  (RMSD {case['rf_rmsd']:.1f} \u00c5 over {case['n_rf']} nt)")]
+    for c in case["rfoldsearch"]:
         items += [("q", c, query), ("s", c, "3Dr"), ("n", c, "Seq"), ("t", c, case["target"])]
     return items
 
@@ -233,7 +233,7 @@ def draw_case(fig, case: dict, query: str, q_trace, t_trace, top: float, H: floa
              va="top", color=INK)
     fig.text(x(FIG_W - 0.1), y(top + 0.08),
              f"seq. id. {100 * case['seq_id']:.0f}%    3Dr id. {100 * case['tok_id']:.0f}%    "
-             f"RFoldseek exact F1 {case['f1']:.2f}", fontsize=7.5, color=MUTED, va="top", ha="right")
+             f"RFoldSearch exact F1 {case['f1']:.2f}", fontsize=7.5, color=MUTED, va="top", ha="right")
     lines = alignment_lines(case, query)
     body = len(lines) * LINE
     side = min(STRUCT_W, body)

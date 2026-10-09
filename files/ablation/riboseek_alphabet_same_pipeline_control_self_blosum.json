@@ -1,6 +1,6 @@
 {
   "_provenance": {
-    "python": "/Users/cassie/.venvs/rfoldseek-paper/bin/python",
+    "python": "/Users/cassie/.venvs/rfoldsearch-paper/bin/python",
     "python_version": "3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang 13.0.0 (clang-1300.0.29.30)]",
     "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
     "prefer_external": false,
@@ -34,7 +34,7 @@
         "construction_gap_open": -11.0,
         "construction_gap_extend": -1.0
       },
-      "RFoldseek_tokens_same_pipeline": {
+      "RFoldSearch_tokens_same_pipeline": {
         "alphabet_size": 80,
         "n_input_train_pairs": 6251,
         "n_aligned_train_pairs": 6251,
@@ -54,7 +54,7 @@
       }
     }
   },
-  "RFoldseek_tokens_same_pipeline": {
+  "RFoldSearch_tokens_same_pipeline": {
     "family_recall1": 0.8867924528301887,
     "family_sens_1fp": 0.6151839745776323,
     "clan_recall1": 0.9135802469135802,

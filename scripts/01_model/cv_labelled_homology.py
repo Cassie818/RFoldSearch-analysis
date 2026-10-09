@@ -15,7 +15,8 @@ import torch
 
 from prefilter_rfam_benchmark import attach_labels, load_labels
 
-HMMER_BIN = _os.environ.get("RFOLDSEEK_HMMER_BIN", "")
+HMMER_BIN = _os.environ.get(
+    "RFOLDSEARCH_HMMER_BIN", _os.environ.get("RFOLDSEEK_HMMER_BIN", ""))
 SEQ_E = 0.01
 CPU = str(_os.cpu_count() or 4)
 

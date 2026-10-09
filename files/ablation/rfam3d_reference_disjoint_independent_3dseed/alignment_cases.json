@@ -38,7 +38,7 @@
      "t1": 81
     }
    ],
-   "rfoldseek": [
+   "rfoldsearch": [
     {
      "q": "GUAUCGUAGCCAAUGAGGUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCC",
      "s": "+++++++|+++++++.|.+++|++|+|..+++|++.+....+...|++++++++",
@@ -97,7 +97,7 @@
      "t1": 152
     }
    ],
-   "rfoldseek": [
+   "rfoldsearch": [
     {
      "q": "AGCUUUGCGCAGUGGCAGUAUCGUAGCCAAUGAG-GUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCCCAAUACCC",
      "s": "|||||+|+|+++|+|+|+++|+|+||||.||||| |+|+++.+||+||+||+|.+++++++++.++++||+++++++.++",
@@ -166,7 +166,7 @@
      "t1": 127
     }
    ],
-   "rfoldseek": [
+   "rfoldsearch": [
     {
      "q": "AGCUUUGCGCAGUGGCAGUAUCGUAGCCAAUGAGGUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCCCAAUACCCC",
      "s": "||||||++|+|+|+|+|++  +||||||||||||||||||||||||||+|+                 |+||+||||+||",
@@ -235,7 +235,7 @@
      "t1": 128
     }
    ],
-   "rfoldseek": [
+   "rfoldsearch": [
     {
      "q": "AGCUUUGCGCAGUGGCAGUAUCGUAGCCAAUGAGGUUUAUCCGAGGCGCGAUUAUUGCUAAUUACUUUUCCCAAUACCCC",
      "s": "|||||||+|+++++.++.|..+|++++|+||||++|+|++++++||++++++    ++|++|.++|+++|+.+.|+|+++",

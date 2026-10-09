@@ -1,6 +1,6 @@
 {
   "_provenance": {
-    "python": "/Users/cassie/.venvs/rfoldseek-paper/bin/python",
+    "python": "/Users/cassie/.venvs/rfoldsearch-paper/bin/python",
     "python_version": "3.10.9 (v3.10.9:1dd9be6584, Dec  6 2022, 14:37:36) [Clang 13.0.0 (clang-1300.0.29.30)]",
     "data_root": "/Users/cassie/Desktop/RFoldseek-paper-code",
     "prefer_external": false,
@@ -20,7 +20,7 @@
       "Splits/labels.tsv": "464e932db7b4b38a656a642a9007c1e6"
     }
   },
-  "RFoldseek_tokens_same_pipeline": {
+  "RFoldSearch_tokens_same_pipeline": {
     "family_recall1": 0.8867924528301887,
     "family_sens_1fp": 0.6153905576929056,
     "clan_recall1": 0.9135802469135802,
@@ -35,7 +35,7 @@
     "gap_open": -2.0,
     "gap_extend": -0.5,
     "matrix_mode": "native",
-    "matrix_rule": "native matrix scaled to RFoldseek diagonal mean",
+    "matrix_rule": "native matrix scaled to RFoldSearch diagonal mean",
     "matrix_diag_mean_after_scaling": 1.0000001192092896,
     "n_empty_or_short_sequences": 0
   },
@@ -54,7 +54,7 @@
     "gap_open": -2.0,
     "gap_extend": -0.5,
     "matrix_mode": "native",
-    "matrix_rule": "native matrix scaled to RFoldseek diagonal mean",
+    "matrix_rule": "native matrix scaled to RFoldSearch diagonal mean",
     "matrix_diag_mean_after_scaling": 1.0,
     "n_empty_or_short_sequences": 0
   }

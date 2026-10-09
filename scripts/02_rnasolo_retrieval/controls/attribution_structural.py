@@ -1,4 +1,4 @@
-"""Attribution of the RiboSeek -> RFoldseek gap under the STRUCTURE-DEFINED
+"""Attribution of the RiboSeek -> RFoldSearch gap under the STRUCTURE-DEFINED
 ground truth, mirroring attribution_paths.py.
 """
 from __future__ import annotations
@@ -86,7 +86,7 @@ def ribo_ranks(toks, mat, name):
 
 
 def rf_ranks(toks, mat, name, xyz=None):
-    """RFoldseek pipeline: expansion 4-mer prefilter + affine-gap local SW,
+    """RFoldSearch pipeline: expansion 4-mer prefilter + affine-gap local SW,
     ranked by the structure score S * aTM when C4' coordinates are given."""
     t0 = time.time()
     ranker = F.SamePipelineRanker(toks, mat.astype(np.float32), xyz=xyz)
@@ -101,7 +101,7 @@ RANKS["A_ribo_published"] = ribo_ranks(sa20, M_sa20, "A sa20 | RiboSeek pipeline
 RANKS["B_fwd_pipeline"] = rf_ranks(sa20, M_sa20, "B sa20 | RF pipeline | own matrix")
 RANKS["C_fwd_matrix"] = rf_ranks(sa20, M_sa20_sb, "C sa20 | RF pipeline | learned matrix")
 RANKS["D_3dr_sw"] = rf_ranks(tdr, M_3dr, "D' 3Dr | RF pipeline, SW ranking | learned matrix")
-RANKS["D_rfoldseek"] = rf_ranks(tdr, M_3dr, "D 3Dr | RF pipeline, structure score | learned matrix",
+RANKS["D_rfoldsearch"] = rf_ranks(tdr, M_3dr, "D 3Dr | RF pipeline, structure score | learned matrix",
                                 xyz=[F.c4_coords(e, len(t)) for e, t in zip(ents, tdr)])
 M_3dr_id = F.normalize_matrix(F.identity_matrix(80), 1.0).astype(np.float64)   # +2/-1, unit diagonal mean
 RANKS["E0_rev_alphabet"] = ribo_ranks(tdr, M_3dr_id, "E0 3Dr | RiboSeek pipeline | identity matrix")
@@ -152,15 +152,15 @@ def ci(a, b, level, seed):
             "sig": bool(lo > 0 or hi < 0)}
 
 
-FWD = [("+ RFoldseek pipeline", "B_fwd_pipeline", "A_ribo_published"),
+FWD = [("+ RFoldSearch pipeline", "B_fwd_pipeline", "A_ribo_published"),
        ("+ learned matrix", "C_fwd_matrix", "B_fwd_pipeline"),
        ("+ 3Dr alphabet", "D_3dr_sw", "C_fwd_matrix"),
-       ("+ structure score", "D_rfoldseek", "D_3dr_sw")]
+       ("+ structure score", "D_rfoldsearch", "D_3dr_sw")]
 # Reverse order: the 3Dr alphabet first (scored with an unlearned identity matrix),
-# then its learned Structure-BLOSUM, then the RFoldseek pipeline.
+# then its learned Structure-BLOSUM, then the RFoldSearch pipeline.
 REV = [("+ 3Dr alphabet", "E0_rev_alphabet", "A_ribo_published"),
        ("+ learned matrix", "E_rev_alphabet", "E0_rev_alphabet"),
-       ("+ RFoldseek pipeline", "D_rfoldseek", "E_rev_alphabet")]
+       ("+ RFoldSearch pipeline", "D_rfoldsearch", "E_rev_alphabet")]
 
 out = {"_config": {"B": B, "seed": SEED, "thresholds": THRESHOLDS,
                    "n_queries": len(queries),

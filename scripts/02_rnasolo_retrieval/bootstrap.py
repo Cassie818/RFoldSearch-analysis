@@ -6,13 +6,13 @@ whole blocks with replacement: Rfam families at the family level, clans at the c
 
   bootstrap_fig2ab_band.json       Fig. 2A/B: 95% band of each method's sorted
                                    Sens@1FP curve (Rfam truth)
-  bootstrap_fig2ab_paired.json     Rfam truth, paired difference RFoldseek - method
-  bootstrap_fig2ab_paired_tm.json  Rfam truth, paired difference RFoldseek-TM - method
+  bootstrap_fig2ab_paired.json     Rfam truth, paired difference RFoldSearch - method
+  bootstrap_fig2ab_paired_tm.json  Rfam truth, paired difference RFoldSearch-TM - method
   bootstrap_fig2cd_results.json    Fig. 2C/D: 95% interval of each method's mean
-                                   Sens@1FP and paired significance against RFoldseek
+                                   Sens@1FP and paired significance against RFoldSearch
                                    (structure truth)
   bootstrap_figS12_ap.json         per-query average precision, paired difference
-                                   RFoldseek - method (Rfam truth)
+                                   RFoldSearch - method (Rfam truth)
 
 A paired difference recomputes both means on the same resampled blocks; it is
 significant ("sig") when its 95% percentile interval excludes zero. "diff_mean" is the
@@ -31,7 +31,7 @@ import benchmark as BM
 B, SEED = 2000, 123
 LEVEL_SEED = {"family": SEED + 1, "clan": SEED + 2}
 GRID = np.linspace(0, 1, 60)
-BAND_METHODS = ["RFoldseek", "RFoldseek-TM", "GTalign", "RTM-align", "US-align", "RMalign",
+BAND_METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "US-align", "RMalign",
                 "RiboSeek", "BLASTN", "Infernal"]
 
 
@@ -102,7 +102,7 @@ def structure(pq, lab):
         out[th] = {}
         for level in ("family", "clan"):
             methods = list(pq[th])
-            qs = list(pq[th]["RFoldseek"][level])
+            qs = list(pq[th]["RFoldSearch"][level])
             bl = defaultdict(list)
             for q in qs:
                 if lab[level][int(q)]:
@@ -118,8 +118,8 @@ def structure(pq, lab):
             for m in methods:
                 lo, hi = np.quantile(boot[m], [0.025, 0.975])
                 sig = None
-                if m not in ("RFoldseek", "RFoldseek-TM"):
-                    dlo, dhi = np.quantile(boot["RFoldseek"] - boot[m], [0.025, 0.975])
+                if m not in ("RFoldSearch", "RFoldSearch-TM"):
+                    dlo, dhi = np.quantile(boot["RFoldSearch"] - boot[m], [0.025, 0.975])
                     sig = bool(dlo > 0 or dhi < 0)
                 out[th][level][m] = {"estimate": float(np.mean([pq[th][m][level][q] for q in qs])),
                                      "ci_lower": float(lo), "ci_upper": float(hi),
@@ -130,18 +130,18 @@ def structure(pq, lab):
 def main():
     b = BM.load()
     lab = {"family": b.fam, "clan": b.clan}
-    others = [m for m in BM.METHODS if m != "RFoldseek"]
+    others = [m for m in BM.METHODS if m != "RFoldSearch"]
     pq = read("per_query_sens_test.json")
     qids = pq["_query_ids"]
     sens = {m: {lv: pq[m][lv]["sens"] for lv in ("family", "clan")} for m in BM.METHODS}
     write("bootstrap_fig2ab_band.json", band(pq, lab), indent=None)
-    write("bootstrap_fig2ab_paired.json", paired(sens, qids, lab, "RFoldseek", others, "Sens@1FP"))
+    write("bootstrap_fig2ab_paired.json", paired(sens, qids, lab, "RFoldSearch", others, "Sens@1FP"))
     write("bootstrap_fig2ab_paired_tm.json",
-          paired(sens, qids, lab, "RFoldseek-TM", ["US-align", "GTalign", "RTM-align", "RFoldseek"], "Sens@1FP"))
+          paired(sens, qids, lab, "RFoldSearch-TM", ["US-align", "GTalign", "RTM-align", "RFoldSearch"], "Sens@1FP"))
     write("bootstrap_fig2cd_results.json", structure(read("structural_tmscore_per_query_test.json"), lab))
     pr = read("weighted_pr_rfam_test.json")
     ap = {m: {lv: pr[m][lv]["per_query_ap"] for lv in ("family", "clan")} for m in BM.METHODS}
-    write("bootstrap_figS12_ap.json", paired(ap, qids, lab, "RFoldseek", others, "per-query average precision"))
+    write("bootstrap_figS12_ap.json", paired(ap, qids, lab, "RFoldSearch", others, "per-query average precision"))
 
 
 if __name__ == "__main__":

@@ -193,7 +193,7 @@
       883
     ]
   },
-  "RFoldseek": {
+  "RFoldSearch": {
     "family": {
       "recall": [
         0.0,
@@ -812,7 +812,7 @@
       "weighting": "per-query mean average precision (each query weighted equally)"
     }
   },
-  "RFoldseek-TM": {
+  "RFoldSearch-TM": {
     "family": {
       "recall": [
         0.0,

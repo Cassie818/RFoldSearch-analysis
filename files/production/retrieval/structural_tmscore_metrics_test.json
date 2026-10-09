@@ -2,14 +2,14 @@
   "_note": "test-only covered queries; US-align* is the TM ceiling.",
   "thresholds": {
     "0.4": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "Recall@1": 0.9514285714285715,
         "Sens@1FP": 0.6790423554165286,
         "Sens@1FP_clan": 0.5317124728314946,
         "n_queries": 105,
         "n_clan": 91
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "Recall@1": 0.9723809523809523,
         "Sens@1FP": 0.8008139865129351,
         "Sens@1FP_clan": 0.7072241951943405,
@@ -74,14 +74,14 @@
       }
     },
     "0.45": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "Recall@1": 0.9442307692307692,
         "Sens@1FP": 0.6694155982913984,
         "Sens@1FP_clan": 0.4886340225664162,
         "n_queries": 104,
         "n_clan": 86
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "Recall@1": 0.9798076923076924,
         "Sens@1FP": 0.820499076279931,
         "Sens@1FP_clan": 0.7329741873581251,
@@ -146,14 +146,14 @@
       }
     },
     "0.5": {
-      "RFoldseek": {
+      "RFoldSearch": {
         "Recall@1": 0.9529411764705883,
         "Sens@1FP": 0.6536202892085404,
         "Sens@1FP_clan": 0.5016118225698302,
         "n_queries": 102,
         "n_clan": 79
       },
-      "RFoldseek-TM": {
+      "RFoldSearch-TM": {
         "Recall@1": 0.9774509803921569,
         "Sens@1FP": 0.8414709744379454,
         "Sens@1FP_clan": 0.711079851159668,
@@ -220,8 +220,8 @@
   },
   "_tie_break": {
     "methods": [
-      "RFoldseek",
-      "RFoldseek-TM"
+      "RFoldSearch",
+      "RFoldSearch-TM"
     ],
     "scheme": "sha256(\"<seed>:<chain_id>\"), applied at the prefilter top_n cut and at the reranking",
     "seeds": [

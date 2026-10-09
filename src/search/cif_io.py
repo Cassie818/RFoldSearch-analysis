@@ -1,6 +1,6 @@
 """mmCIF reader returning every atom the structure scores need.
 
-Residue validity mirrors rfoldseek/backbone.py: a nucleotide is kept when
+Residue validity mirrors rfoldsearch/backbone.py: a nucleotide is kept when
 C3', C4' and O4' are all present. Indices in the returned arrays refer to the
 kept nucleotides only, so they line up with a token alignment.
 """

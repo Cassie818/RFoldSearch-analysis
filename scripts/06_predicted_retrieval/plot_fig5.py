@@ -17,10 +17,10 @@ FIG = os.path.join(E.REPO, "figures")
 # Every structure method is held at the same candidate depth, 500, so that the
 # comparison is of the methods and not of how deep each was allowed to look.
 DEPTH = 500
-METHODS = ["RFoldseek n500", "RFoldseek-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal",
+METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal",
            "US-align (exhaustive)"]
 BAR_METHODS = [m for m in METHODS if m != "US-align (exhaustive)"]
-PLDDT_METHODS = ["RFoldseek n500", "RFoldseek-TM n500", "RiboSeek RS-80 c500", "nhmmer", "Infernal"]
+PLDDT_METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek RS-80 c500", "nhmmer", "Infernal"]
 MIN_BIN = 5
 TARGET_METHODS = PLDDT_METHODS + ["US-align (exhaustive)"]
 METRIC = "Sens@1FP"
@@ -33,7 +33,7 @@ STRUCT_TRUTH = f"structure t{E.TM_MAIN:.2f}"
 RM_TRUTH = f"rmscore t{E.TM_MAIN:.2f}"          # RMscore threshold quantile-matched to TM_MAIN
 # H: structure detectors compared on the homologues sequence search misses,
 # each held to the same top-200 rule.
-WHO = [f"RFoldseek n{DEPTH}", "RFoldseek-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500"]
+WHO = [f"RFoldSearch n{DEPTH}", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500"]
 
 
 def collect():
@@ -194,8 +194,8 @@ def main():
         qtitle(ax, title)
 
     # ---- A, B: the two ground truths ---------------------------------------
-    # A (annotation truth): label RFoldseek and, via the ceiling branch, US-align
-    # (a competing method here). B (structure truth): label RFoldseek-TM, whose
+    # A (annotation truth): label RFoldSearch and, via the ceiling branch, US-align
+    # (a competing method here). B (structure truth): label RFoldSearch-TM, whose
     # predicted-query bar (0.53) is the headline flip; US-align is the ceiling.
     regime_panel(axd["A"], "label", False, "Annotation truth")
 
@@ -300,8 +300,8 @@ def main():
 
     # ---- F: cost of crossing species ---------------------------------------
     ax = axd["F"]
-    both = sorted(set(data["species"]["cross"]["RFoldseek n500"])
-                  & set(data["species"]["same"]["RFoldseek n500"]))
+    both = sorted(set(data["species"]["cross"]["RFoldSearch n500"])
+                  & set(data["species"]["same"]["RFoldSearch n500"]))
     ypos = np.arange(len(METHODS))[::-1]
     for y, m in zip(ypos, METHODS):
         cross, same = data["species"]["cross"].get(m, {}), data["species"]["same"].get(m, {})
@@ -394,7 +394,7 @@ def main():
                                  est(qs, truth, filt, METHODS[0])[3]
                                  for qs in order for truth in ("label", STRUCT_TRUTH, RM_TRUTH)
                                  for filt, _ in FILTERS},
-               "E queries per target bin": {t: {b: len(d.get("RFoldseek n500", {})) for b, d in v.items()}
+               "E queries per target bin": {t: {b: len(d.get("RFoldSearch n500", {})) for b, d in v.items()}
                                             for t, v in data["target_bins"].items()},
                "C,D query pLDDT bins": {f"{b[0]}-{b[1]}":
                                       len([q for q in qplddt if b[0] <= qplddt[q] < b[1]])
