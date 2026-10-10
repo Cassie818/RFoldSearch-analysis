@@ -1,14 +1,21 @@
-# RFoldSearch
+<h1><img src=".github/header.PNG" alt="RFoldSearch" height="88" /></h1>
 
-This repository contains the analysis and figure-plotting code used for the RFoldSearch manuscript.
-It is intentionally scoped to the paper analyses: model training/evaluation scripts, bundled result tables,
-plotting scripts, and the small helper modules needed to reproduce the reported figures.
+This repository contains the analysis and figure-plotting code used for the RFoldSearch manuscript. It is intentionally scoped to the paper analyses: model training/evaluation scripts, bundled result tables, plotting scripts, and the small helper modules needed to reproduce the reported figures.
 
-## Overview
+RFoldSearch represents an RNA structure as a sequence over a learned 80-state structural alphabet. A similar k-mer prefilter identifies candidates, token Smith–Waterman reranking resolves local structural matches, and optional coordinate reranking refines the final result.
 
-Scripts are grouped by the part of the paper they support. Each figure has one
-plotting script that reads only bundled result files; the analyses that produce
-those files sit next to it.
+## Highlights
+
+- **Structure-aware retrieval:** the learned alphabet encodes local backbone geometry, base-pairing and
+  stacking context.
+- **Sequence-divergent search:** structural matches remain detectable when nucleotide sequence search
+  approaches background sensitivity.
+- **Scalable screening:** the prefilter supports searches against predicted-structure collections containing
+  hundreds of thousands of RNAs.
+
+## Repository layout
+
+Scripts are grouped by the part of the manuscript they support. Each figure has one plotting script that reads only bundled result files.
 
 ```
 paths.py                          shared path resolution
@@ -51,12 +58,10 @@ python scripts/07_motifs/plot_fig6.py
 
 All plotting scripts run from the bundled files, except the alphabet-states and
 predicted-database supplements, which need the raw structures.
-Analyses that need data outside the repository (raw structures, the full
-training and validation splits, external binaries) read them from the directory
+Analyses that need data outside the repository read them from the directory
 given by `RFOLDSEARCH_DATA`; leave it unset when regenerating figures, so that the
 bundled results are used. External binaries are located through
-`RFOLDSEARCH_BLAST_BIN`, `RFOLDSEARCH_HMMER_BIN` and `RFOLDSEARCH_INFERNAL_BIN`
-(directories; empty means `PATH`).
+`RFOLDSEARCH_BLAST_BIN`, `RFOLDSEARCH_HMMER_BIN` and `RFOLDSEARCH_INFERNAL_BIN`.
 
 ## Dataset construction
 
