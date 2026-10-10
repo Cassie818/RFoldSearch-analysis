@@ -1,12 +1,4 @@
-"""Supplementary attribution-control figure: scoring controls and reverse-order attribution robustness.
-
-(A,B) Matched-pipeline scoring regimes for the RFoldSearch and RiboSeek alphabets.
-(C-F) Reverse replacement path: 3Dr alphabet first (with an identity matrix), then
-      its learned Structure-BLOSUM, then the RFoldSearch pipeline (which ranks by the
-      structure score).
-
-Writes figures/S19.{png,pdf}.
-"""
+"""Supplementary attribution-control figure: scoring controls and reverse-order attribution robustness."""
 import json
 import os as _os
 import sys as _sys

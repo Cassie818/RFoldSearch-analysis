@@ -1,9 +1,4 @@
-"""Does a larger alphabet actually make the prefilter more selective?
-
-Counts, per query, the postings traversed and the candidates surviving the
-double-diagonal rule, for the deployed 80-state VQ-VAE alphabet and for k-means
-alphabets of several sizes on the identical descriptors.
-"""
+"""Does a larger alphabet actually make the prefilter more selective?"""
 import json, os, sys
 from collections import defaultdict
 import numpy as np, torch

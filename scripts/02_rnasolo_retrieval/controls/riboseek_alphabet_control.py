@@ -16,13 +16,13 @@ from numba import njit
 from riboseek import Searcher
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-from paths import DATA_ROOT, RFOLDSEARCH_REPO, SPLITS_DESC, SRC_SEARCH, resolve  # noqa: E402
+from paths import DATA_ROOT, RFOLDSEARCH_REPO, SPLITS_DESC, SRC_SEARCH, resolve
 sys.path.insert(0, RFOLDSEARCH_REPO)
-from rfoldseek.structure_score import c4_coords, score_pair  # noqa: E402
+from rfoldseek.structure_score import c4_coords, score_pair
 
 sys.path.insert(0, SRC_SEARCH)
-from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels  # noqa: E402
-from smith_waterman import smith_waterman_numba  # noqa: E402
+from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
+from smith_waterman import smith_waterman_numba
 
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
@@ -314,7 +314,6 @@ class SamePipelineRanker:
         self.threshold = thresh_frac * kmer_k
         self.diag = np.array([self.score_matrix[i, i] for i in range(self.K)], dtype=np.float64)
         self.index = self._build_index()
-        # JIT warmup.
         smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), self.score_matrix, GAP_OPEN, GAP_EXTEND)
 
     def _build_index(self) -> dict[int, list[tuple[int, int]]]:

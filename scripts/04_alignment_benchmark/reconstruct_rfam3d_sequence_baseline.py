@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Reconstruct the sequence baseline on the saved 313 Rfam-3D structure pairs."""
 
 from __future__ import annotations

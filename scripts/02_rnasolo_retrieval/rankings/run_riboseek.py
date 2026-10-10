@@ -1,16 +1,4 @@
-"""RiboSeek 0.2.0 rankings (RS-20 and RS-80) on the RNAsolo benchmark.
-
-The 885 chains are encoded with RiboSeek's own feature extractor under the defaults of
-`riboseek build-db` (modified nucleotides dropped; RS-20 labels plus sequence, from which
-RS-80 letters are formed). Each query keeps RiboSeek's own Top500 ranking:
-
-    Searcher(Alphabet.from_pretrained(a), db, gap_penalty=-2.0, prefilter_k=6)
-        .search(query, top_n=500, prefilter=True, prefilter_candidates=500)
-
-    python run_riboseek.py
-Output: rankings/riboseek_rs20.json, rankings/riboseek_rs80.json
-        (encodings cached in files/ablation/riboseek020_encoded.json)
-"""
+"""RiboSeek 0.2.0 rankings (RS-20 and RS-80) on the RNAsolo benchmark."""
 import json
 import os
 import sys

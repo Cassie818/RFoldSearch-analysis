@@ -1,11 +1,4 @@
-"""RFoldSearch and RFoldSearch-TM rankings on the RNAsolo benchmark, ten tie-breaking seeds.
-
-RFoldSearch is the deployed pipeline: the similar-k-mer prefilter (exact 4-mer index with
-one-substitution Structure-BLOSUM expansion, best diagonal with >= 2 hits), the top 200
-candidates, then ranking by the structure score S * aTM.
-RFoldSearch-TM ranks the same candidates by the symmetric US-align TM-score; candidates
-without a US-align score are dropped. Ties are broken by the seeded chain-id hash
-both at the prefilter cut and at the ranking."""
+"""RFoldSearch and RFoldSearch-TM rankings on the RNAsolo benchmark, ten tie-breaking seeds."""
 import os
 import sys
 from collections import defaultdict

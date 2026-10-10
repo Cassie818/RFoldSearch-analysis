@@ -1,12 +1,4 @@
-"""Supplementary forward-attribution figure: forward attribution of the RiboSeek-to-RFoldSearch gap.
-
-The four panels are the former main-text Fig. 2E-H, moved intact to the
-supplement. Each waterfall follows the same forward replacement path:
-RiboSeek -> RFoldSearch search pipeline -> Structure-BLOSUM -> 3Dr alphabet ->
-structure score (ranking by S * aTM instead of the Smith-Waterman score S).
-
-Writes figures/S18.{png,pdf}.
-"""
+"""Supplementary forward-attribution figure: forward attribution of the RiboSeek-to-RFoldSearch gap."""
 import json
 import os as _os
 import sys as _sys

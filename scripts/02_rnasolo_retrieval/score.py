@@ -8,9 +8,6 @@ values in one pass; no other script edits these files.
   structural_tmscore_metrics_test.json   structure truth, Recall@1 and mean Sens@1FP
   recall1_rfam_test.json                 Rfam truth, Recall@1                  (Supplementary)
   weighted_pr_rfam_test.json             Rfam truth, per-query AP and PR curve (Supplementary)
-
-Under the Rfam truth, unlabelled targets are neutral (skipped).
-
 """
 import json
 import os

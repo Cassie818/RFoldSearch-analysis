@@ -1,13 +1,4 @@
-"""RiboSeek 0.1.0 sa20 encodings of the 885 RNAsolo chains, for the alphabet controls.
-
-The controls (riboseek_alphabet_control.py, attribution_*.py) search the RiboSeek sa20
-alphabet with the RFoldSearch pipeline. They read the encodings from
-files/ablation/riboseek_real_encoded.json, produced here with the package's own
-encoder (riboseek==0.1.0, Searcher.from_pretrained("sa20").encode). Chains that fail
-to encode get an empty label list.
-
-    python riboseek_encode_v010.py
-"""
+"""RiboSeek 0.2.0 sa20 encodings of the 885 RNAsolo chains, for the alphabet controls."""
 import importlib.resources as R
 import json
 import os

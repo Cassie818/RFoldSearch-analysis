@@ -111,7 +111,7 @@ def main():
     fam_of = lambda r: r["rfam_family"] if r["rfam_family"] not in ("", "N/A") else ""
     describe("universe (>= %d nt)" % MIN_LEN, rows, fam_of)
 
-    # ---------------- labelled: family cap with taxon round-robin
+    # ---------------- labelled: family cap with taxon round-robin -------------
     byfam = defaultdict(lambda: defaultdict(list))
     for r in rows:
         f = fam_of(r)
@@ -167,7 +167,7 @@ def main():
     describe("  labelled part", labelled, fam_of)
     describe("  unlabelled part", unlabelled, fam_of)
 
-    # ---------------- predicted queries
+    # ---------------- predicted queries--------------
     members = defaultdict(list)
     for r in labelled:
         members[fam_of(r)].append(r)
@@ -185,7 +185,7 @@ def main():
           f"chose {len(p2p)}; cross-species positives per query {quartiles([q['cross_species_positives'] for q in p2p])}; "
           f"query pLDDT {quartiles([q['plddt'] for q in p2p])}")
 
-    # ---------------- experimental queries
+    # ---------------- experimental queries -------------
     exp = []
     try:
         import torch
@@ -212,13 +212,13 @@ def main():
     except Exception as exc:                                  # reported, not fatal
         print(f"[experimental queries] not built: {type(exc).__name__}: {exc}")
 
-    # ---------------- speed ladder
+    # ---------------- speed ladder--------------
     perm = rng_ladder.permutation(len(rows))
     ladder = {str(n): [rows[i]["urs_id"] for i in perm[:n]] for n in LADDER if n < len(rows)}
     ladder[str(len(rows))] = [rows[i]["urs_id"] for i in perm]
     print(f"[speed ladder] sizes {[int(k) for k in ladder]}")
 
-    # ---------------- write
+    # ---------------- write ---------------------
     cols = ["urs_id", "taxonomy_id", "rfam_family", "sequence_length", "avg_plddt", "description"]
     with open(os.path.join(OUT, "accuracy_db.tsv"), "w", newline="") as fh:
         w = csv.writer(fh, delimiter="\t")

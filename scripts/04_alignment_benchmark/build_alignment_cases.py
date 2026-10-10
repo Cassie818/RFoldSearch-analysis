@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Alignment rows of the four RF00015 case pairs (query 5O9Z_4)."""
 
 from __future__ import annotations

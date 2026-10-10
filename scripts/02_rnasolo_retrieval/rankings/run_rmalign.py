@@ -6,16 +6,6 @@ RMscore lines of RNAalign are kept:
     RNAalign -A <i>.pdb -B <j>.pdb
       RMscore=... (normalized by length of structure B)   -> rm_j  (normalised by j)
       RMscore=... (normalized by length of structure A)   -> rm_i  (normalised by i)
-
-The symmetric RMscore is their mean, as the TM-score is for US-align; targets are ranked
-by it, highest first, ties by database index. Scores are cached in
-rmalign_bidirectional.cache.jsonl and only missing pairs are aligned. RMalign 1.1
-(www.rnabinding.com/RMalign) is compiled from source; mmCIF chains are written to PDB
-with Biopython, every chain renamed to "A" (RMalign reads geometry only).
-
-The earlier cache (rmalign_full.cache.jsonl) kept one score per pair, the first RMscore
-line, with the -A/-B order arbitrary across pairs; --validate N realigns N of its pairs
-and compares rm_j with it.
 """
 import argparse
 import json

@@ -1,9 +1,4 @@
-"""Supplementary quantiser-control figure: quantiser control. The identical 17-D production descriptor is
-tokenised either by k-means (K in {10,20,40,80}) or by the deployed VQ-VAE
-(K=80); all alphabets are searched with the same deployed pipeline, each with
-its own Structure-BLOSUM. Family- and clan-level Sens@1FP under the Rfam
-annotation (A,B) and the structure-defined ground truth at TM >= 0.45 (C,D),
-and accuracy against prefilter selectivity (E)."""
+"""Supplementary quantiser-control figure: quantiser control."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", ".."))

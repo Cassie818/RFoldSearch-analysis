@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Fetch chain-level, first-model mmCIF files referenced by Rfam.3d.seed."""
 
 from __future__ import annotations

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """Build the manuscript's canonical summary on the verified common pair cohort."""
 
 from __future__ import annotations

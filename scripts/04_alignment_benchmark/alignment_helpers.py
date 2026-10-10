@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 """RFoldSearch alignment example from experimental RNA."""
 
 from __future__ import annotations

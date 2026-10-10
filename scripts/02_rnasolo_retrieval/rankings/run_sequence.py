@@ -1,28 +1,4 @@
-"""Sequence-method rankings on the RNAsolo benchmark: BLASTN and Infernal.
-
-BLASTN (BLAST+ 2.17.0): a nucleotide database of the 885 chain sequences; every query
-chain is searched against it, the best bit score is kept per target, self hits removed,
-targets ranked by descending bit score (ties by database index).
-
-    blastn -query <queries.fa> -db <db> -evalue 10 -outfmt "6 qseqid sseqid bitscore evalue"
-           -max_target_seqs 885
-
-Infernal (1.1.5): every held-out test chain becomes a single-sequence covariance model
-with its 3D-derived secondary structure (Watson-Crick and wobble pairs from the
-coordinates, reduced to a nested structure); the model is calibrated and searched
-against the 885 sequences; targets are ranked by descending bit score, self excluded.
-
-    cmbuild -F q.cm q.sto
-    cmcalibrate --cpu 1 --tailp 0.5 -L 0.01 q.cm
-    cmsearch --cpu 1 --toponly -T 0 --incT 0 --tblout o.tbl q.cm chains.fa
-
-With --retry-failed, only queries whose earlier run failed (no ranking, zero seconds)
-are run again and merged into the existing file.
-
-    python run_sequence.py blastn
-    python run_sequence.py infernal [--retry-failed]
-Output: rankings/blastn.json, rankings/infernal.json ({chain: {"ranking", "seconds"}})
-"""
+"""Sequence-method rankings on the RNAsolo benchmark: BLASTN and Infernal."""
 import argparse
 import csv
 import json
@@ -36,16 +12,16 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
-import benchmark as BM  # noqa: E402
-from paths import BLAST_BIN, INFERNAL_BIN, NR80_DIR, SRC_SEARCH  # noqa: E402
+import benchmark as BM
+from paths import BLAST_BIN, INFERNAL_BIN, NR80_DIR, SRC_SEARCH
 
 sys.path.insert(0, SRC_SEARCH)
-from secondary_structure import WC_NITROGEN, detect_pairs  # noqa: E402
+from secondary_structure import WC_NITROGEN, detect_pairs
 
 CMBUILD, CMCALIBRATE, CMSEARCH = (os.path.join(INFERNAL_BIN, x) for x in ("cmbuild", "cmcalibrate", "cmsearch"))
 CALIB_L = "0.01"
 STD = {"A", "C", "G", "U"}
-WORK = os.path.join(BM.RET, "infernal_fig2_work")                 # scratch: FASTA database
+WORK = os.path.join(BM.RET, "infernal_fig2_work")
 DB_FA = os.path.join(WORK, "chains.fa")
 
 

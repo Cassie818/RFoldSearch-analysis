@@ -12,9 +12,6 @@ Truths     Rfam:      family positives share the family, same-clan other-family
            structure: positives have symmetric US-align TM-score >= tau (family
                       level); at clan level they must also come from another Rfam
                       family, and same-family targets are neutral.
-Rankings   one file per method in files/production/retrieval/rankings/<slug>.json,
-           {query chain: {"ranking": [chain, ...]}} for a deterministic method, or
-           {"rankings": [[chain, ...], ...]} with one ranking per tie-breaking seed.
 """
 import json
 import os

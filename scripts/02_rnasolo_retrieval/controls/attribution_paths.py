@@ -12,10 +12,11 @@ import importlib.resources as R
 PC = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval", "controls"))
 os.environ.setdefault("RFS_ALPHABET_CONTROL_MATRIX", "native")
-import riboseek_alphabet_control as F  # noqa: E402
-from riboseek import Searcher  # noqa: E402
-from riboseek.align import NWAligner  # noqa: E402
-from riboseek.prefilter import KmerPrefilter  # noqa: E402
+
+import riboseek_alphabet_control as F
+from riboseek import Searcher
+from riboseek.align import NWAligner
+from riboseek.prefilter import KmerPrefilter
 
 B, SEED = 2000, 123
 LEVEL_SEED = {"family": SEED + 1, "clan": SEED + 2}

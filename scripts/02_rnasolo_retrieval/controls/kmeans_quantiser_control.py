@@ -8,7 +8,7 @@ from sklearn.cluster import MiniBatchKMeans
 PC = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 sys.path.insert(0, os.path.join(PC, "scripts", "02_rnasolo_retrieval", "controls"))
 os.environ["RFS_ALPHABET_CONTROL_MATRIX"] = "self_blosum"
-import riboseek_alphabet_control as F  # noqa: E402
+import riboseek_alphabet_control as F
 
 SPLITS = F.SPLITS_DESC
 KEEP = sorted(list(range(0, 10)) + list(range(42, 49)))  # g_nn1 (0-9) + g_ctx (42-48)

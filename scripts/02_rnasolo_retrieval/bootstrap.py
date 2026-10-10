@@ -1,25 +1,5 @@
-"""Block bootstrap for the RNAsolo benchmark (Fig. 2 and the retrieval-metrics figure).
+"""Block bootstrap for the RNAsolo benchmark (Fig. 2 and the retrieval-metrics figure)."""
 
-Queries of one Rfam family (or clan) are not independent, so every interval resamples
-whole blocks with replacement: Rfam families at the family level, clans at the clan level
-(queries without a block are dropped); 2,000 replicates.
-
-  bootstrap_fig2ab_band.json       Fig. 2A/B: 95% band of each method's sorted
-                                   Sens@1FP curve (Rfam truth)
-  bootstrap_fig2ab_paired.json     Rfam truth, paired difference RFoldSearch - method
-  bootstrap_fig2ab_paired_tm.json  Rfam truth, paired difference RFoldSearch-TM - method
-  bootstrap_fig2cd_results.json    Fig. 2C/D: 95% interval of each method's mean
-                                   Sens@1FP and paired significance against RFoldSearch
-                                   (structure truth)
-  bootstrap_figS12_ap.json         per-query average precision, paired difference
-                                   RFoldSearch - method (Rfam truth)
-
-A paired difference recomputes both means on the same resampled blocks; it is
-significant ("sig") when its 95% percentile interval excludes zero. "diff_mean" is the
-observed difference.
-
-    python bootstrap.py
-"""
 import json
 import os
 from collections import defaultdict
