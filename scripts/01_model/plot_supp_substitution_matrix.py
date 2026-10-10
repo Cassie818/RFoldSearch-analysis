@@ -72,7 +72,7 @@ ax.set_xlabel("Substitution matrix", fontsize=12)
 ax.set_ylabel("Sens@1FP", fontsize=12)
 ax.set_xticks(xs)
 ax.set_xticklabels([n[1] for n in NAMES], fontsize=10.5)
-ax.set_ylim(0, 0.5)
+ax.set_ylim(0, 0.62)
 ax.spines[["top", "right"]].set_visible(False)
 ax.legend(
     loc="lower center",

@@ -41,6 +41,13 @@ ARCH = {
     "A7": (4, 8, 256, 128),
     "A8": (4, 8, 256, 64),
 }
+_arch_env = os.environ.get("RFOLDSEARCH_ARCH", "")
+if _arch_env:
+    ARCH = {_arch_env: ARCH[_arch_env]}
+_fold_env = os.environ.get("RFOLDSEARCH_ARCH_FOLD", "")
+FOLD_LIST = [int(_fold_env)] if _fold_env else list(range(5))
+OUT_PATH = os.environ.get(
+    "RFOLDSEARCH_ARCH_OUT", "files/ablation/cv_s5_clan_5fold.json")
 ACTIVE = {"g_ctx", "g_nn1"}
 db = torch.load("files/production/db.pt", map_location="cpu", weights_only=False)
 ents = db["entries"]
@@ -278,6 +285,7 @@ def retrieval_eval(m, K, heldout_dis, desc_all):
         ]
         va = np.arange(n_pool) != q
         rel_f = (fam_pool == fam_pool[q]) & va
+        # Targets without an Rfam annotation have unknown truth and are neutral.
         neu_f = (fam_pool == "") | (
             ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if clan_pool[q] else False
         )
@@ -330,7 +338,7 @@ for name, spec in ARCH.items():
     nqf = []
     nqc = []
     t0 = time.time()
-    for f in range(5):
+    for f in FOLD_LIST:
         fs, cs, nf, nc = eval_fold(spec, f)
         fam_folds.append(fs)
         clan_folds.append(cs)
@@ -358,5 +366,5 @@ for name, spec in ARCH.items():
         f"  {name} {spec}: famSens={fam_mean:.3f}±{fam_std:.3f}  clanSens={clan_mean:.3f}±{clan_std:.3f}  ({time.time()-t0:.0f}s)",
         flush=True,
     )
-    json.dump(out, open("files/ablation/cv_s5_clan_5fold.json", "w"), indent=2)
+    json.dump(out, open(OUT_PATH, "w"), indent=2)
 print(f"\ntotal: {time.time()-t_all:.0f}s\nDONE", flush=True)

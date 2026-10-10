@@ -13,8 +13,8 @@ from collections import defaultdict
 import numpy as np, torch, torch.nn as nn
 from numba import njit
 
-sys.path.insert(0, "models")
-sys.path.insert(0, "evaluation/search")
+# Use the current repository implementation even when DATA_ROOT points to the
+# external directory containing the large descriptor tensors.
 from vqvae import DescriptorVQVAE, descriptor_loss
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
 from smith_waterman import smith_waterman_numba
@@ -59,7 +59,15 @@ pool = [
 ]
 KEEP = set(list(range(42, 49)) + list(range(0, 10)))  # ctx(42:49)+nn1(0:10) = 17-D
 MASK = np.array([1.0 if i in KEEP else 0.0 for i in range(49)], dtype=np.float32)
-WEIGHTS = ["0_0_0", "0.5_0.5_0.5", "1_0.5_0.25"]  # (alpha,beta,gamma) virtual-centre weights
+_DEFAULT_WEIGHTS = ["0_0_0", "0.5_0.5_0.5", "1_0.5_0.25"]
+# Optional selectors let the 15 independent weight/fold jobs run in parallel.
+WEIGHTS = os.environ.get("RFOLDSEARCH_VC_WEIGHTS", "").split(",")
+WEIGHTS = [w for w in WEIGHTS if w] or _DEFAULT_WEIGHTS
+_fold_env = os.environ.get("RFOLDSEARCH_VC_FOLD", "")
+FOLD_LIST = [int(_fold_env)] if _fold_env else list(range(5))
+OUT_PATH = os.environ.get(
+    "RFOLDSEARCH_VC_OUT", "files/ablation/cv_vc_clan_5fold.json"
+)
 desc_raw = {}
 
 
@@ -90,7 +98,7 @@ def build_desc_all(mn, sd):
 
 
 print(
-    f"CV pool: {len(pool)} chains  substitution-matrix ablation at K={K}, deployed VQ-VAE pipeline",
+    f"CV pool: {len(pool)} chains  virtual-centre ablation at K={K}, deployed VQ-VAE pipeline",
     flush=True,
 )
 import re as _re
@@ -511,7 +519,7 @@ for _w in WEIGHTS:
     clan_folds = []
     nqf = []
     nqc = []
-    for f in range(5):
+    for f in FOLD_LIST:
         t0 = time.time()
         fs, cs, nf, nc = eval_fold(f)
         fam_folds.append(fs)
@@ -537,9 +545,21 @@ for _w in WEIGHTS:
     print(
         f"  == weight {_w}: famSens={fm:.3f}±{fsd:.3f}  clanSens={cm:.3f}±{csd:.3f} ==", flush=True
     )
-    json.dump(all_out, open("files/ablation/cv_vc_clan_5fold.json", "w"), indent=2)
+    all_out["_provenance"] = {
+        "truth_policy": "unlabelled targets are neutral",
+        "cv": "PDB-disjoint 5-fold",
+        "descriptor": "17-D g_ctx + g_nn1",
+        "codebook_K": K,
+        "kmer_k": KMER_K,
+        "candidate_depth": 100,
+        "reranker": "fold-specific Structure-BLOSUM token SW",
+    }
+    Path(OUT_PATH).parent.mkdir(parents=True, exist_ok=True)
+    json.dump(all_out, open(OUT_PATH, "w"), indent=2)
 print("\n== Summary (virtual-centre weight ablation) ==", flush=True)
 for _w, v in all_out.items():
+    if _w.startswith("_"):
+        continue
     print(
         f"  {_w:14s}: famSens={v['fam_sens_mean']:.3f}±{v['fam_sens_std']:.3f}  clanSens={v['clan_sens_mean']:.3f}±{v['clan_sens_std']:.3f}",
         flush=True,

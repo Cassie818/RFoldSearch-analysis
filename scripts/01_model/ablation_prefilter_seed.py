@@ -117,6 +117,10 @@ folds = [[] for _ in range(5)]
 for _pi, _p in enumerate(_pdbs):
     folds[_pi % 5].extend(_pdb_groups[_p])
 print(f"PDB-disjoint folds: sizes={[len(f) for f in folds]}  n_pdbs={len(_pdbs)}", flush=True)
+_fold_env = os.environ.get("RFOLDSEARCH_S7_FOLD", "")
+FOLD_LIST = [int(_fold_env)] if _fold_env else list(range(5))
+OUT_PATH = os.environ.get(
+    "RFOLDSEARCH_S7_OUT", "files/ablation/cv_s7_clan_5fold.json")
 
 
 def cosine_warmup(step, warmup, total):
@@ -406,6 +410,7 @@ def retrieval_eval(
         ]
         va = np.arange(order_len) != q
         rel_f = (fam_pool == fam_pool[q]) & va
+        # Targets without an Rfam annotation have unknown truth and are neutral.
         neu_f = (fam_pool == "") | (
             ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if clan_pool[q] else False
         )
@@ -479,7 +484,7 @@ all_out = {
     for n, p in PATTERNS.items()
 }
 t_all = time.time()
-for f in range(5):
+for f in FOLD_LIST:
     t0 = time.time()
     res = eval_fold(f)
     for name, (fs, cs, nf, nc) in res.items():
@@ -500,7 +505,7 @@ for f in range(5):
             all_out[name]["fam_sens_std"] = float(np.std(ff))
             all_out[name]["clan_sens_mean"] = float(np.mean(cf))
             all_out[name]["clan_sens_std"] = float(np.std(cf))
-    json.dump(all_out, open("files/ablation/cv_s7_clan_5fold.json", "w"), indent=2)
+    json.dump(all_out, open(OUT_PATH, "w"), indent=2)
 print("\n== Summary ==", flush=True)
 for name, v in all_out.items():
     print(

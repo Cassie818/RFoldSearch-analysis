@@ -19,8 +19,8 @@ import matplotlib.pyplot as plt
 d = json.load(open(resolve("files/ablation/cv_prefilter_score_5fold.json")))
 NAMES = [
     ("E4", "No expansion"),
-    ("blosum>=.25", "Structure-BLOSUM\n$S\\geq0.25$"),
-    ("blosum>=0", "Structure-BLOSUM\n$S\\geq0$"),
+    ("blosum_total>=3.25", "Structure-BLOSUM\ntotal $\\geq3.25$"),
+    ("blosum_total>=3", "Structure-BLOSUM\ntotal $\\geq3.0$"),
     ("cos>=0", "Codebook cosine\n$\\cos\\geq0$"),
 ]
 xs = np.arange(len(NAMES))
@@ -28,9 +28,12 @@ fam_m = np.array([d[k[0]]["fam_sens_mean"] for k in NAMES])
 fam_s = np.array([d[k[0]]["fam_sens_std"] for k in NAMES])
 clan_m = np.array([d[k[0]]["clan_sens_mean"] for k in NAMES])
 clan_s = np.array([d[k[0]]["clan_sens_std"] for k in NAMES])
-fig, ax = plt.subplots(figsize=(7, 4.8))
+post_m = np.array([d[k[0]]["postings_per_query_mean"] for k in NAMES])
+post_s = np.array([d[k[0]]["postings_per_query_std"] for k in NAMES])
+fig, (ax, ax2) = plt.subplots(1, 2, figsize=(12, 4.8))
 C1 = "#5B7C99"
 C2 = "#B08D5C"
+C3 = "#4C8C69"
 ax.plot(
     xs,
     fam_m,
@@ -73,18 +76,38 @@ ax.set_ylabel("Sens@1FP", fontsize=12)
 ax.set_xticks(xs)
 ax.set_xticklabels([n[1] for n in NAMES], fontsize=10)
 ax.set_xlim(-0.4, len(NAMES) - 0.6)
-ax.set_ylim(0, 0.5)
+ax.set_ylim(0, 0.6)
 ax.spines[["top", "right"]].set_visible(False)
-ax.legend(
-    loc="lower center",
-    frameon=False,
-    fontsize=11,
-    ncol=2,
-    bbox_to_anchor=(0.5, -0.38),
-    handlelength=2.0,
-    columnspacing=2.5,
-)
-fig.tight_layout(rect=(0, 0.07, 1, 1))
+ax.text(-0.10, 1.04, "A", transform=ax.transAxes, fontsize=16,
+        fontweight="bold", ha="right")
+
+ax2.plot(xs, post_m, "o-", color=C3, linewidth=2, markersize=7,
+         markerfacecolor=C3, markeredgecolor="white", markeredgewidth=1,
+         label="Postings/query", zorder=3)
+for x, v, e in zip(xs, post_m, post_s):
+    ax2.vlines(x, v, v + e, colors="#333333", linewidth=1.0, alpha=0.9, zorder=2)
+    ax2.hlines(v + e, x - 0.10, x + 0.10, colors="#333333", linewidth=1.0,
+               alpha=0.9, zorder=2)
+    ax2.annotate(f"{v / 1000:.1f}k", (x, v + e), xytext=(0, 7),
+                 textcoords="offset points", ha="center", fontsize=8, color=C3)
+ax2.set_yscale("log")
+ax2.set_xlabel("Similar-$k$-mer scoring criterion", fontsize=12)
+ax2.xaxis.set_label_coords(0.5, -0.18)
+ax2.set_ylabel("Postings per query", fontsize=12)
+ax2.set_xticks(xs)
+ax2.set_xticklabels([n[1] for n in NAMES], fontsize=10)
+ax2.set_xlim(-0.4, len(NAMES) - 0.6)
+ax2.set_ylim(8e2, 4e4)
+ax2.spines[["top", "right"]].set_visible(False)
+ax2.text(-0.10, 1.04, "B", transform=ax2.transAxes, fontsize=16,
+         fontweight="bold", ha="right")
+
+h1, l1 = ax.get_legend_handles_labels()
+h2, l2 = ax2.get_legend_handles_labels()
+fig.legend(h1 + h2, l1 + l2, loc="lower center", frameon=False,
+           fontsize=11, ncol=3, bbox_to_anchor=(0.5, -0.015),
+           handlelength=2.0, columnspacing=2.5)
+fig.tight_layout(rect=(0, 0.10, 1, 1), w_pad=2.8)
 OUT = str(Path(FIG_DIR) / "supp_prefilter_scoring.png")
 fig.savefig(OUT, dpi=200, bbox_inches="tight")
 print(f"wrote {OUT}")

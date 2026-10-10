@@ -1,4 +1,4 @@
-"""K-sweep using the DEPLOYED VQ-VAE training pipeline (models/vqvae.py)"""
+"""K-sweep using the deployed VQ-VAE training and configurable unlabelled truth."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
@@ -17,6 +17,7 @@ sys.path.insert(0, "evaluation/search")
 from vqvae import DescriptorVQVAE, descriptor_loss
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
 from smith_waterman import smith_waterman_numba
+from token_alignment import smith_waterman_traceback
 
 QMAX = 500
 EPOCHS = 50
@@ -25,7 +26,7 @@ LR = 3e-4
 WD = 1e-2
 WARMUP = 200
 CLIP = 1.0
-KMER_K = 4
+KMER_K = int(os.environ.get("RFOLDSEARCH_KMER_K", "4"))
 THRESH_FRAC = 0.75
 N_SEEDS = 1
 D_DESC = 49
@@ -33,6 +34,9 @@ D_HIDDEN = 128
 D_LATENT = 128
 N_ENC = 2
 N_DEC = 4
+BLOSUM_SCALE = 2.0
+BLOSUM_GAP_OPEN = -11.0
+BLOSUM_GAP_EXTEND = -1.0
 ACTIVE = {"g_ctx", "g_nn1"}
 db = torch.load("files/production/db.pt", map_location="cpu", weights_only=False)
 ents = db["entries"]
@@ -99,7 +103,38 @@ folds = [[] for _ in range(5)]
 for _pi, _p in enumerate(_pdbs):
     folds[_pi % 5].extend(_pdb_groups[_p])
 print(f"PDB-disjoint folds: sizes={[len(f) for f in folds]}  n_pdbs={len(_pdbs)}", flush=True)
-KS = [20, 40, 60, 80]
+_ks_env = os.environ.get("RFOLDSEARCH_CODEBOOK_K", "")
+KS = ([int(_ks_env)] if _ks_env else [20, 40, 60, 80, 100])
+_fold_env = os.environ.get("RFOLDSEARCH_CODEBOOK_FOLD", "")
+FOLD_LIST = ([int(_fold_env)] if _fold_env else list(range(5)))
+
+# Structural training pairs are loaded once.  A fold only uses pairs whose
+# two members are in that fold's training subset, preventing test leakage.
+STRUCT_PAIRS = []
+_usalign_cache = os.path.join("files", "production", "retrieval",
+                              "usalign_full.cache.jsonl")
+if os.path.exists(_usalign_cache):
+    with open(_usalign_cache) as _handle:
+        for _line in _handle:
+            _row = json.loads(_line)
+            if 0.5 * (float(_row["tm_query"]) + float(_row["tm_target"])) >= 0.5:
+                _a, _b = int(_row["i"]), int(_row["j"])
+                if _a != _b:
+                    STRUCT_PAIRS.append((_a, _b) if _a < _b else (_b, _a))
+STRUCT_PAIRS = sorted(set(STRUCT_PAIRS))
+print(f"Structural matrix pool: {len(STRUCT_PAIRS)} pairs with symmetric TM>=0.5",
+      flush=True)
+OUT_PATH = os.environ.get(
+    "RFOLDSEARCH_CODEBOOK_OUT", "files/ablation/cv_s4_codebook_size_5fold.json")
+UNLABELLED_POLICY = os.environ.get("RFOLDSEARCH_UNLABELLED_POLICY", "neutral").lower()
+if UNLABELLED_POLICY not in {"neutral", "false_positive"}:
+    raise ValueError("RFOLDSEARCH_UNLABELLED_POLICY must be neutral or false_positive")
+print(f"Unlabelled-target policy: {UNLABELLED_POLICY}", flush=True)
+MATRIX_MODE = os.environ.get("RFOLDSEARCH_MATRIX", "cosine").lower()
+if MATRIX_MODE not in {"structure_blosum", "cosine"}:
+    raise ValueError("RFOLDSEARCH_MATRIX must be structure_blosum or cosine")
+print(f"Substitution matrix: {MATRIX_MODE}", flush=True)
+print(f"Prefilter k-mer length: {KMER_K}", flush=True)
 
 
 def cosine_warmup(step, warmup, total):
@@ -205,7 +240,35 @@ def expand_kmer(qk, cos, K, thresh):
     return list(out)
 
 
-def retrieval_eval(m, K, heldout_dis, desc_all):
+def build_struct_blosum(tok_by_di, pair_pool, K):
+    """Build the deployed Structure-BLOSUM analogue for one fold/codebook."""
+    identity = np.eye(K, dtype=np.float32)
+    joint = np.zeros((K, K), dtype=np.float64)
+    n_aligned = 0
+    for a, b in pair_pool:
+        q, t = tok_by_di.get(a), tok_by_di.get(b)
+        if q is None or t is None or len(q) == 0 or len(t) == 0:
+            continue
+        _, pairs = smith_waterman_traceback(
+            q, t, identity, BLOSUM_GAP_OPEN, BLOSUM_GAP_EXTEND)
+        for qi, ti in pairs:
+            x, y = int(q[qi]), int(t[ti])
+            joint[x, y] += 1.0
+            joint[y, x] += 1.0
+        n_aligned += 1
+    total = max(float(joint.sum()), 1.0)
+    p_ij = joint / total
+    p_i = np.maximum(p_ij.sum(axis=1), 1e-12)
+    S = BLOSUM_SCALE * np.log2(
+        np.maximum(p_ij, 1e-12) / np.maximum(np.outer(p_i, p_i), 1e-12))
+    S = S.astype(np.float32)
+    S *= 1.0 / max(float(np.diag(S).mean()), 1e-6)
+    if n_aligned == 0:
+        raise RuntimeError("no structural training pairs available for matrix")
+    return S
+
+
+def retrieval_eval(m, K, heldout_dis, desc_all, struct_pairs, collect_postings=False):
     """Run retrieval over ALL pool chains; return (r1_mean, sens_mean, nq)."""
     toks = {}
     cb = None
@@ -217,8 +280,11 @@ def retrieval_eval(m, K, heldout_dis, desc_all):
         c, cb_arr = get_codes(m, X)
         toks[di] = c
         cb = cb_arr
-    cbn = cb / (np.linalg.norm(cb, axis=1, keepdims=True) + 1e-9)
-    cos = (cbn @ cbn.T).astype(np.float32)
+    if MATRIX_MODE == "cosine":
+        cbn = cb / (np.linalg.norm(cb, axis=1, keepdims=True) + 1e-9)
+        sub = (cbn @ cbn.T).astype(np.float32)
+    else:
+        sub = build_struct_blosum(toks, struct_pairs, K)
     order = pool
     pos = {d: i for i, d in enumerate(order)}
     tok_list = [toks[d] for d in order]
@@ -229,7 +295,7 @@ def retrieval_eval(m, K, heldout_dis, desc_all):
         for p in range(len(tt) - k + 1):
             kid = int(np.dot(tt[p : p + k], powers))
             idx[kid].append((ti, p))
-    smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), cos, -2.0, -0.5)
+    smith_waterman_numba(np.zeros(4, np.int64), np.zeros(4, np.int64), sub, -2.0, -0.5)
     thresh = THRESH_FRAC * k
     n_pool = len(order)
     fam_pool = np.array([fams[d] for d in order], dtype=object)
@@ -245,16 +311,21 @@ def retrieval_eval(m, K, heldout_dis, desc_all):
     ]
     famS = []
     clanS = []
+    postings = []
     for q in qs:
         tt = tok_list[q]
         td = defaultdict(dict)
+        n_post = 0
         for qp in range(len(tt) - k + 1):
             qk = tt[qp : qp + k]
-            for kid in expand_kmer(qk, cos, K, thresh):
+            for kid in expand_kmer(qk, sub, K, thresh):
                 for ti, tp in idx.get(kid, ()):
                     if ti != q:
+                        n_post += 1
                         d = qp - tp
                         td[ti][d] = td[ti].get(d, 0) + 1
+        if collect_postings:
+            postings.append(n_post)
         sc = [(ti, max((c for c in dm.values() if c >= 2), default=-1)) for ti, dm in td.items()]
         sc = [x for x in sc if x[1] > 0]
         sc.sort(key=lambda x: (-x[1], x[0]))  # deterministic tie-break: score, then target index
@@ -264,23 +335,28 @@ def retrieval_eval(m, K, heldout_dis, desc_all):
             continue
         r = cand[
             np.argsort(
-                -np.array([smith_waterman_numba(tt, tok_list[t], cos, -2.0, -0.5) for t in cand]),
+                -np.array([smith_waterman_numba(tt, tok_list[t], sub, -2.0, -0.5) for t in cand]),
                 kind="stable",
             )
         ]
         va = np.arange(n_pool) != q
         rel_f = (fam_pool == fam_pool[q]) & va
-        neu_f = (fam_pool == "") | (
+        # Unlabelled targets can either be neutral (the current default) or
+        # count as false positives for the historical ablation convention.
+        neu_f = ((fam_pool == "") if UNLABELLED_POLICY == "neutral" else False) | (
             ((clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va) if clan_pool[q] else False
         )
         famS.append(first_fp_sensitivity(r, rel_f, neu_f))
         if clan_pool[q]:
             rel_c = (clan_pool == clan_pool[q]) & (fam_pool != fam_pool[q]) & va
             if rel_c.any():
-                neu_c = (fam_pool == "") | ((fam_pool == fam_pool[q]) & va)
+                # Apply the same unlabelled-target policy at clan level.
+                neu_c = ((fam_pool == "") if UNLABELLED_POLICY == "neutral" else False) | ((fam_pool == fam_pool[q]) & va)
                 clanS.append(first_fp_sensitivity(r, rel_c, neu_c))
     fam_m = float(np.mean(famS)) if famS else 0.0
     clan_m = float(np.mean(clanS)) if clanS else 0.0
+    if collect_postings:
+        return fam_m, clan_m, len(famS), len(clanS), float(np.mean(postings)) if postings else 0.0
     return fam_m, clan_m, len(famS), len(clanS)
 
 
@@ -293,6 +369,8 @@ def eval_fold(K, fold_idx):
     cut = int(len(tr_dis) * 0.8)
     val_dis = set(tr_dis[cut:])
     tr_dis_set = set(tr_dis[:cut])
+    struct_pairs = [p for p in STRUCT_PAIRS
+                    if p[0] in tr_dis_set and p[1] in tr_dis_set]
     # FOLD-SPECIFIC z-score: compute mn/sd from THIS fold's training subset only
     _raw_tr = np.vstack([desc_raw[di] for di in tr_dis_set if len(desc_raw[di]) > 0])
     mn = _raw_tr.mean(0)
@@ -305,12 +383,14 @@ def eval_fold(K, fold_idx):
     for seed in range(N_SEEDS):
         m, vl = train_one(K, 42 + seed, Xtr, Xval)
         # tokenizer selection by val retrieval (fam+clan Sens, queries = val_dis)
-        fs_v, cs_v, _, _ = retrieval_eval(m, K, val_dis, desc_all)
+        fs_v, cs_v, _, _ = retrieval_eval(m, K, val_dis, desc_all, struct_pairs)
         if fs_v + cs_v > best_score:
             best_score = fs_v + cs_v
             best_m = m
     # Evaluate on the actual CV heldout fold
-    fs, cs, nf, nc = retrieval_eval(best_m, K, heldout, desc_all)
+    if os.environ.get("RFOLDSEARCH_POSTINGS_ONLY", "0") == "1":
+        return retrieval_eval(best_m, K, heldout, desc_all, struct_pairs, collect_postings=True)
+    fs, cs, nf, nc = retrieval_eval(best_m, K, heldout, desc_all, struct_pairs)
     return fs, cs, nf, nc
 
 
@@ -322,13 +402,22 @@ for K in KS:
     clan_folds = []
     nqf = []
     nqc = []
+    post_folds = []
     t0 = time.time()
-    for f in range(5):
-        fs, cs, nf, nc = eval_fold(K, f)
+    for f in FOLD_LIST:
+        result = eval_fold(K, f)
+        if os.environ.get("RFOLDSEARCH_POSTINGS_ONLY", "0") == "1":
+            fs, cs, nf, nc, pq = result
+        else:
+            fs, cs, nf, nc = result
+            pq = None
         fam_folds.append(fs)
         clan_folds.append(cs)
         nqf.append(nf)
         nqc.append(nc)
+        if pq is not None:
+            post_folds.append(pq)
+            print(f"    K={K} fold={f}: postings/query={pq:.1f}", flush=True)
         print(
             f"    K={K} fold={f}: famSens={fs:.3f} clanSens={cs:.3f} nqf={nf} nqc={nc}  ({time.time()-t0:.0f}s cumulative)",
             flush=True,
@@ -346,9 +435,21 @@ for K in KS:
         "nq_fam": nqf,
         "nq_clan": nqc,
     }
+    if os.environ.get("RFOLDSEARCH_POSTINGS_ONLY", "0") == "1":
+        out[key]["postings_per_query_folds"] = post_folds
+        out[key]["postings_per_query_mean"] = float(np.mean(post_folds)) if post_folds else 0.0
+        out[key]["postings_per_query_std"] = float(np.std(post_folds)) if post_folds else 0.0
     print(
         f"  K={K}: famSens={fam_mean:.3f}±{fam_std:.3f}  clanSens={clan_mean:.3f}±{clan_std:.3f}  ({time.time()-t0:.0f}s)",
         flush=True,
     )
-    json.dump(out, open("files/ablation/cv_s4_clan_5fold.json", "w"), indent=2)
+    out["_provenance"] = {
+        "truth_policy": f"unlabelled targets are {UNLABELLED_POLICY}",
+        "cv": "PDB-disjoint 5-fold",
+        "descriptor": "17-D g_ctx + g_nn1",
+        "matrix": MATRIX_MODE,
+        "kmer_k": KMER_K,
+        "candidate_depth": 100,
+    }
+    json.dump(out, open(OUT_PATH, "w"), indent=2)
 print(f"\ntotal: {time.time()-t_all:.0f}s\nDONE", flush=True)

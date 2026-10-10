@@ -3,17 +3,24 @@ All variants use the contiguous 4-mer seed and Structure-BLOSUM SW reranking
 (matrix built from mean-normalised TM>=0.5 pairs, as deployed); they differ
 only in how 1-substitution similar k-mers are selected:
   E4          : no expansion (exact match only)
-  cos>=0      : codebook cosine, thresh 3.0  (earlier exploratory criterion)
-  blosum>=0   : Structure-BLOSUM, thresh 3.0  (deployed)
-  blosum>=.25 : Structure-BLOSUM, thresh 3.25
+  cos>=0      : codebook cosine total 4-mer score >=3.0
+  blosum>=3   : actual Structure-BLOSUM total 4-mer score >=3.0 (deployed)
+  blosum>=3.25: actual Structure-BLOSUM total 4-mer score >=3.25
 """
+import sys as _sys, os as _os
+
+_sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
+from paths import DATA_ROOT, SRC_MODELS, SRC_SEARCH
+
+_sys.path.insert(0, SRC_SEARCH)
+_sys.path.insert(0, SRC_MODELS)
+_os.chdir(DATA_ROOT)
+from pathlib import Path
 import sys, os, json, time, math, copy
 from collections import defaultdict
 import numpy as np, torch, torch.nn as nn
 from numba import njit
 
-sys.path.insert(0, "models")
-sys.path.insert(0, "evaluation/search")
 from vqvae import DescriptorVQVAE, descriptor_loss
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
 from smith_waterman import smith_waterman_numba
@@ -86,7 +93,7 @@ def build_desc_all(mn, sd):
 
 
 print(
-    f"CV pool: {len(pool)} chains  prefilter ablation at K={K}, deployed VQ-VAE, patterns={list(PATTERNS.keys())}",
+    f"CV pool: {len(pool)} chains  similar-k-mer scoring ablation at K={K}, deployed VQ-VAE",
     flush=True,
 )
 import re as _re
@@ -318,15 +325,17 @@ def encode_seed(seed, K_):
 
 
 def expand_seed(seed, cos, K_, thresh):
-    """1-substitution neighbours of a seed tuple (length k=4) with kmer-kmer cosine>=thresh."""
+    """One-substitution neighbours whose actual four-position score passes ``thresh``."""
     k = len(seed)
     powers = [K_ ** (k - 1 - i) for i in range(k)]
     out = {sum(seed[i] * powers[i] for i in range(k))}
+    self_score = sum(float(cos[seed[i], seed[i]]) for i in range(k))
     for pos in range(k):
+        cur = seed[pos]
         for tok in range(K_):
-            if tok == seed[pos]:
+            if tok == cur:
                 continue
-            score = (k - 1) * 1.0 + cos[seed[pos], tok]
+            score = self_score - float(cos[cur, cur]) + float(cos[cur, tok])
             if score >= thresh:
                 trial = list(seed)
                 trial[pos] = tok
@@ -373,9 +382,13 @@ def retrieval_eval(
     ]
     famS = []
     clanS = []
+    postings = []
+    prefilter_ms = []
     for q in qs:
         tt = tok_list[q]
         td = defaultdict(dict)
+        n_post = 0
+        prefilter_start = time.perf_counter()
         for qp in range(len(tt) - w + 1):
             seed = extract_seed(tt, pattern, qp)
             if do_expand:
@@ -385,12 +398,15 @@ def retrieval_eval(
             for kid in kids:
                 for ti, tp in idx.get(kid, ()):
                     if ti != q:
+                        n_post += 1
                         d = qp - tp
                         td[ti][d] = td[ti].get(d, 0) + 1
         sc = [(ti, max((c for c in dm.values() if c >= 2), default=-1)) for ti, dm in td.items()]
         sc = [x for x in sc if x[1] > 0]
         sc.sort(key=lambda x: (-x[1], x[0]))
         cand = np.array([x[0] for x in sc[:TOPN]], np.int64)
+        postings.append(n_post)
+        prefilter_ms.append((time.perf_counter() - prefilter_start) * 1000.0)
         if len(cand) == 0:
             famS.append(0.0)
             continue
@@ -420,16 +436,24 @@ def retrieval_eval(
                 clanS.append(first_fp_sensitivity(r, rel_c, neu_c))
     fam_m = float(np.mean(famS)) if famS else 0.0
     clan_m = float(np.mean(clanS)) if clanS else 0.0
-    return fam_m, clan_m, len(famS), len(clanS)
+    post_m = float(np.mean(postings)) if postings else 0.0
+    time_m = float(np.mean(prefilter_ms)) if prefilter_ms else 0.0
+    return fam_m, clan_m, len(famS), len(clanS), post_m, time_m
 
 
 VARIANTS = {  # name -> (expansion matrix key, threshold, expand?)
     "E4": (None, 0.0, False),
     "cos>=0": ("cos", 3.0, True),
-    "blosum>=0": ("blosum", 3.0, True),
-    "blosum>=.25": ("blosum", 3.25, True),
+    "blosum_total>=3": ("blosum", 3.0, True),
+    "blosum_total>=3.25": ("blosum", 3.25, True),
 }
 CONTIG = (1, 1, 1, 1)
+_fold_env = os.environ.get("RFOLDSEARCH_PREFILTER_SCORE_FOLD", "")
+FOLD_LIST = [int(_fold_env)] if _fold_env else list(range(5))
+OUT_PATH = os.environ.get(
+    "RFOLDSEARCH_PREFILTER_SCORE_OUT",
+    "files/ablation/cv_prefilter_score_5fold.json",
+)
 
 
 def eval_fold(fold_idx):
@@ -474,7 +498,7 @@ def eval_fold(fold_idx):
     mats = {"cos": cos, "blosum": struct_sub}
     res = {}
     for name, (mk, th, dx) in VARIANTS.items():
-        fs, cs, nf, nc = retrieval_eval(
+        metrics = retrieval_eval(
             name,
             CONTIG,
             tok_list,
@@ -488,26 +512,35 @@ def eval_fold(fold_idx):
             th,
             dx,
         )
-        res[name] = (fs, cs, nf, nc)
+        res[name] = metrics
     return res
 
 
-all_out = {n: {"fam_folds": [], "clan_folds": [], "nqf": [], "nqc": []} for n in VARIANTS}
+all_out = {
+    n: {
+        "fam_folds": [], "clan_folds": [], "nqf": [], "nqc": [],
+        "postings_per_query_folds": [], "prefilter_ms_per_query_folds": [],
+    }
+    for n in VARIANTS
+}
 t_all = time.time()
-for f in range(5):
+for f in FOLD_LIST:
     t0 = time.time()
     res = eval_fold(f)
-    for name, (fs, cs, nf, nc) in res.items():
+    for name, (fs, cs, nf, nc, post_q, ms_q) in res.items():
         all_out[name]["fam_folds"].append(fs)
         all_out[name]["clan_folds"].append(cs)
         all_out[name]["nqf"].append(nf)
         all_out[name]["nqc"].append(nc)
+        all_out[name]["postings_per_query_folds"].append(post_q)
+        all_out[name]["prefilter_ms_per_query_folds"].append(ms_q)
         print(
-            f"    fold={f} {name:12s}: famSens={fs:.3f} clanSens={cs:.3f} nqf={nf} nqc={nc}",
+            f"    fold={f} {name:20s}: famSens={fs:.3f} clanSens={cs:.3f} "
+            f"postings/q={post_q:.1f} prefilter={ms_q:.2f}ms/q nqf={nf} nqc={nc}",
             flush=True,
         )
     print(f"  fold={f} done ({time.time()-t0:.0f}s)", flush=True)
-    for name in all_out:
+    for name in VARIANTS:
         ff = all_out[name]["fam_folds"]
         cf = all_out[name]["clan_folds"]
         if ff:
@@ -515,10 +548,31 @@ for f in range(5):
             all_out[name]["fam_sens_std"] = float(np.std(ff))
             all_out[name]["clan_sens_mean"] = float(np.mean(cf))
             all_out[name]["clan_sens_std"] = float(np.std(cf))
-    json.dump(all_out, open("files/ablation/cv_prefilter_score_5fold.json", "w"), indent=2)
+            pf = all_out[name]["postings_per_query_folds"]
+            tf = all_out[name]["prefilter_ms_per_query_folds"]
+            all_out[name]["postings_per_query_mean"] = float(np.mean(pf))
+            all_out[name]["postings_per_query_std"] = float(np.std(pf))
+            all_out[name]["prefilter_ms_per_query_mean"] = float(np.mean(tf))
+            all_out[name]["prefilter_ms_per_query_std"] = float(np.std(tf))
+    all_out["_provenance"] = {
+        "truth_policy": "unlabelled targets are neutral",
+        "cv": "PDB-disjoint 5-fold",
+        "descriptor": "17-D g_ctx + g_nn1",
+        "codebook_K": K,
+        "kmer_k": 4,
+        "candidate_depth": TOPN,
+        "reranker": "fold-specific Structure-BLOSUM token SW",
+    }
+    Path(OUT_PATH).parent.mkdir(parents=True, exist_ok=True)
+    json.dump(all_out, open(OUT_PATH, "w"), indent=2)
 print("\n== Summary ==", flush=True)
 for name, v in all_out.items():
+    if name.startswith("_"):
+        continue
     print(
-        f"  {name:12s}: famSens={v['fam_sens_mean']:.3f}±{v['fam_sens_std']:.3f}  clanSens={v['clan_sens_mean']:.3f}±{v['clan_sens_std']:.3f}"
+        f"  {name:20s}: famSens={v['fam_sens_mean']:.3f}±{v['fam_sens_std']:.3f}  "
+        f"clanSens={v['clan_sens_mean']:.3f}±{v['clan_sens_std']:.3f}  "
+        f"postings/q={v['postings_per_query_mean']:.1f}  "
+        f"prefilter={v['prefilter_ms_per_query_mean']:.2f}ms/q"
     )
 print(f"\ntotal: {time.time()-t_all:.0f}s\nDONE", flush=True)

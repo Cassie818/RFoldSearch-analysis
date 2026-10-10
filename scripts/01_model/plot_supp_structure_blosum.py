@@ -28,6 +28,7 @@ matplotlib.use("Agg")
 matplotlib.rcParams["font.family"] = "Arial"
 matplotlib.rcParams["font.sans-serif"] = ["Arial", "Helvetica", "DejaVu Sans"]
 import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap, TwoSlopeNorm
 import numpy as np
 import torch
 from scipy.cluster.hierarchy import linkage, leaves_list
@@ -36,6 +37,14 @@ from scipy.spatial.distance import squareform
 REPO = Path(__file__).resolve().parent.parent
 SRC = Path(resolve("files/models/sub_matrix.pt"))
 OUT = Path(FIG_DIR) / "supp_structure_blosum.png"
+
+# Muted blue--ivory--coral diverging palette: negative substitutions remain
+# visually distinct without the very pale cyan cast of RdBu_r.
+STRUCTURE_BLOSUM_CMAP = LinearSegmentedColormap.from_list(
+    "structure_blosum",
+    ["#244C66", "#6F9FB5", "#F7F3EA", "#E89A78", "#A63D4D"],
+    N=256,
+)
 
 
 def main():
@@ -62,7 +71,12 @@ def main():
     ax = fig.add_subplot(gs[0, 0])
     vext = float(np.abs([M.min(), M.max()]).max())
     im = ax.imshow(
-        M_clust, cmap="RdBu_r", vmin=-vext, vmax=vext, aspect="equal", interpolation="nearest"
+        M_clust,
+        cmap=STRUCTURE_BLOSUM_CMAP,
+        vmin=-vext,
+        vmax=vext,
+        aspect="equal",
+        interpolation="nearest",
     )
     cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.03)
     cbar.set_label("Substitution score (log-odds)", fontsize=10)
@@ -71,7 +85,6 @@ def main():
     ax.set_ylabel("Token (clustered)", fontsize=11)
     ax.set_xticks([])
     ax.set_yticks([])
-    ax.set_title(f"{K}×{K} Structure-BLOSUM substitution matrix", fontsize=11, pad=6)
     ax.text(
         -0.10,
         1.04,
@@ -85,10 +98,17 @@ def main():
 
     # --- Panel B : off-diagonal distribution ---
     ax = fig.add_subplot(gs[0, 1])
-    ax.hist(off, bins=70, color="#6C8EBF", edgecolor="none", rwidth=1.0, alpha=0.95)
-    ax.axvline(0, color="#444", linestyle="--", linewidth=1.2, label="score $= 0$")
-    ax.axvline(
-        off.mean(), color="#D62728", linestyle="-", linewidth=1.4, label=f"mean = {off.mean():.3f}"
+    counts, edges = np.histogram(off, bins=30)
+    centres = 0.5 * (edges[:-1] + edges[1:])
+    widths = np.diff(edges)
+    score_norm = TwoSlopeNorm(vmin=float(off.min()), vcenter=0.0, vmax=float(off.max()))
+    ax.bar(
+        centres,
+        counts,
+        width=widths * 1.01,
+        color=STRUCTURE_BLOSUM_CMAP(score_norm(centres)),
+        edgecolor="none",
+        align="center",
     )
     ax.set_xlabel("Substitution score (off-diagonal)", fontsize=11)
     ax.set_ylabel("Token-pair count", fontsize=11)
@@ -97,8 +117,6 @@ def main():
     ax.tick_params(axis="both", labelsize=10)
     ax.grid(False)
     ax.spines[["top", "right"]].set_visible(False)
-    ax.legend(frameon=False, fontsize=10, loc="upper left")
-    ax.set_title("Off-diagonal substitution-score distribution", fontsize=11, pad=6)
     ax.text(
         -0.10,
         1.04,
