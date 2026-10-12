@@ -22,9 +22,9 @@ import numpy as np
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))
-import sys as _sys                                             # noqa: E402
+import sys as _sys
 _sys.path.insert(0, REPO)
-import paths                                                   # noqa: E402
+import paths
 HERE = os.path.join(REPO, "files", "predicted_retrieval")      # results; reruns write db/, usalign/, runs/ here
 ROOT = HERE                                                    # holds sample/
 TOPN = 200

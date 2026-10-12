@@ -1,5 +1,5 @@
 """Supplementary VQ-VAE architecture figure: VQ-VAE architecture ablation A1-A8, K=80, deployed pipeline,
-PDB-disjoint 5-fold CV. family + clan Sens@1FP, same style as the codebook-size figure."""
+PDB-disjoint 5-fold CV. family + clan Sens@1FP."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))

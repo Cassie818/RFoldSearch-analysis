@@ -1,17 +1,4 @@
-"""Base-pair detection and a base-pair agreement score.
-
-Motivation: the 3Dr alphabet is a per-nucleotide LOCAL descriptor and RNA
-LDDT measures local backbone distance preservation, which A-form helices make
-generic. Base pairing is the one signal that is neither local nor generic --
-i and j can pair across fifty intervening nucleotides -- so it is the
-candidate plausibly orthogonal to both.
-
-Pairs are detected geometrically rather than with DSSR so that every chain in
-the corpus can be annotated without an external dependency. The criterion is
-a Watson-Crick/wobble approximation, not a full annotation: complementary
-bases whose glycosidic nitrogens are hydrogen-bond close and whose C1' atoms
-sit at helical separation.
-"""
+"""Base-pair detection and a base-pair agreement score."""
 from __future__ import annotations
 
 import numpy as np

@@ -16,12 +16,12 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
 sys.path.insert(0, str(SCRIPT_DIR / "word_controls"))
 
-from build_known_motif_core_manifest import (  # noqa: E402
+from build_known_motif_core_manifest import (
     chain_motif_index,
     occurrence_context,
     parse_stem,
 )
-from common import load_db_pickle, load_labels, load_sources  # noqa: E402
+from common import load_db_pickle, load_labels, load_sources
 
 
 LEFT = (44, 48, 62, 71)

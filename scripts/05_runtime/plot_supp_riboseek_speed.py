@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-import runtime_common as F          # noqa: E402
-import runtime_style as P          # noqa: E402
+import runtime_common as F
+import runtime_style as P
 
 MM = F.MM
 SIZES = [1000, 5000, 10000, 20000, 50000, 100000, 200000, 531888]

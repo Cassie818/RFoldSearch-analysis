@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-import runtime_common as F          # noqa: E402
+import runtime_common as F
 
 MM = F.MM
 INK, MUTED = "#1A1A1A", "#6B6B6B"

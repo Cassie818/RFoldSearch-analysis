@@ -6,8 +6,6 @@ A  family / clan Sens@1FP, macro-averaged over Rfam families (family bars) or
    (mean ± SD) and a family/clan-block bootstrap CI on seed-averaged queries.
 B  per-family family Sens@1FP (seed-averaged), PDB- vs family-disjoint.
 C  per-fold unlabelled chains removed from training, per criterion and in total.
-
-Folds are numbered 1-5 here; the "fold" field in the JSON is 0-based.
 """
 import sys as _sys, os as _os
 

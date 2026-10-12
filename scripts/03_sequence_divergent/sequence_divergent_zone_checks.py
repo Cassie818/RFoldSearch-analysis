@@ -10,9 +10,7 @@ midnight (< 50th).
   3  length-stratified zones: the background is taken separately for the length of the
      shorter chain of a pair (<100, 100-200, 200-1000, >=1000 nt; unrelated pairs with length
      ratio 0.8-1.25 whose shorter chain falls in the bin), and each query-target pair is placed
-     by its percentile in the background of its own length bin
-
-Writes files/production/retrieval/sequence_divergent/zone_checks.json.
+     by its percentile in the background of its own length bin.
 """
 import csv
 import itertools

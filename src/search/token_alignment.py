@@ -1,24 +1,11 @@
-"""Affine-gap token Smith-Waterman that also returns the correspondence.
-
-src/search/smith_waterman.py returns only the score, but T_align, RNA LDDT
-and base-pair agreement are all functions of the aligned pairs, so the
-alignment path has to be recovered. The recurrence here is identical to
-smith_waterman() -- same three tables, same gap convention where opening a
-gap costs gap_open on its first cell -- so for the same inputs this must
-return that function's score; tests assert exactly that, on random and on
-autocorrelated token strings.
-
-The kernel is numba-compiled when numba is importable, matching how
-smith_waterman_numba is used in the deployed pipeline, and falls back to the
-same code in pure Python otherwise. Both paths are tested.
-"""
+"""Affine-gap token Smith-Waterman that also returns the correspondence."""
 from __future__ import annotations
 
 import numpy as np
 
 try:
     from numba import njit
-except Exception:                                    # pragma: no cover
+except Exception:
     njit = None
 
 # how H[i, j] was reached

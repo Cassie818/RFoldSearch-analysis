@@ -1,9 +1,4 @@
-"""S3 tier-2 cumulative-combo ablation via 5-fold CV on train+val (n=695).
-Combos start from ctx+nn1 (17D, deployed) and add extra blocks;
-codebook sizes K in {40, 60, 80}.
-Retrieval config matches Supp. Table S2: K-means + exact 4-mer top-100 + SW +
-centroid-cosine substitution matrix + gap -2.0/-0.5.
-"""
+"""S3 tier-2 cumulative-combo ablation via 5-fold CV on train+val."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))

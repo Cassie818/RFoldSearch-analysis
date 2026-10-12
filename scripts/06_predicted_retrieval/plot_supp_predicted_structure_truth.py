@@ -6,9 +6,9 @@ import numpy as np
 
 import sys
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "common"))
-import evaluate as E  # noqa: E402
-import figstyle as S  # noqa: E402
-from figstyle import plt  # noqa: E402
+import evaluate as E
+import figstyle as S
+from figstyle import plt
 
 FIG = os.path.join(E.REPO, "figures")
 BAR_METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal"]

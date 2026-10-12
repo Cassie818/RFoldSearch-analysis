@@ -1,6 +1,5 @@
 """Supplementary virtual-centre figure: virtual-centre weight ablation, family + clan Sens@1FP vs
-(alpha,beta,gamma) weights, K=80 deployed pipeline, PDB-disjoint 5-fold CV.
-Line plot in the style of the other ablation figures."""
+(alpha,beta,gamma) weights, K=80 deployed pipeline, PDB-disjoint 5-fold CV."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))

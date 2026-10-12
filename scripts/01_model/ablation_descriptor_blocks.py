@@ -1,13 +1,4 @@
-"""S2 tier-1 single-block ablation via 5-fold CV on train+val (n=695).
-Fix two prior issues:
-  (1) Sparse blocks (g_bp, g_st, g_nn2 with mask=0 residues) degenerate K-means:
-      only fit K-means on VALID rows (mask indicator or nonzero rows); assign
-      residues where the block is absent to a fixed "sink" token = K.
-  (2) Long-chain SW dominates runtime: cap query length at 500 tokens for
-      the ablation (target pool still full 695 chains; only affects which
-      queries contribute to fold means).
-Reports family Recall@1 and Sens@1FP per (block, K) as mean +/- std over 5 folds.
-"""
+"""S2 tier-1 single-block ablation via 5-fold CV on train+val."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))

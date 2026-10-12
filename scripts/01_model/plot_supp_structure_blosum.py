@@ -9,8 +9,6 @@ Panel A : 80x80 token-to-token log-odds heatmap, with token order permuted by
 Panel B : off-diagonal log-odds distribution (negative entries = structurally
           dissimilar pairs; positive entries = structurally equivalent tokens
           that the matrix lets Smith--Waterman trade).
-
-Writes: figures/supp_structure_blosum.png
 """
 import sys as _sys, os as _os
 

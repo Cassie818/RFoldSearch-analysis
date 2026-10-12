@@ -2,7 +2,7 @@
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", ".."))
-from paths import DATA_ROOT, FIG_DIR, SRC_MODELS, SRC_SEARCH
+from paths import CV_DESC, DATA_ROOT, FIG_DIR, PRODUCTION_DB, SRC_MODELS, SRC_SEARCH
 
 _sys.path.insert(0, SRC_SEARCH)
 _sys.path.insert(0, SRC_MODELS)
@@ -38,7 +38,7 @@ BLOSUM_SCALE = 2.0
 BLOSUM_GAP_OPEN = -11.0
 BLOSUM_GAP_EXTEND = -1.0
 ACTIVE = {"g_ctx", "g_nn1"}
-db = torch.load("files/production/db.pt", map_location="cpu", weights_only=False)
+db = torch.load(PRODUCTION_DB, map_location="cpu", weights_only=False)
 ents = db["entries"]
 N = len(ents)
 id2i = {str(e["id"]): i for i, e in enumerate(ents)}
@@ -53,7 +53,7 @@ def idl(p):
 pool = [
     id2i[c] for c in idl("Splits/pdb_out/train.json") + idl("Splits/pdb_out/val.json") if c in id2i
 ]
-DESC = "files/ablation/kmeans_baseline/current_desc/pdb_out"
+DESC = CV_DESC
 # 17D restriction: zero out inactive dims (blocks not in {g_ctx,g_nn1}) so descriptor_loss stays consistent
 KEEP = set(list(range(42, 49)) + list(range(0, 10)))  # g_ctx (42-48) + g_nn1 (0-9)
 MASK = np.array([1.0 if i in KEEP else 0.0 for i in range(49)], dtype=np.float32)

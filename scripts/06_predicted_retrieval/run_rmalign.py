@@ -1,4 +1,4 @@
-"""Exhaustive RMalign: every structure-truth query against all entries of the sampled"""
+"""Exhaustive RMalign: every structure-truth query against all entries of the sampled."""
 import csv
 import json
 import os

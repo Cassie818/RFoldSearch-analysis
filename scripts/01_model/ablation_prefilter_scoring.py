@@ -4,7 +4,7 @@ All variants use the contiguous 4-mer seed and Structure-BLOSUM SW reranking
 only in how 1-substitution similar k-mers are selected:
   E4          : no expansion (exact match only)
   cos>=0      : codebook cosine total 4-mer score >=3.0
-  blosum>=3   : actual Structure-BLOSUM total 4-mer score >=3.0 (deployed)
+  blosum>=3   : actual Structure-BLOSUM total 4-mer score >=3.0
   blosum>=3.25: actual Structure-BLOSUM total 4-mer score >=3.25
 """
 import sys as _sys, os as _os

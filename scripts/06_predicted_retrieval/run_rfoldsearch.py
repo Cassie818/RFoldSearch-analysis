@@ -1,4 +1,4 @@
-"""RFoldSearch on the Fig. 5 benchmark at the reported candidate depth (500)"""
+"""RFoldSearch on the Fig. 5 benchmark at the reported candidate depth (500)."""
 import json
 import os
 import sys

@@ -9,9 +9,6 @@ ranked output, so that neutral targets can be removed before evaluation:
 Every query is timed. Methods run one after another in a single process on an
 otherwise idle machine; query preparation (tokens, RS-20 labels, sequences) is
 done before timing starts.
-
-Targets are identified by their row index in sample/accuracy_db.tsv.
-Outputs: runs/<queryset>.json  {method: {qid: {"ranking": [...], "seconds": s}}}
 """
 import csv
 import json

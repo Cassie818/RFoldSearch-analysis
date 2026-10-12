@@ -9,9 +9,6 @@ Writes one TSV row per detected unlabelled chain -> labelled chain / family:
   cmscan  relaxed scan of unlabelled chains against all of Rfam (no GA
           cut-offs, no --rfam filter tuning, E < 0.1); a hit counts toward
           the fold whose test families include the hit's family
-
-Binaries: RFOLDSEARCH_BLAST_BIN, RFOLDSEARCH_HMMER_BIN, RFOLDSEARCH_INFERNAL_BIN
-(directories; empty = PATH). Rfam CM: data/ref/rfam/Rfam.cm under DATA_ROOT.
 """
 import sys as _sys, os as _os
 
