@@ -1,4 +1,5 @@
-"""Sequence-divergent homologues on the 885-chain RNAsolo benchmark"""
+"""Fig. 3: sequence-divergent homologues on the 885-chain RNAsolo benchmark."""
+
 import json
 import os
 import sys
@@ -16,8 +17,6 @@ DATA = os.path.join(REPO, "files", "production", "retrieval", "sequence_divergen
 FIG_DIR = os.path.join(REPO, "figures")
 B, SEED = 2000, 124
 
-ZONES = ("above", "twilight", "midnight")
-
 _KEY = {"RFoldSearch": "RFoldSearch n500", "RFoldSearch-TM": "RFoldSearch-TM n500", "US-align": "US-align (exhaustive)",
         "Infernal": "Infernal", "nhmmer": "nhmmer", "BLASTN": "BLASTN",
         "RS-20": "RiboSeek c500", "RS-80": "RiboSeek RS-80 c500"}
@@ -29,14 +28,13 @@ LABEL = {m: m for m in _KEY}
 LABEL.update({"RS-20": "RiboSeek (RS-20)", "RS-80": "RiboSeek (RS-80)", "Composition": "Token composition",
               "Length": "Length", "Shuffled": "Shuffled tokens"})
 LINE = {m: S.LINESTYLE.get(k, "-") for m, k in _KEY.items()}
-LINE["Composition"] = "--"                     # a control, drawn apart from the methods
-LW, MS = 2.0, 7.5                               # one line width and one marker size for every method
-OWN = {"Infernal": "Infernal any", "BLASTN": "B/N", "nhmmer": "B/N"}   # neutralised by its own hits
+MS = 7.5                                        # one marker size for every method
 CLANS = [("CL00001", "tRNA"), ("CL00112", "LSU rRNA"), ("CL00111", "SSU rRNA")]
 
 
 def boot(vals, blocks, reps=B, seed=SEED):
-    """Hierarchical block bootstrap of a mean: resample blocks, keep their queries."""
+    """Hierarchical block bootstrap of a mean: resample blocks, keep their queries
+    (used by sequence_divergent_zone_checks.py)."""
     by = defaultdict(list)
     for q, v in vals.items():
         by[blocks[q]].append(v)
@@ -46,125 +44,119 @@ def boot(vals, blocks, reps=B, seed=SEED):
     return float(np.mean(list(vals.values()))), float(np.percentile(bs, 2.5)), float(np.percentile(bs, 97.5))
 
 
-def boot_p(vals, blocks, reps=B, seed=SEED):
-    """Two-sided bootstrap p for a mean differing from 0, from the same resamples as boot()."""
+def boot_methods(V, methods, blocks, reps=B, seed=SEED):
+    """Mean and 95% CI of every method from one set of block resamples over the queries the
+    methods share, so that all intervals in a panel come from the same bootstrap."""
+    qs = sorted(set.intersection(*(set(V[m]) for m in methods)))
     by = defaultdict(list)
-    for q, v in vals.items():
-        by[blocks[q]].append(v)
+    for q in qs:
+        by[blocks[q]].append(q)
     keys = sorted(by)
     rng = np.random.default_rng(seed)
-    bs = np.array([np.mean([x for k in rng.integers(0, len(keys), len(keys)) for x in by[keys[k]]])
-                   for _ in range(reps)])
-    return min(1.0, 2 * min((bs <= 0).mean(), (bs >= 0).mean()))
-
-
-def nfam(qs, blocks):
-    return len({blocks[q] for q in qs})
+    draws = [[q for k in rng.integers(0, len(keys), len(keys)) for q in by[keys[k]]] for _ in range(reps)]
+    out = {}
+    for m in methods:
+        bs = [np.mean([V[m][q] for q in d]) for d in draws]
+        out[m] = (float(np.mean([V[m][q] for q in qs])), float(np.percentile(bs, 2.5)),
+                  float(np.percentile(bs, 97.5)))
+    return out, qs
 
 
 def marker_size(m):
     return S.MSIZE.get(_KEY.get(m, ""), MS) if m == "RFoldSearch-TM" else (MS - 1.5 if m == "Composition" else MS)
 
 
-def line_panel(ax, V, blocks, strata, ticks, methods, ci, light=(), bold=()):
-    """Sens@1FP of each method across strata; `light` strata are drawn faded and dashed; if `bold` is
-    given, those methods are drawn thick and the others thin."""
-    dx = {"RFoldSearch": -0.06, "RFoldSearch-TM": -0.03, "US-align": 0.03, "Infernal": 0.06, "nhmmer": 0.02, "BLASTN": -0.02, "RS-80": 0.04}
-    for m in methods:
-        pts = []
-        for k, st in enumerate(strata):
-            if m not in V[st] or OWN.get(m, "#") in st:
-                continue
-            mean, lo, hi = boot(V[st][m], blocks)
-            x = k + dx.get(m, 0.0)
-            if m in ci:
-                ax.vlines(x, lo, hi, color=COLOR[m], lw=1.2, alpha=0.2 if st in light else 0.45, zorder=2)
-            pts.append((x, mean, st in light))
-        solid = [p for p in pts if not p[2]]
-        lw = LW if not bold else 2.2 if m in bold else 1.2
-        kw = dict(marker=MARK[m], color=COLOR[m], lw=lw, ms=marker_size(m), mec="white", mew=0.8,
-                  zorder=4 if m in ("RFoldSearch",) + tuple(bold) else 3)
-        ax.plot([p[0] for p in solid], [p[1] for p in solid], LINE[m], label=LABEL[m], **kw)
-        faded = [p for p in pts if p[2]]
-        if faded and solid:
-            ax.plot([solid[-1][0], faded[0][0]], [solid[-1][1], faded[0][1]], ":", color=COLOR[m], lw=LW,
-                    alpha=0.35, zorder=2)
-            ax.plot([faded[0][0]], [faded[0][1]], ls="", marker=MARK[m], color=COLOR[m], ms=marker_size(m),
-                    alpha=0.35, mec="white", mew=0.8, zorder=2)
+def line_panel(ax, V, blocks, strata, ticks, methods, bold=()):
+    """Sens@1FP of each method across identity strata, with 95% CIs for every method from one
+    set of bootstrap resamples per stratum; methods are dodged so the intervals stay apart."""
+    est = {st: boot_methods(V[st], [m for m in methods if m in V[st]], blocks)[0] for st in strata}
+    span = 0.64
+    step = span / max(1, len(methods) - 1)
+    for i, m in enumerate(methods):
+        dx = -span / 2 + i * step
+        pts = [(k + dx,) + est[st][m] for k, st in enumerate(strata) if m in est[st]]
+        hero = m in bold
+        # As in Fig. 2, the RFoldSearch rankings keep their full tone; the others recede.
+        color = COLOR[m] if hero else S.lighten(COLOR[m], 0.35)
+        ax.vlines([p[0] for p in pts], [p[2] for p in pts], [p[3] for p in pts], color=color,
+                  lw=1.8 if hero else 0.9, alpha=0.9 if hero else 0.6, zorder=4 if hero else 2)
+        ax.plot([p[0] for p in pts], [p[1] for p in pts], LINE[m], marker=MARK[m], color=color,
+                lw=2.6 if hero else 1.4, ms=marker_size(m) if hero else marker_size(m) - 1.5,
+                mec="white", mew=0.8, label=LABEL[m], zorder=5 if hero else 3)
     ax.set_xticks(range(len(strata)), ticks, fontsize=10.5)
-    ax.set_xlim(-0.35, len(strata) - 0.65)
-    ax.set_ylim(0, 0.82)
-    ax.set_yticks(np.arange(0, 0.81, 0.2))
+    ax.set_xlim(-0.5, len(strata) - 0.5)
     ax.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
     ax.set_axisbelow(True)
-    ax.legend(ncol=2, frameon=False, fontsize=9.5, loc="upper right", handlelength=2.2, columnspacing=1.0)
 
 
-def forest_panel(ax, V, blocks, stratum, rows, xlabel):
-    """RFoldSearch minus each comparator in one stratum, all families (filled) and tRNA excluded (open)."""
+def interval_panel(ax, V, blocks, rows):
+    """Absolute Sens@1FP of each method (point and 95% CI) on one query set, one bootstrap."""
+    est, _ = boot_methods(V, rows, blocks)
     for i, m in enumerate(rows):
-        for j, keep in enumerate((lambda q: True, lambda q: blocks[q] != "RF00005")):
-            qs = [q for q in V[stratum]["RFoldSearch"] if keep(q) and q in V[stratum][m]]
-            diff = {q: V[stratum]["RFoldSearch"][q] - V[stratum][m][q] for q in qs}
-            d, lo, hi = boot(diff, blocks)
-            y = i - 0.16 if j == 0 else i + 0.16
-            ax.hlines(y, lo, hi, color=COLOR[m], lw=LW, zorder=2)
-            if boot_p(diff, blocks) >= 0.05:
-                ax.text(hi + 0.012, y, "n.s.", color=COLOR[m], fontsize=9.5, va="center")
-            ax.plot(d, y, MARK[m], ms=MS + 1, color=COLOR[m], mfc=COLOR[m] if j == 0 else "white",
-                    mec=COLOR[m], mew=1.6, zorder=3)
-    ax.axvline(0, color="#888888", lw=1.1, ls="--", zorder=1)
-    for v in (0.2, 0.4):
-        ax.axvline(v, color="#E6E6E6", lw=0.8, zorder=0)
-    ax.axhline(rows.index("Composition") - 0.5, color="#DDDDDD", lw=1.2, zorder=0)
+        mean, lo, hi = est[m]
+        ax.hlines(i, lo, hi, color=COLOR[m], lw=2.0, zorder=2)
+        ax.plot(mean, i, MARK[m], ms=marker_size(m) + 1, color=COLOR[m], mec="white", mew=0.8, zorder=3)
+        ax.text(hi + 0.015, i, f"{mean:.2f}", va="center", fontsize=9.5, color=S.TEXT[_KEY[m]])
     ax.set_yticks(range(len(rows)), [LABEL[m] for m in rows], fontsize=11)
     ax.tick_params(axis="y", length=0)
-    ax.set_ylim(len(rows) - 0.45, -0.55)
-    S.style_axes(ax, xlabel=xlabel)
-    ax.legend(handles=[plt.Line2D([], [], marker="o", ls="", color="#555555", ms=MS + 1,
-                                  label="all families"),
-                       plt.Line2D([], [], marker="o", ls="", color="#555555", mfc="white", mew=1.6, ms=MS + 1,
-                                  label="tRNA excluded")],
-              frameon=False, fontsize=10, loc="lower right", bbox_to_anchor=(1.0, 0.99), ncol=2,
-              handletextpad=0.4, columnspacing=1.4)
+    ax.set_ylim(len(rows) - 0.4, -0.6)
+    ax.set_xlim(0, 1.0)
+    ax.set_xticks(np.arange(0, 1.01, 0.2))
+    ax.grid(axis="x", color="#E6E6E6", lw=0.8, zorder=0)
+    ax.set_axisbelow(True)
+    S.style_axes(ax, xlabel="Family-level Sens@1FP")
 
 
 def clan_panel(ax, cl):
+    """Clan-level Sens@1FP per clan with all positives (open) and with the positives found by
+    BLASTN or nhmmer (E <= 10) made neutral (filled), joined per method."""
     cv, clan = cl["values"], cl["clan"]
     f = "B/N E<=10"
     groups = CLANS + [("other", "Other")]
 
     def in_group(q, g):
         return clan[q] == g if g != "other" else clan[q] not in {x for x, _ in CLANS}
-    cm = ["RFoldSearch", "Infernal", "RS-80"]
+    cm = ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "RS-20", "RS-80"]   # as in B
+    step = 0.8 / len(cm)
     for k, (g, glab) in enumerate(groups):
         for j, m in enumerate(cm):
-            x = k + (j - 1) * 0.2
-            q0 = [q for q in cv["none"][m] if in_group(q, g)]
-            q1 = [q for q in cv[f][m] if in_group(q, g)]
-            v0 = np.mean([cv["none"][m][q] for q in q0]) if q0 else np.nan
-            v1 = np.mean([cv[f][m][q] for q in q1]) if q1 else np.nan
-            if v0 - v1 > 0.03:
-                ax.annotate("", xy=(x, v1 + 0.014), xytext=(x, v0 - 0.014),
-                            arrowprops=dict(arrowstyle="-|>", color=COLOR[m], lw=LW, mutation_scale=12), zorder=2)
-            ax.plot(x, v0, MARK[m], ms=MS + 2.5, mfc="white", mec=COLOR[m], mew=1.8, zorder=3)
-            ax.plot(x, v1, MARK[m], ms=MS, color=COLOR[m], mec="white", mew=0.8, zorder=4)
+            xc = k - 0.4 + step * (j + 0.5)
+            x0, x1 = xc - step * 0.13, xc + step * 0.13
+            qs = [q for q in cv["none"][m] if in_group(q, g) and q in cv[f][m]]
+            v0 = np.mean([cv["none"][m][q] for q in qs])
+            v1 = np.mean([cv[f][m][q] for q in qs])
+            ms = marker_size(m) if m != "RFoldSearch-TM" else marker_size(m) - 1
+            ax.plot([x0, x1], [v0, v1], "-", color=COLOR[m], lw=1.3, zorder=2)
+            ax.plot(x0, v0, MARK[m], ms=ms, mfc="white", mec=COLOR[m], mew=1.5, zorder=3)
+            ax.plot(x1, v1, MARK[m], ms=ms, color=COLOR[m], mec="white", mew=0.8, zorder=4)
+        if k:
+            ax.axvline(k - 0.5, color="#EEEEEE", lw=1.0, zorder=0)
     labels = []
     for g, glab in groups:
-        labels.append(f"{glab} clan{'s' if g == 'other' else ''}")
+        n = sum(in_group(q, g) for q in cv["none"]["RFoldSearch"])
+        labels.append(f"{glab} clan{'s' if g == 'other' else ''}\n(n = {n})")
     ax.set_xticks(range(len(groups)), labels, fontsize=10.5)
     ax.set_xlim(-0.5, len(groups) - 0.5)
-    ax.set_ylim(-0.02, 0.64)
-    ax.set_yticks(np.arange(0, 0.51, 0.1))
+    ax.set_ylim(-0.02, 0.86)
+    ax.set_yticks(np.arange(0, 0.81, 0.2))
     ax.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
     ax.set_axisbelow(True)
     S.style_axes(ax, ylabel="Clan-level Sens@1FP")
-    h = [plt.Line2D([], [], marker=MARK[m], ls="", color=COLOR[m], ms=MS + 1, label=LABEL[m]) for m in cm]
-    h += [plt.Line2D([], [], marker="o", ls="", mfc="white", mec="#555555", mew=1.8, ms=MS + 1, label="all"),
+    # Two legends: hue and shape name the method, fill names the filtering.
+    hm = [plt.Line2D([], [], marker=MARK[m], ls="", color=COLOR[m], ms=MS + 1, label=LABEL[m]) for m in cm]
+    hf = [plt.Line2D([], [], marker="o", ls="", mfc="white", mec="#555555", mew=1.6, ms=MS + 1,
+                     label="All positives"),
           plt.Line2D([], [], marker="o", ls="", color="#555555", ms=MS + 1,
-                     label="BLASTN/nhmmer $E$<10 removed")]
-    ax.legend(handles=h, ncol=5, frameon=False, fontsize=10.5, loc="upper left", handletextpad=0.3,
-              columnspacing=1.4)
+                     label="Sequence-detectable positives neutralised")]
+    kw = dict(frameon=False, fontsize=10.5, title_fontsize=10.5, handletextpad=0.3, columnspacing=1.4,
+              alignment="left", labelcolor="#666666")
+    methods_legend = ax.legend(handles=hm, ncol=3, title="Method", loc="lower left",
+                               bbox_to_anchor=(0.0, 1.0), **kw)
+    ax.add_artist(methods_legend)
+    filter_legend = ax.legend(handles=hf, ncol=1, title="Filtering", loc="lower left",
+                              bbox_to_anchor=(0.62, 1.0), **kw)
+    for leg in (methods_legend, filter_legend):
+        leg.get_title().set_color("#666666")
 
 
 def letters(axd, keys, big=()):
@@ -173,33 +165,41 @@ def letters(axd, keys, big=()):
                     fontweight="bold", va="bottom")
 
 
+def identity_strata():
+    """Identity strata of Fig. 3A from the identity of unrelated chains (different Rfam family
+    and clan): above the 99th percentile (up to 80%), 50th-99th, below the 50th."""
+    from sequence_divergent_rescore import background_identity, rescore
+    _, bg = background_identity()
+    p50, p99 = np.quantile(bg, [0.5, 0.99])
+    strata = [("high", p99, 0.80), ("middle", p50, p99), ("low", 0.0, p50)]
+    per, _ = rescore(strata)
+    ticks = [f"{100 * p99:.0f}–80%", f"{100 * p50:.0f}–{100 * p99:.0f}%", f"<{100 * p50:.0f}%"]
+    return per, [name for name, _, _ in strata], ticks
+
+
 def main():
     fam = json.load(open(os.path.join(DATA, "family_perquery.json")))
     blocks, V = fam["blocks"], fam["values"]
-    methods = ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80",
-               "Composition"]
-    from sequence_divergent_rescore import background_identity, rescore
-    _, bg = background_identity()
-    p50, p99 = np.quantile(bg, [0.5, 0.99])  # identity between unrelated chains
-    per, _ = rescore([("above", p99, 0.80), ("twilight", p50, p99), ("midnight", 0.0, p50)])
+    per, strata, ticks = identity_strata()
     V = dict(V, **{k: dict(v) for k, v in per.items()})
-    bins = [("above", f"{100 * p99:.0f}–80%\nabove background"),
-            ("twilight", f"{100 * p50:.0f}–{100 * p99:.0f}%\ntwilight zone"),
-            ("midnight", f"<{100 * p50:.0f}%\nmidnight zone")]
     cl = json.load(open(os.path.join(DATA, "clan_perquery.json")))
-    fig, axd = plt.subplot_mosaic([["a", "b"], ["c", "c"]], figsize=(13.5, 10),
-                                  gridspec_kw={"height_ratios": [1, 0.8], "hspace": 0.38, "wspace": 0.42})
-    ticks = [lab for _, lab in bins]
-    line_panel(axd["a"], V, blocks, [b for b, _ in bins], ticks, methods, ci=("RFoldSearch", "Infernal"),
-               bold=("RFoldSearch", "RFoldSearch-TM"))
-    S.style_axes(axd["a"], ylabel="Family-level Sens@1FP")
+    fig, axd = plt.subplot_mosaic([["a", "b"], ["c", "c"]], figsize=(15, 10.5),
+                                  gridspec_kw={"height_ratios": [1, 0.8], "width_ratios": [1.45, 1],
+                                               "hspace": 0.42, "wspace": 0.26})
+
+    # The negative controls (composition, length, shuffled tokens) are in the supplementary figure.
+    methods = ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80"]
+    line_panel(axd["a"], V, blocks, strata, ticks, methods, bold=("RFoldSearch", "RFoldSearch-TM"))
+    S.style_axes(axd["a"], xlabel="Sequence identity of same-family positives",
+                 ylabel="Family-level Sens@1FP")
     axd["a"].set_ylim(0, 1.08)
     axd["a"].set_yticks(np.arange(0, 1.01, 0.2))
-    axd["a"].legend(ncol=3, frameon=False, fontsize=9, loc="upper center", handlelength=1.8,
-                    columnspacing=0.9, handletextpad=0.4)
-    forest_panel(axd["b"], V, blocks, "B/N E<=10", ["Infernal", "RS-20", "RS-80", "Composition", "Length", "Shuffled"],
-                 "RFoldSearch − comparator (Δ Sens@1FP)")
-    axd["b"].set_xlim(-0.25, 0.6)
+    axd["a"].legend(ncol=4, frameon=False, fontsize=9.5, loc="lower center", bbox_to_anchor=(0.5, 1.0),
+                    handlelength=2.0, columnspacing=1.2, handletextpad=0.4, labelcolor="#666666")
+
+    # B: BLASTN and nhmmer are left out, as every positive they find is neutral by construction.
+    f = "B/N E<=10"
+    interval_panel(axd["b"], V[f], blocks, ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "RS-20", "RS-80"])
     clan_panel(axd["c"], cl)
     letters(axd, "abc", big=("c",))
     out = os.path.join(FIG_DIR, "fig3.png")
