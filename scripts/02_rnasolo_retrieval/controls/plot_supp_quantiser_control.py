@@ -125,10 +125,10 @@ def main():
     # C,D: structure-defined ground truth at TM >= 0.45
     draw_kv(axC, [st["family"]["means"][f"KMeans_K{K}"] for K in KS],
             st["family"]["means"]["VQ-VAE_K80_deployed"], ann_struct, "family",
-            f"Family (TM $\\geq$ {TAU})")
+            f"All (TM $\\geq$ {TAU})")
     draw_kv(axD, [st["clan"]["means"][f"KMeans_K{K}"] for K in KS],
             st["clan"]["means"]["VQ-VAE_K80_deployed"], ann_struct, "clan",
-            f"Clan (TM $\\geq$ {TAU})")
+            f"Beyond-family (TM $\\geq$ {TAU})")
 
     # E,F: accuracy against prefilter selectivity, Rfam (E) and structure-defined (F)
     km_x = [sel[f"KMeans_K{K}"]["postings_per_query"] for K in KS]
@@ -138,7 +138,7 @@ def main():
              "Family Sens@1FP", "Selectivity (Rfam)")
     draw_sel(axF, km_x, [st["family"]["means"][f"KMeans_K{K}"] for K in KS],
              vq_x, st["family"]["means"]["VQ-VAE_K80_deployed"],
-             "Family Sens@1FP", f"Selectivity (TM $\\geq$ {TAU})")
+             "All Sens@1FP", f"Selectivity (TM $\\geq$ {TAU})")
 
     for ax, lab in zip([axA, axB, axC, axD, axE, axF], "ABCDEF"):
         ax.annotate(lab, xy=(0, 1), xycoords="axes fraction", xytext=(-30, 6),

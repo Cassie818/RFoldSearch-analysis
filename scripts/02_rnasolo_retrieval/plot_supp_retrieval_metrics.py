@@ -28,19 +28,11 @@ r1 = json.load(open(RET / "recall1_rfam_test.json"))
 wp = json.load(open(RET / "weighted_pr_rfam_test.json"))
 ap_sig = json.load(open(RET / "bootstrap_figS12_ap.json"))
 
-METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "US-align", "RMalign",
-           "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
-METHOD_COLOR = {
-    "RFoldSearch": "#1F9BD8", "RFoldSearch-TM": "#009E9E", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
-    "US-align": "#D62728", "RMalign": "#2CA02C", "RiboSeek": "#E377C2", "RiboSeek RS-80": "#A8327F",
-    "BLASTN": "#FFC107",
-    "Infernal": "#BCBD22",
-}
-MARKER = {"RFoldSearch": "o", "RFoldSearch-TM": "*", "GTalign": "X", "RTM-align": "P", "US-align": "s",
-          "RMalign": "^", "RiboSeek": "v", "RiboSeek RS-80": "v", "BLASTN": "D", "Infernal": "p"}
-# RiboSeek 0.2.0: RS-20 (the "RiboSeek" key) and the default RS-80 share one hue,
-# RS-80 in the deeper shade, as in Fig. 2.
-LABEL = {"RiboSeek": "RiboSeek (RS-20)", "RiboSeek RS-80": "RiboSeek (RS-80)"}
+# Colours, markers and the RFoldSearch emphasis are shared with Fig. 2.
+_sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
+from plot_fig2 import (CURVE_MUTED, HIGHLIGHT, LABEL, LINESTYLE, MARKER,  # noqa: E402
+                       METHOD_BASE, METHOD_COLOR, METHODS)
+
 # Two rows: family (top) and clan (bottom); left = Recall@1 bars, right = PR
 # curve. Bars are coloured by method to match the curves on their right.
 fig = plt.figure(figsize=(12.8, 9.0))
@@ -57,7 +49,7 @@ xs = np.arange(len(METHODS))
 def recall_panel(ax, level, title):
     vals = np.array([r1[m][f"{level}_recall1"] for m in METHODS])
     colors = [METHOD_COLOR[m] for m in METHODS]
-    bars = ax.bar(xs, vals, 0.68, color=colors, edgecolor="#555555",
+    bars = ax.bar(xs, vals, 0.68, color=colors, edgecolor="#666666",
                   linewidth=0.6, zorder=3)
     for b, v in zip(bars, vals):
         ax.text(b.get_x() + b.get_width() / 2, v + 0.014, f"{v:.3f}",
@@ -67,6 +59,11 @@ def recall_panel(ax, level, title):
     ax.set_xticklabels([LABEL.get(m, m) for m in METHODS], fontsize=9.5, rotation=30, ha="right")
     ax.set_ylim(0, 1.16)
     ax.set_yticks(np.arange(0, 1.01, 0.2))
+    ax.set_yticks(np.arange(0.1, 1.0, 0.2), minor=True)
+    ax.grid(axis="y", which="major", color="#DDDDDD", linewidth=0.8, zorder=0)
+    ax.grid(axis="y", which="minor", color="#EEEEEE", linewidth=0.6, zorder=0)
+    ax.set_axisbelow(True)
+    ax.tick_params(axis="y", which="minor", length=0)
     ax.set_xlim(-0.6, len(METHODS) - 0.4)
     ax.set_title(title, fontsize=12)
     ax.spines[["top", "right"]].set_visible(False)
@@ -80,11 +77,14 @@ def pr_panel(ax, level, title):
         prec = np.asarray(wp[m][level]["precision"])
         ap = wp[m][level]["aupr"]
         star = "*" if ap_sig.get(level, {}).get(m, {}).get("sig") else ""
+        hero = m in HIGHLIGHT
         step = max(1, len(rec) // 10)
-        ax.plot(rec, prec, "-", color=METHOD_COLOR[m], linewidth=2.0,
-                marker=MARKER[m], markevery=step, markersize=5.5,
-                markeredgecolor="white", markeredgewidth=0.6,
-                label=f"{LABEL.get(m, m)} ({ap:.2f}){star}", zorder=3)
+        size = (10 if m == "RFoldSearch-TM" else 7) if hero else 5
+        ax.plot(rec, prec, LINESTYLE[m], color=METHOD_BASE[m] if hero else CURVE_MUTED[m],
+                linewidth=3.0 if hero else 1.9, marker=MARKER[m], markevery=step,
+                markersize=size, markeredgecolor="white",
+                markeredgewidth=0.9 if hero else 0.6,
+                label=f"{LABEL.get(m, m)} ({ap:.2f}){star}", zorder=HIGHLIGHT.get(m, 3))
     ax.set_xlabel("Recall", fontsize=12)
     ax.set_ylabel("Precision", fontsize=12)
     ax.set_xlim(0, 1.0)

@@ -114,9 +114,9 @@ def main():
     reverse_panel(axes[1, 0], ATTR["levels"]["family"], "Family (Rfam)")
     reverse_panel(axes[1, 1], ATTR["levels"]["clan"], "Clan (Rfam)")
     reverse_panel(axes[2, 0], ATTR_S["thresholds"][TAU]["family"],
-                  f"Family (TM $\\geq$ {TAU})")
+                  f"All (TM $\\geq$ {TAU})")
     reverse_panel(axes[2, 1], ATTR_S["thresholds"][TAU]["clan"],
-                  f"Clan (TM $\\geq$ {TAU})")
+                  f"Beyond-family (TM $\\geq$ {TAU})")
     handles, labels = axes[0, 0].get_legend_handles_labels()
     fig.legend(handles, labels, loc="lower center", ncol=2, frameon=False,
                fontsize=10, bbox_to_anchor=(0.5, -0.004))

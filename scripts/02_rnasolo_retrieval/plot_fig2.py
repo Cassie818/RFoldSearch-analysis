@@ -1,8 +1,9 @@
-"""Fig. 2: retrieval on the RNAsolo benchmark, 3x2.
+"""Fig. 2: retrieval on the RNAsolo benchmark.
 
     A/B  Rfam AUROC1 sorted-sensitivity curves (all methods)
-    C/D  Structure-defined truth, symmetric US-align TM-score: Sens@1FP bars by threshold
-    E/F  Structure-defined truth, symmetric RMscore (thresholds quantile-matched to C/D)
+    C/D  Structure-defined truth at TM-score 0.45, family (C) and clan (D):
+         top, symmetric US-align TM-score; bottom, symmetric RMscore at the
+         quantile-matched threshold
 """
 import sys as _sys, os as _os
 
@@ -58,6 +59,8 @@ MARKER = {"RFoldSearch": "o", "RFoldSearch-TM": "*", "GTalign": "X", "RTM-align"
 # drawn but not tested against RFoldSearch.
 BAR_METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "RMalign",
                "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
+TM_THRESHOLD = "0.45"   # the single threshold shown in C/D; 0.40 and 0.50 are supplementary
+
 
 def sorted_curve(arr):
     a = np.sort(np.asarray(arr))[::-1]
@@ -65,14 +68,24 @@ def sorted_curve(arr):
 
 
 # ---- row 1: AUROC1 curves ----------------------------------------------------
+# Both RFoldSearch rankings are drawn on top in their full-strength tone (RFoldSearch
+# uppermost); the baselines recede (lighter tone, thinner line, sparser and smaller markers).
+HERO = "RFoldSearch"
+HIGHLIGHT = {HERO: 5, "RFoldSearch-TM": 4}   # method -> zorder
+CURVE_MUTED = {m: _lighten(METHOD_BASE[m], 0.42) for m in METHODS}
+
+
 def curve_panel(ax, data, level, title, band):
     for m in METHODS:
         x, y = sorted_curve(data[m][level]["sens"])
-        step = max(1, len(x) // 18)
-        marker_size = 11 if m == "RFoldSearch-TM" else 7
-        ax.plot(x, y, LINESTYLE[m], color=METHOD_COLOR[m], linewidth=2.4, marker=MARKER[m],
-                markevery=step, markersize=marker_size, markeredgecolor="white", markeredgewidth=0.9,
-                label=LABEL.get(m, m), zorder=3)
+        hero = m in HIGHLIGHT
+        step = max(1, len(x) // (18 if hero else 10))
+        marker_size = (11 if m == "RFoldSearch-TM" else 8.5) if hero else 5.5
+        ax.plot(x, y, LINESTYLE[m], color=METHOD_BASE[m] if hero else CURVE_MUTED[m],
+                linewidth=3.4 if hero else 2.1, marker=MARKER[m], markevery=step,
+                markersize=marker_size, markeredgecolor="white",
+                markeredgewidth=1.0 if hero else 0.7, label=LABEL.get(m, m),
+                zorder=HIGHLIGHT.get(m, 3))
     ax.set_xlabel("Fraction of queries", fontsize=12)
     ax.set_ylabel("Sensitivity up to the 1st FP", fontsize=12)
     ax.set_xlim(0, 1); ax.set_ylim(0, 1.02)
@@ -82,85 +95,115 @@ def curve_panel(ax, data, level, title, band):
 
 
 # ---- row 2: structural Sens@1FP bars -----------------------------------------
-def bar_panel(ax, boot, level, methods, oracle, xticks, xlabel, title):
-    """Sens@1FP bars with 95% intervals; `oracle` (the method defining the truth), if any, is
-    drawn as its ceiling line."""
-    keys = sorted(boot, key=float)
-    x = np.arange(len(keys)); width = 0.82 / len(methods)
+def bar_panel(ax, boot, key, level, methods, oracle, tag):
+    """Sens@1FP bars with 95% intervals at one truth threshold `key`; `oracle` (the method
+    defining the truth), if any, is drawn as its ceiling line. `tag` names the truth
+    inside the panel, since the TM and RMscore panels are stacked on shared axes."""
+    ref = boot[key][level]
+    width = 0.72
     for i, m in enumerate(methods):
-        off = (i - (len(methods) - 1) / 2) * width
-        e = [boot[k][level][m] for k in keys]
-        vals = [v["estimate"] for v in e]
-        yerr = [[v["estimate"] - v["ci_lower"] for v in e], [v["ci_upper"] - v["estimate"] for v in e]]
-        bars = ax.bar(x + off, vals, width, color=METHOD_COLOR[m], edgecolor="#666666",
-                      linewidth=0.6, label=LABEL.get(m, m), zorder=3, yerr=yerr, capsize=2.5,
-                      error_kw={"elinewidth": 0.9, "ecolor": "#555555"})
-        for j, (b, v) in enumerate(zip(bars, e)):
-            top = v["ci_upper"] + 0.012
-            # Only annotate RFoldSearch numerically (others read from the y-axis);
-            # significance stars sit on non-RFoldSearch bars.
-            if m == "RFoldSearch":
-                ax.text(b.get_x() + b.get_width() / 2, top, f"{v['estimate']:.2f}",
-                        ha="center", va="bottom", fontsize=8.5, color=METHOD_BASE["RFoldSearch"])
-            elif v.get("sig_vs_rf"):
-                ax.text(b.get_x() + b.get_width() / 2, top, "*", ha="center", va="bottom",
-                        fontsize=10, color="#555555", fontweight="bold")
+        v = ref[m]
+        yerr = [[v["estimate"] - v["ci_lower"]], [v["ci_upper"] - v["estimate"]]]
+        ax.bar(i, v["estimate"], width, color=METHOD_COLOR[m], edgecolor="#666666",
+               linewidth=0.6, label=LABEL.get(m, m), zorder=3, yerr=yerr, capsize=3,
+               error_kw={"elinewidth": 0.9, "ecolor": "#555555"})
+        top = v["ci_upper"] + 0.012
+        # Only annotate RFoldSearch numerically (others read from the y-axis);
+        # significance stars sit on non-RFoldSearch bars.
+        if m == "RFoldSearch":
+            ax.text(i, top, f"{v['estimate']:.2f}", ha="center", va="bottom", fontsize=9,
+                    color=METHOD_BASE["RFoldSearch"])
+        elif v.get("sig_vs_rf"):
+            ax.text(i, top, "*", ha="center", va="bottom", fontsize=10, color="#555555",
+                    fontweight="bold")
+    lo, hi = -0.6, len(methods) - 0.4
     if oracle:
-        ref = boot[keys[0]][level]
         ceil = (ref[oracle] if oracle in ref else ref[oracle + "*"])["estimate"]   # US-align* in the TM truth
-        ax.plot([-0.5, len(keys) - 0.5], [ceil, ceil], ls="--", color=METHOD_COLOR[oracle], lw=1.5, zorder=2)
-        ax.text(-0.44, ceil + 0.012, f"{oracle} (oracle ceiling)", ha="left", va="bottom", fontsize=8.5,
-                color=METHOD_BASE[oracle])
-    ax.set_xticks(x, xticks)
-    ax.set_xlabel(xlabel, fontsize=12)
-    ax.set_ylabel("Sens@1FP", fontsize=12)
-    ax.set_xlim(-0.5, len(keys) - 0.5); ax.set_ylim(0, 1.08)
+        ax.plot([lo, hi], [ceil, ceil], ls="--", color=METHOD_COLOR[oracle], lw=1.5, zorder=2)
+        ax.text(hi, ceil + 0.02, f"{oracle} (reference)", ha="right", va="bottom",
+                fontsize=8.5, color=METHOD_BASE[oracle])
+    # Same size and baseline as the oracle label, in grey so it reads as a caption.
+    ax.text(lo + 0.08, 1.02, tag, ha="left", va="bottom", fontsize=8.5, color="#666666")
+    ax.set_xticks([])
+    ax.set_xlim(lo, hi); ax.set_ylim(0, 1.12)
     ax.set_yticks(np.arange(0, 1.01, 0.2))
-    ax.set_title(title, fontsize=13, pad=8)
+    ax.set_yticks(np.arange(0.1, 1.0, 0.2), minor=True)
+    ax.grid(axis="y", which="major", color="#DDDDDD", linewidth=0.8, zorder=0)
+    ax.grid(axis="y", which="minor", color="#EEEEEE", linewidth=0.6, zorder=0)
+    ax.set_axisbelow(True)
+    ax.tick_params(axis="y", which="minor", length=0)
     ax.tick_params(axis="both", labelsize=10)
     ax.spines[["top", "right"]].set_visible(False)
 
 
+# Column-major, one pair per column: RFoldSearch variants, structure aligners,
+# RiboSeek alphabets, sequence methods.
+LEGEND_ORDER = ["RFoldSearch", "RFoldSearch-TM", "US-align", "GTalign", "RTM-align", "RMalign",
+                "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
+RM_METHODS = [m for m in BAR_METHODS if m != "RMalign"]
+RM_METHODS.insert(RM_METHODS.index("RTM-align") + 1, "US-align")
+
+
+def load_truths():
+    """Structure-truth bootstraps: TM-score (keyed by threshold) and the RMscore truth
+    (same keys, with the quantile-matched RMscore threshold for each)."""
+    boot = json.load(open(resolve("files/production/retrieval/bootstrap_fig2cd_results.json")))
+    alt = json.load(open(resolve("files/production/retrieval/rmscore_truth.json")))
+    return boot, alt["thresholds"], alt["rmscore_thresholds"]
+
+
+# Under a structure truth the levels are named by what they measure rather than by Rfam:
+# "family" counts every structurally similar target, "clan" only those from other Rfam families.
+TRUTH_LEVEL_NAME = {"family": "All", "clan": "Beyond-family"}
+
+
+def truth_pair(fig, cell, boot, boot_rm, rm_thresholds, key, level):
+    """TM-score (top) and RMscore (bottom) truths stacked in `cell`, sharing x and y: same
+    method slots, with the truth-defining aligner (RMalign / US-align) swapped in slot 5.
+    Returns the top axes."""
+    sub = cell.subgridspec(2, 1, hspace=0.06)
+    ax_tm = fig.add_subplot(sub[0])
+    ax_rm = fig.add_subplot(sub[1], sharex=ax_tm, sharey=ax_tm)
+    bar_panel(ax_tm, boot, key, level, BAR_METHODS, "US-align",
+              f"TM-score ≥ {float(key):.2f}")
+    bar_panel(ax_rm, boot_rm, key, level, RM_METHODS, "RMalign",
+              f"RMscore ≥ {rm_thresholds[key]:.2f}")
+    ax_tm.set_title(f"{TRUTH_LEVEL_NAME[level]} (Sens@1FP)", fontsize=13, pad=8)
+    ax_tm.set_ylabel("Sens@1FP", fontsize=12)
+    ax_tm.yaxis.set_label_coords(-0.07, -0.03)   # centred on the stacked pair
+    return ax_tm
+
 
 def main():
     data = json.load(open(resolve("files/production/retrieval/per_query_sens_test.json")))
-    boot = json.load(open(resolve("files/production/retrieval/bootstrap_fig2cd_results.json")))
     band = json.load(open(resolve("files/production/retrieval/bootstrap_fig2ab_band.json")))
-    alt = json.load(open(resolve("files/production/retrieval/rmscore_truth.json")))
-    boot_rm = alt["thresholds"]
-    keys = sorted(boot, key=float)
-    tm_ticks = [f"{float(k):.2f}" for k in keys]
-    rm_ticks = [f"{alt['rmscore_thresholds'][k]:.2f}" for k in keys]
-    rm_methods = [m for m in BAR_METHODS if m != "RMalign"]
-    rm_methods.insert(rm_methods.index("RTM-align") + 1, "US-align")
+    boot, boot_rm, rm_thresholds = load_truths()
 
-    fig, axes = plt.subplots(3, 2, figsize=(14.0, 12.6))
-    curve_panel(axes[0, 0], data, "family", "Family (AUROC1)", band)
-    curve_panel(axes[0, 1], data, "clan", "Clan (AUROC1)", band)
+    fig = plt.figure(figsize=(14.0, 11.4))
+    gs = fig.add_gridspec(2, 2, height_ratios=(1.25, 2), hspace=0.2, wspace=0.16,
+                          left=0.06, right=0.99, top=0.96, bottom=0.08)
+    ax_a, ax_b = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    curve_panel(ax_a, data, "family", "Family (AUROC1)", band)
+    curve_panel(ax_b, data, "clan", "Clan (AUROC1)", band)
+    letter_axes = [ax_a, ax_b]
     for col, level in enumerate(("family", "clan")):
-        bar_panel(axes[1, col], boot, level, BAR_METHODS, "US-align", tm_ticks,
-                  "TM-score similarity threshold", f"{level.capitalize()} (TM-score)")
-        bar_panel(axes[2, col], boot_rm, level, rm_methods, "RMalign", rm_ticks,
-                  "RMscore similarity threshold", f"{level.capitalize()} (RMscore)")
+        letter_axes.append(truth_pair(fig, gs[1, col], boot, boot_rm, rm_thresholds,
+                                      TM_THRESHOLD, level))
 
-    for ax, lab in zip(axes.flat, "ABCDEF"):
+    for ax, lab in zip(letter_axes, "ABCD"):
         ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
                 va="bottom", ha="right")
 
-    handles, labels = axes[0, 0].get_legend_handles_labels()
-    # Column-major, one pair per column: RFoldSearch variants, structure aligners,
-    # RiboSeek alphabets, sequence methods.
-    order = ["RFoldSearch", "RFoldSearch-TM", "US-align", "GTalign", "RTM-align", "RMalign",
-             "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
+    handles, labels = ax_a.get_legend_handles_labels()
+    order = LEGEND_ORDER
     by = dict(zip(labels, handles))
     labels = [LABEL.get(m, m) for m in order]
     handles = [by[l] for l in labels]
     legend = fig.legend(handles, labels, loc="lower center", ncol=5, frameon=False, fontsize=11.5,
                         bbox_to_anchor=(0.5, -0.025), handlelength=2.6, columnspacing=1.8,
                         markerscale=1.45)
-    for handle in legend.legend_handles:
-        handle.set_linewidth(3.0)
-    fig.tight_layout(rect=(0, 0.03, 1, 1))
+    for handle, m in zip(legend.legend_handles, order):
+        handle.set_linewidth(3.6 if m in HIGHLIGHT else 2.6)
     out_png = Path(FIG_DIR) / "fig2.png"
     out_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=200, bbox_inches="tight")

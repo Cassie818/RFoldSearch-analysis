@@ -85,9 +85,9 @@ def main():
     forward_panel(axes[0, 0], ATTR["levels"]["family"], "Family (Rfam)")
     forward_panel(axes[0, 1], ATTR["levels"]["clan"], "Clan (Rfam)")
     forward_panel(axes[1, 0], ATTR_S["thresholds"][TAU]["family"],
-                  f"Family (TM $\\geq$ {TAU})")
+                  f"All (TM $\\geq$ {TAU})")
     forward_panel(axes[1, 1], ATTR_S["thresholds"][TAU]["clan"],
-                  f"Clan (TM $\\geq$ {TAU})")
+                  f"Beyond-family (TM $\\geq$ {TAU})")
     for ax, label in zip(axes.flat, "ABCD"):
         ax.text(-0.10, 1.04, label, transform=ax.transAxes, fontsize=15,
                 fontweight="bold", va="bottom", ha="right")
