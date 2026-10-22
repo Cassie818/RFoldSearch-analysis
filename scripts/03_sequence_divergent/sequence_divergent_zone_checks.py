@@ -1,4 +1,4 @@
-"""Checks on the identity zones of Fig. 3a (Section 2.2 family-level Sens@1FP, 10 tie-break seeds).
+"""Checks on the identity strata of Fig. 2E (Section 2.2 family-level Sens@1FP, 10 tie-break seeds).
 
 Zones after Rost (1999), from the identity of unrelated chains (different Rfam family and
 clan): above background (> 99th percentile, pairs above 80% excluded), twilight (50th-99th),
@@ -20,7 +20,7 @@ import random
 
 import numpy as np
 
-from plot_fig3 import boot
+from sequence_divergent_panels import boot
 from sequence_divergent_rescore import (DATA, REPO, _aligner, background_identity, load, rescore,
                                         seq_identity, unrelated)
 

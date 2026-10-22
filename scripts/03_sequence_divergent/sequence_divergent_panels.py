@@ -1,4 +1,4 @@
-"""Fig. 3: sequence-divergent homologues on the 885-chain RNAsolo benchmark."""
+"""Panels and data for the sequence-divergent homologues on the 885-chain RNAsolo benchmark."""
 
 import json
 import os
@@ -107,7 +107,7 @@ def interval_panel(ax, V, blocks, rows):
     S.style_axes(ax, xlabel="Family-level Sens@1FP")
 
 
-def clan_panel(ax, cl):
+def clan_panel(ax, cl, method_legend=True):
     """Clan-level Sens@1FP per clan with all positives (open) and with the positives found by
     BLASTN or nhmmer (E <= 10) made neutral (filled), joined per method."""
     cv, clan = cl["values"], cl["clan"]
@@ -150,23 +150,21 @@ def clan_panel(ax, cl):
                      label="Sequence-detectable positives neutralised")]
     kw = dict(frameon=False, fontsize=10.5, title_fontsize=10.5, handletextpad=0.3, columnspacing=1.4,
               alignment="left", labelcolor="#666666")
-    methods_legend = ax.legend(handles=hm, ncol=3, title="Method", loc="lower left",
-                               bbox_to_anchor=(0.0, 1.0), **kw)
-    ax.add_artist(methods_legend)
-    filter_legend = ax.legend(handles=hf, ncol=1, title="Filtering", loc="lower left",
-                              bbox_to_anchor=(0.62, 1.0), **kw)
-    for leg in (methods_legend, filter_legend):
+    legends = []
+    if method_legend:
+        legends.append(ax.legend(handles=hm, ncol=3, title="Method", loc="lower left",
+                                 bbox_to_anchor=(0.0, 1.0), **kw))
+        ax.add_artist(legends[0])
+        legends.append(ax.legend(handles=hf, ncol=1, title="Filtering", loc="lower left",
+                                 bbox_to_anchor=(0.62, 1.0), **kw))
+    else:                                   # the methods are named by a shared figure legend
+        legends.append(ax.legend(handles=hf, ncol=1, title="Filtering", loc="upper right", **kw))
+    for leg in legends:
         leg.get_title().set_color("#666666")
 
 
-def letters(axd, keys, big=()):
-    for k in keys:
-        axd[k].text(-0.055 if k in big else -0.11, 1.07, k.upper(), transform=axd[k].transAxes, fontsize=18,
-                    fontweight="bold", va="bottom")
-
-
 def identity_strata():
-    """Identity strata of Fig. 3A from the identity of unrelated chains (different Rfam family
+    """Identity strata of Fig. 2E from the identity of unrelated chains (different Rfam family
     and clan): above the 99th percentile (up to 80%), 50th-99th, below the 50th."""
     from sequence_divergent_rescore import background_identity, rescore
     _, bg = background_identity()
@@ -175,37 +173,3 @@ def identity_strata():
     per, _ = rescore(strata)
     ticks = [f"{100 * p99:.0f}–80%", f"{100 * p50:.0f}–{100 * p99:.0f}%", f"<{100 * p50:.0f}%"]
     return per, [name for name, _, _ in strata], ticks
-
-
-def main():
-    fam = json.load(open(os.path.join(DATA, "family_perquery.json")))
-    blocks, V = fam["blocks"], fam["values"]
-    per, strata, ticks = identity_strata()
-    V = dict(V, **{k: dict(v) for k, v in per.items()})
-    cl = json.load(open(os.path.join(DATA, "clan_perquery.json")))
-    fig, axd = plt.subplot_mosaic([["a", "b"], ["c", "c"]], figsize=(15, 10.5),
-                                  gridspec_kw={"height_ratios": [1, 0.8], "width_ratios": [1.45, 1],
-                                               "hspace": 0.42, "wspace": 0.26})
-
-    # The negative controls (composition, length, shuffled tokens) are in the supplementary figure.
-    methods = ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80"]
-    line_panel(axd["a"], V, blocks, strata, ticks, methods, bold=("RFoldSearch", "RFoldSearch-TM"))
-    S.style_axes(axd["a"], xlabel="Sequence identity of same-family positives",
-                 ylabel="Family-level Sens@1FP")
-    axd["a"].set_ylim(0, 1.08)
-    axd["a"].set_yticks(np.arange(0, 1.01, 0.2))
-    axd["a"].legend(ncol=4, frameon=False, fontsize=9.5, loc="lower center", bbox_to_anchor=(0.5, 1.0),
-                    handlelength=2.0, columnspacing=1.2, handletextpad=0.4, labelcolor="#666666")
-
-    # B: BLASTN and nhmmer are left out, as every positive they find is neutral by construction.
-    f = "B/N E<=10"
-    interval_panel(axd["b"], V[f], blocks, ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "RS-20", "RS-80"])
-    clan_panel(axd["c"], cl)
-    letters(axd, "abc", big=("c",))
-    out = os.path.join(FIG_DIR, "fig3.png")
-    fig.savefig(out, dpi=200, bbox_inches="tight")
-    print(out)
-
-
-if __name__ == "__main__":
-    main()

@@ -37,7 +37,8 @@ MUTED = "#6D7982"
 MONO = "DejaVu Sans Mono"
 plt.rcParams.update({"font.family": "sans-serif", "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"]})
 
-FIG_W = 7.0                 # inches
+FIG_W = 10.5                # inches
+WIDTH = 140                 # at most this many alignment columns per line
 STRUCT_W = 1.35             # structure panel width, inches
 TEXT_X = 1.6                # left edge of the alignment text, inches
 FS = 6.2                    # alignment font size, pt
@@ -208,13 +209,30 @@ def structure_axes(ax, query: np.ndarray, target: np.ndarray) -> None:
     ax.axis("off")
 
 
+def rechunk(chunks: list[dict], width: int = WIDTH) -> list[dict]:
+    """Join the stored alignment chunks and split them again into equal lines of at most
+    `width` columns, with first and last residue numbers recomputed for query and target."""
+    rows = {k: "".join(c[k] for c in chunks) for k in "qsnt"}
+    width = -(-len(rows["q"]) // -(-len(rows["q"]) // width))   
+    nxt = {"q": chunks[0]["q0"], "t": chunks[0]["t0"]}
+    out = []
+    for a in range(0, len(rows["q"]), width):
+        piece = {k: rows[k][a:a + width] for k in "qsnt"}
+        for k in "qt":
+            n = sum(ch not in ".-" for ch in piece[k])
+            piece[f"{k}0"], piece[f"{k}1"] = nxt[k], nxt[k] + n - 1
+            nxt[k] += n
+        out.append(piece)
+    return out
+
+
 def alignment_lines(case: dict, query: str) -> list:
     """(kind, payload) items: section headings and the four rows of each chunk."""
     items = [("head", f"Rfam reference alignment  (RMSD {case['ref_rmsd']:.1f} \u00c5 over {case['n_ref']} nt)")]
-    for c in case["reference"]:
+    for c in rechunk(case["reference"]):
         items += [("q", c, query), ("s", c, "3Dr"), ("n", c, "Seq"), ("t", c, case["target"])]
     items += [("space", None), ("head", f"RFoldSearch alignment  (RMSD {case['rf_rmsd']:.1f} \u00c5 over {case['n_rf']} nt)")]
-    for c in case["rfoldsearch"]:
+    for c in rechunk(case["rfoldsearch"]):
         items += [("q", c, query), ("s", c, "3Dr"), ("n", c, "Seq"), ("t", c, case["target"])]
     return items
 
@@ -228,8 +246,7 @@ def draw_case(fig, case: dict, query: str, q_trace, t_trace, top: float, H: floa
     y = lambda inch: 1 - inch / H
     x = lambda inch: inch / FIG_W
     fig.text(x(0.08), y(top + 0.05), case["label"], fontsize=12, fontweight="bold", va="top", color=INK)
-    fig.text(x(0.34), y(top + 0.07), f"{query} vs {case['target']}", fontsize=9, fontweight="bold",
-             va="top", color=INK)
+    fig.text(x(0.34), y(top + 0.07), f"{query} vs {case['target']}", fontsize=9, va="top", color=INK)
     fig.text(x(FIG_W - 0.1), y(top + 0.08),
              f"seq. id. {100 * case['seq_id']:.0f}%    3Dr id. {100 * case['tok_id']:.0f}%    "
              f"RFoldSearch exact F1 {case['f1']:.2f}", fontsize=7.5, color=MUTED, va="top", ha="right")
@@ -255,7 +272,7 @@ def draw_case(fig, case: dict, query: str, q_trace, t_trace, top: float, H: floa
         if kind in "qt":
             a, b = (c["q0"], c["q1"]) if kind == "q" else (c["t0"], c["t1"])
             fig.text(x(x0 + 3 * cw), yy, f"{a}", fontsize=FS, family=MONO, color=MUTED, va="center", ha="right")
-            fig.text(x(x0 + (5 + len(c[kind])) * cw), yy, f"{b}", fontsize=FS, family=MONO, color=MUTED,
+            fig.text(x(x0 + (5.6 + len(c[kind])) * cw), yy, f"{b}", fontsize=FS, family=MONO, color=MUTED,
                      va="center")
         fig.text(x(x0 + 4 * cw), yy, c[kind], fontsize=FS, family=MONO, color=color, va="center")
 

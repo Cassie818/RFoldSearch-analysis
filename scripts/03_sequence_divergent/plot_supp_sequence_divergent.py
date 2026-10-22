@@ -1,8 +1,8 @@
-"""Supplementary figure for Fig. 3: the identity background and the negative controls."""
+"""Supplementary figure for Fig. 2E-G: the identity background and the negative controls."""
 
 import os
 
-from plot_fig3 import COLOR, DATA, FIG_DIR, LABEL, MARK, S, boot_methods, json, marker_size, np, plt
+from sequence_divergent_panels import COLOR, DATA, FIG_DIR, LABEL, MARK, S, boot_methods, json, marker_size, np, plt
 from sequence_divergent_rescore import background_identity, load
 
 CONTROLS = ["RFoldSearch", "Length", "Composition", "Shuffled"]

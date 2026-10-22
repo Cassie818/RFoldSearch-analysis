@@ -1,4 +1,4 @@
-"""Rankings and per-query Sens@1FP behind Fig. 3 (sequence-divergent homologues)."""
+"""Rankings and per-query Sens@1FP behind Fig. 2E-G (sequence-divergent homologues)."""
 import argparse
 import csv
 import json

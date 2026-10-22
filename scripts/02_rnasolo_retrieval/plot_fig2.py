@@ -1,9 +1,13 @@
-"""Fig. 2: retrieval on the RNAsolo benchmark.
+"""Fig. 2: retrieval on the RNAsolo benchmark, including sequence-divergent homologues.
 
     A/B  Rfam AUROC1 sorted-sensitivity curves (all methods)
-    C/D  Structure-defined truth at TM-score 0.45, family (C) and clan (D):
+    C/D  Structure-defined truth at TM-score 0.45, all (C) and beyond-family (D):
          top, symmetric US-align TM-score; bottom, symmetric RMscore at the
          quantile-matched threshold
+    E-G  Sequence-divergent homologues (panels of scripts/03_sequence_divergent/sequence_divergent_panels.py):
+         E  family-level Sens@1FP by the sequence identity of the positives
+         F  family-level Sens@1FP once positives found by BLASTN/nhmmer (E <= 10) are neutral
+         G  clan-level Sens@1FP per clan before (open) and after (filled) the same filter
 """
 import sys as _sys, os as _os
 
@@ -59,7 +63,7 @@ MARKER = {"RFoldSearch": "o", "RFoldSearch-TM": "*", "GTalign": "X", "RTM-align"
 # drawn but not tested against RFoldSearch.
 BAR_METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "RMalign",
                "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
-TM_THRESHOLD = "0.45"   # the single threshold shown in C/D; 0.40 and 0.50 are supplementary
+TM_THRESHOLD = "0.45" 
 
 
 def sorted_curve(arr):
@@ -95,10 +99,11 @@ def curve_panel(ax, data, level, title, band):
 
 
 # ---- row 2: structural Sens@1FP bars -----------------------------------------
-def bar_panel(ax, boot, key, level, methods, oracle, tag):
+def bar_panel(ax, boot, key, level, methods, oracle, tag, values=True):
     """Sens@1FP bars with 95% intervals at one truth threshold `key`; `oracle` (the method
     defining the truth), if any, is drawn as its ceiling line. `tag` names the truth
-    inside the panel, since the TM and RMscore panels are stacked on shared axes."""
+    inside the panel, since the TM and RMscore panels are stacked on shared axes. With
+    `values`, RFoldSearch's estimate is printed above its bar."""
     ref = boot[key][level]
     width = 0.72
     for i, m in enumerate(methods):
@@ -111,7 +116,8 @@ def bar_panel(ax, boot, key, level, methods, oracle, tag):
         # Only annotate RFoldSearch numerically (others read from the y-axis);
         # significance stars sit on non-RFoldSearch bars.
         if m == "RFoldSearch":
-            ax.text(i, top, f"{v['estimate']:.2f}", ha="center", va="bottom", fontsize=9,
+            if values:
+                ax.text(i, top, f"{v['estimate']:.2f}", ha="center", va="bottom", fontsize=9,
                     color=METHOD_BASE["RFoldSearch"])
         elif v.get("sig_vs_rf"):
             ax.text(i, top, "*", ha="center", va="bottom", fontsize=10, color="#555555",
@@ -157,7 +163,7 @@ def load_truths():
 TRUTH_LEVEL_NAME = {"family": "All", "clan": "Beyond-family"}
 
 
-def truth_pair(fig, cell, boot, boot_rm, rm_thresholds, key, level):
+def truth_pair(fig, cell, boot, boot_rm, rm_thresholds, key, level, values=True):
     """TM-score (top) and RMscore (bottom) truths stacked in `cell`, sharing x and y: same
     method slots, with the truth-defining aligner (RMalign / US-align) swapped in slot 5.
     Returns the top axes."""
@@ -165,50 +171,90 @@ def truth_pair(fig, cell, boot, boot_rm, rm_thresholds, key, level):
     ax_tm = fig.add_subplot(sub[0])
     ax_rm = fig.add_subplot(sub[1], sharex=ax_tm, sharey=ax_tm)
     bar_panel(ax_tm, boot, key, level, BAR_METHODS, "US-align",
-              f"TM-score ≥ {float(key):.2f}")
+              f"TM-score ≥ {float(key):.2f}", values)
     bar_panel(ax_rm, boot_rm, key, level, RM_METHODS, "RMalign",
-              f"RMscore ≥ {rm_thresholds[key]:.2f}")
+              f"RMscore ≥ {rm_thresholds[key]:.2f}", values)
     ax_tm.set_title(f"{TRUTH_LEVEL_NAME[level]} (Sens@1FP)", fontsize=13, pad=8)
     ax_tm.set_ylabel("Sens@1FP", fontsize=12)
-    ax_tm.yaxis.set_label_coords(-0.07, -0.03)   # centred on the stacked pair
+    ax_tm.yaxis.set_label_coords(-0.07, -0.03) 
     return ax_tm
+
+
+def sequence_divergent():
+    """Sequence-divergent panel functions and data from scripts/03_sequence_divergent."""
+    _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "03_sequence_divergent"))
+    import sequence_divergent_panels as F3
+    fam = json.load(open(_os.path.join(F3.DATA, "family_perquery.json")))
+    blocks, V = fam["blocks"], fam["values"]
+    per, strata, ticks = F3.identity_strata()
+    V = dict(V, **{k: dict(v) for k, v in per.items()})
+    cl = json.load(open(_os.path.join(F3.DATA, "clan_perquery.json")))
+    return F3, V, blocks, strata, ticks, cl
+
+
+def letter(ax, lab, x=-0.10):
+    ax.text(x, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold", va="bottom", ha="right")
 
 
 def main():
     data = json.load(open(resolve("files/production/retrieval/per_query_sens_test.json")))
     band = json.load(open(resolve("files/production/retrieval/bootstrap_fig2ab_band.json")))
     boot, boot_rm, rm_thresholds = load_truths()
+    F3, V, blocks, strata, ticks, cl = sequence_divergent()
 
-    fig = plt.figure(figsize=(14.0, 11.4))
-    gs = fig.add_gridspec(2, 2, height_ratios=(1.25, 2), hspace=0.2, wspace=0.16,
-                          left=0.06, right=0.99, top=0.96, bottom=0.08)
-    ax_a, ax_b = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
+    fig = plt.figure(figsize=(14.0, 14.8))
+    rows = fig.add_gridspec(4, 1, height_ratios=(0.85, 0.88, 0.85, 0.68), hspace=0.32,
+                            left=0.06, right=0.99, top=0.98, bottom=0.06)
+    # A/B: Rfam truth
+    r0 = rows[0].subgridspec(1, 2, wspace=0.16)
+    ax_a, ax_b = fig.add_subplot(r0[0]), fig.add_subplot(r0[1])
     curve_panel(ax_a, data, "family", "Family (AUROC1)", band)
     curve_panel(ax_b, data, "clan", "Clan (AUROC1)", band)
-    letter_axes = [ax_a, ax_b]
-    for col, level in enumerate(("family", "clan")):
-        letter_axes.append(truth_pair(fig, gs[1, col], boot, boot_rm, rm_thresholds,
-                                      TM_THRESHOLD, level))
+    # C/D: structure truth, TM-score over RMscore
+    r1 = rows[1].subgridspec(1, 2, wspace=0.16)
+    ax_c, ax_d = (truth_pair(fig, r1[col], boot, boot_rm, rm_thresholds, TM_THRESHOLD, level, values=False)
+                  for col, level in enumerate(("family", "clan")))
+    for ax in (ax_c, ax_d):                 # half-height row: coarser ticks (shared with the panel below)
+        ax.set_yticks([0, 0.5, 1.0])
+        ax.set_yticks([0.25, 0.75], minor=True)
+    # E/F: sequence-divergent homologues
+    r2 = rows[2].subgridspec(1, 2, width_ratios=(1.25, 1), wspace=0.30)
+    ax_e, ax_f = fig.add_subplot(r2[0]), fig.add_subplot(r2[1])
+    F3.line_panel(ax_e, V, blocks, strata, ticks,
+                  ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80"],
+                  bold=("RFoldSearch", "RFoldSearch-TM"))
+    F3.S.style_axes(ax_e, xlabel="Sequence identity of same-family positives", ylabel="Family-level Sens@1FP")
+    ax_e.set_ylim(0, 1.0)
+    ax_e.set_yticks(np.arange(0, 1.01, 0.2))
+    F3.interval_panel(ax_f, V["B/N E<=10"], blocks,
+                      ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "RS-20", "RS-80"])
+    ax_f.set_xlim(0, 0.8)
+    ax_f.set_xticks(np.arange(0, 0.81, 0.2))
 
-    for ax, lab in zip(letter_axes, "ABCD"):
-        ax.text(-0.10, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold",
-                va="bottom", ha="right")
+    # G: per clan, before and after the sequence filter
+    ax_g = fig.add_subplot(rows[3])
+    F3.clan_panel(ax_g, cl, method_legend=False)
+
+
+    for ax, lab, x in ((ax_a, "A", -0.10), (ax_b, "B", -0.10), (ax_c, "C", -0.10), (ax_d, "D", -0.10),
+                       (ax_e, "E", -0.08), (ax_f, "F", -0.40), (ax_g, "G", -0.045)):
+        letter(ax, lab, x)
 
     handles, labels = ax_a.get_legend_handles_labels()
-    order = LEGEND_ORDER
     by = dict(zip(labels, handles))
-    labels = [LABEL.get(m, m) for m in order]
-    handles = [by[l] for l in labels]
-    legend = fig.legend(handles, labels, loc="lower center", ncol=5, frameon=False, fontsize=11.5,
-                        bbox_to_anchor=(0.5, -0.025), handlelength=2.6, columnspacing=1.8,
-                        markerscale=1.45)
+    nh = plt.Line2D([], [], color=F3.S.lighten(F3.COLOR["nhmmer"], 0.35), marker=F3.MARK["nhmmer"], lw=2.2,
+                    ms=7, mec="white", mew=0.9)
+    order = LEGEND_ORDER[:-1] + ["nhmmer", "Infernal"]
+    handles = [nh if m == "nhmmer" else by[LABEL.get(m, m)] for m in order]
+    legend = fig.legend(handles, [LABEL.get(m, m) for m in order], loc="lower center", ncol=6, frameon=False,
+                        fontsize=11.5, bbox_to_anchor=(0.5, -0.025), handlelength=2.6, columnspacing=1.6,
+                        markerscale=1.3)
     for handle, m in zip(legend.legend_handles, order):
         handle.set_linewidth(3.6 if m in HIGHLIGHT else 2.6)
     out_png = Path(FIG_DIR) / "fig2.png"
     out_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=200, bbox_inches="tight")
     print(f"Wrote {out_png}")
-
 
 
 if __name__ == "__main__":

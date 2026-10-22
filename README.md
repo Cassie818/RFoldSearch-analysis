@@ -44,7 +44,6 @@ files/motifs/                     motif-analysis tables
 pip install -r requirements.txt
 
 python scripts/02_rnasolo_retrieval/plot_fig2.py
-python scripts/03_sequence_divergent/plot_fig3.py
 python scripts/05_runtime/plot_fig4.py
 python scripts/06_predicted_retrieval/plot_fig5.py
 python scripts/07_motifs/plot_fig6.py
