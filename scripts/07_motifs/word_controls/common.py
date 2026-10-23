@@ -49,10 +49,15 @@ def expected_atoms(base: str) -> tuple[str, ...]:
     return BACKBONE_SUGAR + BASE_LOCATORS[base]
 
 
-def parse_atom_site(path: Path, chain: str, model: int) -> dict[int, tuple[str, dict[str, np.ndarray]]]:
+def parse_atom_site(
+    path: Path,
+    chain: str,
+    model: int,
+    full_keys: bool = False,
+) -> dict[object, tuple[str, dict[str, np.ndarray]]]:
     """Read standard heavy-atom coordinates from a PDB mmCIF atom_site loop."""
     lines = path.read_text(errors="replace").splitlines()
-    residues: dict[int, tuple[str, dict[str, tuple[float, np.ndarray]]]] = {}
+    residues: dict[object, tuple[str, dict[str, tuple[float, np.ndarray]]]] = {}
     i = 0
     while i < len(lines):
         if lines[i].strip() != "loop_":
@@ -97,7 +102,10 @@ def parse_atom_site(path: Path, chain: str, model: int) -> dict[int, tuple[str, 
             occupancy = float(get("_atom_site.occupancy", default="1") or 1)
             residue_name = get("_atom_site.auth_comp_id", "_atom_site.label_comp_id").upper()
             name = atom_name(get("_atom_site.auth_atom_id", "_atom_site.label_atom_id"))
-            current_name, atoms = residues.setdefault(residue_number, (residue_name, {}))
+            insertion = get("_atom_site.pdbx_PDB_ins_code", default="")
+            insertion = "" if insertion in {"", ".", "?"} else insertion
+            residue_key = (residue_number, insertion) if full_keys else residue_number
+            current_name, atoms = residues.setdefault(residue_key, (residue_name, {}))
             if current_name == residue_name and (name not in atoms or occupancy > atoms[name][0]):
                 atoms[name] = (occupancy, coordinate)
     return {

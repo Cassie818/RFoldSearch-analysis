@@ -1,9 +1,4 @@
-"""Frequency-matched controls with known same-clan relationships excluded.
-
-The primary comparison uses only occurrence pairs assigned to different Rfam
-clans on both the candidate and control sides; a family without a clan is its
-own clan. Cross-family and all-pair values are retained as diagnostics only.
-"""
+"""Frequency-matched controls with known same-clan relationships excluded."""
 from __future__ import annotations
 
 import argparse

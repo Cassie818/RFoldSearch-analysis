@@ -1,10 +1,4 @@
-"""Word-size-matched BGSU null distributions and overlap sensitivity checks.
-
-The inferential unit is a recurrent word. Each null replicate draws the same
-number of random four-nucleotide windows as each word contributes on
-BGSU-covered chains, then takes the median overlap fraction across words.
-Pooled occurrence fractions are reported separately as diagnostics.
-"""
+"""Word-size-matched BGSU null distributions and overlap sensitivity checks."""
 from __future__ import annotations
 
 import argparse
@@ -52,7 +46,7 @@ def main() -> None:
     parser.add_argument("--candidates", type=Path, default=CANDIDATES_PATH)
     parser.add_argument("--hl", type=Path, default=MOTIF_DIR / "bgsu_hl_current_2026-08-03.csv")
     parser.add_argument("--il", type=Path, default=MOTIF_DIR / "bgsu_il_current_2026-08-03.csv")
-    parser.add_argument("--residue-map", type=Path, default=MOTIF_DIR / "chain_residue_map.json")
+    parser.add_argument("--residue-map", type=Path, default=MOTIF_DIR / "chain_residue_key_map.json")
     parser.add_argument("--pairing-words", type=Path, default=OUT_DIR / "pairing_pattern_words.tsv")
     parser.add_argument("--output", type=Path, default=OUT_DIR / "bgsu_random_window_background.tsv")
     parser.add_argument("--candidate-output", type=Path, default=OUT_DIR / "bgsu_candidate_overlap_sensitivity.tsv")
@@ -62,12 +56,15 @@ def main() -> None:
 
     bgsu = load_bgsu_module()
     motifs = {**bgsu.parse_bgsu(args.il, "IL"), **bgsu.parse_bgsu(args.hl, "HL")}
-    chain_to_motif_residues: dict[tuple[str, str], list[set[int]]] = defaultdict(list)
+    chain_to_motif_residues: dict[tuple[str, int, str], list[set[str]]] = defaultdict(list)
     for occurrences in motifs.values():
         for occurrence in occurrences:
-            for pdb_chain in {(pdb, chain) for pdb, chain, _residue in occurrence}:
+            for pdb_chain in {
+                bgsu.chain_key(bgsu.parse_key_string(value)) for value in occurrence
+            }:
                 chain_to_motif_residues[pdb_chain].append({
-                    residue for pdb, chain, residue in occurrence if (pdb, chain) == pdb_chain
+                    value for value in occurrence
+                    if bgsu.chain_key(bgsu.parse_key_string(value)) == pdb_chain
                 })
 
     candidate_rows = read_tsv(args.candidates)
@@ -84,19 +81,19 @@ def main() -> None:
         if parts is None or parts not in chain_to_motif_residues or stem not in residue_map:
             continue
         mask = np.asarray(entry["mask"], dtype=bool)
-        resnums = residue_map[stem]
-        if len(resnums) != len(mask):
+        residue_keys = residue_map[stem]
+        if len(residue_keys) != len(mask):
             n_mapping_skipped += 1
             continue
-        valid_resnums = [residue for residue, valid in zip(resnums, mask) if valid]
+        valid_residue_keys = [residue for residue, valid in zip(residue_keys, mask) if valid]
         tokens = np.asarray(entry["tokens"], dtype=np.int32)
-        if len(valid_resnums) != len(tokens):
+        if len(valid_residue_keys) != len(tokens):
             n_mapping_skipped += 1
             continue
         n_covered_chains += 1
         motif_sets = chain_to_motif_residues[parts]
-        for start in range(len(valid_resnums) - 3):
-            residues = set(valid_resnums[start : start + 4])
+        for start in range(len(valid_residue_keys) - 3):
+            residues = set(valid_residue_keys[start : start + 4])
             score = max((len(residues & motif_residues) for motif_residues in motif_sets), default=0)
             random_window_scores.append(score)
             word = tuple(map(int, tokens[start : start + 4]))

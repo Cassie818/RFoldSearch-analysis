@@ -4,7 +4,6 @@ from __future__ import annotations
 import argparse
 import csv
 import json
-import re
 import sys
 from collections import defaultdict
 from pathlib import Path
@@ -14,10 +13,16 @@ import numpy as np
 
 REPO = Path(__file__).resolve().parents[2]
 MOTIF_DIR = REPO / "files" / "motifs"
-COMMON_DIR = Path(__file__).resolve().parent / "word_controls"
+SCRIPT_DIR = Path(__file__).resolve().parent
+COMMON_DIR = SCRIPT_DIR / "word_controls"
+sys.path.insert(0, str(SCRIPT_DIR))
 sys.path.insert(0, str(COMMON_DIR))
 
-from common import load_db_pickle, load_labels, load_sources  # noqa: E402
+from common import load_db_pickle, load_labels, load_sources 
+from residue_keys import (  
+    chain_key, key_string, parse_bgsu, parse_key_string,
+    parse_stem as parse_full_stem, residue_label,
+)
 
 
 DEFAULT_TARGETS = {
@@ -27,62 +32,34 @@ DEFAULT_TARGETS = {
     (48, 24, 39, 39): "HL_33597.6",
     (62, 71, 66, 12): "HL_34789.6",
 }
-TOKEN_RE = re.compile(
-    r'"?([0-9A-Za-z]+)\|(\d+)\|([^|]+)\|([^|]+)\|(-?\d+[A-Za-z]?)"?'
-)
-STEM_RE = re.compile(r"PDB_00([0-9A-Z]{6})_(\d+)_(.+)$", re.I)
 FIELDS = [
     "kmer", "entry_id", "pdb_chain", "family", "clan",
-    "token_start_1based", "raw_indices_1based", "author_residues",
+    "token_start_1based", "raw_indices_1based", "author_residues", "residue_keys",
     "sequence", "pair_sep_pattern", "pair_orient_pattern",
     "stack_sep_pattern", "n_external_pair", "n_internal_pair",
     "dssr_status", "dssr_json", "strict_clean", "strict_clean_reason",
 ]
 
 
-def parse_stem(stem: str) -> tuple[str, str] | None:
-    match = STEM_RE.fullmatch(stem)
-    if not match:
-        return None
-    raw = match.group(1).upper()
-    pdb_id = raw[2:] if raw.startswith("00") else raw
-    return pdb_id, match.group(3)
-
-
-def parse_bgsu(path: Path) -> dict[str, list[set[tuple[str, str, int]]]]:
-    motifs: dict[str, list[set[tuple[str, str, int]]]] = {}
-    current: str | None = None
-    with path.open() as handle:
-        for line in handle:
-            line = line.rstrip("\n")
-            if line.startswith(">"):
-                current = line[1:].strip()
-                motifs[current] = []
-                continue
-            if not line.strip() or current is None:
-                continue
-            occurrence = {
-                (pdb.upper(), chain, int(re.match(r"-?\d+", residue).group(0)))
-                for pdb, _model, chain, _nt, residue in TOKEN_RE.findall(line)
-            }
-            if occurrence:
-                motifs[current].append(occurrence)
-    return motifs
+def parse_stem(stem: str) -> tuple[str, int, str] | None:
+    return parse_full_stem(stem)
 
 
 def chain_motif_index(
     paths: list[Path], target_ids: set[str]
-) -> dict[tuple[str, str], list[tuple[str, set[int]]]]:
-    index: dict[tuple[str, str], list[tuple[str, set[int]]]] = defaultdict(list)
+) -> dict[tuple[str, int, str], list[tuple[str, set[str]]]]:
+    index: dict[tuple[str, int, str], list[tuple[str, set[str]]]] = defaultdict(list)
     for path in paths:
         for motif_id, occurrences in parse_bgsu(path).items():
             if motif_id not in target_ids:
                 continue
             for occurrence in occurrences:
-                for pdb_chain in {(pdb, chain) for pdb, chain, _ in occurrence}:
+                for pdb_chain in {
+                    chain_key(parse_key_string(value)) for value in occurrence
+                }:
                     residues = {
-                        residue for pdb, chain, residue in occurrence
-                        if (pdb, chain) == pdb_chain
+                        value for value in occurrence
+                        if chain_key(parse_key_string(value)) == pdb_chain
                     }
                     index[pdb_chain].append((motif_id, residues))
     return index
@@ -107,7 +84,7 @@ def vector(source: dict, name: str) -> np.ndarray:
 def occurrence_context(
     entry: dict,
     source: dict,
-    residue_numbers: list[int],
+    residue_keys: list[str],
     start: int,
     length: int,
 ) -> dict[str, str | int]:
@@ -116,7 +93,7 @@ def occurrence_context(
     if len(raw_indices) != len(entry["tokens"]):
         raise ValueError(f"source/token length mismatch for {entry['id']}")
     window = raw_indices[start : start + length]
-    if len(window) != length or max(window) >= len(residue_numbers):
+    if len(window) != length or max(window) >= len(residue_keys):
         raise ValueError(f"invalid token window for {entry['id']}:{start + 1}")
 
     pair_index = vector(source, "pair_idx")
@@ -137,9 +114,11 @@ def occurrence_context(
             (internal_pairs if partner in core else external_pairs).add(edge)
 
     sequence = str(source["seq"])
+    window_keys = [parse_key_string(residue_keys[int(i)]) for i in window]
     return {
         "raw_indices_1based": ",".join(str(int(i) + 1) for i in window),
-        "author_residues": ",".join(str(residue_numbers[int(i)]) for i in window),
+        "author_residues": ",".join(residue_label(key) for key in window_keys),
+        "residue_keys": ",".join(key_string(key) for key in window_keys),
         "sequence": "".join(sequence[int(i)] for i in window),
         "pair_sep_pattern": ",".join(pair_sep),
         "pair_orient_pattern": ",".join(orientations),
@@ -198,10 +177,10 @@ def build_rows(
         chain_motifs = motif_index.get(pdb_chain, [])
         if not chain_motifs:
             continue
-        residues = list(map(int, residue_map[stem]))
+        residue_keys = list(map(str, residue_map[stem]))
         tokens = np.asarray(entry["tokens"], dtype=np.int64)
         raw_indices = np.flatnonzero(np.asarray(source["mask"], dtype=bool))
-        if len(raw_indices) != len(tokens) or len(residues) != len(source["mask"]):
+        if len(raw_indices) != len(tokens) or len(residue_keys) != len(source["mask"]):
             counters["length_mismatch"] += 1
             continue
 
@@ -210,15 +189,15 @@ def build_rows(
             motif_id = targets.get(word)
             if motif_id is None:
                 continue
-            author = [residues[int(i)] for i in raw_indices[start : start + k]]
-            if len(set(author)) != k:
-                counters["non_injective_author_mapping"] += 1
+            window_keys = [residue_keys[int(i)] for i in raw_indices[start : start + k]]
+            if len(set(window_keys)) != k:
+                counters["non_injective_residue_key_mapping"] += 1
                 continue
-            if not any(motif == motif_id and set(author) <= motif_residues
+            if not any(motif == motif_id and set(window_keys) <= motif_residues
                        for motif, motif_residues in chain_motifs):
                 continue
 
-            context = occurrence_context(entry, source, residues, start, k)
+            context = occurrence_context(entry, source, residue_keys, start, k)
             family, clan = labels.get(str(entry["id"]), labels.get(Path(entry["id"]).name, ("", "")))
             dssr_json = dssr_dir / f"{stem}.json"
             rows.append({
@@ -253,7 +232,7 @@ def main() -> None:
     parser.add_argument("--db", type=Path, default=REPO / "files" / "models" / "db.pt")
     parser.add_argument("--labels", type=Path, default=REPO / "Splits" / "labels.tsv")
     parser.add_argument("--source-dir", type=Path, default=REPO / "Splits" / "pdb_out")
-    parser.add_argument("--residue-map", type=Path, default=MOTIF_DIR / "chain_residue_map.json")
+    parser.add_argument("--residue-map", type=Path, default=MOTIF_DIR / "chain_residue_key_map.json")
     parser.add_argument("--bgsu-hl", type=Path, default=MOTIF_DIR / "bgsu_hl_current_2026-08-03.csv")
     parser.add_argument("--bgsu-il", type=Path, default=MOTIF_DIR / "bgsu_il_current_2026-08-03.csv")
     parser.add_argument("--targets", type=Path, help="TSV with kmer and motif_id columns")
@@ -271,8 +250,11 @@ def main() -> None:
         counts[row["kmer"]] += 1
     print(f"wrote {args.output} ({len(rows)} rows)")
     print("counts: " + ", ".join(f"{word}={counts[word]}" for word in sorted(counts)))
-    if counters.get("non_injective_author_mapping"):
-        print(f"excluded non-injective residue maps: {counters['non_injective_author_mapping']}")
+    if counters.get("non_injective_residue_key_mapping"):
+        print(
+            "excluded non-injective residue-key maps: "
+            f"{counters['non_injective_residue_key_mapping']}"
+        )
 
 
 if __name__ == "__main__":

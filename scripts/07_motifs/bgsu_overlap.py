@@ -1,12 +1,17 @@
 """BGSU 3D Motif Atlas overlap analysis for cross-family k-mer candidates."""
 from __future__ import annotations
-import argparse, csv, json, re
+import argparse, csv, json, sys
 from collections import defaultdict
 from pathlib import Path
 
 import numpy as np
-import torch
-import gemmi
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(SCRIPT_DIR))
+from residue_keys import (
+    chain_key, cif_residue_keys, parse_bgsu as parse_bgsu_full,
+    parse_key_string, parse_stem,
+)
 
 REPO = Path(__file__).resolve().parents[2]
 DB = REPO / "files" / "models" / "db.pt"
@@ -15,58 +20,24 @@ HL_CSV = REPO / "files" / "motifs" / "bgsu_hl_current_2026-08-03.csv"
 DEFAULT_CIF_DIR = Path.home() / "Desktop" / "NR80_local"
 CAND_TSV = REPO / "files" / "motifs" / "kmer_candidates_production_new_k4_aa.tsv"
 OUT_TSV = REPO / "files" / "motifs" / "kmer_bgsu_overlap_production_new_k4_aa.tsv"
-CACHE_JSON = REPO / "files" / "motifs" / "chain_residue_map.json"
+CACHE_JSON = REPO / "files" / "motifs" / "chain_residue_key_map.json"
+SUMMARY_TSV = REPO / "files" / "motifs" / "bgsu_overlap_production_new_k4_aa_summary.tsv"
 
-RNA = {"A","C","G","U","PSU","5MU","4SU","H2U","UR3","5MC","OMC","5BU",
-       "OMG","1MG","2MG","M2G","7MG","YG","YYG","1MA","6MZ","MA6","I"}
-
-# stem format: PDB_00<6-char hex>_<model>_<chain>. The PDB id is the
-# trailing 4 chars of the 6-char block (the leading "00" pads new-style
-# 6-char PDB ids that the RCSB started issuing in 2024).
-STEM_RE = re.compile(r"PDB_00([0-9A-Z]{6})_(\d+)_(.+)$", re.I)
-TOKEN_RE = re.compile(r'"?([0-9A-Za-z]+)\|(\d+)\|([^|]+)\|([^|]+)\|(-?\d+[A-Za-z]?)"?')
+sys.path.insert(0, str(SCRIPT_DIR / "word_controls"))
+from common import load_db_pickle  # noqa: E402
 
 
 def stem_parts(stem: str):
-    m = STEM_RE.match(stem)
-    if not m:
-        return None
-    raw = m.group(1).upper()
-    # 4-char legacy PDB id padded with leading "00"; new-style 6-char ids
-    # do not start with "00".
-    pdb = raw[2:] if raw.startswith("00") else raw
-    chain = m.group(3)
-    return pdb, chain
+    return parse_stem(stem)
 
 
 def parse_bgsu(csv_path: Path, kind: str):
-    """Yield (motif_id, list_of_occurrences). Each occurrence is a set of
-    (pdb_lower, chain, residue_num_int)."""
-    motifs = {}
-    cur = None
-    with open(csv_path) as f:
-        for line in f:
-            line = line.rstrip("\n")
-            if not line.strip():
-                continue
-            if line.startswith(">"):
-                cur = line[1:].strip()
-                motifs[cur] = []
-                continue
-            tokens = TOKEN_RE.findall(line)
-            occ = set()
-            for pdb, model, chain, nt, resnum in tokens:
-                # strip insertion code suffix if present
-                resnum_int = int(re.match(r"-?\d+", resnum).group(0))
-                occ.add((pdb.upper(), chain, resnum_int))
-            if occ:
-                motifs[cur].append(occ)
-    return motifs
+    del kind  # Retained in the public API for compatibility.
+    return parse_bgsu_full(csv_path)
 
 
 def build_chain_residue_map(stems, cif_dir: Path, cache_json: Path):
-    """For each chain stem we have a CIF for, return a list of author
-    residue numbers in the order produced by our parser. If cached, reuse."""
+    """Map each chain position to a full, insertion-aware residue key."""
     if cache_json.exists():
         return json.load(open(cache_json))
     out = {}
@@ -77,20 +48,11 @@ def build_chain_residue_map(stems, cif_dir: Path, cache_json: Path):
             n_miss += 1
             continue
         try:
-            st = gemmi.read_structure(str(cif))
-            m = st[0]
-            nums = []
-            parts = stem_parts(stem)
-            if parts is None:
+            keys = cif_residue_keys(cif, stem)
+            if not keys:
+                n_miss += 1
                 continue
-            target_chain = parts[1]
-            for c in m:
-                if c.name != target_chain:
-                    continue
-                for r in c:
-                    if r.name in RNA:
-                        nums.append(int(r.seqid.num))
-            out[stem] = nums
+            out[stem] = keys
             n_ok += 1
         except Exception as e:
             n_miss += 1
@@ -108,6 +70,7 @@ def main():
     parser.add_argument("--hl_csv", type=Path, default=HL_CSV)
     parser.add_argument("--cache", type=Path, default=CACHE_JSON)
     parser.add_argument("--cif-dir", type=Path, default=DEFAULT_CIF_DIR)
+    parser.add_argument("--summary", type=Path, default=SUMMARY_TSV)
     args = parser.parse_args()
 
     print("parsing BGSU IL ...")
@@ -118,23 +81,26 @@ def main():
     print(f"  {len(hl_motifs)} HL motif groups")
     all_motifs = {**il_motifs, **hl_motifs}
 
-    # Build chain -> [(motif_id, residue_set)]
+    # Build full (PDB, model, chain) -> [(motif_id, residue-key set)].
     chain_to_motifs = defaultdict(list)
     for mid, occs in all_motifs.items():
         for occ in occs:
-            chains_in_occ = {(p, c) for (p, c, _) in occ}
+            chains_in_occ = {chain_key(parse_key_string(value)) for value in occ}
             for pc in chains_in_occ:
-                residues_on_pc = {r for (p2, c2, r) in occ if (p2, c2) == pc}
+                residues_on_pc = {
+                    value for value in occ
+                    if chain_key(parse_key_string(value)) == pc
+                }
                 chain_to_motifs[pc].append((mid, residues_on_pc))
-    print(f"  BGSU annotates {len(chain_to_motifs)} (PDB, chain) tuples")
+    print(f"  BGSU annotates {len(chain_to_motifs)} (PDB, model, chain) tuples")
 
     # Load our chains
-    db = torch.load(args.db, map_location="cpu", weights_only=False)
+    db = load_db_pickle(args.db)
     entries = db["entries"]
     stem2idx = {Path(e["id"]).stem: i for i, e in enumerate(entries)}
     print(f"  our db: {len(stem2idx)} chains")
 
-    # Build residue-number mapping (cached)
+    # Build full residue-key mapping (cached separately from the legacy integer map).
     residue_map = build_chain_residue_map(list(stem2idx.keys()), args.cif_dir, args.cache)
 
     # How many of our chains have ANY BGSU annotation?
@@ -168,14 +134,14 @@ def main():
             continue
         if stem not in residue_map:
             continue
-        resnums = residue_map[stem]
+        residue_keys = residue_map[stem]
         mask = np.asarray(e["mask"], dtype=bool)
-        if len(resnums) != len(mask):
+        if len(residue_keys) != len(mask):
             continue
-        # Tokens are stored only for valid residues, whereas residue numbers
+        # Tokens are stored only for valid residues, whereas residue keys
         # and coordinates retain unresolved positions.
-        valid_resnums = [resnum for resnum, valid in zip(resnums, mask) if valid]
-        if len(valid_resnums) != len(toks):
+        valid_residue_keys = [key for key, valid in zip(residue_keys, mask) if valid]
+        if len(valid_residue_keys) != len(toks):
             continue
         chain_motifs = chain_to_motifs[parts]
 
@@ -184,7 +150,7 @@ def main():
             if km not in target_kmers:
                 continue
             km_str = target_kmers[km]["kmer"]
-            kmer_residue_set = set(valid_resnums[p:p + K])
+            kmer_residue_set = set(valid_residue_keys[p:p + K])
             hit = False
             hit_mid = None
             for mid, motif_res in chain_motifs:
@@ -226,7 +192,7 @@ def main():
                   if not np.isnan(r["frac_in_bgsu"]) else 1.0)
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with open(args.output, "w") as f:
-        w = csv.DictWriter(f, list(rows_out[0].keys()), delimiter="\t")
+        w = csv.DictWriter(f, list(rows_out[0].keys()), delimiter="\t", lineterminator="\n")
         w.writeheader()
         for r in rows_out:
             w.writerow(r)
@@ -243,6 +209,32 @@ def main():
         print(f"  frac in BGSU >= 0.25 : {(frs >= 0.25).sum()}")
         print(f"  frac in BGSU >  0    : {(frs > 0).sum()}")
         print(f"  median frac          : {np.median(frs):.3f}")
+
+    target = next(row for row in rows_out if row["kmer"] == "44-48-62-71")
+    summary_rows = [
+        ("source_il_url", "https://rna.bgsu.edu/rna3dhub/motifs/release/il/current/csv"),
+        ("source_hl_url", "https://rna.bgsu.edu/rna3dhub/motifs/release/hl/current/csv"),
+        ("download_date", "2026-08-03"),
+        ("n_candidates", len(rows_out)),
+        ("n_candidates_with_bgsu_annotated_occurrences", len(frs)),
+        ("frac_ge_0.50", int((frs >= 0.50).sum())),
+        ("frac_ge_0.25", int((frs >= 0.25).sum())),
+        ("frac_gt_0", int((frs > 0).sum())),
+        ("median_frac_in_bgsu", float(np.median(frs))),
+        ("target_kmer", target["kmer"]),
+        ("target_n_occ_db", target["n_occ_db"]),
+        ("target_n_occ_in_bgsu", target["n_occ_in_bgsu"]),
+        ("target_frac_in_bgsu", target["frac_in_bgsu"]),
+        ("target_top_bgsu_motif", target["top_bgsu_motif"]),
+        ("target_cross_med_rmsd", target["cross_med_rmsd"]),
+        ("target_n_fam", target["n_fam"]),
+        ("target_n_clan", target["n_clan"]),
+    ]
+    with args.summary.open("w", newline="") as handle:
+        writer = csv.writer(handle, delimiter="\t", lineterminator="\n")
+        writer.writerow(["metric", "value"])
+        writer.writerows(summary_rows)
+    print(f"wrote {args.summary}")
 
 
 if __name__ == "__main__":

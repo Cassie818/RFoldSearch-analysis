@@ -29,7 +29,7 @@ RIGHT = (62, 71, 66, 12)
 OFFSET = 2
 FIELDS = [
     "entry_id", "pdb_chain", "family", "clan", "token_start_1based",
-    "raw_indices_1based", "author_residues", "sequence", "left_kmer",
+    "raw_indices_1based", "author_residues", "residue_keys", "sequence", "left_kmer",
     "right_kmer", "left_pair_sep_pattern", "left_pair_orient_pattern",
     "right_pair_sep_pattern", "right_pair_orient_pattern",
     "dssr_lw_signature", "dssr_exact_bgsu_hl_34789_6",
@@ -74,10 +74,10 @@ def build_rows(
         if parsed is None or source is None or stem not in residue_map:
             continue
         tokens = np.asarray(entry["tokens"], dtype=np.int64)
-        residues = list(map(int, residue_map[stem]))
+        residue_keys = list(map(str, residue_map[stem]))
         mask = np.asarray(source["mask"], dtype=bool)
         raw_indices = np.flatnonzero(mask)
-        if len(raw_indices) != len(tokens) or len(residues) != len(mask):
+        if len(raw_indices) != len(tokens) or len(residue_keys) != len(mask):
             continue
 
         for start in range(len(tokens) - 5):
@@ -85,14 +85,14 @@ def build_rows(
                 continue
             if tuple(map(int, tokens[start + OFFSET : start + OFFSET + 4])) != RIGHT:
                 continue
-            six_context = occurrence_context(entry, source, residues, start, 6)
-            left_context = occurrence_context(entry, source, residues, start, 4)
-            right_context = occurrence_context(entry, source, residues, start + OFFSET, 4)
+            six_context = occurrence_context(entry, source, residue_keys, start, 6)
+            left_context = occurrence_context(entry, source, residue_keys, start, 4)
+            right_context = occurrence_context(entry, source, residue_keys, start + OFFSET, 4)
             family, clan = labels.get(str(entry["id"]), labels.get(Path(entry["id"]).name, ("", "")))
 
-            author = [residues[int(i)] for i in raw_indices[start : start + 6]]
-            exact_bgsu = len(set(author)) == 6 and any(
-                motif_id == "HL_34789.6" and set(author) <= motif_residues
+            window_keys = [residue_keys[int(i)] for i in raw_indices[start : start + 6]]
+            exact_bgsu = len(set(window_keys)) == 6 and any(
+                motif_id == "HL_34789.6" and set(window_keys) <= motif_residues
                 for motif_id, motif_residues in motif_index.get(parsed, [])
             )
             left_row = dssr.get((stem, start + 1, "-".join(map(str, LEFT))))
@@ -109,6 +109,7 @@ def build_rows(
                 "token_start_1based": start + 1,
                 "raw_indices_1based": six_context["raw_indices_1based"],
                 "author_residues": six_context["author_residues"],
+                "residue_keys": six_context["residue_keys"],
                 "sequence": six_context["sequence"],
                 "left_kmer": "-".join(map(str, LEFT)),
                 "right_kmer": "-".join(map(str, RIGHT)),
@@ -125,7 +126,7 @@ def build_rows(
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--db", type=Path, default=REPO / "files" / "models" / "db.pt")
-    parser.add_argument("--residue-map", type=Path, default=MOTIF_DIR / "chain_residue_map.json")
+    parser.add_argument("--residue-map", type=Path, default=MOTIF_DIR / "chain_residue_key_map.json")
     parser.add_argument("--bgsu-hl", type=Path, default=MOTIF_DIR / "bgsu_hl_current_2026-08-03.csv")
     parser.add_argument(
         "--dssr-instances", type=Path,

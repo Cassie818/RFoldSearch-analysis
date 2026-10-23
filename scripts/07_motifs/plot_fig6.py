@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import json
 import sys
 from pathlib import Path
 
@@ -21,6 +22,9 @@ sys.path.insert(0, str(REPO / "scripts" / "common"))
 import figstyle as S  # noqa: E402  (palette and type sizes shared with Figs 2-5)
 sys.path.insert(0, str(REPO / "scripts" / "07_motifs" / "word_controls"))
 from common import expected_atoms, parse_atom_site, stem_parts  # noqa: E402
+sys.path.insert(0, str(REPO / "scripts" / "07_motifs"))
+from known_motif_core_dssr_annotation import lw_pattern_contains, pair_lookup  # noqa: E402
+from residue_keys import parse_key_string, parse_number_and_insertion  # noqa: E402
 MOTIF = REPO / "files" / "motifs"
 CONTROLS = MOTIF / "word_controls"
 FIGURES = REPO / "figures"
@@ -56,7 +60,8 @@ POSITION_COLORS = [S.lighten(c, 0.1) for c in ("#1F9BD8", "#4FA8C9", "#86B4A6", 
 # F: Leontis-Westhof classes.
 LW_COLORS = {"cWW": S.lighten("#9467BD"), "tSH": S.lighten("#E377C2"), "tWH": S.lighten("#17BECF"),
              "tWS": S.lighten("#BCBD22"), ".": "#E6E6E6"}
-TLOOP_COLOR = S.lighten("#2CA02C", 0.1)   # G: one hue, so its positions are not read as the GNRA's
+TLOOP_COLOR = S.lighten("#2CA02C", 0.1)
+PARTNER_COLOR = "#7A7A7A"   # F: residues outside the token window that pair with it   # G: one hue, so its positions are not read as the GNRA's
 LOGO_COLOR = "#A6A6A6"                     # D: one colour; the letters name the nucleotides
 
 
@@ -96,16 +101,60 @@ def subhead(ax, x, y, text, transform=None) -> None:
 
 def base_inclusive_fragment(row: dict[str, str], n_residues: int, cif_dir: Path) -> np.ndarray:
     _pdb, model, chain = stem_parts(row["pdb_chain"])
-    residues = parse_atom_site(cif_dir / f"{row['pdb_chain']}.cif", chain, model)
+    use_full_keys = bool(row.get("residue_keys"))
+    residues = parse_atom_site(cif_dir / f"{row['pdb_chain']}.cif", chain, model, full_keys=True)
+    if use_full_keys:
+        keys = [
+            (key[4], key[5])
+            for key in map(parse_key_string, row["residue_keys"].split(","))
+        ][:n_residues]
+    else:
+        keys = [
+            parse_number_and_insertion(value)
+            for value in row["author_residues"].split(",")
+        ][:n_residues]
     coordinates = []
-    for number in [int(value) for value in row["author_residues"].split(",")][:n_residues]:
-        base, atoms = residues[number]
+    for residue_key in keys:
+        base, atoms = residues[residue_key]
         names = expected_atoms(base)
         missing = [name for name in names if name not in atoms]
         if missing:
-            raise RuntimeError(f"{row['pdb_chain']} residue {number}: missing {','.join(missing)}")
+            raise RuntimeError(
+                f"{row['pdb_chain']} residue {residue_key}: missing {','.join(missing)}"
+            )
         coordinates.extend(atoms[name] for name in names)
     return np.asarray(coordinates, dtype=np.float64)
+
+
+def pairing_partners(row: dict[str, str], n_residues: int, cif_dir: Path) -> list[dict]:
+    """DSSR pairing records of the token residues whose partner lies outside the window:
+    token position, LW label, partner label and the partner's base-inclusive atoms."""
+    keys = [parse_key_string(value) for value in row["residue_keys"].split(",")][:n_residues]
+    pdb, model, chain = keys[0][0], keys[0][1], keys[0][2]
+    pairs = pair_lookup(json.loads(Path(row["dssr_json"]).read_text()), core_chain=chain, pdb=pdb, model=model)
+    residues = parse_atom_site(cif_dir / f"{row['pdb_chain']}.cif", chain, model, full_keys=True)
+    window = set(keys)
+    partners = []
+    for position, key in enumerate(keys, start=1):
+        for record in pairs.get(key, []):
+            partner = tuple(record["partner_ref"])
+            if partner in window:
+                continue
+            base, atoms = residues[(partner[4], partner[5])]
+            partners.append({
+                "position": position, "lw": str(record.get("LW", ".")),
+                "label": f"{partner[3]}{partner[4]}{partner[5]}",
+                "coords": np.asarray([atoms[name] for name in expected_atoms(base)], dtype=np.float64),
+            })
+    return partners
+
+
+def superposition(points: np.ndarray, reference: np.ndarray):
+    """Rotation and centres that superpose `points` on `reference` (as kabsch_align)."""
+    mu, ref_mu = points.mean(axis=0), reference.mean(axis=0)
+    u, _, vt = np.linalg.svd((points - mu).T @ (reference - ref_mu))
+    reflection = np.sign(np.linalg.det(vt.T @ u.T))
+    return vt.T @ np.diag([1.0, 1.0, reflection]) @ u.T, mu
 
 
 def kabsch_align(points: np.ndarray, reference: np.ndarray) -> np.ndarray:
@@ -126,10 +175,17 @@ def preflight(cif_dir: Path) -> dict:
     hairpin = read_tsv(HAIRPIN)
     dssr = read_tsv(DSSR)
 
+    # Both atom sets carry the same three controls: frequency-matched words, length-matched
+    # random windows and sequence-matched windows.
     a_distributions = {
-        "five_candidate": numeric(frequency, "candidate_cross_clan_median_rmsd"),
-        "five_frequency": numeric(frequency, "cross_clan_matched_control_median_rmsd"),
+        # All eight distributions come from 02 and share one window universe: labelled
+        # occurrences with a unique residue-key mapping and complete base-inclusive atoms.
+        "five_candidate": numeric(base, "five_anchor_candidate_cross_clan_median_rmsd"),
+        "five_frequency": numeric(base, "five_anchor_frequency_matched_cross_clan_median_rmsd"),
+        "five_random": numeric(base, "five_anchor_length_random_cross_clan_median_rmsd"),
+        "five_sequence": numeric(base, "five_anchor_sequence_matched_cross_clan_median_rmsd"),
         "base_candidate": numeric(base, "base_inclusive_candidate_cross_clan_median_rmsd"),
+        "base_frequency": numeric(base, "base_inclusive_frequency_matched_cross_clan_median_rmsd"),
         "base_random": numeric(base, "base_inclusive_length_random_cross_clan_median_rmsd"),
         "base_sequence": numeric(base, "base_inclusive_sequence_matched_cross_clan_median_rmsd"),
     }
@@ -137,9 +193,12 @@ def preflight(cif_dir: Path) -> dict:
     frequency_summary = read_metrics(FREQUENCY_SUMMARY)
     base_summary = read_metrics(BASE_SUMMARY)
     expected_a = {
-        "five_candidate": float(frequency_summary["candidate_cross_clan_median_rmsd"]),
-        "five_frequency": float(frequency_summary["cross_clan_matched_control_median_rmsd"]),
+        "five_candidate": float(base_summary["five_anchor_candidate_median_rmsd"]),
+        "five_frequency": float(base_summary["five_anchor_frequency_matched_median_rmsd"]),
+        "five_random": float(base_summary["five_anchor_length_random_median_rmsd"]),
+        "five_sequence": float(base_summary["five_anchor_sequence_matched_median_rmsd"]),
         "base_candidate": float(base_summary["base_inclusive_candidate_median_rmsd"]),
+        "base_frequency": float(base_summary["base_inclusive_frequency_matched_median_rmsd"]),
         "base_random": float(base_summary["base_inclusive_length_random_median_rmsd"]),
         "base_sequence": float(base_summary["base_inclusive_sequence_matched_median_rmsd"]),
     }
@@ -161,11 +220,19 @@ def preflight(cif_dir: Path) -> dict:
         raise SystemExit(f"STOP: panel D counts={(n_gnra, len(sequences), n_gc)}, expected (44, 48, 37)")
 
     exact_hairpin = [row for row in hairpin if row["dssr_lw_signature"]]
-    n_gnra_signature = sum(row["dssr_lw_signature"] == "cWW,tSH,.,.,tSH,cWW" for row in exact_hairpin)
+    # Signature rule: every listed interaction must be among the DSSR records at its
+    # position (additional records are allowed); "." positions are not constrained.
+    n_gnra_signature = sum(
+        lw_pattern_contains(row["dssr_lw_signature"], "cWW,tSH,.,.,tSH,cWW")
+        for row in exact_hairpin
+    )
     tloop = [row for row in dssr if row["kmer"] == "48-24-39-39"]
-    n_tloop_signature = sum(row["dssr_lw_pattern"] == "tWH,tWS,cWW,." for row in tloop)
-    if (n_gnra_signature, len(exact_hairpin), n_tloop_signature, len(tloop)) != (11, 12, 10, 10):
-        raise SystemExit("STOP: panel G signature counts do not equal 11/12 and 10/10")
+    n_tloop_signature = sum(
+        lw_pattern_contains(row["dssr_lw_pattern"], "tWH,tWS,cWW,.")
+        for row in tloop
+    )
+    if (n_gnra_signature, len(exact_hairpin), n_tloop_signature, len(tloop)) != (12, 13, 10, 10):
+        raise SystemExit("STOP: panel H signature counts do not equal 12/13 and 10/10")
 
     topology_count = sum(
         row["left_pair_orient_pattern"].split(",")[0] == "cis"
@@ -181,12 +248,15 @@ def preflight(cif_dir: Path) -> dict:
         raise SystemExit(f"STOP: missing mmCIF directory {cif_dir}")
     gnra_coords = [base_inclusive_fragment(row, 6, cif_dir) for row in exact_hairpin]
     tloop_coords = [base_inclusive_fragment(row, 4, cif_dir) for row in tloop]
+    tloop_partners = [pairing_partners(row, 4, cif_dir) for row in tloop]
 
     return {
         "a_distributions": a_distributions,
         "a_medians": a_medians,
-        "a_permutation_p": float(frequency_summary["permutation_candidate_vs_cross_clan_control_p"]),
-        "a_permutations": int(frequency_summary["permutation_candidate_vs_cross_clan_control_n_permutations"]),
+        "a_permutation_p": float(base_summary["permutation_five_anchor_candidate_vs_frequency_control_p"]),
+        "a_permutations": int(base_summary["permutation_five_anchor_candidate_vs_frequency_control_n_permutations"]),
+        "a_base_permutation_p": float(base_summary["permutation_base_inclusive_candidate_vs_frequency_control_p"]),
+        "a_base_permutations": int(base_summary["permutation_base_inclusive_candidate_vs_frequency_control_n_permutations"]),
         "helix_values": np.asarray([float(row["fraction_ge_1"]) for row in helix]),
         "other_values": np.asarray([float(row["fraction_ge_1"]) for row in other]),
         "bgsu_null": {
@@ -224,10 +294,9 @@ def preflight(cif_dir: Path) -> dict:
         "n_tloop_signature": n_tloop_signature,
         "gnra_coords": gnra_coords,
         "tloop_coords": tloop_coords,
+        "tloop_partners": tloop_partners,
     }
 
-
-POOLED = set()
 
 
 def boxplot(ax, values: list[np.ndarray], positions: list[float], colors: list[str],
@@ -244,39 +313,39 @@ def boxplot(ax, values: list[np.ndarray], positions: list[float], colors: list[s
 
 
 def panel_a(ax, data: dict) -> None:
-    keys = ["five_candidate", "five_frequency", "base_candidate", "base_random", "base_sequence"]
-    labels = ["3Dr\nword", "Frequency\nmatched", "3Dr\nword", "Random", "Sequence\nmatched"]
-    positions = [0.9, 2.4, 4.9, 6.3, 7.7]
-    colors = [CANDIDATE, CONTROL_GREYS["frequency"], CANDIDATE,
-              CONTROL_GREYS["random"], CONTROL_GREYS["sequence"]]
-    boxed = [i for i, key in enumerate(keys) if key not in POOLED]
-    boxplot(ax, [data["a_distributions"][keys[i]] for i in boxed], [positions[i] for i in boxed],
-            [colors[i] for i in boxed])
-    for i, key in enumerate(keys):
-        if key in POOLED:
-            ax.scatter([positions[i]], [data["a_medians"][key]], s=46, marker="D", color=colors[i],
-                       edgecolors=INK, linewidths=0.9, zorder=3)
-    ax.axvline(3.65, color=GRID, lw=0.9, zorder=1)
-    subhead(ax, 1.65, 0.95, "Five anchors", ax.get_xaxis_transform())
-    subhead(ax, 6.3, 0.95, "Base-inclusive atoms", ax.get_xaxis_transform())
-    for x, key in zip(positions, keys):
-        top = data["a_medians"][key] if key in POOLED else float(np.percentile(data["a_distributions"][key], 90))
-        ax.text(x, top + 0.14, f"{data['a_medians'][key]:.2f}",
-                color=S.TEXT["RFoldSearch n500"] if "candidate" in key else S.GREY_TEXT,
-                ha="center", va="bottom", fontsize=8.5)
-    # Unique-word permutation test of the five-anchor candidate-control comparison.
-    p_value, n_permutations = data["a_permutation_p"], data["a_permutations"]
-    floor = 1 / (n_permutations + 1)
-    exponent = int(round(np.log10(n_permutations)))
-    p_label = rf"P < $10^{{-{exponent}}}$" if p_value <= floor + 1e-12 else f"P = {p_value:.3g}"
-    bracket = max(float(np.percentile(data["a_distributions"][key], 90)) for key in keys[:2]) + 0.55
-    ax.plot([positions[0], positions[0], positions[1], positions[1]],
-            [bracket, bracket + 0.08, bracket + 0.08, bracket], color=INK, lw=0.8)
-    ax.text((positions[0] + positions[1]) / 2, bracket + 0.12, p_label, ha="center", va="bottom",
-            fontsize=8.2, color=S.GREY_TEXT)
-    ax.set_xticks(positions)
-    ax.set_xticklabels(labels, fontsize=8.5, linespacing=1.0)
-    ax.set_xlim(0.15, 8.5)
+    labels = ["3Dr\nword", "Frequency\nmatched", "Sequence\nmatched", "Random"]
+    groups = [("five", "Five anchors", 0.0), ("base", "Base-inclusive atoms", 5.0)]
+    offsets = [0.9, 2.0, 3.1, 4.2]
+    colors = [CANDIDATE, CONTROL_GREYS["frequency"], CONTROL_GREYS["sequence"], CONTROL_GREYS["random"]]
+    suffixes = ["candidate", "frequency", "sequence", "random"]
+    ticks, ticklabels = [], []
+    for prefix, title, x0 in groups:
+        keys = [f"{prefix}_{suffix}" for suffix in suffixes]
+        positions = [x0 + off for off in offsets]
+        boxplot(ax, [data["a_distributions"][key] for key in keys], positions, colors)
+        subhead(ax, x0 + 2.55, 0.95, title, ax.get_xaxis_transform())
+        for x, key in zip(positions, keys):
+            top = float(np.percentile(data["a_distributions"][key], 90))
+            ax.text(x, top + 0.14, f"{data['a_medians'][key]:.2f}",
+                    color=S.TEXT["RFoldSearch n500"] if "candidate" in key else S.GREY_TEXT,
+                    ha="center", va="bottom", fontsize=8.5)
+        # Unique-word permutation test of the 3Dr word against its frequency-matched control.
+        p_value, n_permutations = ((data["a_permutation_p"], data["a_permutations"]) if prefix == "five"
+                                   else (data["a_base_permutation_p"], data["a_base_permutations"]))
+        floor = 1 / (n_permutations + 1)
+        exponent = int(round(np.log10(n_permutations)))
+        p_label = rf"P < $10^{{-{exponent}}}$" if p_value <= floor + 1e-12 else f"P = {p_value:.2g}"
+        bracket = max(float(np.percentile(data["a_distributions"][key], 90)) for key in keys[:2]) + 0.55
+        ax.plot([positions[0], positions[0], positions[1], positions[1]],
+                [bracket, bracket + 0.08, bracket + 0.08, bracket], color=INK, lw=0.8)
+        ax.text((positions[0] + positions[1]) / 2, bracket + 0.12, p_label, ha="center", va="bottom",
+                fontsize=8.2, color=S.GREY_TEXT)
+        ticks += positions
+        ticklabels += labels
+    ax.axvline(5.0, color=GRID, lw=0.9, zorder=1)
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(ticklabels, fontsize=8.5, linespacing=1.0)
+    ax.set_xlim(0.3, 9.8)
     ax.set_ylim(0, 4.8)
     style_axis(ax, ylabel="Median pairwise RMSD (Å)")
 
@@ -379,23 +448,29 @@ def panel_d(ax, data: dict) -> None:
     style_axis(ax, xlabel="Hairpin position", ylabel="Probability")
 
 
+NO_PAIR = "–"     # G: no DSSR pairing record at this token position
+
+
 def panel_e(ax, data: dict) -> None:
+    """Panel G: DSSR Leontis-Westhof label at each token position. A row counts the fragments
+    whose records at every position include the displayed label; "–" marks positions without
+    a pairing record in every fragment of the subset."""
     rows = [
-        (["cWW", "tSH", ".", ".", "tSH", "cWW"],
+        (["cWW", "tSH", NO_PAIR, NO_PAIR, "tSH", "cWW"],
          f"{data['n_gnra_signature']}/{len(data['exact_hairpin'])}", "HL_34789.6"),
-        (["tWH", "tWS", "cWW", "."],
+        (["tWH", "tWS", "cWW", NO_PAIR],
          f"{data['n_tloop_signature']}/{len(data['tloop'])}", "HL_33597.6"),
     ]
-    ax.set_xlim(0, 8.7)
+    ax.set_xlim(0, 9.4)
     ax.set_ylim(-0.32, 1.32)
     ax.invert_yaxis()
     for y, (signature, count, label) in enumerate(rows):
         for x, state in enumerate(signature):
             ax.add_patch(Rectangle((x + 0.05, y - 0.27), 0.90, 0.54,
-                                   facecolor=LW_COLORS[state], edgecolor="white", lw=1.2))
+                                   facecolor=LW_COLORS.get(state, LW_COLORS["."]), edgecolor="white", lw=1.2))
             ax.text(x + 0.50, y, state, ha="center", va="center", fontsize=8.5, color=INK)
-        ax.text(6.35, y - 0.12, count, ha="left", va="center", fontsize=10)
-        ax.text(6.35, y + 0.16, label, ha="left", va="center", fontsize=8.5, color=S.GREY_TEXT)
+        ax.text(6.25, y - 0.12, count, ha="left", va="center", fontsize=10)
+        ax.text(6.25, y + 0.16, label, ha="left", va="center", fontsize=8.5, color=S.GREY_TEXT)
     ax.set_xticks(np.arange(6) + 0.50)
     ax.set_xticklabels(["1", "2", "3", "4", "5", "6"])
     ax.set_yticks([])
@@ -404,19 +479,28 @@ def panel_e(ax, data: dict) -> None:
         spine.set_visible(False)
     ax.tick_params(length=0)
     handles = [Patch(facecolor=LW_COLORS[state], edgecolor="none", label=state) for state in ("cWW", "tSH", "tWH", "tWS")]
+    handles.append(Patch(facecolor=LW_COLORS["."], edgecolor="none", label="no pair record"))
     ax.legend(handles=handles, loc="center right", bbox_to_anchor=(1.0, 0.5), ncol=1,
               frameon=False, fontsize=9.5, columnspacing=1.2, handlelength=1.1)
 
 
-def align_to_medoid(fragments: list[np.ndarray]) -> np.ndarray:
-    """Superpose every instance on the medoid (lowest mean RMSD to the others); medoid first."""
+def representative_index(fragments: list[np.ndarray], allowed: list[int] | None = None) -> int:
+    """Instance with the lowest summed RMSD to all others, optionally among `allowed`."""
     n = len(fragments)
     rmsd = np.zeros((n, n))
     for i in range(n):
         for j in range(i + 1, n):
             diff = kabsch_align(fragments[i], fragments[j]) - (fragments[j] - fragments[j].mean(axis=0))
             rmsd[i, j] = rmsd[j, i] = np.sqrt((diff ** 2).sum(axis=1).mean())
-    medoid = int(np.argmin(rmsd.sum(axis=1)))
+    candidates = allowed if allowed else list(range(n))
+    return min(candidates, key=lambda i: rmsd[i].sum())
+
+
+def align_to_medoid(fragments: list[np.ndarray], medoid: int | None = None) -> np.ndarray:
+    """Superpose every instance on the representative (default: the medoid); representative first."""
+    n = len(fragments)
+    if medoid is None:
+        medoid = representative_index(fragments)
     order = [medoid] + [i for i in range(n) if i != medoid]
     return np.asarray([kabsch_align(fragments[i], fragments[medoid]) for i in order])
 
@@ -439,7 +523,8 @@ def backbone_trace(residues: np.ndarray) -> np.ndarray:
     return np.vstack([r[[P, O5, C5, C4, C3, O3]] for r in residues])
 
 
-def draw_base_inclusive_overlay(ax, aligned: np.ndarray, title: str, colors: list[str]) -> None:
+def draw_base_inclusive_overlay(ax, aligned: np.ndarray, title: str, colors: list[str],
+                                title_y: float = 0.98) -> None:
     from mpl_toolkits.mplot3d.art3d import Poly3DCollection
     n_residues = aligned.shape[1] // 15
     for fragment in aligned[1:]:                       # other instances: thin translucent lines
@@ -463,7 +548,7 @@ def draw_base_inclusive_overlay(ax, aligned: np.ndarray, title: str, colors: lis
         ax.plot(*np.vstack([residue[C1], residue[12]]).T, color=color, lw=1.8)
         ax.add_collection3d(Poly3DCollection([base_triangle(residue)], facecolor=color, edgecolor=INK,
                                              linewidths=0.6, alpha=0.85))
-    ax.text2D(0.5, 0.98, title, transform=ax.transAxes, ha="center", va="top", fontsize=10.5)
+    ax.text2D(0.5, title_y, title, transform=ax.transAxes, ha="center", va="top", fontsize=10.5)
     if len(set(colors)) > 1:                           # position key only when positions are coloured
         legend_x0 = 0.5 - (n_residues - 1) * 0.042
         for position in range(n_residues):
@@ -498,14 +583,75 @@ def add_scale_bar(ax, length: float = 2.0) -> None:
     ax.text2D(x0 + fraction / 2, y0 - 0.025, r"2 $\AA$", transform=ax.transAxes, ha="center", va="top", fontsize=9)
 
 
+def draw_partners(ax, core: np.ndarray, partners: list[list[dict]], order: list[int],
+                  transforms: list) -> np.ndarray:
+    """Partner residues outside the token window, in the frame of the core superposition.
+    Medoid instance (first in `order`) drawn solid and labelled; the others thin. Each pair
+    is joined base-to-base by a dashed line in its LW colour (as in panel H)."""
+    points = []
+    for rank, index in enumerate(order):
+        rotation, mu = transforms[rank]
+        residues = core[rank].reshape(-1, 15, 3)
+        for partner in partners[index]:
+            xyz = (partner["coords"] - mu) @ rotation.T
+            points.append(xyz)
+            tri = base_triangle(xyz)
+            core_tri = base_triangle(residues[partner["position"] - 1])
+            link = np.vstack([core_tri.mean(axis=0), tri.mean(axis=0)])
+            colour = LW_COLORS.get(partner["lw"], INK)
+            if rank == 0:
+                from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+                ax.plot(*xyz[[C4, O4, C1, C2, C3]].T, color=PARTNER_COLOR, lw=1.2)
+                ax.plot(*np.vstack([xyz[C1], xyz[12]]).T, color=PARTNER_COLOR, lw=1.8)
+                ax.add_collection3d(Poly3DCollection([tri], facecolor=PARTNER_COLOR, edgecolor=INK,
+                                                     linewidths=0.6, alpha=0.85))
+                ax.plot(*link.T, color=colour, lw=2.6, ls=(0, (1.5, 1.0)), zorder=10)
+                away = tri.mean(axis=0) - residues.reshape(-1, 3).mean(axis=0)
+                away = away / (np.linalg.norm(away) + 1e-9)
+                ax.text(*(tri.mean(axis=0) + away * 3.2), f"{partner['label']}\n{partner['lw']}",
+                        fontsize=7.5, color=INK, ha="center", va="center", linespacing=0.95, zorder=12,
+                        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.8, "pad": 0.4})
+            else:
+                closed = np.vstack([tri, tri[:1]])
+                ax.plot(*closed.T, color=PARTNER_COLOR, alpha=0.30, lw=0.6)
+    return np.asarray(points).reshape(-1, 3) if points else np.zeros((0, 3))
+
+
 def panel_f(fig, cells, data: dict) -> tuple[list, list[np.ndarray]]:
-    """The two base-inclusive superpositions, one per grid cell."""
+    """The two base-inclusive superpositions, one per grid cell. The T-loop panel adds the
+    pairing partners outside the four-residue window."""
     gnra = align_to_medoid(data["gnra_coords"])
-    tloop = align_to_medoid(data["tloop_coords"])
+    fragments = data["tloop_coords"]
+    # The representative is the medoid among the tRNAs numbered in the standard way (T54-G57),
+    # so that partner labels read as A58, G18 and G19.
+    standard = [i for i, row in enumerate(data["tloop"]) if row["author_residues"].split(",")[0] == "54"]
+    medoid = representative_index(fragments, standard)
+    tloop = align_to_medoid(fragments, medoid)
+    order = [medoid] + [i for i in range(len(fragments)) if i != medoid]
+    reference = fragments[medoid]
+    # Same frame as align_to_medoid: each instance centred on its own mean and rotated onto
+    # the medoid, whose centre is the origin.
+    transforms = [superposition(fragments[i], reference) for i in order]
     axes = [fig.add_subplot(cells[0], projection="3d"), fig.add_subplot(cells[1], projection="3d")]
     draw_base_inclusive_overlay(axes[0], gnra, "GNRA hairpin", POSITION_COLORS)
-    draw_base_inclusive_overlay(axes[1], tloop, "T-loop core", [TLOOP_COLOR] * 4)
-    same_physical_limits(axes, [gnra, tloop])
+    draw_base_inclusive_overlay(axes[1], tloop, "T-loop", [TLOOP_COLOR] * 4)
+    partner_points = draw_partners(axes[1], tloop, data["tloop_partners"], order, transforms)
+    medoid_residues = tloop[0].reshape(-1, 15, 3)
+    rep_row = data["tloop"][medoid]
+    rep_labels = [f"{base}{number}" for base, number in
+                  zip(rep_row["sequence"], rep_row["author_residues"].split(","))]
+    for position, residue in enumerate(medoid_residues, start=1):   # token positions, as in H
+        tri = base_triangle(residue)
+        away = tri.mean(axis=0) - tloop[0].mean(axis=0)
+        away = away / (np.linalg.norm(away) + 1e-9)
+        # outward from the fragment centre; position 2 inward, clear of its neighbour's label
+        offset = {1: 4.6, 2: -4.2}.get(position, 3.6)
+        axes[1].text(*(tri.mean(axis=0) + away * offset), f"{position} {rep_labels[position - 1]}",
+                     fontsize=8.5, color="#2A7A2A",
+                     ha="center", va="center", fontweight="bold",
+                     bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.8))
+    tloop_extent = np.vstack([tloop.reshape(-1, 3), partner_points])
+    same_physical_limits(axes, [gnra, tloop_extent[None, ...]])
     return axes, [gnra, tloop]
 
 
@@ -515,50 +661,55 @@ def write_numbers(data: dict) -> Path:
         rows.append({"panel": panel, "item": item, "value": value, "source_file": str(source.relative_to(REPO)),
                      "source_column": column, "statistic_or_rule": statistic})
     a_sources = {
-        "five_candidate": (FREQUENCY, "candidate_cross_clan_median_rmsd"),
-        "five_frequency": (FREQUENCY, "cross_clan_matched_control_median_rmsd"),
+        "five_candidate": (BASE, "five_anchor_candidate_cross_clan_median_rmsd"),
+        "five_frequency": (BASE, "five_anchor_frequency_matched_cross_clan_median_rmsd"),
+        "five_random": (BASE, "five_anchor_length_random_cross_clan_median_rmsd"),
+        "five_sequence": (BASE, "five_anchor_sequence_matched_cross_clan_median_rmsd"),
         "base_candidate": (BASE, "base_inclusive_candidate_cross_clan_median_rmsd"),
+        "base_frequency": (BASE, "base_inclusive_frequency_matched_cross_clan_median_rmsd"),
         "base_random": (BASE, "base_inclusive_length_random_cross_clan_median_rmsd"),
         "base_sequence": (BASE, "base_inclusive_sequence_matched_cross_clan_median_rmsd"),
     }
     for key, value in data["a_medians"].items():
         source, column = a_sources[key]
-        add("A", key, value, source, column, "median")
-    add("A", "five_anchor_permutation_p", data["a_permutation_p"], FREQUENCY_SUMMARY,
-        "permutation_candidate_vs_cross_clan_control_p", "two-sided unique-word stratified permutation P")
-    add("B", "standard_helix_n", len(data["helix_values"]), BGSU_SENSITIVITY, "kmer,fraction_ge_1", "pairing category a with finite denominator")
-    add("B", "other_words_n", len(data["other_values"]), BGSU_SENSITIVITY, "kmer,fraction_ge_1", "pairing categories b+c+d with finite denominator")
-    add("B", "standard_helix_median_percent", np.median(data["helix_values"]) * 100, BGSU_SENSITIVITY, "fraction_ge_1", "median × 100")
-    add("B", "other_words_median_percent", np.median(data["other_values"]) * 100, BGSU_SENSITIVITY, "fraction_ge_1", "median × 100")
+        add("B" if key.startswith("base") else "A", key, value, source, column, "median")
+    add("A", "five_anchor_permutation_p", data["a_permutation_p"], BASE_SUMMARY,
+        "permutation_five_anchor_candidate_vs_frequency_control_p", "two-sided unique-word stratified permutation P")
+    add("B", "base_inclusive_permutation_p", data["a_base_permutation_p"], BASE_SUMMARY,
+        "permutation_base_inclusive_candidate_vs_frequency_control_p", "two-sided unique-word stratified permutation P")
+    add("C", "standard_helix_n", len(data["helix_values"]), BGSU_SENSITIVITY, "kmer,fraction_ge_1", "pairing category a with finite denominator")
+    add("C", "other_words_n", len(data["other_values"]), BGSU_SENSITIVITY, "kmer,fraction_ge_1", "pairing categories b+c+d with finite denominator")
+    add("C", "standard_helix_median_percent", np.median(data["helix_values"]) * 100, BGSU_SENSITIVITY, "fraction_ge_1", "median × 100")
+    add("C", "other_words_median_percent", np.median(data["other_values"]) * 100, BGSU_SENSITIVITY, "fraction_ge_1", "median × 100")
     for group in ("a", "nonhelix"):
         low95, high95 = data["bgsu_null_ci95"][group]
-        add("B", f"{group}_matched_null_ci95_low_percent", low95 * 100, BACKGROUND_REPLICATES,
+        add("C", f"{group}_matched_null_ci95_low_percent", low95 * 100, BACKGROUND_REPLICATES,
             f"null_{group}_word_median_fraction (threshold 1)", "2.5th percentile × 100; error bar")
-        add("B", f"{group}_matched_null_ci95_high_percent", high95 * 100, BACKGROUND_REPLICATES,
+        add("C", f"{group}_matched_null_ci95_high_percent", high95 * 100, BACKGROUND_REPLICATES,
             f"null_{group}_word_median_fraction (threshold 1)", "97.5th percentile × 100; error bar")
-        add("B", f"{group}_empirical_p", data["bgsu_p"][group], BACKGROUND_SUMMARY,
+        add("C", f"{group}_empirical_p", data["bgsu_p"][group], BACKGROUND_SUMMARY,
             f"threshold_1_group_{group}_empirical_p_ge", "one-sided Monte Carlo P")
         p10, median, p90 = data["bgsu_null"][group]
-        add("B", f"{group}_matched_null_median_percent", median * 100, BACKGROUND_SUMMARY,
+        add("C", f"{group}_matched_null_median_percent", median * 100, BACKGROUND_SUMMARY,
             f"threshold_1_group_{group}_null_word_median_fraction", "word-size-matched null median × 100")
-        add("B", f"{group}_matched_null_p10_percent", p10 * 100, BACKGROUND_SUMMARY,
+        add("C", f"{group}_matched_null_p10_percent", p10 * 100, BACKGROUND_SUMMARY,
             f"threshold_1_group_{group}_null_word_median_p10_fraction", "null P10 × 100")
-        add("B", f"{group}_matched_null_p90_percent", p90 * 100, BACKGROUND_SUMMARY,
+        add("C", f"{group}_matched_null_p90_percent", p90 * 100, BACKGROUND_SUMMARY,
             f"threshold_1_group_{group}_null_word_median_p90_fraction", "null P90 × 100")
-    add("C", "six_token_string", data["hairpin"][0]["left_kmer"] + "-" + "-".join(data["hairpin"][0]["right_kmer"].split("-")[2:]), HAIRPIN, "left_kmer,right_kmer", "overlap positions 3–4")
-    add("C", "cis_trans_topology_count", data["topology_count"], HAIRPIN, "left_pair_orient_pattern,right_pair_orient_pattern", "cis 1↔6 and trans 2↔5")
-    add("C", "topology_denominator", len(data["hairpin"]), HAIRPIN, "sequence", "row count")
-    add("D", "GNRA_loop_count", data["n_gnra"], HAIRPIN, "sequence", "positions 2–5 match GNRA")
-    add("D", "GC_closing_pair_count", data["n_gc"], HAIRPIN, "sequence", "positions 1 and 6 are G–C/C–G")
-    add("D", "sequence_count", len(data["sequences"]), HAIRPIN, "sequence", "row count")
-    add("E", "GNRA_superposition_n", len(data["gnra_coords"]), HAIRPIN, "pdb_chain,author_residues,dssr_lw_signature", "successfully parsed base-inclusive atoms")
-    add("E", "scale_bar_angstrom", 2, HAIRPIN, "pdb_chain,author_residues", "physical coordinate scale")
-    add("F", "T_loop_superposition_n", len(data["tloop_coords"]), DSSR, "pdb_chain,author_residues,kmer", "successfully parsed base-inclusive atoms")
-    add("F", "scale_bar_angstrom", 2, DSSR, "pdb_chain,author_residues", "physical coordinate scale")
-    add("G", "GNRA_signature_count", data["n_gnra_signature"], HAIRPIN, "dssr_lw_signature", "equals cWW,tSH,.,.,tSH,cWW")
-    add("G", "GNRA_signature_denominator", len(data["exact_hairpin"]), HAIRPIN, "dssr_lw_signature", "non-empty")
-    add("G", "T_loop_signature_count", data["n_tloop_signature"], DSSR, "kmer,dssr_lw_pattern", "kmer 48-24-39-39; equals tWH,tWS,cWW,.")
-    add("G", "T_loop_signature_denominator", len(data["tloop"]), DSSR, "kmer", "kmer 48-24-39-39 row count")
+    add("D", "six_token_string", data["hairpin"][0]["left_kmer"] + "-" + "-".join(data["hairpin"][0]["right_kmer"].split("-")[2:]), HAIRPIN, "left_kmer,right_kmer", "overlap positions 3–4")
+    add("D", "cis_trans_topology_count", data["topology_count"], HAIRPIN, "left_pair_orient_pattern,right_pair_orient_pattern", "cis 1↔6 and trans 2↔5")
+    add("D", "topology_denominator", len(data["hairpin"]), HAIRPIN, "sequence", "row count")
+    add("E", "GNRA_loop_count", data["n_gnra"], HAIRPIN, "sequence", "positions 2–5 match GNRA")
+    add("E", "GC_closing_pair_count", data["n_gc"], HAIRPIN, "sequence", "positions 1 and 6 are G–C/C–G")
+    add("E", "sequence_count", len(data["sequences"]), HAIRPIN, "sequence", "row count")
+    add("F", "GNRA_superposition_n", len(data["gnra_coords"]), HAIRPIN, "pdb_chain,author_residues,dssr_lw_signature", "successfully parsed base-inclusive atoms")
+    add("F", "scale_bar_angstrom", 2, HAIRPIN, "pdb_chain,author_residues", "physical coordinate scale")
+    add("G", "T_loop_superposition_n", len(data["tloop_coords"]), DSSR, "pdb_chain,author_residues,kmer", "successfully parsed base-inclusive atoms")
+    add("G", "scale_bar_angstrom", 2, DSSR, "pdb_chain,author_residues", "physical coordinate scale")
+    add("H", "GNRA_signature_count", data["n_gnra_signature"], HAIRPIN, "dssr_lw_signature", "contains cWW,tSH at positions 1,2 and tSH,cWW at 5,6; positions 3-4 unconstrained")
+    add("H", "GNRA_signature_denominator", len(data["exact_hairpin"]), HAIRPIN, "dssr_lw_signature", "non-empty")
+    add("H", "T_loop_signature_count", data["n_tloop_signature"], DSSR, "kmer,dssr_lw_pattern", "kmer 48-24-39-39; contains tWH,tWS,cWW at positions 1-3; position 4 unconstrained")
+    add("H", "T_loop_signature_denominator", len(data["tloop"]), DSSR, "kmer", "kmer 48-24-39-39 row count")
     path = FIGURES / "fig6_numbers.tsv"
     with path.open("w", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=list(rows[0]), delimiter="\t")
@@ -606,12 +757,17 @@ def main() -> None:
         add_scale_bar(ax, 2.0)
     # letters in reading order, row by row
     panel_label(ax_a, "A")
-    panel_label(ax_b, "B")
-    panel_label(ax_c, "C", top=ax_d, dy=-0.12)
-    panel_label(ax_d, "D", dy=-0.12)
-    panel_label(f_axes[0], "E", top=ax_d, left=ax_b, dy=-0.12)   # GNRA structure
-    panel_label(f_axes[1], "F", left=ax_b)                        # T-loop structure
-    panel_label(ax_e, "G")                                       # interaction signatures
+    # B is the base-inclusive half of the shared axes, lettered just right of the divider.
+    box = ax_a.get_position()
+    divider = box.x0 + box.width * (5.0 - ax_a.get_xlim()[0]) / np.ptp(ax_a.get_xlim())
+    fig.text(divider + 0.12 / fig.get_size_inches()[0], box.y1 + 0.14 / fig.get_size_inches()[1], "B",
+             fontsize=15, fontweight="bold", va="bottom", ha="left")
+    panel_label(ax_b, "C")
+    panel_label(ax_c, "D", top=ax_d, dy=-0.12)
+    panel_label(ax_d, "E", dy=-0.12)
+    panel_label(f_axes[0], "F", top=ax_d, left=ax_b, dy=-0.12)   # GNRA structure
+    panel_label(f_axes[1], "G", left=ax_b)                        # T-loop structure
+    panel_label(ax_e, "H")                                       # interaction signatures
 
     png = FIGURES / "fig6.png"
     pdf = FIGURES / "fig6.pdf"

@@ -1,11 +1,10 @@
 """Cross-family k-mer motif mining."""
 from __future__ import annotations
-import argparse, csv, json, os, random
+import argparse, csv, json, os, pickle, random, sys, zipfile
 from collections import Counter, defaultdict
 from pathlib import Path
 
 import numpy as np
-import torch
 
 REPO = Path(__file__).resolve().parents[2]
 DB = REPO / "files" / "models" / "db.pt"
@@ -16,6 +15,15 @@ OUT.mkdir(parents=True, exist_ok=True)
 # coords axis layout: [C3', C4', O4', C1', base_anchor]
 C4_IDX = 1
 ALL_ATOM_IDX = slice(None)
+
+
+def load_db_pickle(path):
+    """Load the NumPy-only torch archive without requiring PyTorch."""
+    if not hasattr(np, "_core"):
+        sys.modules.setdefault("numpy._core", np.core)
+    with zipfile.ZipFile(path) as archive:
+        payload = next(name for name in archive.namelist() if name.endswith("/data.pkl"))
+        return pickle.loads(archive.read(payload))
 
 
 def _slice(use_all):
@@ -112,7 +120,7 @@ def main():
     random.seed(args.seed)
 
     fam_lut, clan_lut = load_labels()
-    db = torch.load(DB, map_location="cpu", weights_only=False)
+    db = load_db_pickle(DB)
     entries = db["entries"]
     print(f"loaded {len(entries)} chains")
 
@@ -263,7 +271,7 @@ def main():
             "cross_med_rmsd", "cross_p90_rmsd", "cross_n_pairs",
             "within_med_rmsd", "within_n_pairs", "families", "clans"]
     with open(cand_p, "w") as f:
-        w = csv.DictWriter(f, keys, delimiter="\t")
+        w = csv.DictWriter(f, keys, delimiter="\t", lineterminator="\n")
         w.writeheader()
         for r in rows:
             w.writerow(r)
@@ -272,7 +280,7 @@ def main():
     # validation table = same as candidates, but trimmed to those with
     # both cross and within pairs (the comparable set)
     with open(val_p, "w") as f:
-        w = csv.DictWriter(f, keys, delimiter="\t")
+        w = csv.DictWriter(f, keys, delimiter="\t", lineterminator="\n")
         w.writeheader()
         for r in rows:
             if r["cross_n_pairs"] > 0 and r["within_n_pairs"] > 0:
@@ -284,7 +292,7 @@ def main():
     case_top = [c for c in case_rows if c["kmer"] in seen]
     case_keys = ["kmer", "rfam", "chain", "pos", "n_fam", "cross_med_rmsd"]
     with open(case_p, "w") as f:
-        w = csv.DictWriter(f, case_keys, delimiter="\t")
+        w = csv.DictWriter(f, case_keys, delimiter="\t", lineterminator="\n")
         w.writeheader()
         for c in case_top:
             w.writerow(c)
@@ -310,7 +318,7 @@ def main():
     case_diverse = [c for c in case_rows if c["kmer"] in diverse_top]
     div_p = div_p_target
     with open(div_p, "w") as f:
-        w = csv.DictWriter(f, case_keys, delimiter="\t")
+        w = csv.DictWriter(f, case_keys, delimiter="\t", lineterminator="\n")
         w.writeheader()
         for c in case_diverse:
             w.writerow(c)
