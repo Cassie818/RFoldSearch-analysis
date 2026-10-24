@@ -32,6 +32,10 @@ DEFAULT_TARGETS = {
     (48, 24, 39, 39): "HL_33597.6",
     (62, 71, 66, 12): "HL_34789.6",
 }
+EXPECTED_MOTIF_SIZES = {
+    "HL_34789.6": 6,
+    "HL_33597.6": 9,
+}
 FIELDS = [
     "kmer", "entry_id", "pdb_chain", "family", "clan",
     "token_start_1based", "raw_indices_1based", "author_residues", "residue_keys",
@@ -193,8 +197,13 @@ def build_rows(
             if len(set(window_keys)) != k:
                 counters["non_injective_residue_key_mapping"] += 1
                 continue
-            if not any(motif == motif_id and set(window_keys) <= motif_residues
-                       for motif, motif_residues in chain_motifs):
+            expected_size = EXPECTED_MOTIF_SIZES.get(motif_id)
+            if not any(
+                motif == motif_id
+                and (expected_size is None or len(motif_residues) == expected_size)
+                and set(window_keys) <= motif_residues
+                for motif, motif_residues in chain_motifs
+            ):
                 continue
 
             context = occurrence_context(entry, source, residue_keys, start, k)

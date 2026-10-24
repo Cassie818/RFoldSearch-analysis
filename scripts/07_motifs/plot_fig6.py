@@ -19,23 +19,19 @@ from mpl_toolkits.mplot3d import proj3d
 
 REPO = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO / "scripts" / "common"))
-import figstyle as S  # noqa: E402  (palette and type sizes shared with Figs 2-5)
+import figstyle as S  # (palette and type sizes shared with Figs 2-5)
 sys.path.insert(0, str(REPO / "scripts" / "07_motifs" / "word_controls"))
-from common import expected_atoms, parse_atom_site, stem_parts  # noqa: E402
+from common import expected_atoms, parse_atom_site, stem_parts
 sys.path.insert(0, str(REPO / "scripts" / "07_motifs"))
-from known_motif_core_dssr_annotation import lw_pattern_contains, pair_lookup  # noqa: E402
-from residue_keys import parse_key_string, parse_number_and_insertion  # noqa: E402
+from known_motif_core_dssr_annotation import lw_pattern_contains, pair_lookup  
+from residue_keys import parse_key_string, parse_number_and_insertion 
 MOTIF = REPO / "files" / "motifs"
 CONTROLS = MOTIF / "word_controls"
 FIGURES = REPO / "figures"
 DEFAULT_CIF_DIR = Path.home() / "Desktop" / "NR80_local"
 
-FREQUENCY = CONTROLS / "frequency_matched_random_words.tsv"
-FREQUENCY_SUMMARY = CONTROLS / "frequency_matched_random_words_summary.tsv"
 BASE = CONTROLS / "base_inclusive_rmsd.tsv"
 BASE_SUMMARY = CONTROLS / "base_inclusive_rmsd_summary.tsv"
-RANDOM = MOTIF / "random_control_rmsd_production_new_k4_aa.tsv"
-SEQUENCE = MOTIF / "global_sequence_matched_control_production_new_k4_aa.tsv"
 PAIRING = CONTROLS / "pairing_pattern_words.tsv"
 BGSU_SENSITIVITY = CONTROLS / "bgsu_candidate_overlap_sensitivity.tsv"
 BACKGROUND_SUMMARY = CONTROLS / "bgsu_random_window_background_summary.tsv"
@@ -62,7 +58,7 @@ LW_COLORS = {"cWW": S.lighten("#9467BD"), "tSH": S.lighten("#E377C2"), "tWH": S.
              "tWS": S.lighten("#BCBD22"), ".": "#E6E6E6"}
 TLOOP_COLOR = S.lighten("#2CA02C", 0.1)
 PARTNER_COLOR = "#7A7A7A"   # F: residues outside the token window that pair with it   # G: one hue, so its positions are not read as the GNRA's
-LOGO_COLOR = "#A6A6A6"                     # D: one colour; the letters name the nucleotides
+LOGO_COLOR = "#A6A6A6"      # D: one colour; the letters name the nucleotides
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
@@ -167,7 +163,6 @@ def kabsch_align(points: np.ndarray, reference: np.ndarray) -> np.ndarray:
 
 
 def preflight(cif_dir: Path) -> dict:
-    frequency = read_tsv(FREQUENCY)
     base = read_tsv(BASE)
     pairing = read_tsv(PAIRING)
     bgsu_sensitivity = read_tsv(BGSU_SENSITIVITY)
@@ -190,7 +185,6 @@ def preflight(cif_dir: Path) -> dict:
         "base_sequence": numeric(base, "base_inclusive_sequence_matched_cross_clan_median_rmsd"),
     }
     a_medians = {key: float(np.median(values)) for key, values in a_distributions.items()}
-    frequency_summary = read_metrics(FREQUENCY_SUMMARY)
     base_summary = read_metrics(BASE_SUMMARY)
     expected_a = {
         "five_candidate": float(base_summary["five_anchor_candidate_median_rmsd"]),
@@ -219,7 +213,10 @@ def preflight(cif_dir: Path) -> dict:
     if (n_gnra, len(sequences), n_gc) != (44, 48, 37):
         raise SystemExit(f"STOP: panel D counts={(n_gnra, len(sequences), n_gc)}, expected (44, 48, 37)")
 
-    exact_hairpin = [row for row in hairpin if row["dssr_lw_signature"]]
+    exact_hairpin = [
+        row for row in hairpin
+        if row["dssr_exact_bgsu_hl_34789_6"] == "1"
+    ]
     # Signature rule: every listed interaction must be among the DSSR records at its
     # position (additional records are allowed); "." positions are not constrained.
     n_gnra_signature = sum(
@@ -448,17 +445,17 @@ def panel_d(ax, data: dict) -> None:
     style_axis(ax, xlabel="Hairpin position", ylabel="Probability")
 
 
-NO_PAIR = "–"     # G: no DSSR pairing record at this token position
+NO_REQUIRED_INTERACTION = "–"
 
 
 def panel_e(ax, data: dict) -> None:
     """Panel G: DSSR Leontis-Westhof label at each token position. A row counts the fragments
-    whose records at every position include the displayed label; "–" marks positions without
-    a pairing record in every fragment of the subset."""
+    whose records at every required position include the displayed label; "–" marks positions
+    without a required interaction label."""
     rows = [
-        (["cWW", "tSH", NO_PAIR, NO_PAIR, "tSH", "cWW"],
+        (["cWW", "tSH", NO_REQUIRED_INTERACTION, NO_REQUIRED_INTERACTION, "tSH", "cWW"],
          f"{data['n_gnra_signature']}/{len(data['exact_hairpin'])}", "HL_34789.6"),
-        (["tWH", "tWS", "cWW", NO_PAIR],
+        (["tWH", "tWS", "cWW", NO_REQUIRED_INTERACTION],
          f"{data['n_tloop_signature']}/{len(data['tloop'])}", "HL_33597.6"),
     ]
     ax.set_xlim(0, 9.4)
@@ -479,7 +476,7 @@ def panel_e(ax, data: dict) -> None:
         spine.set_visible(False)
     ax.tick_params(length=0)
     handles = [Patch(facecolor=LW_COLORS[state], edgecolor="none", label=state) for state in ("cWW", "tSH", "tWH", "tWS")]
-    handles.append(Patch(facecolor=LW_COLORS["."], edgecolor="none", label="no pair record"))
+    handles.append(Patch(facecolor=LW_COLORS["."], edgecolor="none", label="no required interaction"))
     ax.legend(handles=handles, loc="center right", bbox_to_anchor=(1.0, 0.5), ncol=1,
               frameon=False, fontsize=9.5, columnspacing=1.2, handlelength=1.1)
 
@@ -707,7 +704,8 @@ def write_numbers(data: dict) -> Path:
     add("G", "T_loop_superposition_n", len(data["tloop_coords"]), DSSR, "pdb_chain,author_residues,kmer", "successfully parsed base-inclusive atoms")
     add("G", "scale_bar_angstrom", 2, DSSR, "pdb_chain,author_residues", "physical coordinate scale")
     add("H", "GNRA_signature_count", data["n_gnra_signature"], HAIRPIN, "dssr_lw_signature", "contains cWW,tSH at positions 1,2 and tSH,cWW at 5,6; positions 3-4 unconstrained")
-    add("H", "GNRA_signature_denominator", len(data["exact_hairpin"]), HAIRPIN, "dssr_lw_signature", "non-empty")
+    add("H", "GNRA_signature_denominator", len(data["exact_hairpin"]), HAIRPIN,
+        "dssr_exact_bgsu_hl_34789_6", "six residues exactly match one six-nucleotide HL_34789.6 occurrence")
     add("H", "T_loop_signature_count", data["n_tloop_signature"], DSSR, "kmer,dssr_lw_pattern", "kmer 48-24-39-39; contains tWH,tWS,cWW at positions 1-3; position 4 unconstrained")
     add("H", "T_loop_signature_denominator", len(data["tloop"]), DSSR, "kmer", "kmer 48-24-39-39 row count")
     path = FIGURES / "fig6_numbers.tsv"

@@ -141,9 +141,6 @@ def write_metrics(path: Path, rows: list[tuple[str, object]]) -> None:
 
 def load_db_pickle(path: Path = DB_PATH) -> dict:
     """Load the numpy-only torch archive without requiring a torch runtime."""
-    # Archives written by NumPy 2 reference ``numpy._core``.  NumPy 1.x uses
-    # the public ``numpy.core`` path; alias it so the same artifact remains
-    # readable in the paper's older plotting environment.
     if not hasattr(np, "_core"):
         sys.modules.setdefault("numpy._core", np.core)
     with zipfile.ZipFile(path) as archive:
@@ -152,13 +149,9 @@ def load_db_pickle(path: Path = DB_PATH) -> dict:
 
 
 def load_reference_rmsd_module():
-    """Import the manuscript RMSD implementation, stubbing torch if absent.
-
-    The analysis functions are imported rather than copied so Kabsch alignment
-    and RMSD remain definitionally identical to cross_family_kmer_mining.py.
-    """
+    """Load the reference RMSD implementation without requiring a torch runtime."""
     try:
-        import torch  # noqa: F401
+        import torch  
     except (ImportError, OSError):
         sys.modules.setdefault("torch", types.ModuleType("torch"))
     path = SCRIPT_DIR / "cross_family_kmer_mining.py"
@@ -211,15 +204,7 @@ def stratified_median_permutation_test(
     n_permutations: int,
     seed: int,
 ) -> dict[str, float | int | str]:
-    """Unique-word permutation test for a candidate/control median difference.
-
-    Candidate and control labels are permuted independently within each
-    matching stratum while preserving the observed group sizes.  The test
-    statistic is the candidate-count-weighted mean of the stratum-specific
-    ``median(control) - median(candidate)`` differences.  Positive values mean
-    that candidates have lower RMSD.  Every input value is used once per
-    permutation; repeated descriptive control draws are deliberately excluded.
-    """
+    """Unique-word permutation test for a candidate/control median difference."""
     prepared = []
     for name, (candidate_values, control_values) in strata.items():
         candidate = np.asarray(candidate_values, dtype=float)
@@ -268,9 +253,6 @@ def occurrence_bin(n_occ: int) -> str:
         return "8-15"
     if n_occ <= 31:
         return "16-31"
-    # No non-candidate word occurs >=64 times in this database, so the final
-    # bin is kept open to retain a valid background pool for high-frequency
-    # candidates.
     return ">=32"
 
 

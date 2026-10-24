@@ -16,11 +16,12 @@ REPO = Path(__file__).resolve().parents[2]
 MOTIF_DIR = REPO / "files" / "motifs"
 SCRIPT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPT_DIR))
-from residue_keys import make_key, parse_key_string  # noqa: E402
+from residue_keys import make_key, parse_key_string
 
 DEFAULT_MANIFEST = MOTIF_DIR / "known_motif_core_matches_production_new_relabel_manifest.tsv"
 DEFAULT_INSTANCES = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_instances_production_new.tsv"
 DEFAULT_SUMMARY = MOTIF_DIR / "known_motif_core_dssr_pair_conservation_summary_production_new.tsv"
+REQUIRED_DSSR_VERSION = "DSSR v2.9.2"
 
 
 def read_tsv(path: Path) -> list[dict[str, str]]:
@@ -106,10 +107,20 @@ def reference_number(reference: tuple) -> int:
     return int(reference[4] if len(reference) == 6 else reference[1])
 
 
+def validate_dssr_version(dssr: dict, json_path: Path) -> None:
+    version = str(dssr.get("metadata", {}).get("version", ""))
+    if not version.startswith(REQUIRED_DSSR_VERSION):
+        raise RuntimeError(
+            f"{json_path}: expected {REQUIRED_DSSR_VERSION}, found {version or 'missing metadata.version'}"
+        )
+
+
 def load_or_run_dssr(row: dict[str, str]) -> tuple[dict, str, Path]:
     json_path = Path(row["dssr_json"])
     if json_path.exists():
-        return json.load(json_path.open()), "cached", json_path
+        dssr = json.load(json_path.open())
+        validate_dssr_version(dssr, json_path)
+        return dssr, "cached", json_path
 
     dssr_bin = os.environ.get("DSSR_BIN")
     if not dssr_bin:
@@ -125,7 +136,9 @@ def load_or_run_dssr(row: dict[str, str]) -> tuple[dict, str, Path]:
         f"--output={json_path}",
     ]
     subprocess.run(command, check=True)
-    return json.load(json_path.open()), "computed", json_path
+    dssr = json.load(json_path.open())
+    validate_dssr_version(dssr, json_path)
+    return dssr, "computed", json_path
 
 
 def pair_lookup(

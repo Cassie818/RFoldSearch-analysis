@@ -24,7 +24,7 @@ CACHE_JSON = REPO / "files" / "motifs" / "chain_residue_key_map.json"
 SUMMARY_TSV = REPO / "files" / "motifs" / "bgsu_overlap_production_new_k4_aa_summary.tsv"
 
 sys.path.insert(0, str(SCRIPT_DIR / "word_controls"))
-from common import load_db_pickle  # noqa: E402
+from common import load_db_pickle
 
 
 def stem_parts(stem: str):

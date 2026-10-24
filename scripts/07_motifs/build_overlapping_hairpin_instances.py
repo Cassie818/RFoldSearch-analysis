@@ -92,7 +92,9 @@ def build_rows(
 
             window_keys = [residue_keys[int(i)] for i in raw_indices[start : start + 6]]
             exact_bgsu = len(set(window_keys)) == 6 and any(
-                motif_id == "HL_34789.6" and set(window_keys) <= motif_residues
+                motif_id == "HL_34789.6"
+                and len(motif_residues) == 6
+                and set(window_keys) == motif_residues
                 for motif_id, motif_residues in motif_index.get(parsed, [])
             )
             left_row = dssr.get((stem, start + 1, "-".join(map(str, LEFT))))
@@ -118,7 +120,7 @@ def build_rows(
                 "right_pair_sep_pattern": right_context["pair_sep_pattern"],
                 "right_pair_orient_pattern": right_context["pair_orient_pattern"],
                 "dssr_lw_signature": signature,
-                "dssr_exact_bgsu_hl_34789_6": int(bool(signature)),
+                "dssr_exact_bgsu_hl_34789_6": int(exact_bgsu),
             })
     return rows
 
