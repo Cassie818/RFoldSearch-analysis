@@ -66,48 +66,95 @@ def marker_size(m):
     return S.MSIZE.get(_KEY.get(m, ""), MS) if m == "RFoldSearch-TM" else (MS - 1.5 if m == "Composition" else MS)
 
 
+def _spread(values, gap, floor=None):
+    """Nudge sorted label positions apart by at least gap, keeping their order; with a floor,
+    labels pushed below it are stacked upwards from it instead."""
+    order = np.argsort(values)
+    pos = np.asarray(values, dtype=float)[order]
+    for _ in range(50):
+        moved = False
+        for i in range(1, len(pos)):
+            if pos[i] - pos[i - 1] < gap:
+                shift = (gap - (pos[i] - pos[i - 1])) / 2
+                pos[i - 1] -= shift
+                pos[i] += shift
+                moved = True
+        if not moved:
+            break
+    if floor is not None:
+        for i in range(len(pos)):
+            pos[i] = max(pos[i], floor + i * gap if i == 0 else pos[i - 1] + gap)
+    out = np.empty_like(pos)
+    out[order] = pos
+    return out
+
+
 def line_panel(ax, V, blocks, strata, ticks, methods, bold=()):
-    """Sens@1FP of each method across identity strata, with 95% CIs for every method from one
-    set of bootstrap resamples per stratum; methods are dodged so the intervals stay apart."""
-    est = {st: boot_methods(V[st], [m for m in methods if m in V[st]], blocks)[0] for st in strata}
-    span = 0.64
+    """Sens@1FP of each method across identity strata, on the queries the methods share in each
+    stratum. The RFoldSearch rankings are drawn heavy and the others recede; every line is named
+    at its right end instead of through a distant legend."""
+    boots = {st: boot_methods(V[st], [m for m in methods if m in V[st]], blocks) for st in strata}
+    est = {st: boots[st][0] for st in strata}
+    span = 0.30
     step = span / max(1, len(methods) - 1)
+    ends = {}
     for i, m in enumerate(methods):
         dx = -span / 2 + i * step
         pts = [(k + dx,) + est[st][m] for k, st in enumerate(strata) if m in est[st]]
         hero = m in bold
-        # As in Fig. 2, the RFoldSearch rankings keep their full tone; the others recede.
         color = COLOR[m] if hero else S.lighten(COLOR[m], 0.35)
-        ax.vlines([p[0] for p in pts], [p[2] for p in pts], [p[3] for p in pts], color=color,
-                  lw=1.8 if hero else 0.9, alpha=0.9 if hero else 0.6, zorder=4 if hero else 2)
-        ax.plot([p[0] for p in pts], [p[1] for p in pts], LINE[m], marker=MARK[m], color=color,
-                lw=2.6 if hero else 1.4, ms=marker_size(m) if hero else marker_size(m) - 1.5,
-                mec="white", mew=0.8, label=LABEL[m], zorder=5 if hero else 3)
-    ax.set_xticks(range(len(strata)), ticks, fontsize=10.5)
-    ax.set_xlim(-0.5, len(strata) - 0.5)
+        style = dict(marker=MARK[m], color=color, ms=marker_size(m) if hero else marker_size(m) - 1.5,
+                     mec="white", mew=0.8, zorder=5 if hero else 3)
+        ax.plot([p[0] for p in pts], [p[1] for p in pts], LINE[m], lw=2.6 if hero else 1.4,
+                label=LABEL[m], **style)
+        ends[m] = (pts[-1][0], pts[-1][1], color, hero)
+    label_y = _spread([ends[m][1] for m in methods], 0.052, floor=0.02)
+    x_text = len(strata) - 1 + span / 2 + 0.12
+    for m, y in zip(methods, label_y):
+        x, y0, color, hero = ends[m]
+        ax.plot([x + 0.03, x_text - 0.03], [y0, y], color=color, lw=0.6, alpha=0.7, zorder=1)
+        ax.text(x_text, y, LABEL[m], va="center", fontsize=9.5, color=color,
+                fontweight="bold" if hero else "normal")
+    # each stratum's query count under its label, as in the clan panel
+    ax.set_xticks(range(len(strata)),
+                  [f"{t}\n(n = {len(boots[st][1])})" for t, st in zip(ticks, strata)], fontsize=10.5)
+    ax.set_xlim(-0.4, len(strata) - 0.5 + 0.75)
     ax.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
     ax.set_axisbelow(True)
 
 
-def interval_panel(ax, V, blocks, rows):
-    """Absolute Sens@1FP of each method (point and 95% CI) on one query set, one bootstrap."""
-    est, _ = boot_methods(V, rows, blocks)
+def interval_panel(ax, V_all, V_filtered, blocks, rows, level="Family"):
+    """Sens@1FP of each method with all positives (open) and with sequence-detectable positives
+    neutralised (filled) on the same queries, one row per method so the names read directly."""
+    shared = set.intersection(*(set(V_filtered[m]) for m in rows))
+    V_all = {m: {q: V_all[m][q] for q in shared} for m in rows}
+    est_all, qs = boot_methods(V_all, rows, blocks)
+    est_filt, _ = boot_methods(V_filtered, rows, blocks)
     for i, m in enumerate(rows):
-        mean, lo, hi = est[m]
-        ax.hlines(i, lo, hi, color=COLOR[m], lw=2.0, zorder=2)
-        ax.plot(mean, i, MARK[m], ms=marker_size(m) + 1, color=COLOR[m], mec="white", mew=0.8, zorder=3)
-        ax.text(hi + 0.015, i, f"{mean:.2f}", va="center", fontsize=9.5, color=S.TEXT[_KEY[m]])
-    ax.set_yticks(range(len(rows)), [LABEL[m] for m in rows], fontsize=11)
+        v_all, v_filt = est_all[m][0], est_filt[m][0]
+        ax.plot([v_filt, v_all], [i, i], "-", color=COLOR[m], lw=1.3, zorder=2)
+        ax.plot(v_all, i, MARK[m], ms=marker_size(m), mfc="white", mec=COLOR[m], mew=1.5, zorder=3)
+        ax.plot(v_filt, i, MARK[m], ms=marker_size(m), color=COLOR[m], mec="white", mew=0.8,
+                zorder=4)
+    ax.set_yticks(range(len(rows)), [LABEL[m] for m in rows], fontsize=10.5)
     ax.tick_params(axis="y", length=0)
-    ax.set_ylim(len(rows) - 0.4, -0.6)
-    ax.set_xlim(0, 1.0)
+    ax.set_ylim(len(rows) - 0.5, -0.5)
+    ax.set_xlim(-0.02, 1.0)
     ax.set_xticks(np.arange(0, 1.01, 0.2))
     ax.grid(axis="x", color="#E6E6E6", lw=0.8, zorder=0)
     ax.set_axisbelow(True)
-    S.style_axes(ax, xlabel="Family-level Sens@1FP")
+    S.style_axes(ax, xlabel=f"{level}-level Sens@1FP\n(n = {len(qs)})")
 
 
-def clan_panel(ax, cl, method_legend=True):
+def filter_handles():
+    """Legend entries for the fill code shared by the interval and clan panels."""
+    return [plt.Line2D([], [], marker="o", ls="", mfc="white", mec="#555555", mew=1.6, ms=MS + 1,
+                       label="All positives"),
+            plt.Line2D([], [], marker="o", ls="", color="#555555", ms=MS + 1,
+                       label="Sequence-detectable positives neutralised")]
+
+
+def clan_panel(ax, cl, method_legend=True, filter_legend=True):
     """Clan-level Sens@1FP per clan with all positives (open) and with the positives found by
     BLASTN or nhmmer (E <= 10) made neutral (filled), joined per method."""
     cv, clan = cl["values"], cl["clan"]
@@ -144,10 +191,7 @@ def clan_panel(ax, cl, method_legend=True):
     S.style_axes(ax, ylabel="Clan-level Sens@1FP")
     # Two legends: hue and shape name the method, fill names the filtering.
     hm = [plt.Line2D([], [], marker=MARK[m], ls="", color=COLOR[m], ms=MS + 1, label=LABEL[m]) for m in cm]
-    hf = [plt.Line2D([], [], marker="o", ls="", mfc="white", mec="#555555", mew=1.6, ms=MS + 1,
-                     label="All positives"),
-          plt.Line2D([], [], marker="o", ls="", color="#555555", ms=MS + 1,
-                     label="Sequence-detectable positives neutralised")]
+    hf = filter_handles()
     kw = dict(frameon=False, fontsize=10.5, title_fontsize=10.5, handletextpad=0.3, columnspacing=1.4,
               alignment="left", labelcolor="#666666")
     legends = []
@@ -157,7 +201,7 @@ def clan_panel(ax, cl, method_legend=True):
         ax.add_artist(legends[0])
         legends.append(ax.legend(handles=hf, ncol=1, title="Filtering", loc="lower left",
                                  bbox_to_anchor=(0.62, 1.0), **kw))
-    else:                                   # the methods are named by a shared figure legend
+    elif filter_legend:                     # the methods are named by a shared figure legend
         legends.append(ax.legend(handles=hf, ncol=1, title="Filtering", loc="upper right", **kw))
     for leg in legends:
         leg.get_title().set_color("#666666")

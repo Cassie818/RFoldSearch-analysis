@@ -1,11 +1,13 @@
-"""Supplementary figure for Fig. 2E-G: the identity background and the negative controls."""
+"""Supplementary figure for Fig. 2E/F: the identity background, the negative controls and the
+clan-level effect of neutralising sequence-detectable positives, overall and per clan."""
 
 import os
 
-from sequence_divergent_panels import COLOR, DATA, FIG_DIR, LABEL, MARK, S, boot_methods, json, marker_size, np, plt
+from sequence_divergent_panels import (COLOR, DATA, FIG_DIR, S, clan_panel, filter_handles, interval_panel,
+                                       json, np, plt)
 from sequence_divergent_rescore import background_identity, load
 
-CONTROLS = ["RFoldSearch", "Length", "Composition", "Shuffled"]
+CONTROLS = ["RFoldSearch", "RFoldSearch-TM", "Length", "Composition", "Shuffled"]
 GREY = "#666666"
 
 
@@ -29,44 +31,32 @@ def background_panel(ax):
     ax.legend(frameon=False, fontsize=9.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), labelcolor=GREY)
 
 
-def control_panel(ax, V, blocks):
-    """Absolute Sens@1FP of RFoldSearch and the negative controls, all families and tRNA excluded."""
-    sets = (("all families", lambda q: True, -0.14), ("tRNA excluded", lambda q: blocks[q] != "RF00005", 0.14))
-    for lab, keep, dy in sets:
-        sub = {m: {q: v for q, v in V[m].items() if keep(q)} for m in CONTROLS}
-        est, _ = boot_methods(sub, CONTROLS, blocks)
-        filled = lab == "all families"
-        for i, m in enumerate(CONTROLS):
-            mean, lo, hi = est[m]
-            ax.hlines(i + dy, lo, hi, color=COLOR[m], lw=2.0, zorder=2)
-            ax.plot(mean, i + dy, MARK[m], ms=marker_size(m) + 1, color=COLOR[m],
-                    mfc=COLOR[m] if filled else "white", mec="white" if filled else COLOR[m],
-                    mew=0.8 if filled else 1.6, zorder=3, clip_on=False)
-            ax.text(hi + 0.015, i + dy, f"{mean:.2f}", va="center", fontsize=9,
-                    color=S.TEXT["RFoldSearch n500"] if m == "RFoldSearch" else GREY)
-    ax.axhline(0.5, color="#DDDDDD", lw=1.2, zorder=0)
-    ax.set_yticks(range(len(CONTROLS)), [LABEL[m] for m in CONTROLS], fontsize=11)
-    ax.tick_params(axis="y", length=0)
-    ax.set_ylim(len(CONTROLS) - 0.45, -0.55)
-    ax.set_xlim(0, 0.8)
-    ax.set_xticks(np.arange(0, 0.81, 0.2))
-    ax.grid(axis="x", color="#E6E6E6", lw=0.8, zorder=0)
-    ax.set_axisbelow(True)
-    S.style_axes(ax, xlabel="Family-level Sens@1FP")
-    ax.legend(handles=[plt.Line2D([], [], marker="o", ls="", color="#555555", ms=8, label="All families"),
-                       plt.Line2D([], [], marker="o", ls="", color="#555555", mfc="white", mew=1.6, ms=8,
-                                  label="tRNA excluded")],
-              frameon=False, fontsize=9.5, loc="lower center", bbox_to_anchor=(0.5, 1.0), ncol=2,
-              labelcolor=GREY)
-
-
 def main():
     fam = json.load(open(os.path.join(DATA, "family_perquery.json")))
-    fig, (ax_a, ax_b) = plt.subplots(1, 2, figsize=(13, 5.2), gridspec_kw={"wspace": 0.42})
+    cl = json.load(open(os.path.join(DATA, "clan_perquery.json")))
+    fig = plt.figure(figsize=(12.6, 9.6))
+    grid = fig.add_gridspec(2, 1, height_ratios=(1, 1), hspace=0.34, left=0.13, right=0.99, top=0.95, bottom=0.11)
+    top = grid[0].subgridspec(1, 2, wspace=0.34)
+    bottom = grid[1].subgridspec(1, 2, width_ratios=(1, 2.1), wspace=0.26)
+    ax_a, ax_b = fig.add_subplot(top[0]), fig.add_subplot(top[1])
+    ax_c, ax_d = fig.add_subplot(bottom[0]), fig.add_subplot(bottom[1])
     background_panel(ax_a)
-    control_panel(ax_b, fam["values"]["B/N E<=10"], fam["blocks"])
-    for ax, x, lab in ((ax_a, -0.12, "A"), (ax_b, -0.36, "B")):
-        ax.text(x, 1.08, lab, transform=ax.transAxes, fontsize=18, fontweight="bold", va="bottom")
+    # B, C and D share one fill code: open, all positives; filled, sequence-detectable
+    # positives (BLASTN or nhmmer, E <= 10) neutralised
+    f = "B/N E<=10"
+    # B: RFoldSearch against rankings that ignore structure (negative controls)
+    interval_panel(ax_b, fam["values"]["none"], fam["values"][f], fam["blocks"], CONTROLS)
+    # C: clan-level counterpart of Fig. 2F over all clans; D: the same split by clan, with the
+    # methods' hues and shapes keyed by C
+    interval_panel(ax_c, cl["values"]["none"], cl["values"][f], cl["clan"],
+                   ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN",
+                    "RS-20", "RS-80"], level="Clan")
+    clan_panel(ax_d, cl, method_legend=False, filter_legend=False)
+    fig.legend(handles=filter_handles(), loc="lower center", bbox_to_anchor=(0.5, -0.01), ncol=2,
+               frameon=False, fontsize=11, handletextpad=0.4, columnspacing=2.4)
+    for ax, x, y, lab in ((ax_a, -0.12, 1.08, "A"), (ax_b, -0.48, 1.08, "B"), (ax_c, -0.52, 1.08, "C"),
+                          (ax_d, -0.09, 1.08, "D")):
+        ax.text(x, y, lab, transform=ax.transAxes, fontsize=18, fontweight="bold", va="bottom")
     out = os.path.join(FIG_DIR, "supp_sequence_divergent.png")
     fig.savefig(out, dpi=200, bbox_inches="tight")
     print(out)

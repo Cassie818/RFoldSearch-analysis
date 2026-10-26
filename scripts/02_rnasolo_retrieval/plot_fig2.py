@@ -4,10 +4,10 @@
     C/D  Structure-defined truth at TM-score 0.45, all (C) and beyond-family (D):
          top, symmetric US-align TM-score; bottom, symmetric RMscore at the
          quantile-matched threshold
-    E-G  Sequence-divergent homologues (panels of scripts/03_sequence_divergent/sequence_divergent_panels.py):
+    E/F  Sequence-divergent homologues (panels of scripts/03_sequence_divergent/sequence_divergent_panels.py):
          E  family-level Sens@1FP by the sequence identity of the positives
-         F  family-level Sens@1FP once positives found by BLASTN/nhmmer (E <= 10) are neutral
-         G  clan-level Sens@1FP per clan before (open) and after (filled) the same filter
+         F  family-level Sens@1FP before (open) and after (filled) positives found by BLASTN/nhmmer
+            (E <= 10) are made neutral; the clan-level counterpart is a supplementary figure
 """
 import sys as _sys, os as _os
 
@@ -188,8 +188,7 @@ def sequence_divergent():
     blocks, V = fam["blocks"], fam["values"]
     per, strata, ticks = F3.identity_strata()
     V = dict(V, **{k: dict(v) for k, v in per.items()})
-    cl = json.load(open(_os.path.join(F3.DATA, "clan_perquery.json")))
-    return F3, V, blocks, strata, ticks, cl
+    return F3, V, blocks, strata, ticks
 
 
 def letter(ax, lab, x=-0.10):
@@ -200,11 +199,11 @@ def main():
     data = json.load(open(resolve("files/production/retrieval/per_query_sens_test.json")))
     band = json.load(open(resolve("files/production/retrieval/bootstrap_fig2ab_band.json")))
     boot, boot_rm, rm_thresholds = load_truths()
-    F3, V, blocks, strata, ticks, cl = sequence_divergent()
+    F3, V, blocks, strata, ticks = sequence_divergent()
 
-    fig = plt.figure(figsize=(14.0, 14.8))
-    rows = fig.add_gridspec(4, 1, height_ratios=(0.85, 0.88, 0.85, 0.68), hspace=0.32,
-                            left=0.06, right=0.99, top=0.98, bottom=0.06)
+    fig = plt.figure(figsize=(14.0, 11.6))
+    rows = fig.add_gridspec(3, 1, height_ratios=(0.85, 0.88, 0.85), hspace=0.36,
+                            left=0.06, right=0.99, top=0.98, bottom=0.08)
     # A/B: Rfam truth
     r0 = rows[0].subgridspec(1, 2, wspace=0.16)
     ax_a, ax_b = fig.add_subplot(r0[0]), fig.add_subplot(r0[1])
@@ -218,26 +217,20 @@ def main():
         ax.set_yticks([0, 0.5, 1.0])
         ax.set_yticks([0.25, 0.75], minor=True)
     # E/F: sequence-divergent homologues
-    r2 = rows[2].subgridspec(1, 2, width_ratios=(1.25, 1), wspace=0.30)
+    r2 = rows[2].subgridspec(1, 2, width_ratios=(1.25, 1), wspace=0.32)
     ax_e, ax_f = fig.add_subplot(r2[0]), fig.add_subplot(r2[1])
     F3.line_panel(ax_e, V, blocks, strata, ticks,
                   ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80"],
                   bold=("RFoldSearch", "RFoldSearch-TM"))
-    F3.S.style_axes(ax_e, xlabel="Sequence identity of same-family positives", ylabel="Family-level Sens@1FP")
+    F3.S.style_axes(ax_e, ylabel="Family-level Sens@1FP")
     ax_e.set_ylim(0, 1.0)
     ax_e.set_yticks(np.arange(0, 1.01, 0.2))
-    F3.interval_panel(ax_f, V["B/N E<=10"], blocks,
-                      ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "RS-20", "RS-80"])
-    ax_f.set_xlim(0, 0.8)
-    ax_f.set_xticks(np.arange(0, 0.81, 0.2))
-
-    # G: per clan, before and after the sequence filter
-    ax_g = fig.add_subplot(rows[3])
-    F3.clan_panel(ax_g, cl, method_legend=False)
-
+    F3.interval_panel(ax_f, V["none"], V["B/N E<=10"], blocks,
+                      ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN",
+                       "RS-20", "RS-80"])
 
     for ax, lab, x in ((ax_a, "A", -0.10), (ax_b, "B", -0.10), (ax_c, "C", -0.10), (ax_d, "D", -0.10),
-                       (ax_e, "E", -0.08), (ax_f, "F", -0.40), (ax_g, "G", -0.045)):
+                       (ax_e, "E", -0.08), (ax_f, "F", -0.36)):
         letter(ax, lab, x)
 
     handles, labels = ax_a.get_legend_handles_labels()
@@ -247,10 +240,13 @@ def main():
     order = LEGEND_ORDER[:-1] + ["nhmmer", "Infernal"]
     handles = [nh if m == "nhmmer" else by[LABEL.get(m, m)] for m in order]
     legend = fig.legend(handles, [LABEL.get(m, m) for m in order], loc="lower center", ncol=6, frameon=False,
-                        fontsize=11.5, bbox_to_anchor=(0.5, -0.025), handlelength=2.6, columnspacing=1.6,
+                        fontsize=11.5, bbox_to_anchor=(0.5, -0.03), handlelength=2.6, columnspacing=1.6,
                         markerscale=1.3)
     for handle, m in zip(legend.legend_handles, order):
         handle.set_linewidth(3.6 if m in HIGHLIGHT else 2.6)
+    # fill code of F: open, all positives; filled, sequence-detectable positives neutral
+    fig.legend(handles=F3.filter_handles(), loc="lower center", ncol=2, frameon=False,
+               fontsize=11.5, bbox_to_anchor=(0.5, -0.059), handletextpad=0.4, columnspacing=2.4)
     out_png = Path(FIG_DIR) / "fig2.png"
     out_png.parent.mkdir(parents=True, exist_ok=True)
     fig.savefig(out_png, dpi=200, bbox_inches="tight")
