@@ -1,10 +1,4 @@
-"""Supplementary quantiser-control figure: k-means against the learned VQ-VAE.
-
-Left column: Rfam ground truth; right column: structure-defined ground truth
-(TM-score >= 0.45). Rows: family-level (Family / All) and clan-level (Clan /
-Beyond-family) Sens@1FP across codebook sizes, then accuracy against prefilter
-selectivity.
-"""
+"""Supplementary quantiser-control figure: k-means against the learned VQ-VAE."""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", ".."))

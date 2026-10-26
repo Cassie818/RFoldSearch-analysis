@@ -1,9 +1,4 @@
-"""Attribution of the RiboSeek -> RFoldSearch gap, along two orderings.
-
-Forward : pipeline -> matrix -> alphabet -> structure score
-Reverse : alphabet (identity matrix, RiboSeek pipeline) -> matrix
-          -> pipeline (includes structure-score ranking)
-"""
+"""Attribution of the RiboSeek -> RFoldSearch gap, along two orderings."""
 from __future__ import annotations
 import json, os, sys, time
 from collections import defaultdict

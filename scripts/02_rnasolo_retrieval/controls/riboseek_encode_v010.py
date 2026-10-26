@@ -7,7 +7,7 @@ import sys
 import numpy as np
 
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
-from paths import PRODUCTION_DB, resolve  # noqa: E402
+from paths import PRODUCTION_DB, resolve
 
 CACHE = resolve("files/ablation/riboseek_real_encoded.json")
 
