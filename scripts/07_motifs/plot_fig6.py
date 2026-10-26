@@ -28,7 +28,7 @@ from residue_keys import parse_key_string, parse_number_and_insertion
 MOTIF = REPO / "files" / "motifs"
 CONTROLS = MOTIF / "word_controls"
 FIGURES = REPO / "figures"
-DEFAULT_CIF_DIR = Path.home() / "Desktop" / "NR80_local"
+DEFAULT_CIF_DIR = MOTIF / "fig6_structures"   # RNAsolo chains of the F/G fragments
 
 BASE = CONTROLS / "base_inclusive_rmsd.tsv"
 BASE_SUMMARY = CONTROLS / "base_inclusive_rmsd_summary.tsv"
