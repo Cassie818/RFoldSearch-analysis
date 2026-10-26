@@ -1,4 +1,10 @@
-"""Supplementary quantiser-control figure: quantiser control."""
+"""Supplementary quantiser-control figure: k-means against the learned VQ-VAE.
+
+Left column: Rfam ground truth; right column: structure-defined ground truth
+(TM-score >= 0.45). Rows: family-level (Family / All) and clan-level (Clan /
+Beyond-family) Sens@1FP across codebook sizes, then accuracy against prefilter
+selectivity.
+"""
 import sys as _sys, os as _os
 
 _sys.path.insert(0, _os.path.join(_os.path.dirname(_os.path.abspath(__file__)), "..", "..", ".."))
@@ -55,11 +61,20 @@ def draw_kv(ax, km, vq, ann_fn, level, title):
     ax.plot(KS, km, "o-", color=C_KM, linewidth=1.4, markersize=6, zorder=3,
             markerfacecolor=C_KM, markeredgecolor="white", markeredgewidth=1.0,
             label="K-means")
-    for K, v in zip(KS, km):
-        ax.annotate(ann_fn(K, level), (K, v), textcoords="offset points", xytext=(0, -20),
-                    ha="center", fontsize=8.0, color="#333333")
-        ax.annotate(f"{v:.3f}", (K, v), textcoords="offset points", xytext=(0, 10),
-                    ha="center", fontsize=9, color="#555555")
+    lo, hi = min(km + [vq]), max(km + [vq])
+    pad = (hi - lo) * 0.42 + 0.008
+    for i, (K, v) in enumerate(zip(KS, km)):
+        # paired differences sit in one row along the bottom, clear of the curves
+        ax.annotate(ann_fn(K, level), (K, 0.03), xycoords=("data", "axes fraction"),
+                    ha="center", va="bottom", fontsize=8.0, color="#333333")
+        # value label below the point when the VQ-VAE line sits just above it, and to
+        # the upper right of a point the curve drops onto, so it clears that segment
+        below = 0 < vq - v < pad * 0.6
+        dropped = i > 0 and km[i - 1] - v > pad * 0.3
+        ax.annotate(f"{v:.3f}", (K, v), textcoords="offset points",
+                    xytext=(0, -14) if below else ((5, 6) if dropped else (0, 9)),
+                    ha="left" if dropped and not below else "center",
+                    va="top" if below else "bottom", fontsize=9, color="#555555")
     ax.set_xscale("log")
     ax.set_xticks(KS)
     ax.set_xticklabels([str(K) for K in KS])
@@ -68,9 +83,7 @@ def draw_kv(ax, km, vq, ann_fn, level, title):
     ax.set_ylabel("Sens@1FP", fontsize=10.5)
     ax.set_title(title, fontsize=10.5)
     ax.tick_params(labelsize=9)
-    lo, hi = min(km + [vq]), max(km + [vq])
-    pad = (hi - lo) * 0.42 + 0.008
-    ax.set_ylim(lo - pad, hi + pad)
+    ax.set_ylim(lo - pad * 1.5, hi + pad)
     ax.set_xlim(6.0, 145)
     for sp in ("top", "right"):
         ax.spines[sp].set_visible(False)
@@ -111,19 +124,21 @@ def main():
     sel = load_selectivity()
     st = STRUCT["thresholds"][TAU]
 
-    fig = plt.figure(figsize=(9.2, 9.4))
-    gs = fig.add_gridspec(3, 2, height_ratios=[1.0, 1.0, 1.0], hspace=0.52, wspace=0.30)
-    axA, axB = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
-    axC, axD = fig.add_subplot(gs[1, 0]), fig.add_subplot(gs[1, 1])
+    fig = plt.figure(figsize=(8.6, 8.0))
+    gs = fig.add_gridspec(3, 2, height_ratios=[1.0, 1.0, 1.0], hspace=0.5, wspace=0.22,
+                          left=0.08, right=0.99, top=0.95, bottom=0.125)
+    # columns: Rfam (left) and structure-defined (right) ground truth
+    axA, axC = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[1, 0])
+    axB, axD = fig.add_subplot(gs[0, 1]), fig.add_subplot(gs[1, 1])
     axE, axF = fig.add_subplot(gs[2, 0]), fig.add_subplot(gs[2, 1])
 
-    # A,B: Rfam annotation
+    # A, C: Rfam annotation
     draw_kv(axA, [summ[f"KMeans_K{K}"]["family_sens_1fp"] for K in KS],
             summ["VQ-VAE_K80_deployed"]["family_sens_1fp"], ann_rfam, "family", "Family (Rfam)")
-    draw_kv(axB, [summ[f"KMeans_K{K}"]["clan_sens_1fp"] for K in KS],
+    draw_kv(axC, [summ[f"KMeans_K{K}"]["clan_sens_1fp"] for K in KS],
             summ["VQ-VAE_K80_deployed"]["clan_sens_1fp"], ann_rfam, "clan", "Clan (Rfam)")
-    # C,D: structure-defined ground truth at TM >= 0.45
-    draw_kv(axC, [st["family"]["means"][f"KMeans_K{K}"] for K in KS],
+    # B, D: structure-defined ground truth at TM >= 0.45
+    draw_kv(axB, [st["family"]["means"][f"KMeans_K{K}"] for K in KS],
             st["family"]["means"]["VQ-VAE_K80_deployed"], ann_struct, "family",
             f"All (TM $\\geq$ {TAU})")
     draw_kv(axD, [st["clan"]["means"][f"KMeans_K{K}"] for K in KS],
@@ -147,7 +162,7 @@ def main():
     h, l = axA.get_legend_handles_labels()
     order = [1, 0] if "means" in l[1] else [0, 1]
     fig.legend([h[i] for i in order], [l[i] for i in order], loc="lower center",
-               ncol=2, frameon=False, fontsize=10.5, bbox_to_anchor=(0.5, 0.004),
+               ncol=2, frameon=False, fontsize=10.5, bbox_to_anchor=(0.5, -0.005),
                handlelength=2.6, columnspacing=2.2)
 
     out = Path(FIG_DIR) / "supp_quantiser_control.png"
