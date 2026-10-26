@@ -1,4 +1,4 @@
-"""Main figure for the predicted-structure benchmark, and the numbers behind it."""
+"""Fig. 5: retrieval on the predicted-structure benchmark, and the numbers behind it."""
 import csv
 import json
 import os
@@ -136,6 +136,109 @@ def collect():
     return out
 
 
+# Main-figure methods, structure-based first (exhaustive US-align leading) and sequence-based after. C leaves out the
+# sequence methods whose own hits define the filter (BLASTN, nhmmer).
+STRUCT_METHODS = ["US-align (exhaustive)", "RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500",
+                  "RiboSeek RS-80 c500"]
+SEQ_METHODS = ["BLASTN", "nhmmer", "Infernal"]
+MAIN = STRUCT_METHODS + SEQ_METHODS
+HERO = ("RFoldSearch n500", "RFoldSearch-TM n500")
+SEQ_ONLY = ("BLASTN", "nhmmer", "Infernal")       # never read a structure: dashed in line panels
+GREY = "#666666"
+QS_SHORT = {"exp": "Experimental", "p2p": "Predicted"}
+
+
+def tone(m):
+    """As in Fig. 2: the RFoldSearch rankings in full tone, the others receding."""
+    return S.COLOR[m] if m in HERO else S.lighten(S.COLOR[m], 0.35)
+
+
+def letter(ax, lab, x):
+    ax.text(x, 1.06, lab, transform=ax.transAxes, fontsize=16, fontweight="bold", va="bottom", ha="right")
+
+
+def fill_legend(ax, labels, loc="lower center", anchor=(0.5, 1.0), ncol=2):
+    h = [plt.Line2D([], [], marker="o", ls="", mfc="white", mec="#555555", mew=1.6, ms=8, label=labels[0]),
+         plt.Line2D([], [], marker="o", ls="", color="#555555", ms=8, label=labels[1])]
+    ax.legend(handles=h, frameon=False, fontsize=9.5, loc=loc, bbox_to_anchor=anchor, ncol=ncol,
+              labelcolor=GREY, handletextpad=0.3, columnspacing=1.4)
+
+
+def point(ax, x, y, lo, hi, m, filled, horizontal=True, ms=8):
+    c = tone(m)
+    if horizontal:
+        ax.hlines(y, lo, hi, color=c, lw=2.0 if m in HERO else 1.4, zorder=2)
+    else:
+        ax.vlines(x, lo, hi, color=c, lw=1.8 if m in HERO else 1.1, zorder=2)
+    ax.plot(x, y, S.MARKER[m], ms=ms + (2 if m == "RFoldSearch-TM n500" else 0), color=c,
+            mfc=c if filled else "white", mec="white" if filled else c,
+            mew=(0.4 if m == "RFoldSearch-TM n500" else 0.8) if filled else 1.6,
+            zorder=4 if m in HERO else 3, clip_on=False)
+
+
+def overall_panel(fig, cell, est, truth, methods, oracle, title, ylabels=True):
+    """Two side-by-side axes in `cell`, experimental and predicted queries; rows are methods.
+    Query sets are told apart by column, not by fill, so that open and filled markers keep
+    one meaning across the paper (all positives / sequence-detectable positives neutral).
+    Returns the left axes."""
+    sub = cell.subgridspec(1, 2, wspace=0.12)
+    axes = [fig.add_subplot(sub[0]), fig.add_subplot(sub[1])]
+    for k, (ax, qs) in enumerate(zip(axes, ("exp", "p2p"))):
+        for i, m in enumerate(methods):
+            if m == oracle:
+                ax.text(0.03, i, "1.00 (reference)", va="center", fontsize=8.5, color=GREY)
+                continue
+            mean, lo, hi, _ = est(qs, truth, MAIN_FILTER, m)
+            point(ax, mean, i, mean - lo, mean + hi, m, True)
+        ax.set_yticks(range(len(methods)), [S.SHORT[m] for m in methods] if ylabels and k == 0
+                      else [""] * len(methods), fontsize=10.5)
+        if k:
+            ax.spines["left"].set_color("#BBBBBB")
+        ax.tick_params(axis="y", length=0)
+        ax.set_ylim(len(methods) - 0.5, -0.5)
+        ax.set_xlim(0, 1.0)
+        ax.set_xticks([0, 0.5, 1.0], ["0", "0.5", "1"])
+        ax.grid(axis="x", color="#E6E6E6", lw=0.8, zorder=0)
+        ax.set_axisbelow(True)
+        S.style_axes(ax, xlabel=METRIC)
+        ax.set_title(f"{QS_SHORT[qs]} queries", fontsize=10, color=GREY, pad=4)
+    left, right = axes[0].get_position(fig), axes[1].get_position(fig)
+    fig.text((left.x0 + right.x1) / 2, left.y1 + 0.032, title, ha="center", va="bottom", fontsize=11.5)
+    return axes[0]
+
+
+def plddt_panel(ax, est, qplddt, truth, methods, title):
+    """Predicted queries by query pLDDT; bins with fewer than MIN_BIN evaluable queries are
+    not drawn, and every bin is labelled with its number of evaluable queries."""
+    ns = []
+    span = 0.36
+    for i, m in enumerate(methods):
+        dx = -span / 2 + i * span / max(1, len(methods) - 1)
+        xs, ys, los, his = [], [], [], []
+        for k, b in enumerate(BINS):
+            ids = {q for q in qplddt if b[0] <= qplddt[q] < b[1]}
+            mean, lo, hi, n = est("p2p", truth, "none", m, ids=ids)
+            if i == 0:
+                ns.append(n)
+            if n >= MIN_BIN:
+                xs.append(k + dx); ys.append(mean); los.append(mean - lo); his.append(mean + hi)
+        c = tone(m)
+        ax.vlines(xs, los, his, color=c, lw=1.6 if m in HERO else 0.9, zorder=2)
+        ax.plot(xs, ys, "--" if m in SEQ_ONLY else "-", marker=S.MARKER[m], color=c,
+                lw=2.6 if m in HERO else 1.4, ms=(8 if m in HERO else 6) + (3 if m == "RFoldSearch-TM n500" else 0),
+                mec="white", mew=0.8, zorder=4 if m in HERO else 3)
+    ax.set_xticks(range(len(BINS)), [f"{lab}\n(n = {n})" for lab, n in zip(BIN_LABEL, ns)], fontsize=10)
+    for k, n in enumerate(ns):
+        if n < MIN_BIN:
+            ax.text(k, 0.5, f"too few\nqueries", ha="center", va="center", fontsize=8.5, color=GREY)
+    ax.set_xlim(-0.5, len(BINS) - 0.5)
+    ax.set_ylim(0, 1.02)
+    ax.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
+    ax.set_axisbelow(True)
+    S.style_axes(ax, xlabel="Query pLDDT", ylabel=METRIC)
+    ax.set_title(title, fontsize=11.5, pad=6)
+
+
 def main():
     os.makedirs(FIG, exist_ok=True)
     pq = json.load(open(os.path.join(HERE, "per_query.json")))
@@ -143,6 +246,7 @@ def main():
     data = collect()
     qplddt = {q["urs_id"]: q["plddt"] for q in
               json.load(open(os.path.join(ROOT, "sample", "p2p_queries.json")))["queries"]}
+    order = ["exp", "p2p"]
 
     def est(qs, truth, filt, method, ids=None):
         d = pq.get(qs, {}).get(f"{truth}|{filt}", {}).get(method, {})
@@ -152,188 +256,8 @@ def main():
         mean, lo, hi = E.block_boot(v, fams)
         return mean, max(mean - lo, 0), max(hi - mean, 0), len(v)
 
-    # Reading order follows the text: overall retrieval (A, B), prediction
-    # confidence (C-E), species (F), complementarity with sequence search (G, H).
-    # B is split into two stacked panels (TM-score truth above, RMscore truth below);
-    # every other row spans two grid rows so that the panel heights are unchanged.
-    layout = [["A", "A", "B", "B", "C", "C"],
-              ["A", "A", "B2", "B2", "C", "C"],
-              ["D", "D", "E", "E", "F", "F"],
-              ["D", "D", "E", "E", "F", "F"],
-              ["G", "G", "G", "G", "H", "H"],
-              ["G", "G", "G", "G", "H", "H"]]
-    fig, axd = plt.subplot_mosaic(layout, figsize=(14.4, 12.6))
-    order = ["exp", "p2p"]
-
-    def qtitle(ax, text):
-        ax.set_title(text, fontsize=11, pad=6, color="black")
-
-    def regime_panel(ax, truth, oracle_as_ceiling, title):
-        # No per-bar numeric labels (values read from the axis / Supplementary
-        # Table) so no method is singled out. Under structure truth US-align
-        # equals 1.0 by construction; rather than stretch the axis to it, the
-        # axis stays at the data's range and the oracle value is annotated.
-        methods = BAR_METHODS if oracle_as_ceiling else METHODS
-        width = 0.82 / len(methods)
-        x = np.arange(2)
-        for i, m in enumerate(methods):
-            off = (i - (len(methods) - 1) / 2) * width
-            e = [est(qs, truth, MAIN_FILTER, m) for qs in order]
-            S.bars(ax, x + off, [v[0] for v in e], width, m,
-                   yerr=[[v[1] for v in e], [v[2] for v in e]])
-        top = 0.66 if oracle_as_ceiling else 0.9
-        if oracle_as_ceiling:
-            ax.text(0.5, 0.96, "US-align oracle $=$ 1.00", ha="center", va="top",
-                    transform=ax.transAxes, fontsize=8.5,
-                    color=S.TEXT["US-align (exhaustive)"])
-        ax.axvline(0.5, color="#DDDDDD", lw=0.9, zorder=1)   # experimental | predicted
-        ax.set_xticks(x, [QS_NAME[qs].split()[0] for qs in order])
-        ax.set_xlim(-0.5, 1.5)
-        ax.set_ylim(0, top)
-        S.style_axes(ax, xlabel="Query structures", ylabel=METRIC)
-        qtitle(ax, title)
-
-    # ---- A, B: the two ground truths ---------------------------------------
-    # A (annotation truth): label RFoldSearch and, via the ceiling branch, US-align
-    # (a competing method here). B (structure truth): label RFoldSearch-TM, whose
-    # predicted-query bar (0.53) is the headline flip; US-align is the ceiling.
-    regime_panel(axd["A"], "label", False, "Annotation truth")
-
-    # B: the two structure truths, stacked. Each oracle (US-align for TM-score,
-    # RMalign for RMscore) is 1.00 by construction and annotated instead of drawn;
-    # under the RMscore truth US-align is a competing method and is drawn.
-    for key, truth, shown, oracle, title in (
-            ("B", STRUCT_TRUTH, BAR_METHODS, "US-align (exhaustive)", "Structure truth (TM-score)"),
-            ("B2", RM_TRUTH, METHODS, "RMalign (exhaustive)", "Structure truth (RMscore)")):
-        ax = axd[key]
-        width = 0.82 / len(METHODS)
-        for g, qs in enumerate(order):
-            for i, m in enumerate(shown):
-                mean, lo, hi, _ = est(qs, truth, MAIN_FILTER, m)
-                S.bars(ax, [g + (i - (len(shown) - 1) / 2) * width], [mean], width, m, yerr=[[lo], [hi]])
-        S.ceiling(ax, 1.0, -0.5, 1.5, oracle)                 # Fig. 2's oracle line, in the oracle's colour
-        ax.axvline(0.5, color="#DDDDDD", lw=0.9, zorder=1)   # experimental | predicted
-        ax.set_xticks(range(2), [QS_NAME[qs].split()[0] for qs in order])
-        ax.set_xlim(-0.5, 1.5)
-        ax.set_ylim(0, 1.18)
-        ax.set_yticks(np.arange(0, 1.01, 0.5))
-        S.style_axes(ax, xlabel="Query structures" if key == "B2" else None, ylabel=METRIC)
-        qtitle(ax, title)
-
-    # ---- C, D: the two ground truths by query pLDDT -------------------------
-    # Predicted queries only (experimental queries carry no pLDDT); all positives
-    # counted. A bin with fewer than MIN_BIN queries is not drawn.
-    def plddt_panel(ax, truth, methods, title):
-        for m in methods:
-            mids, los, his = [], [], []
-            for b in BINS:
-                ids = {q for q in qplddt if b[0] <= qplddt[q] < b[1]}
-                mean, lo, hi, k = est("p2p", truth, "none", m, ids=ids)
-                if k < MIN_BIN:
-                    mean, lo, hi = np.nan, 0.0, 0.0
-                mids.append(mean); los.append(lo); his.append(hi)
-            S.line(ax, range(len(BINS)), mids, m, yerr=[los, his])
-        ax.set_xticks(range(len(BINS)), BIN_LABEL)
-        ax.set_xlim(-0.3, len(BINS) - 0.7)
-        ax.set_ylim(0, 1.02)
-        S.style_axes(ax, xlabel="Query pLDDT", ylabel=METRIC)
-        qtitle(ax, title)
-
-    plddt_panel(axd["C"], "label", PLDDT_METHODS + ["US-align (exhaustive)"],
-                "Annotation truth")
-    plddt_panel(axd["D"], STRUCT_TRUTH, PLDDT_METHODS, "Structure truth")
-
-    # ---- G: the sequence filter as an axis, both query sets ----------------
-    # Structure truth, so that "what structure search adds" is measured against
-    # structural homology for both query sets; US-align, the oracle, is omitted.
-    ax = axd["G"]
-    width = 0.82 / len(BAR_METHODS)
-    gap = 0.6
-    groups = [(qs, (len(FILTERS) + gap) * k + np.arange(len(FILTERS))) for k, qs in enumerate(order)]
-    for i, m in enumerate(BAR_METHODS):
-        off = (i - (len(BAR_METHODS) - 1) / 2) * width
-        for qs, x in groups:
-            e = [est(qs, STRUCT_TRUTH, f, m) for f, _ in FILTERS]
-            S.bars(ax, x + off, [v[0] for v in e], width, m,
-                   yerr=[[v[1] for v in e], [v[2] for v in e]])
-    ax.axvline(len(FILTERS) - 0.5 + gap / 2, color="#DDDDDD", lw=0.9, zorder=1)
-    for qs, x in groups:
-        ax.text(x.mean(), 0.66, QS_NAME[qs], ha="center", va="bottom", fontsize=9, color=S.GREY_TEXT)
-    ax.set_xticks(np.concatenate([x for _, x in groups]), [lab for _, lab in FILTERS] * len(groups))
-    ax.set_xlim(-0.5, groups[-1][1][-1] + 0.5)
-    ax.set_ylim(0, 0.7)
-    S.style_axes(ax, ylabel=METRIC)
-    qtitle(ax, "Structure truth")
-
-    # ---- E: target confidence, both truths ----------------------------------
-    # Experimental queries, so that the query carries no prediction error and the
-    # trend is the targets' alone. Left block annotation truth, right block
-    # structure truth (US-align, the oracle there, is omitted).
-    ax = axd["E"]
-    fams_exp = {q: f for q, f in fams.items()}
-    blocks = [("label", 0), (STRUCT_TRUTH, len(BINS) + 1)]
-    e_values = defaultdict(dict)
-    for truth, x0 in blocks:
-        for m in TARGET_METHODS:
-            if truth != "label" and m == "US-align (exhaustive)":
-                continue
-            mids, los, his = [], [], []
-            for b in BINS:
-                v = data["target_bins"][truth][f"{b[0]}-{b[1]}"].get(m, {})
-                if len(v) < MIN_BIN:
-                    mids.append(np.nan); los.append(0.0); his.append(0.0)
-                    continue
-                mean, lo, hi = E.block_boot(v, fams_exp)
-                e_values[f"{truth}|{b[0]}-{b[1]}"][m] = {"n": len(v), "mean": mean, "lo": lo, "hi": hi}
-                mids.append(mean); los.append(max(mean - lo, 0)); his.append(max(hi - mean, 0))
-            S.line(ax, x0 + np.arange(len(BINS)), mids, m, yerr=[los, his])
-    ax.axvline(len(BINS), color="#DDDDDD", lw=0.9, zorder=1)
-    for (truth, x0), name in zip(blocks, ("Annotation truth", "Structure truth")):
-        ax.text(x0 + (len(BINS) - 1) / 2, 1.0, name, ha="center", va="bottom", fontsize=9,
-                color=S.GREY_TEXT)
-    ax.set_xticks(np.r_[np.arange(len(BINS)), len(BINS) + 1 + np.arange(len(BINS))],
-                  BIN_LABEL + BIN_LABEL, fontsize=8.5)
-    ax.set_xlim(-0.5, 2 * len(BINS) + 0.5)
-    ax.set_ylim(0, 1.06)
-    S.style_axes(ax, xlabel="Target pLDDT", ylabel=METRIC)
-    qtitle(ax, "Experimental queries")
-
-    # ---- F: cost of crossing species ---------------------------------------
-    ax = axd["F"]
-    both = sorted(set(data["species"]["cross"]["RFoldSearch n500"])
-                  & set(data["species"]["same"]["RFoldSearch n500"]))
-    ypos = np.arange(len(METHODS))[::-1]
-    for y, m in zip(ypos, METHODS):
-        cross, same = data["species"]["cross"].get(m, {}), data["species"]["same"].get(m, {})
-        ids = [q for q in both if q in cross and q in same]
-        if not ids:
-            continue
-        s0 = float(np.mean([same[q] for q in ids]))
-        c0 = float(np.mean([cross[q] for q in ids]))
-        d, lo, hi = E.block_boot({q: cross[q] - same[q] for q in ids}, data["families_p2p"])
-        ax.plot([s0, c0], [y, y], color=S.COLOR[m], lw=2.6, solid_capstyle="round", zorder=2)
-        ax.scatter([s0], [y], s=42, marker=S.MARKER[m], facecolor="white",
-                   edgecolor=S.COLOR[m], linewidth=1.1, zorder=3)
-        ax.scatter([c0], [y], s=42, marker=S.MARKER[m], facecolor=S.COLOR[m],
-                   edgecolor="white", linewidth=0.7, zorder=4)
-        ax.annotate(f"{d:+.2f}{'*' if not (lo <= 0 <= hi) else ''}", (max(s0, c0), y),
-                    xytext=(9, -3), textcoords="offset points", fontsize=8.5, color=S.TEXT[m])
-    ax.set_yticks(ypos, [S.SHORT[m] for m in METHODS], fontsize=9)
-    ax.set_xlim(0, 1.02)
-    ax.set_ylim(-0.6, len(METHODS) + 0.6)
-    S.style_axes(ax, xlabel=METRIC)
-    qtitle(ax, "Predicted queries")
-    ax.legend(handles=[plt.Line2D([], [], marker="o", ls="", markerfacecolor="white",
-                                  markeredgecolor=S.GREY_TEXT, color=S.GREY_TEXT,
-                                  label="Same species"),
-                       plt.Line2D([], [], marker="o", ls="", color=S.GREY_TEXT,
-                                  markeredgecolor="white", label="Different species")],
-              frameon=False, fontsize=8.5, loc="upper center", ncol=2, columnspacing=1.2,
-              handletextpad=0.6, bbox_to_anchor=(0.5, 1.02))
-
-    # ---- H: recovery of the homologues sequence search misses ----------------
-    # Rfam truth, which is independent of every structure score. Rate = recovered
-    # / missed, pooled over queries; 95% interval from resampling families.
+    # Recovery of the Rfam homologues that sequence search misses (D): rate =
+    # recovered / missed, pooled over queries; 95% interval from resampling families.
     def ratio_boot(recs, reps=2000, seed=0):
         by = defaultdict(lambda: np.zeros(2))
         for f, k_miss, k_rec in recs:
@@ -351,9 +275,6 @@ def main():
         lo, hi = np.percentile(bs, [2.5, 97.5])
         return rate, max(rate - lo, 0), max(hi - rate, 0), int(arr[:, 0].sum()), int(np.sum(arr[:, 1] > 0))
 
-    # Every query set and detector is written to fig5_data.json; the panel
-    # shows experimental queries (predicted queries have too few sequence-missed
-    # homologues, from one or two families per bin).
     h_values = {}
     for qs in order:
         for w in WHO:
@@ -361,31 +282,129 @@ def main():
                 v = ratio_boot(data["recover"][qs][w][i])
                 h_values.setdefault(qs, {}).setdefault(f"{b[0]}-{b[1]}", {})[w] = dict(
                     rate=v[0], lo=v[0] - v[1], hi=v[0] + v[2], missed=v[3], families_recovered=v[4])
-    ax = axd["H"]
-    shown = WHO
-    width = 0.8 / len(shown)
-    x = np.arange(len(BINS))
-    for j, w in enumerate(shown):
-        v = [h_values["exp"][f"{b[0]}-{b[1]}"][w] for b in BINS]
-        S.bars(ax, x + (j - (len(shown) - 1) / 2) * width, [d["rate"] for d in v], width, w,
-               yerr=[[d["rate"] - d["lo"] for d in v], [d["hi"] - d["rate"] for d in v]])
-    ax.set_xticks(x, BIN_LABEL)
-    ax.set_xlim(-0.5, len(BINS) - 0.5)
-    ax.set_ylim(0, 0.55)
-    S.style_axes(ax, xlabel="Target pLDDT", ylabel="Fraction recovered")
-    qtitle(ax, "Homologues missed by sequence search")
 
-    S.shared_legend(fig, METHODS, ncol=4, y=-0.004)
-    fig.tight_layout(rect=(0, 0.05, 1, 1), pad=0.5, w_pad=0.9, h_pad=1.6)
-    # Letters sit a fixed distance left of each axis, so that panels of different
-    # widths (G is wider than A and D) keep their letters in one column.
-    w, h = fig.get_size_inches()
-    for k in "ABCDEFGH":
-        pos = axd[k].get_position()
-        fig.text(pos.x0 - 0.62 / w, pos.y1 + 0.1 / h, k, fontsize=15, fontweight="bold",
-                 va="bottom", ha="right")
-    for ext in ("png",):
-        fig.savefig(os.path.join(FIG, f"fig5.{ext}"), dpi=200, bbox_inches="tight")
+    # ================= main figure =================
+    fig = plt.figure(figsize=(14.0, 10.6))
+    rows = fig.add_gridspec(2, 1, height_ratios=(1, 1), hspace=0.42, left=0.12, right=0.99, top=0.94, bottom=0.12)
+    # A's method names sit where the y-axis labels of the row below sit, so that the two
+    # rows share their outer edges.
+    r0 = fig.add_gridspec(1, 2, wspace=0.10, left=0.165, right=0.99,
+                          top=0.94, bottom=rows[0].get_position(fig).y0)
+    ax_a1 = overall_panel(fig, r0[0], est, "label", MAIN, None, "Annotation truth (Rfam family)")
+    overall_panel(fig, r0[1], est, STRUCT_TRUTH, MAIN, "US-align (exhaustive)",
+                  f"Structure truth (TM-score ≥ {E.TM_MAIN:.2f})", ylabels=False)
+
+    r1 = rows[1].subgridspec(1, 2, wspace=0.22)
+    ax_b, ax_c = (fig.add_subplot(r1[k]) for k in range(2))
+    plddt_panel(ax_b, est, qplddt, STRUCT_TRUTH, [m for m in MAIN if m != "US-align (exhaustive)"],
+                "Predicted queries (structure truth)")
+
+    # C: structure truth, before/after neutralising sequence-detectable positives.
+    # BLASTN and nhmmer are left out (their own positives become neutral) and US-align (the oracle).
+    c_methods = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "Infernal"]
+    step = 0.7 / len(c_methods)
+    for g, qs in enumerate(order):
+        for j, m in enumerate(c_methods):
+            xc = g - 0.35 + step * (j + 0.5)
+            v0, v1 = est(qs, STRUCT_TRUTH, "none", m), est(qs, STRUCT_TRUTH, "E<=10", m)
+            x0, x1 = xc - step * 0.18, xc + step * 0.18
+            ax_c.plot([x0, x1], [v0[0], v1[0]], "-", color=tone(m), lw=1.3, zorder=2)
+            point(ax_c, x0, v0[0], v0[0] - v0[1], v0[0] + v0[2], m, False, horizontal=False, ms=7)
+            point(ax_c, x1, v1[0], v1[0] - v1[1], v1[0] + v1[2], m, True, horizontal=False, ms=7)
+    ax_c.axvline(0.5, color="#DDDDDD", lw=0.9, zorder=0)
+    ax_c.set_xticks(range(2), ["Experimental\nqueries", "Predicted\nqueries"], fontsize=10)
+    ax_c.set_xlim(-0.5, 1.5)
+    ax_c.set_ylim(0, 0.7)
+    ax_c.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
+    ax_c.set_axisbelow(True)
+    S.style_axes(ax_c, ylabel=METRIC)
+    ax_c.set_title("Structure truth", fontsize=11.5, pad=6)
+    fill_legend(ax_c, ("All positives", "Sequence-detectable positives neutral"), loc="upper center",
+                anchor=(0.5, 1.0), ncol=2)
+    ax_c.set_ylim(0, 0.75)
+
+    for ax, lab, x in ((ax_b, "B", -0.14), (ax_c, "C", -0.14)):
+        letter(ax, lab, x)
+    # A's letter in the same column as B's
+    pa, pb = ax_a1.get_position(), ax_b.get_position()
+    letter(ax_a1, "A", (pb.x0 - 0.14 * pb.width - pa.x0) / pa.width)
+    handles = [plt.Line2D([], [], color=tone(m), lw=3.0 if m in HERO else 2.2,
+                          ls="--" if m in SEQ_ONLY else "-", marker=S.MARKER[m],
+                          ms=9 + (3 if m == "RFoldSearch-TM n500" else 0), mec="white", mew=0.9,
+                          label=S.SHORT[m]) for m in MAIN]
+    fig.legend(handles=handles, loc="lower center", ncol=8, frameon=False, fontsize=10.5,
+               bbox_to_anchor=(0.5, 0.0), handlelength=2.2, columnspacing=1.2)
+    fig.savefig(os.path.join(FIG, "fig5.png"), dpi=200, bbox_inches="tight")
+    plt.close(fig)
+
+    # ================= supplementary figure =================
+    fig = plt.figure(figsize=(14.0, 6.0))
+    # The RMscore truth is in supp_predicted_structure_truth.png.
+    gs = fig.add_gridspec(1, 2, width_ratios=(1, 2.1), wspace=0.22, left=0.12, right=0.99, top=0.88,
+                          bottom=0.21)
+    sd, sc = fig.add_subplot(gs[0]), fig.add_subplot(gs[1])
+
+    # B: experimental queries by target pLDDT, both truths (US-align omitted under structure truth).
+    fams_exp = dict(fams)
+    blocks = [("label", 0), (STRUCT_TRUTH, len(BINS) + 1)]
+    e_values = defaultdict(dict)
+    for truth, x0 in blocks:
+        for i, m in enumerate(MAIN):
+            if truth != "label" and m == "US-align (exhaustive)":
+                continue
+            dx = -0.24 + i * 0.48 / (len(MAIN) - 1)          # dodge so the intervals stay apart
+            xs, ys, los, his = [], [], [], []
+            for k, b in enumerate(BINS):
+                v = data["target_bins"][truth][f"{b[0]}-{b[1]}"].get(m, {})
+                if len(v) < MIN_BIN:
+                    continue
+                mean, lo, hi = E.block_boot(v, fams_exp)
+                e_values[f"{truth}|{b[0]}-{b[1]}"][m] = {"n": len(v), "mean": mean, "lo": lo, "hi": hi}
+                xs.append(x0 + k + dx); ys.append(mean); los.append(lo); his.append(hi)
+            c = tone(m)
+            sc.vlines(xs, los, his, color=c, lw=1.4 if m in HERO else 0.9, zorder=2)
+            sc.plot(xs, ys, "--" if m in SEQ_ONLY else "-", marker=S.MARKER[m], color=c,
+                    lw=2.4 if m in HERO else 1.3, ms=7, mec="white", mew=0.8, zorder=4 if m in HERO else 3)
+    sc.axvline(len(BINS), color="#DDDDDD", lw=0.9, zorder=1)
+    for (truth, x0), name in zip(blocks, ("Annotation truth", "Structure truth")):
+        sc.text(x0 + (len(BINS) - 1) / 2, 1.02, name, ha="center", va="bottom", fontsize=9.5, color=GREY)
+    sc.set_xticks(np.r_[np.arange(len(BINS)), len(BINS) + 1 + np.arange(len(BINS))], BIN_LABEL + BIN_LABEL,
+                  fontsize=9)
+    sc.set_xlim(-0.5, 2 * len(BINS) + 0.5)
+    sc.set_ylim(0, 1.0)
+    sc.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
+    sc.set_axisbelow(True)
+    S.style_axes(sc, xlabel="Target pLDDT", ylabel=METRIC)
+    sc.set_title("Experimental queries", fontsize=11.5, pad=20)
+
+    # A: cost of crossing species (predicted queries): paired difference, different-species
+    # minus same-species positives, with its 95% interval; no open/filled markers.
+    both = sorted(set(data["species"]["cross"]["RFoldSearch n500"])
+                  & set(data["species"]["same"]["RFoldSearch n500"]))
+    for y, m in enumerate(MAIN):
+        cross, same = data["species"]["cross"].get(m, {}), data["species"]["same"].get(m, {})
+        ids = [q for q in both if q in cross and q in same]
+        if not ids:
+            continue
+        d, lo, hi = E.block_boot({q: cross[q] - same[q] for q in ids}, data["families_p2p"])
+        point(sd, d, y, lo, hi, m, True)
+        sd.text(hi + 0.012, y, f"{d:+.2f}{'*' if not (lo <= 0 <= hi) else ''}", va="center",
+                fontsize=9, color=GREY)
+    sd.axvline(0, color="#888888", lw=1.1, ls="--", zorder=1)
+    sd.set_yticks(range(len(MAIN)), [S.SHORT[m] for m in MAIN], fontsize=10.5)
+    sd.tick_params(axis="y", length=0)
+    sd.set_ylim(len(MAIN) - 0.45, -0.55)
+    sd.set_xlim(-0.35, 0.1)
+    sd.grid(axis="x", color="#E6E6E6", lw=0.8, zorder=0)
+    sd.set_axisbelow(True)
+    S.style_axes(sd, xlabel="Δ Sens@1FP (different − same species)")
+    sd.set_title("Predicted queries (annotation truth)", fontsize=11.5, pad=6)
+    for ax, lab, x in ((sd, "A", -0.62), (sc, "B", -0.065)):
+        letter(ax, lab, x)
+    fig.legend(handles=handles, loc="lower center", ncol=8, frameon=False, fontsize=10.5,
+               bbox_to_anchor=(0.5, 0.0), handlelength=2.2, columnspacing=1.2)
+    fig.savefig(os.path.join(FIG, "supp_predicted_breakdown.png"), dpi=200, bbox_inches="tight")
+    plt.close(fig)
 
     out = {"metric": METRIC, "main_filter": MAIN_FILTER, "candidate_depth": DEPTH,
            "invisible_by_plddt": data["invisible"], "H recovery": h_values,
@@ -411,7 +430,7 @@ def main():
                         out[key][m] = {"n": k, "mean": mean, "lo": mean - lo, "hi": mean + hi}
     out["exp target pLDDT"] = e_values
     json.dump(out, open(os.path.join(HERE, "fig5_data.json"), "w"), indent=1)
-    print("wrote", os.path.join(FIG, "fig5.png"))
+    print("wrote", os.path.join(FIG, "fig5.png"), "and", os.path.join(FIG, "supp_predicted_breakdown.png"))
 
 
 if __name__ == "__main__":

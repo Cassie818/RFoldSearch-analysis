@@ -1,4 +1,11 @@
-"""Supplementary figure: retrieval under the structure-defined ground truth."""
+"""Supplementary figure: retrieval under the structure-defined ground truths, by threshold.
+
+    A-D  TM-score truth (symmetric US-align TM-score >= 0.40, 0.45, 0.50): Sens@1FP (A, B) and
+         Recall@1 (C, D) for experimental (left) and predicted (right) queries. US-align
+         defines the positives (reference, 1.00); exhaustive RMalign is a competing method.
+    E-H  RMscore truth at the quantile-matched thresholds, same layout; RMalign is the
+         reference and US-align a competing method.
+"""
 import json
 import os
 
@@ -11,120 +18,92 @@ import figstyle as S
 from figstyle import plt
 
 FIG = os.path.join(E.REPO, "figures")
-BAR_METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal"]
+# Structure-based methods first and sequence-based after, as in Fig. 5.
+STRUCT = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500"]
+SEQ = ["BLASTN", "nhmmer", "Infernal"]
+BAR_METHODS = STRUCT + SEQ
 REF = "RFoldSearch n500"
 SETS = [("exp", "Experimental queries"),
         ("p2p", "Predicted queries")]
 COLS = ["exp", "p2p"]
-ROWS = ["Sens@1FP", "Recall@1"]
 
 
 def main():
     pq = json.load(open(os.path.join(E.HERE, "per_query.json")))
     report = json.load(open(os.path.join(E.HERE, "evaluation.json")))
     rthr = report.get("rmscore_thresholds", {})
-    plot(pq, report, "structure", [(f"structure t{t:.2f}", f"{t:.2f}") for t in E.TM_TAUS], BAR_METHODS)
-    if rthr:
-        methods = BAR_METHODS[:2] + ["US-align (exhaustive)"] + BAR_METHODS[2:]
-        plot(pq, report, "rmscore", [(f"rmscore t{t:.2f}", f"{rthr[f'{t:.2f}']:.2f}") for t in E.TM_TAUS], methods)
+    # Each truth draws the other exhaustive aligner in the first slot.
+    truths = [("structure", [(f"structure t{t:.2f}", f"TM ≥ {t:.2f}") for t in E.TM_TAUS],
+               ["RMalign (exhaustive)"] + BAR_METHODS),
+              ("rmscore", [(f"rmscore t{t:.2f}", f"RM ≥ {rthr[f'{t:.2f}']:.2f}") for t in E.TM_TAUS],
+               ["US-align (exhaustive)"] + BAR_METHODS)]
+    fig, axes = plt.subplots(4, 2, figsize=(12.4, 14.4))
+    for t, (truth_name, groups, methods) in enumerate(truths):
+        for k, metric in enumerate(("Sens@1FP", "Recall@1")):
+            plot_row(axes[2 * t + k], pq, truth_name, groups, methods, metric, title=(t == 0 and k == 0))
+    for ax, lab in zip(axes.ravel(), "ABCDEFGH"):
+        ax.text(-0.11, 1.04, lab, transform=ax.transAxes, fontsize=16, fontweight="bold", va="bottom")
+    methods = ["US-align (exhaustive)", "RMalign (exhaustive)"] + BAR_METHODS
+    S.shared_legend(fig, methods, ncol=5, y=-0.012, kind="bar")
+    fig.tight_layout(rect=(0.02, 0.05, 1, 1), pad=0.5, w_pad=1.2, h_pad=1.6)
+    for t, name in enumerate(("TM-score truth", "RMscore truth")):
+        # one label per truth, centred on its two rows (after the layout is fixed)
+        top, bottom = axes[2 * t, 0].get_position(), axes[2 * t + 1, 0].get_position()
+        fig.text(top.x0 - 0.075, (top.y1 + bottom.y0) / 2, name, rotation=90, ha="center", va="center",
+                 fontsize=12.5)
+    out = os.path.join(FIG, "supp_predicted_structure_truth.png")
+    fig.savefig(out, dpi=200, bbox_inches="tight")
+    print("wrote", out)
 
 
-def plot(pq, report, truth_name, groups, bar_methods):
+def plot_row(axes, pq, truth_name, groups, methods, metric, title):
     fams = pq["families"]
-    ORACLE = E.ORACLE[truth_name]
-    BAR_METHODS = bar_methods
+    oracle = E.ORACLE[truth_name]
 
-    def cells(qs, truth, method, metric):
+    def cells(qs, truth, method):
         d = pq.get(qs, {}).get(f"{truth}|none", {}).get(method, {})
         return {q: v[metric] for q, v in d.items()}
 
-    fig, axes = plt.subplots(2, 2, figsize=(10.4, 7.2))
     counts = {}
-    width = 0.82 / len(BAR_METHODS)
+    width = 0.84 / len(methods)
     x = np.arange(len(groups))
-    for r_i, metric in enumerate(ROWS):
-        for c_i, qs in enumerate(COLS):
-            ax = axes[r_i, c_i]
-            ns = [len(cells(qs, t, REF, metric)) for t, _ in groups]
-            for i, m in enumerate(BAR_METHODS):
-                off = (i - (len(BAR_METHODS) - 1) / 2) * width
-                vals, lo, hi, sig = [], [], [], []
-                for truth, _ in groups:
-                    v = cells(qs, truth, m, metric)
-                    rr = cells(qs, truth, REF, metric)
-                    if not v:
-                        vals.append(np.nan); lo.append(0.0); hi.append(0.0); sig.append(False)
-                        continue
-                    mean, l, h = E.block_boot(v, fams)
-                    vals.append(mean); lo.append(max(mean - l, 0)); hi.append(max(h - mean, 0))
-                    ids = [q for q in v if q in rr]
-                    if m == REF or len(ids) < 3:
-                        sig.append(False)
-                    else:
-                        _, dl, dh = E.block_boot({q: v[q] - rr[q] for q in ids}, fams)
-                        sig.append(not (dl <= 0 <= dh))
-                bars = S.bars(ax, x + off, vals, width, m, yerr=[lo, hi])
-                for j, (b, v) in enumerate(zip(bars, vals)):
-                    if not np.isfinite(v):
-                        continue
-                    top = v + hi[j] + 0.012
-                    if m == REF:
-                        ax.text(b.get_x() + b.get_width() / 2, top, f"{v:.2f}", ha="center",
-                                va="bottom", fontsize=8, color=S.TEXT[REF], zorder=5,
-                                bbox=dict(facecolor="white", edgecolor="none", pad=0.4, alpha=0.85))
-                    elif sig[j]:
-                        ax.text(b.get_x() + b.get_width() / 2, top, "*", ha="center", va="bottom",
-                                fontsize=10, color=S.GREY_TEXT, fontweight="bold")
-            oracle = cells(qs, groups[0][0], ORACLE, metric)
-            if oracle:
-                S.ceiling(ax, float(np.mean(list(oracle.values()))), -0.5, len(groups) - 0.5, ORACLE)
-            ax.set_xticks(x, [lab for _, lab in groups])
-            counts.setdefault(qs, {}).update({lab: n for (_, lab), n in zip(groups, ns)})
-            ax.set_xlim(-0.5, len(groups) - 0.5)
-            ax.set_ylim(0, 1.12)
-            ax.set_yticks(np.arange(0, 1.01, 0.2))
-            S.style_axes(ax, ylabel=metric)
-            if r_i == 0:
-                ax.set_title(dict(SETS)[qs], fontsize=11, pad=6, color="black")
-    S.panel_letters(axes.ravel(), "ABCD", x=-0.14)
-    S.shared_legend(fig, BAR_METHODS, ncol=5 if len(BAR_METHODS) > 7 else 4, y=-0.004,
-                    extra=[S.oracle_handle(ORACLE)])
-    fig.tight_layout(rect=(0, 0.075, 1, 1), pad=0.5, w_pad=0.6, h_pad=0.7)
-    for ext in ("png",):
-        fig.savefig(os.path.join(FIG, f"supp_predicted_{truth_name}_truth.{ext}"), dpi=200,
-                    bbox_inches="tight")
-    json.dump(counts, open(os.path.join(E.HERE, f"{truth_name}_truth_counts.json"), "w"), indent=1)
-
-    # ---------------------------------------------------------------- table
-
-    def cell(qs, truth, method, metric):
-        d = report.get(qs, {}).get(f"{truth}|none", {}).get(method)
-        return (d["mean"][metric], d["n"]) if d else (np.nan, 0)
-
-    lines = ["\\begin{tabular}{l" + "cc" * len(groups) + "}", "\\toprule",
-             "Method & " + " & ".join(f"\\multicolumn{{2}}{{c}}{{{h}}}" for _, h in groups) + " \\\\",
-             " & " + " & ".join(["Sens@1FP & Recall@1"] * len(groups)) + " \\\\", "\\midrule"]
-    for qs, caption in SETS:
-        if qs not in report:
-            continue
-        ns = [cell(qs, t, REF, "Recall@1")[1] for t, _ in groups]
-        lines.append("\\multicolumn{%d}{l}{\\textit{%s} ($n = %s$)} \\\\"
-                     % (1 + 2 * len(groups), caption, ", ".join(str(n) for n in ns)))
-        for m in BAR_METHODS + [ORACLE]:
-            cs = []
+    for ax, qs in zip(axes, COLS):
+        ns = [len(cells(qs, t, REF)) for t, _ in groups]
+        for i, m in enumerate(methods):
+            off = (i - (len(methods) - 1) / 2) * width
+            vals, lo, hi, sig = [], [], [], []
             for truth, _ in groups:
-                s1, _ = cell(qs, truth, m, "Sens@1FP")
-                r1, _ = cell(qs, truth, m, "Recall@1")
-                cs += [f"{s1:.3f}" if np.isfinite(s1) else "--",
-                       f"{r1:.3f}" if np.isfinite(r1) else "--"]
-            lines.append(f"\\quad {S.SHORT[m]} & " + " & ".join(cs) + " \\\\")
-        lines.append("\\midrule")
-    lines[-1] = "\\bottomrule"
-    lines.append("\\end{tabular}")
-    out = os.path.join(E.HERE, f"{truth_name}_truth_table.tex")
-    open(out, "w").write("\n".join(lines) + "\n")
-    print("wrote", os.path.join(FIG, f"supp_predicted_{truth_name}_truth.png"))
-    print("wrote", out)
+                v, rr = cells(qs, truth, m), cells(qs, truth, REF)
+                if not v:
+                    vals.append(np.nan); lo.append(0.0); hi.append(0.0); sig.append(False)
+                    continue
+                mean, l, h = E.block_boot(v, fams)
+                vals.append(mean); lo.append(max(mean - l, 0)); hi.append(max(h - mean, 0))
+                ids = [q for q in v if q in rr]
+                if m == REF or len(ids) < 3:
+                    sig.append(False)
+                else:
+                    _, dl, dh = E.block_boot({q: v[q] - rr[q] for q in ids}, fams)
+                    sig.append(not (dl <= 0 <= dh))
+            bars = S.bars(ax, x + off, vals, width, m, yerr=[lo, hi])
+            for j, (bar, v) in enumerate(zip(bars, vals)):
+                if np.isfinite(v) and sig[j]:
+                    ax.text(bar.get_x() + bar.get_width() / 2, v + hi[j] + 0.012, "*", ha="center",
+                            va="bottom", fontsize=10, color=S.GREY_TEXT, fontweight="bold")
+        ax.axhline(1.0, color=S.COLOR[oracle], ls="--", lw=1.5, zorder=2)
+        ax.text(-0.45, 1.13, f"{S.SHORT[oracle]} (reference)", ha="left", va="bottom", fontsize=8.5,
+                color=S.TEXT[oracle])
+        ax.set_xticks(x, [f"{lab}\n(n = {n})" for (_, lab), n in zip(groups, ns)], fontsize=9.5)
+        counts[qs] = {lab.split("≥ ")[-1]: n for (_, lab), n in zip(groups, ns)}
+        ax.set_xlim(-0.5, len(groups) - 0.5)
+        ax.set_ylim(0, 1.22)
+        ax.set_yticks(np.arange(0, 1.01, 0.2))
+        ax.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
+        ax.set_axisbelow(True)
+        S.style_axes(ax, ylabel=metric)
+        if title:
+            ax.set_title(dict(SETS)[qs], fontsize=12, pad=8)
+    json.dump(counts, open(os.path.join(E.HERE, f"{truth_name}_truth_counts.json"), "w"), indent=1)
 
 
 if __name__ == "__main__":
