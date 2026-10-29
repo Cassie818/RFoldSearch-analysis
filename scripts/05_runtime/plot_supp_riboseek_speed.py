@@ -26,7 +26,7 @@ def ladder(pat):
 
 def main():
     rf = ladder("nufold_timing_{n}.json")
-    rs = ladder("nufold_riboseek_{n}.json")
+    rs = ladder("nufold_riboseek_rs80_{n}.json")
     N = np.array(SIZES, dtype=float)
     ratio = rs / rf
     a_rf = np.polyfit(np.log(N), np.log(rf), 1)[0]
@@ -39,7 +39,7 @@ def main():
                    / (np.log(ratio[i]) - np.log(ratio[i - 1])))
 
     full = json.load(open(os.path.join(NU, "nufold_timing_531888.json")))["per_query"]
-    rsq = json.load(open(os.path.join(NU, "nufold_riboseek_531888.json")))["per_query"]
+    rsq = json.load(open(os.path.join(NU, "nufold_riboseek_rs80_531888.json")))["per_query"]
     assert [q["id"] for q in full] == [q["id"] for q in rsq], "query sets differ"
     t_rf = np.array([q["s"] for q in full])
     t_rs = np.array([q["s"] for q in rsq])
@@ -57,15 +57,15 @@ def main():
            zorder=5)
     a.axvline(cross, color=MUTED, lw=0.7, dashes=(1.4, 1.8), zorder=2)
     a.set_xscale("log"); a.set_yscale("log")
-    a.set_ylim(0.45, 12)
+    a.set_ylim(0.25, 4)
     a.set_xlabel("Database size (structures)")
     a.set_ylabel("RiboSeek time / RFoldSearch time")
     a.set_xticks([1000, 10000, 100000, 531888])
     a.set_xticklabels(["1k", "10k", "100k", "532k"])
-    a.set_yticks([0.5, 1, 2, 5, 10])
-    a.set_yticklabels(["0.5", "1", "2", "5", "10"])
-    a.text(cross * 0.86, 0.50, f"crossover\n{cross/1000:.0f}k structures",
-           fontsize=5.8, color=MUTED, va="bottom", ha="right",
+    a.set_yticks([0.25, 0.5, 1, 2, 4])
+    a.set_yticklabels(["0.25", "0.5", "1", "2", "4"])
+    a.text(cross * 1.12, 0.28, f"crossover\n{cross/1000:.0f}k structures",
+           fontsize=5.8, color=MUTED, va="bottom", ha="left",
            linespacing=1.3)
     a.annotate(f"{ratio[-1]:.1f}×", xy=(N[-1], ratio[-1]),
                xytext=(-4, 7), textcoords="offset points", fontsize=7,
@@ -76,8 +76,8 @@ def main():
            transform=a.transAxes, fontsize=6.0, va="top", color=INK,
            linespacing=1.5)
     # the shaded half is where RFoldSearch wins; label each side of the 1.0 line
-    a.text(0.985, 1.22, "RFoldSearch faster", transform=a.get_yaxis_transform(),
-           fontsize=5.8, color=BLUE, ha="right", va="bottom")
+    a.text(0.985, 3.6, "RFoldSearch faster", transform=a.get_yaxis_transform(),
+           fontsize=5.8, color=BLUE, ha="right", va="top")
     a.text(0.985, 0.82, "RiboSeek faster", transform=a.get_yaxis_transform(),
            fontsize=5.8, color=PINK, ha="right", va="top")
 

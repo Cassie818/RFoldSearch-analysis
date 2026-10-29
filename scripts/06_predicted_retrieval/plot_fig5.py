@@ -12,6 +12,14 @@ import evaluate as E
 import figstyle as S
 from figstyle import plt
 
+# the runtime panels (top row) are drawn by scripts/05_runtime; their style module sets
+# rcParams on import, so it is imported inside a context that restores them
+import matplotlib
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "05_runtime"))
+with matplotlib.rc_context():
+    import plot_fig4 as R
+    import runtime_style as RS
+
 HERE, ROOT = E.HERE, E.ROOT
 FIG = os.path.join(E.REPO, "figures")
 # Every structure method is held at the same candidate depth, 500, so that the
@@ -198,12 +206,10 @@ def overall_panel(fig, cell, est, truth, methods, oracle, title, ylabels=True):
         ax.set_ylim(len(methods) - 0.5, -0.5)
         ax.set_xlim(0, 1.0)
         ax.set_xticks([0, 0.5, 1.0], ["0", "0.5", "1"])
-        ax.grid(axis="x", color="#E6E6E6", lw=0.8, zorder=0)
-        ax.set_axisbelow(True)
         S.style_axes(ax, xlabel=METRIC)
         ax.set_title(f"{QS_SHORT[qs]} queries", fontsize=10, color=GREY, pad=4)
     left, right = axes[0].get_position(fig), axes[1].get_position(fig)
-    fig.text((left.x0 + right.x1) / 2, left.y1 + 0.032, title, ha="center", va="bottom", fontsize=11.5)
+    fig.text((left.x0 + right.x1) / 2, left.y1 + 0.032 * 10.6 / fig.get_figheight(), title, ha="center", va="bottom", fontsize=11.5)
     return axes[0]
 
 
@@ -233,8 +239,6 @@ def plddt_panel(ax, est, qplddt, truth, methods, title):
             ax.text(k, 0.5, f"too few\nqueries", ha="center", va="center", fontsize=8.5, color=GREY)
     ax.set_xlim(-0.5, len(BINS) - 0.5)
     ax.set_ylim(0, 1.02)
-    ax.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
-    ax.set_axisbelow(True)
     S.style_axes(ax, xlabel="Query pLDDT", ylabel=METRIC)
     ax.set_title(title, fontsize=11.5, pad=6)
 
@@ -284,17 +288,25 @@ def main():
                     rate=v[0], lo=v[0] - v[1], hi=v[0] + v[2], missed=v[3], families_recovered=v[4])
 
     # ================= main figure =================
-    fig = plt.figure(figsize=(14.0, 10.6))
-    rows = fig.add_gridspec(2, 1, height_ratios=(1, 1), hspace=0.42, left=0.12, right=0.99, top=0.94, bottom=0.12)
-    # A's method names sit where the y-axis labels of the row below sit, so that the two
+    fig = plt.figure(figsize=(16.0, 13.0))
+    rows = fig.add_gridspec(3, 1, height_ratios=(1.05, 1, 1), hspace=0.44, left=0.12, right=0.99,
+                            top=0.96, bottom=0.115)
+    # A, B: runtime on the two predicted-structure databases, in this figure's type sizes
+    # and with the same tones as the retrieval panels
+    RS.K = 1.6
+    R.setup_styles(tone=lambda m, c: c if m in ("RFoldSearch", "RFoldSearch-TM")
+                   else S.lighten(c, 0.35))
+    ax_sa, ax_sb = R.speed_row(fig, rows[0], wspace=0.05)
+    # C's method names sit where the y-axis labels of the row below sit, so that the two
     # rows share their outer edges.
     r0 = fig.add_gridspec(1, 2, wspace=0.10, left=0.165, right=0.99,
-                          top=0.94, bottom=rows[0].get_position(fig).y0)
+                          top=rows[1].get_position(fig).y1, bottom=rows[1].get_position(fig).y0)
     ax_a1 = overall_panel(fig, r0[0], est, "label", MAIN, None, "Annotation truth (Rfam family)")
+    title_c = fig.texts[-1]
     overall_panel(fig, r0[1], est, STRUCT_TRUTH, MAIN, "US-align (exhaustive)",
                   f"Structure truth (TM-score ≥ {E.TM_MAIN:.2f})", ylabels=False)
 
-    r1 = rows[1].subgridspec(1, 2, wspace=0.22)
+    r1 = rows[2].subgridspec(1, 2, wspace=0.22)
     ax_b, ax_c = (fig.add_subplot(r1[k]) for k in range(2))
     plddt_panel(ax_b, est, qplddt, STRUCT_TRUTH, [m for m in MAIN if m != "US-align (exhaustive)"],
                 "Predicted queries (structure truth)")
@@ -315,25 +327,40 @@ def main():
     ax_c.set_xticks(range(2), ["Experimental\nqueries", "Predicted\nqueries"], fontsize=10)
     ax_c.set_xlim(-0.5, 1.5)
     ax_c.set_ylim(0, 0.7)
-    ax_c.grid(axis="y", color="#E6E6E6", lw=0.8, zorder=0)
-    ax_c.set_axisbelow(True)
     S.style_axes(ax_c, ylabel=METRIC)
     ax_c.set_title("Structure truth", fontsize=11.5, pad=6)
     fill_legend(ax_c, ("All positives", "Sequence-detectable positives neutral"), loc="upper center",
                 anchor=(0.5, 1.0), ncol=2)
     ax_c.set_ylim(0, 0.75)
 
-    for ax, lab, x in ((ax_b, "B", -0.14), (ax_c, "C", -0.14)):
-        letter(ax, lab, x)
-    # A's letter in the same column as B's
-    pa, pb = ax_a1.get_position(), ax_b.get_position()
-    letter(ax_a1, "A", (pb.x0 - 0.14 * pb.width - pa.x0) / pa.width)
-    handles = [plt.Line2D([], [], color=tone(m), lw=3.0 if m in HERO else 2.2,
-                          ls="--" if m in SEQ_ONLY else "-", marker=S.MARKER[m],
-                          ms=9 + (3 if m == "RFoldSearch-TM n500" else 0), mec="white", mew=0.9,
-                          label=S.SHORT[m]) for m in MAIN]
-    fig.legend(handles=handles, loc="lower center", ncol=8, frameon=False, fontsize=10.5,
-               bbox_to_anchor=(0.5, 0.0), handlelength=2.2, columnspacing=1.2)
+    # every letter level with its panel's title; A, C, D in one column, B and E in another
+    pb, pc = ax_b.get_position(), ax_c.get_position()
+    col_l, col_r = pb.x0 - 0.14 * pb.width, pc.x0 - 0.14 * pc.width
+    fig.canvas.draw()
+    inv = fig.transFigure.inverted()
+    for title, lab, x in ((ax_sa.title, "A", col_l), (ax_sb.title, "B", col_r), (title_c, "C", col_l),
+                          (ax_b.title, "D", col_l), (ax_c.title, "E", col_r)):
+        bb = inv.transform(title.get_window_extent())
+        fig.text(x, (bb[0][1] + bb[1][1]) / 2, lab, fontsize=16, fontweight="bold",
+                 va="center", ha="right")
+    # Legend: one row per kind of method, columns aligned across rows
+    def handle(m):
+        if m in MAIN:
+            return plt.Line2D([], [], color=tone(m), lw=3.0 if m in HERO else 2.2,
+                              ls="--" if m in SEQ_ONLY else "-", marker=S.MARKER[m],
+                              ms=9 + (3 if m == "RFoldSearch-TM n500" else 0), mec="white",
+                              mew=0.9, label=S.SHORT[m])
+        # methods timed but not in the retrieval benchmark
+        return plt.Line2D([], [], color=R.F.COLOR[m], lw=2.2, ls=R.linestyle(m),
+                          marker=R.F.MARKER[m], ms=9, mec="white", mew=0.9,
+                          label=R.legend_label(m))
+    blank = plt.Line2D([], [], ls="none", label=" ")
+    rows = [["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", None],
+            ["US-align (exhaustive)", "RTM-align", "RMalign", "GTalign", "GTalign-fast"],
+            ["BLASTN", "nhmmer", "Infernal", "Infernal-fast", None]]
+    handles = [handle(r[c]) if r[c] else blank for c in range(5) for r in rows]   # column-major
+    fig.legend(handles=handles, loc="lower center", ncol=5, frameon=False, fontsize=10.5,
+               bbox_to_anchor=(0.5, -0.02), handlelength=2.6, columnspacing=2.2)
     fig.savefig(os.path.join(FIG, "fig5.png"), dpi=200, bbox_inches="tight")
     plt.close(fig)
 

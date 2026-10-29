@@ -1,0 +1,121 @@
+{
+ "RFoldSearch": {
+  "hardware": "1 CPU core",
+  "full_mean_s": 0.4745,
+  "full_median_s": 0.154,
+  "full_iqr_s": [
+   0.0585,
+   0.5214
+  ],
+  "length_exponent": 1.303,
+  "by_length_bin_mean_s": {
+   "20-34": 0.0913,
+   "35-49": 0.109,
+   "50-99": 0.303,
+   "100-199": 0.6866,
+   "200-399": 1.7216
+  }
+ },
+ "RFoldSearch-TM": {
+  "hardware": "1 CPU core",
+  "full_mean_s": 8.644,
+  "full_median_s": 2.0213,
+  "full_iqr_s": [
+   1.318,
+   8.7168
+  ],
+  "length_exponent": 1.311,
+  "by_length_bin_mean_s": {
+   "20-34": 1.4181,
+   "35-49": 1.8234,
+   "50-99": 3.407,
+   "100-199": 11.9151,
+   "200-399": 34.02
+  }
+ },
+ "RiboSeek (RS-80)": {
+  "hardware": "1 CPU core",
+  "full_mean_s": 0.8771,
+  "full_median_s": 0.6792,
+  "full_iqr_s": [
+   0.5653,
+   1.0705
+  ],
+  "length_exponent": 0.462,
+  "by_length_bin_mean_s": {
+   "20-34": 0.5634,
+   "35-49": 0.718,
+   "50-99": 0.8588,
+   "100-199": 1.1562,
+   "200-399": 1.7042
+  }
+ },
+ "RiboSeek (RS-20)": {
+  "hardware": "1 CPU core",
+  "full_mean_s": 1.9784,
+  "full_median_s": 1.7086,
+  "full_iqr_s": [
+   1.1915,
+   2.6723
+  ],
+  "length_exponent": 0.462,
+  "by_length_bin_mean_s": {
+   "20-34": 1.3183,
+   "35-49": 1.3299,
+   "50-99": 2.0244,
+   "100-199": 2.7615,
+   "200-399": 3.6668
+  }
+ },
+ "BLASTN": {
+  "hardware": "1 CPU core",
+  "full_mean_s": 0.4663,
+  "full_median_s": 0.4708,
+  "full_iqr_s": [
+   0.4436,
+   0.5042
+  ],
+  "length_exponent": 0.015,
+  "by_length_bin_mean_s": {
+   "20-34": 0.454,
+   "35-49": 0.4882,
+   "50-99": 0.4922,
+   "100-199": 0.4735,
+   "200-399": 0.4706
+  }
+ },
+ "GTalign-fast": {
+  "hardware": "GPU",
+  "full_mean_s": 13.1773,
+  "full_median_s": 13.1527,
+  "full_iqr_s": [
+   12.7577,
+   13.5478
+  ],
+  "length_exponent": 0.0,
+  "by_length_bin_mean_s": {
+   "20-34": 13.1803,
+   "35-49": 13.0383,
+   "50-99": 13.117,
+   "100-199": 13.4441,
+   "200-399": 13.1318
+  }
+ },
+ "GTalign": {
+  "hardware": "GPU",
+  "full_mean_s": 15.7232,
+  "full_median_s": 14.8112,
+  "full_iqr_s": [
+   14.2224,
+   15.6412
+  ],
+  "length_exponent": 0.119,
+  "by_length_bin_mean_s": {
+   "20-34": 14.5895,
+   "35-49": 14.369,
+   "50-99": 14.8232,
+   "100-199": 15.6836,
+   "200-399": 20.134
+  }
+ }
+}

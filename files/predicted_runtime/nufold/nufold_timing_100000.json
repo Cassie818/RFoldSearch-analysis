@@ -1,1514 +1,1513 @@
 {
-  "n_database": 100000,
-  "top_n": 500,
-  "mean_s": 0.14412187283237776,
-  "median_s": 0.03932129591703415,
-  "p90_s": 0.4817821472883228,
-  "max_s": 1.0386080369353294,
-  "build_s": 3.98,
-  "index_mb": 400.0,
-  "indexed_kmers": 9037370,
-  "postings_mean": 1741571.6233333333,
-  "per_query": [
-    {
-      "id": "URS00001D4390_3702_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0172
-    },
-    {
-      "id": "URS000031AE8B_6239_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0212
-    },
-    {
-      "id": "URS0000EFDA84_7955_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0261
-    },
-    {
-      "id": "URS00000B3129_10116_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0273
-    },
-    {
-      "id": "URS0000393EA0_6239_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.018
-    },
-    {
-      "id": "URS0000313C3C_6239_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0196
-    },
-    {
-      "id": "URS000058F377_10090_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0271
-    },
-    {
-      "id": "URS000058938A_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0562
-    },
-    {
-      "id": "URS000045B1B8_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0212
-    },
-    {
-      "id": "URS00000EE737_3702_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0258
-    },
-    {
-      "id": "URS00000D3F71_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0337
-    },
-    {
-      "id": "URS00007B44A6_3702_rank_1.pdb",
-      "tokens": 20,
-      "s": 0.019
-    },
-    {
-      "id": "URS00005F6213_3702_rank_1.pdb",
-      "tokens": 20,
-      "s": 0.0252
-    },
-    {
-      "id": "URS00004537A3_3702_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0465
-    },
-    {
-      "id": "URS000026E27A_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0238
-    },
-    {
-      "id": "URS00005D7FA8_6239_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0132
-    },
-    {
-      "id": "URS0000D549D8_9606_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0364
-    },
-    {
-      "id": "URS0000057615_10090_rank_1.pdb",
-      "tokens": 20,
-      "s": 0.0198
-    },
-    {
-      "id": "URS0000558117_3702_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0286
-    },
-    {
-      "id": "URS000022D3EC_10090_rank_1.pdb",
-      "tokens": 20,
-      "s": 0.0067
-    },
-    {
-      "id": "URS000029E1A9_3702_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0294
-    },
-    {
-      "id": "URS00005E5DA9_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0342
-    },
-    {
-      "id": "URS0000A76760_3702_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0194
-    },
-    {
-      "id": "URS0000513106_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0382
-    },
-    {
-      "id": "URS000015855A_10090_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0118
-    },
-    {
-      "id": "URS00002920CB_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0198
-    },
-    {
-      "id": "URS000012F9B0_6239_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0224
-    },
-    {
-      "id": "URS00004045E8_10090_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0263
-    },
-    {
-      "id": "URS00005915EA_3702_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0154
-    },
-    {
-      "id": "URS000058C00F_10116_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0472
-    },
-    {
-      "id": "URS000079AB0F_3702_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0259
-    },
-    {
-      "id": "URS00004B7C85_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0264
-    },
-    {
-      "id": "URS0000402ED7_3702_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0314
-    },
-    {
-      "id": "URS0000018897_10090_rank_1.pdb",
-      "tokens": 25,
-      "s": 0.029
-    },
-    {
-      "id": "URS0000113B0C_3702_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0267
-    },
-    {
-      "id": "URS00007B6943_7227_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0276
-    },
-    {
-      "id": "URS00001741B6_44689_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.054
-    },
-    {
-      "id": "URS0000192D14_6239_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0238
-    },
-    {
-      "id": "URS000032F887_9606_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0238
-    },
-    {
-      "id": "URS0000069C84_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0207
-    },
-    {
-      "id": "URS000040302D_10090_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.026
-    },
-    {
-      "id": "URS00005E7639_10116_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0264
-    },
-    {
-      "id": "URS00004C9EB7_3702_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0491
-    },
-    {
-      "id": "URS000008DBAB_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0169
-    },
-    {
-      "id": "URS0000796C72_3702_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0205
-    },
-    {
-      "id": "URS0000570C5E_3702_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0232
-    },
-    {
-      "id": "URS0000577E9F_10090_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0174
-    },
-    {
-      "id": "URS0000603CBA_10090_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0226
-    },
-    {
-      "id": "URS0000169B51_10090_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0251
-    },
-    {
-      "id": "URS000078F9B0_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0229
-    },
-    {
-      "id": "URS00000E8EF9_3702_rank_1.pdb",
-      "tokens": 21,
-      "s": 0.0233
-    },
-    {
-      "id": "URS00007B85A4_3702_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0269
-    },
-    {
-      "id": "URS0000453B40_10090_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0373
-    },
-    {
-      "id": "URS00000A0D71_10116_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0274
-    },
-    {
-      "id": "URS00003BE693_10116_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0286
-    },
-    {
-      "id": "URS000058539A_10116_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.031
-    },
-    {
-      "id": "URS00005C22B2_7227_rank_1.pdb",
-      "tokens": 22,
-      "s": 0.0136
-    },
-    {
-      "id": "URS000038FD84_10116_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0401
-    },
-    {
-      "id": "URS00000AF614_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0343
-    },
-    {
-      "id": "URS000079263A_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0272
-    },
-    {
-      "id": "URS0000456D1A_10116_rank_1.pdb",
-      "tokens": 25,
-      "s": 0.0409
-    },
-    {
-      "id": "URS0000277AC0_3702_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0287
-    },
-    {
-      "id": "URS00000765DA_9606_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0417
-    },
-    {
-      "id": "URS0000178D32_9606_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0445
-    },
-    {
-      "id": "URS00004ECE90_3702_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0268
-    },
-    {
-      "id": "URS00003A7DFC_10116_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0511
-    },
-    {
-      "id": "URS00005B6261_7227_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0465
-    },
-    {
-      "id": "URS00000A4056_10116_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0211
-    },
-    {
-      "id": "URS00005FE10B_10116_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0242
-    },
-    {
-      "id": "URS00001AE1F9_3702_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0273
-    },
-    {
-      "id": "URS000009F7BD_10090_rank_1.pdb",
-      "tokens": 23,
-      "s": 0.0222
-    },
-    {
-      "id": "URS00005FEB4A_9606_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0258
-    },
-    {
-      "id": "URS0000167A09_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0394
-    },
-    {
-      "id": "URS000010DCAE_10090_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0251
-    },
-    {
-      "id": "URS0000042481_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0275
-    },
-    {
-      "id": "URS000037EED6_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.036
-    },
-    {
-      "id": "URS00002A3979_3702_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0278
-    },
-    {
-      "id": "URS000047475E_3702_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.0234
-    },
-    {
-      "id": "URS00001F7534_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0312
-    },
-    {
-      "id": "URS0000534018_9606_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0327
-    },
-    {
-      "id": "URS0000333224_10090_rank_1.pdb",
-      "tokens": 24,
-      "s": 0.028
-    },
-    {
-      "id": "URS000033DFA0_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0297
-    },
-    {
-      "id": "URS00003D39AA_9606_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0233
-    },
-    {
-      "id": "URS000055BC0C_9606_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0301
-    },
-    {
-      "id": "URS000039C30B_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0319
-    },
-    {
-      "id": "URS0000594091_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0423
-    },
-    {
-      "id": "URS000010E1B6_9606_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0255
-    },
-    {
-      "id": "URS0000133D17_10090_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.041
-    },
-    {
-      "id": "URS0000433F56_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0384
-    },
-    {
-      "id": "URS00004F47F9_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0424
-    },
-    {
-      "id": "URS000052D81B_10116_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0318
-    },
-    {
-      "id": "URS00003058F0_10090_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0238
-    },
-    {
-      "id": "URS00000E249B_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0231
-    },
-    {
-      "id": "URS00003A36CB_10116_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0328
-    },
-    {
-      "id": "URS00004ED0A4_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0252
-    },
-    {
-      "id": "URS00002A2DDE_10116_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0221
-    },
-    {
-      "id": "URS000035DD20_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0365
-    },
-    {
-      "id": "URS00002F154F_10116_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.025
-    },
-    {
-      "id": "URS00002B6DA0_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0377
-    },
-    {
-      "id": "URS000034F118_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0329
-    },
-    {
-      "id": "URS0000231F1E_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0284
-    },
-    {
-      "id": "URS000008DC32_10116_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0204
-    },
-    {
-      "id": "URS00002C331D_10116_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0177
-    },
-    {
-      "id": "URS0000272416_10090_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0347
-    },
-    {
-      "id": "URS00004386C7_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0161
-    },
-    {
-      "id": "URS00002A2B70_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0291
-    },
-    {
-      "id": "URS00001D560F_10116_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0514
-    },
-    {
-      "id": "URS000016E994_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0324
-    },
-    {
-      "id": "URS00003E9C77_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0322
-    },
-    {
-      "id": "URS00001B735E_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0377
-    },
-    {
-      "id": "URS000060A16A_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0302
-    },
-    {
-      "id": "URS0000285197_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0291
-    },
-    {
-      "id": "URS0000433D28_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0332
-    },
-    {
-      "id": "URS00004A40EB_10116_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.032
-    },
-    {
-      "id": "URS00002D177C_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.03
-    },
-    {
-      "id": "URS000002056B_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0396
-    },
-    {
-      "id": "URS00002153B4_10116_rank_1.pdb",
-      "tokens": 26,
-      "s": 0.0236
-    },
-    {
-      "id": "URS000018B438_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0338
-    },
-    {
-      "id": "URS000017FABA_10090_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0232
-    },
-    {
-      "id": "URS0000445985_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0419
-    },
-    {
-      "id": "URS000053F740_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0347
-    },
-    {
-      "id": "URS00003AA44A_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0359
-    },
-    {
-      "id": "URS0000607A0A_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0387
-    },
-    {
-      "id": "URS00005DBB07_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0337
-    },
-    {
-      "id": "URS0000235E44_10116_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0299
-    },
-    {
-      "id": "URS00000812AF_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0366
-    },
-    {
-      "id": "URS00000871E4_9606_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0275
-    },
-    {
-      "id": "URS00003920D9_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0233
-    },
-    {
-      "id": "URS0000538BBD_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0365
-    },
-    {
-      "id": "URS00000B7D8A_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0326
-    },
-    {
-      "id": "URS00001E64B2_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0273
-    },
-    {
-      "id": "URS000040198B_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0358
-    },
-    {
-      "id": "URS0000246A27_10090_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0405
-    },
-    {
-      "id": "URS0000528D44_9606_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0354
-    },
-    {
-      "id": "URS00000B3103_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0056
-    },
-    {
-      "id": "URS000040585C_10116_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0286
-    },
-    {
-      "id": "URS00002E55BC_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0315
-    },
-    {
-      "id": "URS000036D14E_10116_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0355
-    },
-    {
-      "id": "URS00001ED261_9606_rank_1.pdb",
-      "tokens": 27,
-      "s": 0.0392
-    },
-    {
-      "id": "URS00000926E1_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0293
-    },
-    {
-      "id": "URS000022C12A_10090_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.0307
-    },
-    {
-      "id": "URS000051C0FD_10090_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0346
-    },
-    {
-      "id": "URS00004F7D5C_10090_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.037
-    },
-    {
-      "id": "URS00003CF521_10116_rank_1.pdb",
-      "tokens": 29,
-      "s": 0.034
-    },
-    {
-      "id": "URS000041EAFB_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.034
-    },
-    {
-      "id": "URS000053732A_10090_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0221
-    },
-    {
-      "id": "URS000003BBB2_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0395
-    },
-    {
-      "id": "URS0000459BD0_9606_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0239
-    },
-    {
-      "id": "URS000036E37E_10116_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0286
-    },
-    {
-      "id": "URS00002A899E_9606_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0338
-    },
-    {
-      "id": "URS0000580FE6_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0267
-    },
-    {
-      "id": "URS000031A0DA_10090_rank_1.pdb",
-      "tokens": 28,
-      "s": 0.0384
-    },
-    {
-      "id": "URS0000516F2F_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0272
-    },
-    {
-      "id": "URS0000259872_10090_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0402
-    },
-    {
-      "id": "URS00002BC14A_10116_rank_1.pdb",
-      "tokens": 30,
-      "s": 0.0287
-    },
-    {
-      "id": "URS000045C2B8_9606_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0313
-    },
-    {
-      "id": "URS00004CC3D3_10090_rank_1.pdb",
-      "tokens": 31,
-      "s": 0.0298
-    },
-    {
-      "id": "URS0000A7679C_3702_rank_1.pdb",
-      "tokens": 42,
-      "s": 0.0577
-    },
-    {
-      "id": "URS00006B808C_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.0176
-    },
-    {
-      "id": "URS0000684D71_6183_rank_1.pdb",
-      "tokens": 48,
-      "s": 0.0403
-    },
-    {
-      "id": "URS00006C8836_6183_rank_1.pdb",
-      "tokens": 45,
-      "s": 0.0321
-    },
-    {
-      "id": "URS000069511F_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.0395
-    },
-    {
-      "id": "URS00006B75C6_171101_rank_1.pdb",
-      "tokens": 45,
-      "s": 0.0688
-    },
-    {
-      "id": "URS000064496A_6183_rank_1.pdb",
-      "tokens": 48,
-      "s": 0.0337
-    },
-    {
-      "id": "URS000067FA37_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.0554
-    },
-    {
-      "id": "URS00006E065F_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.0357
-    },
-    {
-      "id": "URS00006F08E2_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.0236
-    },
-    {
-      "id": "URS00006B619E_6183_rank_1.pdb",
-      "tokens": 45,
-      "s": 0.047
-    },
-    {
-      "id": "URS00006A9B3C_6183_rank_1.pdb",
-      "tokens": 45,
-      "s": 0.065
-    },
-    {
-      "id": "URS00006E56A1_6183_rank_1.pdb",
-      "tokens": 44,
-      "s": 0.0611
-    },
-    {
-      "id": "URS00007059DF_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.0224
-    },
-    {
-      "id": "URS00006980D5_6183_rank_1.pdb",
-      "tokens": 45,
-      "s": 0.0334
-    },
-    {
-      "id": "URS000067DAEF_6183_rank_1.pdb",
-      "tokens": 45,
-      "s": 0.029
-    },
-    {
-      "id": "URS00006BE296_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.0374
-    },
-    {
-      "id": "URS00006575A4_6183_rank_1.pdb",
-      "tokens": 46,
-      "s": 0.086
-    },
-    {
-      "id": "URS000064C8F6_6183_rank_1.pdb",
-      "tokens": 48,
-      "s": 0.0157
-    },
-    {
-      "id": "URS0000661AF9_9606_rank_1.pdb",
-      "tokens": 52,
-      "s": 0.0456
-    },
-    {
-      "id": "URS00023117FC_7955_rank_1.pdb",
-      "tokens": 59,
-      "s": 0.0501
-    },
-    {
-      "id": "URS0000BB2E26_9606_rank_1.pdb",
-      "tokens": 63,
-      "s": 0.0557
-    },
-    {
-      "id": "URS00008E67A3_39947_rank_1.pdb",
-      "tokens": 63,
-      "s": 0.0747
-    },
-    {
-      "id": "URS0000762794_9606_rank_1.pdb",
-      "tokens": 64,
-      "s": 0.0547
-    },
-    {
-      "id": "URS00006C4E1B_3847_rank_1.pdb",
-      "tokens": 66,
-      "s": 0.0493
-    },
-    {
-      "id": "URS0000674E28_10116_rank_1.pdb",
-      "tokens": 63,
-      "s": 0.0388
-    },
-    {
-      "id": "URS000291361D_10090_rank_1.pdb",
-      "tokens": 67,
-      "s": 0.0631
-    },
-    {
-      "id": "URS00006C9A92_10116_rank_1.pdb",
-      "tokens": 70,
-      "s": 0.0648
-    },
-    {
-      "id": "URS00006475F8_10116_rank_1.pdb",
-      "tokens": 69,
-      "s": 0.0826
-    },
-    {
-      "id": "URS0000656696_10116_rank_1.pdb",
-      "tokens": 69,
-      "s": 0.0328
-    },
-    {
-      "id": "URS00007023F5_10116_rank_1.pdb",
-      "tokens": 69,
-      "s": 0.0459
-    },
-    {
-      "id": "URS0000D69C54_6183_rank_1.pdb",
-      "tokens": 71,
-      "s": 0.062
-    },
-    {
-      "id": "URS0000629805_10116_rank_1.pdb",
-      "tokens": 69,
-      "s": 0.0326
-    },
-    {
-      "id": "URS00006E7A10_10116_rank_1.pdb",
-      "tokens": 69,
-      "s": 0.0773
-    },
-    {
-      "id": "URS00003A003B_10090_rank_1.pdb",
-      "tokens": 72,
-      "s": 0.1194
-    },
-    {
-      "id": "URS0000713823_7955_rank_1.pdb",
-      "tokens": 73,
-      "s": 0.0548
-    },
-    {
-      "id": "URS0002914E77_10090_rank_1.pdb",
-      "tokens": 71,
-      "s": 0.0722
-    },
-    {
-      "id": "URS00002DB223_10090_rank_1.pdb",
-      "tokens": 73,
-      "s": 0.1029
-    },
-    {
-      "id": "URS00029068A5_1352_rank_1.pdb",
-      "tokens": 73,
-      "s": 0.0421
-    },
-    {
-      "id": "URS00006E0B01_10116_rank_1.pdb",
-      "tokens": 69,
-      "s": 0.0434
-    },
-    {
-      "id": "URS0000720DCE_10116_rank_1.pdb",
-      "tokens": 69,
-      "s": 0.0357
-    },
-    {
-      "id": "URS00006D838B_7955_rank_1.pdb",
-      "tokens": 76,
-      "s": 0.0722
-    },
-    {
-      "id": "URS000067B002_7955_rank_1.pdb",
-      "tokens": 74,
-      "s": 0.0538
-    },
-    {
-      "id": "URS00001B5A6D_10116_rank_1.pdb",
-      "tokens": 75,
-      "s": 0.0689
-    },
-    {
-      "id": "URS0000859BFD_10090_rank_1.pdb",
-      "tokens": 74,
-      "s": 0.0611
-    },
-    {
-      "id": "URS000070227A_9606_rank_1.pdb",
-      "tokens": 74,
-      "s": 0.0416
-    },
-    {
-      "id": "URS0000DA422F_36087_rank_1.pdb",
-      "tokens": 77,
-      "s": 0.0667
-    },
-    {
-      "id": "URS0000667C6A_7955_rank_1.pdb",
-      "tokens": 72,
-      "s": 0.0535
-    },
-    {
-      "id": "URS0000BE70D7_4577_rank_1.pdb",
-      "tokens": 73,
-      "s": 0.061
-    },
-    {
-      "id": "URS00006BBAAF_7955_rank_1.pdb",
-      "tokens": 74,
-      "s": 0.0508
-    },
-    {
-      "id": "URS0002331594_6183_rank_1.pdb",
-      "tokens": 78,
-      "s": 0.0804
-    },
-    {
-      "id": "URS0000D252BB_3702_rank_1.pdb",
-      "tokens": 81,
-      "s": 0.0823
-    },
-    {
-      "id": "URS0000C8D588_1391915_rank_1.pdb",
-      "tokens": 81,
-      "s": 0.0618
-    },
-    {
-      "id": "URS000068475C_7955_rank_1.pdb",
-      "tokens": 83,
-      "s": 0.0667
-    },
-    {
-      "id": "URS00006A0AB2_7955_rank_1.pdb",
-      "tokens": 82,
-      "s": 0.0638
-    },
-    {
-      "id": "URS0000672952_10116_rank_1.pdb",
-      "tokens": 84,
-      "s": 0.0737
-    },
-    {
-      "id": "URS0000CDD939_3702_rank_1.pdb",
-      "tokens": 84,
-      "s": 0.1117
-    },
-    {
-      "id": "URS000031060B_6183_rank_1.pdb",
-      "tokens": 88,
-      "s": 0.1176
-    },
-    {
-      "id": "URS000062AB91_9606_rank_1.pdb",
-      "tokens": 95,
-      "s": 0.1399
-    },
-    {
-      "id": "URS0000648EF9_7955_rank_1.pdb",
-      "tokens": 93,
-      "s": 0.1061
-    },
-    {
-      "id": "URS000075DD59_7955_rank_1.pdb",
-      "tokens": 97,
-      "s": 0.0969
-    },
-    {
-      "id": "URS0000409A17_9606_rank_1.pdb",
-      "tokens": 105,
-      "s": 0.1424
-    },
-    {
-      "id": "URS000069CCFC_7955_rank_1.pdb",
-      "tokens": 107,
-      "s": 0.1236
-    },
-    {
-      "id": "URS0000D019FD_3702_rank_1.pdb",
-      "tokens": 109,
-      "s": 0.1176
-    },
-    {
-      "id": "URS0000A87411_10090_rank_1.pdb",
-      "tokens": 108,
-      "s": 0.0965
-    },
-    {
-      "id": "URS0000C6E156_4577_rank_1.pdb",
-      "tokens": 108,
-      "s": 0.1186
-    },
-    {
-      "id": "URS00006BDFF8_3847_rank_1.pdb",
-      "tokens": 107,
-      "s": 0.1425
-    },
-    {
-      "id": "URS00006A2183_9606_rank_1.pdb",
-      "tokens": 112,
-      "s": 0.1649
-    },
-    {
-      "id": "URS00005C3719_9606_rank_1.pdb",
-      "tokens": 116,
-      "s": 0.1365
-    },
-    {
-      "id": "URS00006EFC8C_10116_rank_1.pdb",
-      "tokens": 118,
-      "s": 0.1321
-    },
-    {
-      "id": "URS00007AD56E_7227_rank_1.pdb",
-      "tokens": 120,
-      "s": 0.1236
-    },
-    {
-      "id": "URS0000633BDD_7955_rank_1.pdb",
-      "tokens": 116,
-      "s": 0.1322
-    },
-    {
-      "id": "URS0000BCE4D5_7955_rank_1.pdb",
-      "tokens": 116,
-      "s": 0.146
-    },
-    {
-      "id": "URS0000A8B006_10090_rank_1.pdb",
-      "tokens": 120,
-      "s": 0.1265
-    },
-    {
-      "id": "URS00003F463C_6239_rank_1.pdb",
-      "tokens": 124,
-      "s": 0.1676
-    },
-    {
-      "id": "URS00006D887A_10116_rank_1.pdb",
-      "tokens": 129,
-      "s": 0.2884
-    },
-    {
-      "id": "URS00003D3FBE_6239_rank_1.pdb",
-      "tokens": 135,
-      "s": 0.2785
-    },
-    {
-      "id": "URS00006C4F23_10090_rank_1.pdb",
-      "tokens": 139,
-      "s": 0.1609
-    },
-    {
-      "id": "URS00006E7994_10116_rank_1.pdb",
-      "tokens": 139,
-      "s": 0.1503
-    },
-    {
-      "id": "URS000093B93F_9606_rank_1.pdb",
-      "tokens": 148,
-      "s": 0.1551
-    },
-    {
-      "id": "URS0000126A80_6239_rank_1.pdb",
-      "tokens": 149,
-      "s": 0.178
-    },
-    {
-      "id": "URS00006AC797_10116_rank_1.pdb",
-      "tokens": 150,
-      "s": 0.1723
-    },
-    {
-      "id": "URS00004DE119_99287_rank_1.pdb",
-      "tokens": 153,
-      "s": 0.1865
-    },
-    {
-      "id": "URS000065E473_10116_rank_1.pdb",
-      "tokens": 163,
-      "s": 0.1682
-    },
-    {
-      "id": "URS00004DAD5D_9606_rank_1.pdb",
-      "tokens": 168,
-      "s": 0.1834
-    },
-    {
-      "id": "URS00006BF6C2_39947_rank_1.pdb",
-      "tokens": 179,
-      "s": 0.2292
-    },
-    {
-      "id": "URS000063C650_10090_rank_1.pdb",
-      "tokens": 189,
-      "s": 0.3639
-    },
-    {
-      "id": "URS0002313E31_39947_rank_1.pdb",
-      "tokens": 193,
-      "s": 0.2917
-    },
-    {
-      "id": "URS0002322E63_39947_rank_1.pdb",
-      "tokens": 204,
-      "s": 0.2829
-    },
-    {
-      "id": "URS000232C4F9_39947_rank_1.pdb",
-      "tokens": 205,
-      "s": 0.2994
-    },
-    {
-      "id": "URS0002328117_39947_rank_1.pdb",
-      "tokens": 202,
-      "s": 0.2688
-    },
-    {
-      "id": "URS000232BBD3_39947_rank_1.pdb",
-      "tokens": 205,
-      "s": 0.2933
-    },
-    {
-      "id": "URS00008B574B_9606_rank_1.pdb",
-      "tokens": 207,
-      "s": 0.2606
-    },
-    {
-      "id": "URS000231F050_39947_rank_1.pdb",
-      "tokens": 208,
-      "s": 0.3754
-    },
-    {
-      "id": "URS00006BA0F5_9606_rank_1.pdb",
-      "tokens": 212,
-      "s": 0.2748
-    },
-    {
-      "id": "URS00019C2402_9606_rank_1.pdb",
-      "tokens": 219,
-      "s": 0.386
-    },
-    {
-      "id": "URS0000A7686B_3702_rank_1.pdb",
-      "tokens": 219,
-      "s": 0.363
-    },
-    {
-      "id": "URS0000CAC75D_5671_rank_1.pdb",
-      "tokens": 224,
-      "s": 0.2469
-    },
-    {
-      "id": "URS0000E91135_9606_rank_1.pdb",
-      "tokens": 227,
-      "s": 0.418
-    },
-    {
-      "id": "URS0000B26CD0_10116_rank_1.pdb",
-      "tokens": 233,
-      "s": 0.4571
-    },
-    {
-      "id": "URS0000D5D022_9606_rank_1.pdb",
-      "tokens": 237,
-      "s": 0.3449
-    },
-    {
-      "id": "URS00008BB3F9_9606_rank_1.pdb",
-      "tokens": 244,
-      "s": 0.5129
-    },
-    {
-      "id": "URS0000A8132E_10116_rank_1.pdb",
-      "tokens": 246,
-      "s": 0.4788
-    },
-    {
-      "id": "URS000233FF66_9606_rank_1.pdb",
-      "tokens": 248,
-      "s": 0.3287
-    },
-    {
-      "id": "URS0002869C92_9606_rank_1.pdb",
-      "tokens": 251,
-      "s": 0.431
-    },
-    {
-      "id": "URS00023A0F38_3847_rank_1.pdb",
-      "tokens": 256,
-      "s": 0.6009
-    },
-    {
-      "id": "URS0000E9A5C7_9606_rank_1.pdb",
-      "tokens": 259,
-      "s": 0.441
-    },
-    {
-      "id": "URS0001BDD8D3_9606_rank_1.pdb",
-      "tokens": 264,
-      "s": 0.5421
-    },
-    {
-      "id": "URS0000CF9A90_3702_rank_1.pdb",
-      "tokens": 270,
-      "s": 0.3461
-    },
-    {
-      "id": "URS0000B2331A_10116_rank_1.pdb",
-      "tokens": 276,
-      "s": 0.6935
-    },
-    {
-      "id": "URS000023580E_9606_rank_1.pdb",
-      "tokens": 277,
-      "s": 0.6299
-    },
-    {
-      "id": "URS00025F01F3_9606_rank_1.pdb",
-      "tokens": 279,
-      "s": 0.4964
-    },
-    {
-      "id": "URS00008BD97D_9606_rank_1.pdb",
-      "tokens": 284,
-      "s": 0.2607
-    },
-    {
-      "id": "URS00006E7F90_9606_rank_1.pdb",
-      "tokens": 285,
-      "s": 0.4802
-    },
-    {
-      "id": "URS000235FA95_3847_rank_1.pdb",
-      "tokens": 293,
-      "s": 0.6163
-    },
-    {
-      "id": "URS0000239D1F_9606_rank_1.pdb",
-      "tokens": 293,
-      "s": 0.5935
-    },
-    {
-      "id": "URS0000E92935_9606_rank_1.pdb",
-      "tokens": 298,
-      "s": 0.3782
-    },
-    {
-      "id": "URS0002209018_447093_rank_1.pdb",
-      "tokens": 304,
-      "s": 0.4758
-    },
-    {
-      "id": "URS0000D5D3C3_9606_rank_1.pdb",
-      "tokens": 308,
-      "s": 0.5323
-    },
-    {
-      "id": "URS00027DFA02_9606_rank_1.pdb",
-      "tokens": 308,
-      "s": 0.4468
-    },
-    {
-      "id": "URS0000B2297B_10116_rank_1.pdb",
-      "tokens": 311,
-      "s": 0.5748
-    },
-    {
-      "id": "URS00022633F7_447093_rank_1.pdb",
-      "tokens": 313,
-      "s": 0.7017
-    },
-    {
-      "id": "URS0000EB839A_9606_rank_1.pdb",
-      "tokens": 322,
-      "s": 0.3869
-    },
-    {
-      "id": "URS0000D5AD86_9606_rank_1.pdb",
-      "tokens": 325,
-      "s": 0.4595
-    },
-    {
-      "id": "URS00001D0FAF_9606_rank_1.pdb",
-      "tokens": 330,
-      "s": 0.7167
-    },
-    {
-      "id": "URS0000A76BC1_3702_rank_1.pdb",
-      "tokens": 333,
-      "s": 0.6475
-    },
-    {
-      "id": "URS0000EB1C0C_9606_rank_1.pdb",
-      "tokens": 335,
-      "s": 0.7474
-    },
-    {
-      "id": "URS00009B9712_9606_rank_1.pdb",
-      "tokens": 339,
-      "s": 0.71
-    },
-    {
-      "id": "URS00009BF888_10090_rank_1.pdb",
-      "tokens": 345,
-      "s": 0.7088
-    },
-    {
-      "id": "URS00008BC182_9606_rank_1.pdb",
-      "tokens": 347,
-      "s": 0.766
-    },
-    {
-      "id": "URS0000D6DE93_9606_rank_1.pdb",
-      "tokens": 354,
-      "s": 0.7836
-    },
-    {
-      "id": "URS00008B7337_9606_rank_1.pdb",
-      "tokens": 356,
-      "s": 0.6953
-    },
-    {
-      "id": "URS0000EA0E35_9606_rank_1.pdb",
-      "tokens": 358,
-      "s": 0.7949
-    },
-    {
-      "id": "URS000054E5C4_6239_rank_1.pdb",
-      "tokens": 365,
-      "s": 0.6518
-    },
-    {
-      "id": "URS00009C3EE9_10090_rank_1.pdb",
-      "tokens": 367,
-      "s": 0.7231
-    },
-    {
-      "id": "URS000235C8DD_3847_rank_1.pdb",
-      "tokens": 368,
-      "s": 0.8555
-    },
-    {
-      "id": "URS00009C081D_10090_rank_1.pdb",
-      "tokens": 376,
-      "s": 0.7872
-    },
-    {
-      "id": "URS00025D0CB0_9606_rank_1.pdb",
-      "tokens": 379,
-      "s": 0.7003
-    },
-    {
-      "id": "URS0000EBC87F_9606_rank_1.pdb",
-      "tokens": 378,
-      "s": 1.0386
-    },
-    {
-      "id": "URS0000EBB556_9606_rank_1.pdb",
-      "tokens": 381,
-      "s": 0.7584
-    },
-    {
-      "id": "URS0000CF4D27_3702_rank_1.pdb",
-      "tokens": 387,
-      "s": 0.854
-    },
-    {
-      "id": "URS0002209F32_447093_rank_1.pdb",
-      "tokens": 389,
-      "s": 0.7916
-    },
-    {
-      "id": "URS0000B2D67E_10116_rank_1.pdb",
-      "tokens": 394,
-      "s": 0.8489
-    }
-  ]
+ "n_database": 100000,
+ "top_n": 500,
+ "mean_s": 0.18281933513780435,
+ "median_s": 0.04892139509320259,
+ "p90_s": 0.6388005830347541,
+ "max_s": 1.280750460922718,
+ "build_s": 3.71,
+ "index_mb": 400.0,
+ "per_query": [
+  {
+   "id": "URS00001D4390_3702_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.02661
+  },
+  {
+   "id": "URS000031AE8B_6239_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.00926
+  },
+  {
+   "id": "URS0000EFDA84_7955_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.01343
+  },
+  {
+   "id": "URS00000B3129_10116_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.02247
+  },
+  {
+   "id": "URS0000393EA0_6239_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.02763
+  },
+  {
+   "id": "URS0000313C3C_6239_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.02471
+  },
+  {
+   "id": "URS000058F377_10090_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.01456
+  },
+  {
+   "id": "URS000058938A_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.07431
+  },
+  {
+   "id": "URS000045B1B8_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.02076
+  },
+  {
+   "id": "URS00000EE737_3702_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.03677
+  },
+  {
+   "id": "URS00000D3F71_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.02866
+  },
+  {
+   "id": "URS00007B44A6_3702_rank_1.pdb",
+   "tokens": 20,
+   "s": 0.01408
+  },
+  {
+   "id": "URS00005F6213_3702_rank_1.pdb",
+   "tokens": 20,
+   "s": 0.05307
+  },
+  {
+   "id": "URS00004537A3_3702_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.04834
+  },
+  {
+   "id": "URS000026E27A_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.03802
+  },
+  {
+   "id": "URS00005D7FA8_6239_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.03828
+  },
+  {
+   "id": "URS0000D549D8_9606_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.09
+  },
+  {
+   "id": "URS0000057615_10090_rank_1.pdb",
+   "tokens": 20,
+   "s": 0.02403
+  },
+  {
+   "id": "URS0000558117_3702_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.02145
+  },
+  {
+   "id": "URS000022D3EC_10090_rank_1.pdb",
+   "tokens": 20,
+   "s": 0.0275
+  },
+  {
+   "id": "URS000029E1A9_3702_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.02713
+  },
+  {
+   "id": "URS00005E5DA9_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.0153
+  },
+  {
+   "id": "URS0000A76760_3702_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.01072
+  },
+  {
+   "id": "URS0000513106_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.06615
+  },
+  {
+   "id": "URS000015855A_10090_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.01441
+  },
+  {
+   "id": "URS00002920CB_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.02197
+  },
+  {
+   "id": "URS000012F9B0_6239_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.02464
+  },
+  {
+   "id": "URS00004045E8_10090_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.0443
+  },
+  {
+   "id": "URS00005915EA_3702_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.01989
+  },
+  {
+   "id": "URS000058C00F_10116_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.05496
+  },
+  {
+   "id": "URS000079AB0F_3702_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.02715
+  },
+  {
+   "id": "URS00004B7C85_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.01471
+  },
+  {
+   "id": "URS0000402ED7_3702_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.06841
+  },
+  {
+   "id": "URS0000018897_10090_rank_1.pdb",
+   "tokens": 25,
+   "s": 0.02543
+  },
+  {
+   "id": "URS0000113B0C_3702_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.02991
+  },
+  {
+   "id": "URS00007B6943_7227_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.03122
+  },
+  {
+   "id": "URS00001741B6_44689_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.06703
+  },
+  {
+   "id": "URS0000192D14_6239_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.03077
+  },
+  {
+   "id": "URS000032F887_9606_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.02081
+  },
+  {
+   "id": "URS0000069C84_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.03427
+  },
+  {
+   "id": "URS000040302D_10090_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.01167
+  },
+  {
+   "id": "URS00005E7639_10116_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.03274
+  },
+  {
+   "id": "URS00004C9EB7_3702_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.06959
+  },
+  {
+   "id": "URS000008DBAB_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.01415
+  },
+  {
+   "id": "URS0000796C72_3702_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.01182
+  },
+  {
+   "id": "URS0000570C5E_3702_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.02046
+  },
+  {
+   "id": "URS0000577E9F_10090_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.0262
+  },
+  {
+   "id": "URS0000603CBA_10090_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.02462
+  },
+  {
+   "id": "URS0000169B51_10090_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.0249
+  },
+  {
+   "id": "URS000078F9B0_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.01451
+  },
+  {
+   "id": "URS00000E8EF9_3702_rank_1.pdb",
+   "tokens": 21,
+   "s": 0.01863
+  },
+  {
+   "id": "URS00007B85A4_3702_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.02646
+  },
+  {
+   "id": "URS0000453B40_10090_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.04622
+  },
+  {
+   "id": "URS00000A0D71_10116_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.04748
+  },
+  {
+   "id": "URS00003BE693_10116_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.03792
+  },
+  {
+   "id": "URS000058539A_10116_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.0321
+  },
+  {
+   "id": "URS00005C22B2_7227_rank_1.pdb",
+   "tokens": 22,
+   "s": 0.03937
+  },
+  {
+   "id": "URS000038FD84_10116_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.04682
+  },
+  {
+   "id": "URS00000AF614_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.03408
+  },
+  {
+   "id": "URS000079263A_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.03169
+  },
+  {
+   "id": "URS0000456D1A_10116_rank_1.pdb",
+   "tokens": 25,
+   "s": 0.04382
+  },
+  {
+   "id": "URS0000277AC0_3702_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.02553
+  },
+  {
+   "id": "URS00000765DA_9606_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.07378
+  },
+  {
+   "id": "URS0000178D32_9606_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.04763
+  },
+  {
+   "id": "URS00004ECE90_3702_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.02916
+  },
+  {
+   "id": "URS00003A7DFC_10116_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.06044
+  },
+  {
+   "id": "URS00005B6261_7227_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.07531
+  },
+  {
+   "id": "URS00000A4056_10116_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.03869
+  },
+  {
+   "id": "URS00005FE10B_10116_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.04642
+  },
+  {
+   "id": "URS00001AE1F9_3702_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.02227
+  },
+  {
+   "id": "URS000009F7BD_10090_rank_1.pdb",
+   "tokens": 23,
+   "s": 0.02123
+  },
+  {
+   "id": "URS00005FEB4A_9606_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.03317
+  },
+  {
+   "id": "URS0000167A09_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.03798
+  },
+  {
+   "id": "URS000010DCAE_10090_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.02871
+  },
+  {
+   "id": "URS0000042481_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.02977
+  },
+  {
+   "id": "URS000037EED6_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.03255
+  },
+  {
+   "id": "URS00002A3979_3702_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.02354
+  },
+  {
+   "id": "URS000047475E_3702_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.01972
+  },
+  {
+   "id": "URS00001F7534_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.02173
+  },
+  {
+   "id": "URS0000534018_9606_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.02855
+  },
+  {
+   "id": "URS0000333224_10090_rank_1.pdb",
+   "tokens": 24,
+   "s": 0.01714
+  },
+  {
+   "id": "URS000033DFA0_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04626
+  },
+  {
+   "id": "URS00003D39AA_9606_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.0303
+  },
+  {
+   "id": "URS000055BC0C_9606_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.02697
+  },
+  {
+   "id": "URS000039C30B_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03473
+  },
+  {
+   "id": "URS0000594091_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.03762
+  },
+  {
+   "id": "URS000010E1B6_9606_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.02093
+  },
+  {
+   "id": "URS0000133D17_10090_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.03203
+  },
+  {
+   "id": "URS0000433F56_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04249
+  },
+  {
+   "id": "URS00004F47F9_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04209
+  },
+  {
+   "id": "URS000052D81B_10116_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.05214
+  },
+  {
+   "id": "URS00003058F0_10090_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.03919
+  },
+  {
+   "id": "URS00000E249B_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.01817
+  },
+  {
+   "id": "URS00003A36CB_10116_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.04201
+  },
+  {
+   "id": "URS00004ED0A4_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.01914
+  },
+  {
+   "id": "URS00002A2DDE_10116_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.02842
+  },
+  {
+   "id": "URS000035DD20_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03056
+  },
+  {
+   "id": "URS00002F154F_10116_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.03473
+  },
+  {
+   "id": "URS00002B6DA0_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.018
+  },
+  {
+   "id": "URS000034F118_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03905
+  },
+  {
+   "id": "URS0000231F1E_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04855
+  },
+  {
+   "id": "URS000008DC32_10116_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.0247
+  },
+  {
+   "id": "URS00002C331D_10116_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.04519
+  },
+  {
+   "id": "URS0000272416_10090_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.04033
+  },
+  {
+   "id": "URS00004386C7_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03241
+  },
+  {
+   "id": "URS00002A2B70_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04061
+  },
+  {
+   "id": "URS00001D560F_10116_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.0863
+  },
+  {
+   "id": "URS000016E994_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.03857
+  },
+  {
+   "id": "URS00003E9C77_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.02485
+  },
+  {
+   "id": "URS00001B735E_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.0351
+  },
+  {
+   "id": "URS000060A16A_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.0427
+  },
+  {
+   "id": "URS0000285197_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.01917
+  },
+  {
+   "id": "URS0000433D28_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04391
+  },
+  {
+   "id": "URS00004A40EB_10116_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.01275
+  },
+  {
+   "id": "URS00002D177C_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03289
+  },
+  {
+   "id": "URS000002056B_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04929
+  },
+  {
+   "id": "URS00002153B4_10116_rank_1.pdb",
+   "tokens": 26,
+   "s": 0.03083
+  },
+  {
+   "id": "URS000018B438_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04784
+  },
+  {
+   "id": "URS000017FABA_10090_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.02251
+  },
+  {
+   "id": "URS0000445985_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.05597
+  },
+  {
+   "id": "URS000053F740_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.06498
+  },
+  {
+   "id": "URS00003AA44A_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.0604
+  },
+  {
+   "id": "URS0000607A0A_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.0468
+  },
+  {
+   "id": "URS00005DBB07_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03323
+  },
+  {
+   "id": "URS0000235E44_10116_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.02644
+  },
+  {
+   "id": "URS00000812AF_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.02386
+  },
+  {
+   "id": "URS00000871E4_9606_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.03337
+  },
+  {
+   "id": "URS00003920D9_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03603
+  },
+  {
+   "id": "URS0000538BBD_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03162
+  },
+  {
+   "id": "URS00000B7D8A_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.03761
+  },
+  {
+   "id": "URS00001E64B2_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.0397
+  },
+  {
+   "id": "URS000040198B_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04765
+  },
+  {
+   "id": "URS0000246A27_10090_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.075
+  },
+  {
+   "id": "URS0000528D44_9606_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.031
+  },
+  {
+   "id": "URS00000B3103_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.02701
+  },
+  {
+   "id": "URS000040585C_10116_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.02326
+  },
+  {
+   "id": "URS00002E55BC_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.02038
+  },
+  {
+   "id": "URS000036D14E_10116_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.05305
+  },
+  {
+   "id": "URS00001ED261_9606_rank_1.pdb",
+   "tokens": 27,
+   "s": 0.01863
+  },
+  {
+   "id": "URS00000926E1_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03627
+  },
+  {
+   "id": "URS000022C12A_10090_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.02457
+  },
+  {
+   "id": "URS000051C0FD_10090_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.07105
+  },
+  {
+   "id": "URS00004F7D5C_10090_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04436
+  },
+  {
+   "id": "URS00003CF521_10116_rank_1.pdb",
+   "tokens": 29,
+   "s": 0.0405
+  },
+  {
+   "id": "URS000041EAFB_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.03271
+  },
+  {
+   "id": "URS000053732A_10090_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.02138
+  },
+  {
+   "id": "URS000003BBB2_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.04307
+  },
+  {
+   "id": "URS0000459BD0_9606_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.04278
+  },
+  {
+   "id": "URS000036E37E_10116_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.04154
+  },
+  {
+   "id": "URS00002A899E_9606_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.02093
+  },
+  {
+   "id": "URS0000580FE6_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.0378
+  },
+  {
+   "id": "URS000031A0DA_10090_rank_1.pdb",
+   "tokens": 28,
+   "s": 0.041
+  },
+  {
+   "id": "URS0000516F2F_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.02689
+  },
+  {
+   "id": "URS0000259872_10090_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.0303
+  },
+  {
+   "id": "URS00002BC14A_10116_rank_1.pdb",
+   "tokens": 30,
+   "s": 0.03748
+  },
+  {
+   "id": "URS000045C2B8_9606_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.01933
+  },
+  {
+   "id": "URS00004CC3D3_10090_rank_1.pdb",
+   "tokens": 31,
+   "s": 0.0446
+  },
+  {
+   "id": "URS0000A7679C_3702_rank_1.pdb",
+   "tokens": 42,
+   "s": 0.06724
+  },
+  {
+   "id": "URS00006B808C_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.01376
+  },
+  {
+   "id": "URS0000684D71_6183_rank_1.pdb",
+   "tokens": 48,
+   "s": 0.04821
+  },
+  {
+   "id": "URS00006C8836_6183_rank_1.pdb",
+   "tokens": 45,
+   "s": 0.03365
+  },
+  {
+   "id": "URS000069511F_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.01645
+  },
+  {
+   "id": "URS00006B75C6_171101_rank_1.pdb",
+   "tokens": 45,
+   "s": 0.05461
+  },
+  {
+   "id": "URS000064496A_6183_rank_1.pdb",
+   "tokens": 48,
+   "s": 0.06351
+  },
+  {
+   "id": "URS000067FA37_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.06649
+  },
+  {
+   "id": "URS00006E065F_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.0284
+  },
+  {
+   "id": "URS00006F08E2_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.02829
+  },
+  {
+   "id": "URS00006B619E_6183_rank_1.pdb",
+   "tokens": 45,
+   "s": 0.03524
+  },
+  {
+   "id": "URS00006A9B3C_6183_rank_1.pdb",
+   "tokens": 45,
+   "s": 0.04263
+  },
+  {
+   "id": "URS00006E56A1_6183_rank_1.pdb",
+   "tokens": 44,
+   "s": 0.10938
+  },
+  {
+   "id": "URS00007059DF_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.03098
+  },
+  {
+   "id": "URS00006980D5_6183_rank_1.pdb",
+   "tokens": 45,
+   "s": 0.03782
+  },
+  {
+   "id": "URS000067DAEF_6183_rank_1.pdb",
+   "tokens": 45,
+   "s": 0.03023
+  },
+  {
+   "id": "URS00006BE296_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.05667
+  },
+  {
+   "id": "URS00006575A4_6183_rank_1.pdb",
+   "tokens": 46,
+   "s": 0.05089
+  },
+  {
+   "id": "URS000064C8F6_6183_rank_1.pdb",
+   "tokens": 48,
+   "s": 0.04209
+  },
+  {
+   "id": "URS0000661AF9_9606_rank_1.pdb",
+   "tokens": 52,
+   "s": 0.10439
+  },
+  {
+   "id": "URS00023117FC_7955_rank_1.pdb",
+   "tokens": 59,
+   "s": 0.07949
+  },
+  {
+   "id": "URS0000BB2E26_9606_rank_1.pdb",
+   "tokens": 63,
+   "s": 0.10762
+  },
+  {
+   "id": "URS00008E67A3_39947_rank_1.pdb",
+   "tokens": 63,
+   "s": 0.09596
+  },
+  {
+   "id": "URS0000762794_9606_rank_1.pdb",
+   "tokens": 64,
+   "s": 0.05153
+  },
+  {
+   "id": "URS00006C4E1B_3847_rank_1.pdb",
+   "tokens": 66,
+   "s": 0.06513
+  },
+  {
+   "id": "URS0000674E28_10116_rank_1.pdb",
+   "tokens": 63,
+   "s": 0.05196
+  },
+  {
+   "id": "URS000291361D_10090_rank_1.pdb",
+   "tokens": 67,
+   "s": 0.09684
+  },
+  {
+   "id": "URS00006C9A92_10116_rank_1.pdb",
+   "tokens": 70,
+   "s": 0.07068
+  },
+  {
+   "id": "URS00006475F8_10116_rank_1.pdb",
+   "tokens": 69,
+   "s": 0.08732
+  },
+  {
+   "id": "URS0000656696_10116_rank_1.pdb",
+   "tokens": 69,
+   "s": 0.06506
+  },
+  {
+   "id": "URS00007023F5_10116_rank_1.pdb",
+   "tokens": 69,
+   "s": 0.06211
+  },
+  {
+   "id": "URS0000D69C54_6183_rank_1.pdb",
+   "tokens": 71,
+   "s": 0.07005
+  },
+  {
+   "id": "URS0000629805_10116_rank_1.pdb",
+   "tokens": 69,
+   "s": 0.05783
+  },
+  {
+   "id": "URS00006E7A10_10116_rank_1.pdb",
+   "tokens": 69,
+   "s": 0.06399
+  },
+  {
+   "id": "URS00003A003B_10090_rank_1.pdb",
+   "tokens": 72,
+   "s": 0.11498
+  },
+  {
+   "id": "URS0000713823_7955_rank_1.pdb",
+   "tokens": 73,
+   "s": 0.0525
+  },
+  {
+   "id": "URS0002914E77_10090_rank_1.pdb",
+   "tokens": 71,
+   "s": 0.12792
+  },
+  {
+   "id": "URS00002DB223_10090_rank_1.pdb",
+   "tokens": 73,
+   "s": 0.10283
+  },
+  {
+   "id": "URS00029068A5_1352_rank_1.pdb",
+   "tokens": 73,
+   "s": 0.0579
+  },
+  {
+   "id": "URS00006E0B01_10116_rank_1.pdb",
+   "tokens": 69,
+   "s": 0.03422
+  },
+  {
+   "id": "URS0000720DCE_10116_rank_1.pdb",
+   "tokens": 69,
+   "s": 0.07462
+  },
+  {
+   "id": "URS00006D838B_7955_rank_1.pdb",
+   "tokens": 76,
+   "s": 0.13385
+  },
+  {
+   "id": "URS000067B002_7955_rank_1.pdb",
+   "tokens": 74,
+   "s": 0.05694
+  },
+  {
+   "id": "URS00001B5A6D_10116_rank_1.pdb",
+   "tokens": 75,
+   "s": 0.1047
+  },
+  {
+   "id": "URS0000859BFD_10090_rank_1.pdb",
+   "tokens": 74,
+   "s": 0.08855
+  },
+  {
+   "id": "URS000070227A_9606_rank_1.pdb",
+   "tokens": 74,
+   "s": 0.05269
+  },
+  {
+   "id": "URS0000DA422F_36087_rank_1.pdb",
+   "tokens": 77,
+   "s": 0.10846
+  },
+  {
+   "id": "URS0000667C6A_7955_rank_1.pdb",
+   "tokens": 72,
+   "s": 0.05304
+  },
+  {
+   "id": "URS0000BE70D7_4577_rank_1.pdb",
+   "tokens": 73,
+   "s": 0.05504
+  },
+  {
+   "id": "URS00006BBAAF_7955_rank_1.pdb",
+   "tokens": 74,
+   "s": 0.05826
+  },
+  {
+   "id": "URS0002331594_6183_rank_1.pdb",
+   "tokens": 78,
+   "s": 0.10344
+  },
+  {
+   "id": "URS0000D252BB_3702_rank_1.pdb",
+   "tokens": 81,
+   "s": 0.07465
+  },
+  {
+   "id": "URS0000C8D588_1391915_rank_1.pdb",
+   "tokens": 81,
+   "s": 0.05512
+  },
+  {
+   "id": "URS000068475C_7955_rank_1.pdb",
+   "tokens": 83,
+   "s": 0.06637
+  },
+  {
+   "id": "URS00006A0AB2_7955_rank_1.pdb",
+   "tokens": 82,
+   "s": 0.07454
+  },
+  {
+   "id": "URS0000672952_10116_rank_1.pdb",
+   "tokens": 84,
+   "s": 0.13046
+  },
+  {
+   "id": "URS0000CDD939_3702_rank_1.pdb",
+   "tokens": 84,
+   "s": 0.17552
+  },
+  {
+   "id": "URS000031060B_6183_rank_1.pdb",
+   "tokens": 88,
+   "s": 0.12374
+  },
+  {
+   "id": "URS000062AB91_9606_rank_1.pdb",
+   "tokens": 95,
+   "s": 0.21655
+  },
+  {
+   "id": "URS0000648EF9_7955_rank_1.pdb",
+   "tokens": 93,
+   "s": 0.12771
+  },
+  {
+   "id": "URS000075DD59_7955_rank_1.pdb",
+   "tokens": 97,
+   "s": 0.17599
+  },
+  {
+   "id": "URS0000409A17_9606_rank_1.pdb",
+   "tokens": 105,
+   "s": 0.21767
+  },
+  {
+   "id": "URS000069CCFC_7955_rank_1.pdb",
+   "tokens": 107,
+   "s": 0.17113
+  },
+  {
+   "id": "URS0000D019FD_3702_rank_1.pdb",
+   "tokens": 109,
+   "s": 0.16538
+  },
+  {
+   "id": "URS0000A87411_10090_rank_1.pdb",
+   "tokens": 108,
+   "s": 0.20875
+  },
+  {
+   "id": "URS0000C6E156_4577_rank_1.pdb",
+   "tokens": 108,
+   "s": 0.20294
+  },
+  {
+   "id": "URS00006BDFF8_3847_rank_1.pdb",
+   "tokens": 107,
+   "s": 0.1542
+  },
+  {
+   "id": "URS00006A2183_9606_rank_1.pdb",
+   "tokens": 112,
+   "s": 0.3268
+  },
+  {
+   "id": "URS00005C3719_9606_rank_1.pdb",
+   "tokens": 116,
+   "s": 0.16241
+  },
+  {
+   "id": "URS00006EFC8C_10116_rank_1.pdb",
+   "tokens": 118,
+   "s": 0.15354
+  },
+  {
+   "id": "URS00007AD56E_7227_rank_1.pdb",
+   "tokens": 120,
+   "s": 0.27375
+  },
+  {
+   "id": "URS0000633BDD_7955_rank_1.pdb",
+   "tokens": 116,
+   "s": 0.12406
+  },
+  {
+   "id": "URS0000BCE4D5_7955_rank_1.pdb",
+   "tokens": 116,
+   "s": 0.19226
+  },
+  {
+   "id": "URS0000A8B006_10090_rank_1.pdb",
+   "tokens": 120,
+   "s": 0.11397
+  },
+  {
+   "id": "URS00003F463C_6239_rank_1.pdb",
+   "tokens": 124,
+   "s": 0.17496
+  },
+  {
+   "id": "URS00006D887A_10116_rank_1.pdb",
+   "tokens": 129,
+   "s": 0.35892
+  },
+  {
+   "id": "URS00003D3FBE_6239_rank_1.pdb",
+   "tokens": 135,
+   "s": 0.27911
+  },
+  {
+   "id": "URS00006C4F23_10090_rank_1.pdb",
+   "tokens": 139,
+   "s": 0.18822
+  },
+  {
+   "id": "URS00006E7994_10116_rank_1.pdb",
+   "tokens": 139,
+   "s": 0.21107
+  },
+  {
+   "id": "URS000093B93F_9606_rank_1.pdb",
+   "tokens": 148,
+   "s": 0.1956
+  },
+  {
+   "id": "URS0000126A80_6239_rank_1.pdb",
+   "tokens": 149,
+   "s": 0.26376
+  },
+  {
+   "id": "URS00006AC797_10116_rank_1.pdb",
+   "tokens": 150,
+   "s": 0.28036
+  },
+  {
+   "id": "URS00004DE119_99287_rank_1.pdb",
+   "tokens": 153,
+   "s": 0.28017
+  },
+  {
+   "id": "URS000065E473_10116_rank_1.pdb",
+   "tokens": 163,
+   "s": 0.31579
+  },
+  {
+   "id": "URS00004DAD5D_9606_rank_1.pdb",
+   "tokens": 168,
+   "s": 0.30608
+  },
+  {
+   "id": "URS00006BF6C2_39947_rank_1.pdb",
+   "tokens": 179,
+   "s": 0.54578
+  },
+  {
+   "id": "URS000063C650_10090_rank_1.pdb",
+   "tokens": 189,
+   "s": 0.46547
+  },
+  {
+   "id": "URS0002313E31_39947_rank_1.pdb",
+   "tokens": 193,
+   "s": 0.566
+  },
+  {
+   "id": "URS0002322E63_39947_rank_1.pdb",
+   "tokens": 204,
+   "s": 0.43452
+  },
+  {
+   "id": "URS000232C4F9_39947_rank_1.pdb",
+   "tokens": 205,
+   "s": 0.49976
+  },
+  {
+   "id": "URS0002328117_39947_rank_1.pdb",
+   "tokens": 202,
+   "s": 0.42735
+  },
+  {
+   "id": "URS000232BBD3_39947_rank_1.pdb",
+   "tokens": 205,
+   "s": 0.44208
+  },
+  {
+   "id": "URS00008B574B_9606_rank_1.pdb",
+   "tokens": 207,
+   "s": 0.46639
+  },
+  {
+   "id": "URS000231F050_39947_rank_1.pdb",
+   "tokens": 208,
+   "s": 0.48445
+  },
+  {
+   "id": "URS00006BA0F5_9606_rank_1.pdb",
+   "tokens": 212,
+   "s": 0.50061
+  },
+  {
+   "id": "URS00019C2402_9606_rank_1.pdb",
+   "tokens": 219,
+   "s": 0.53372
+  },
+  {
+   "id": "URS0000A7686B_3702_rank_1.pdb",
+   "tokens": 219,
+   "s": 0.61885
+  },
+  {
+   "id": "URS0000CAC75D_5671_rank_1.pdb",
+   "tokens": 224,
+   "s": 0.28002
+  },
+  {
+   "id": "URS0000E91135_9606_rank_1.pdb",
+   "tokens": 227,
+   "s": 0.66537
+  },
+  {
+   "id": "URS0000B26CD0_10116_rank_1.pdb",
+   "tokens": 233,
+   "s": 0.55512
+  },
+  {
+   "id": "URS0000D5D022_9606_rank_1.pdb",
+   "tokens": 237,
+   "s": 0.50256
+  },
+  {
+   "id": "URS00008BB3F9_9606_rank_1.pdb",
+   "tokens": 244,
+   "s": 0.66776
+  },
+  {
+   "id": "URS0000A8132E_10116_rank_1.pdb",
+   "tokens": 246,
+   "s": 0.51077
+  },
+  {
+   "id": "URS000233FF66_9606_rank_1.pdb",
+   "tokens": 248,
+   "s": 0.64806
+  },
+  {
+   "id": "URS0002869C92_9606_rank_1.pdb",
+   "tokens": 251,
+   "s": 0.67939
+  },
+  {
+   "id": "URS00023A0F38_3847_rank_1.pdb",
+   "tokens": 256,
+   "s": 0.63777
+  },
+  {
+   "id": "URS0000E9A5C7_9606_rank_1.pdb",
+   "tokens": 259,
+   "s": 0.66654
+  },
+  {
+   "id": "URS0001BDD8D3_9606_rank_1.pdb",
+   "tokens": 264,
+   "s": 0.64982
+  },
+  {
+   "id": "URS0000CF9A90_3702_rank_1.pdb",
+   "tokens": 270,
+   "s": 0.61913
+  },
+  {
+   "id": "URS0000B2331A_10116_rank_1.pdb",
+   "tokens": 276,
+   "s": 0.90293
+  },
+  {
+   "id": "URS000023580E_9606_rank_1.pdb",
+   "tokens": 277,
+   "s": 0.89047
+  },
+  {
+   "id": "URS00025F01F3_9606_rank_1.pdb",
+   "tokens": 279,
+   "s": 0.68698
+  },
+  {
+   "id": "URS00008BD97D_9606_rank_1.pdb",
+   "tokens": 284,
+   "s": 0.38911
+  },
+  {
+   "id": "URS00006E7F90_9606_rank_1.pdb",
+   "tokens": 285,
+   "s": 0.71
+  },
+  {
+   "id": "URS000235FA95_3847_rank_1.pdb",
+   "tokens": 293,
+   "s": 0.74128
+  },
+  {
+   "id": "URS0000239D1F_9606_rank_1.pdb",
+   "tokens": 293,
+   "s": 0.63131
+  },
+  {
+   "id": "URS0000E92935_9606_rank_1.pdb",
+   "tokens": 298,
+   "s": 0.57958
+  },
+  {
+   "id": "URS0002209018_447093_rank_1.pdb",
+   "tokens": 304,
+   "s": 0.51935
+  },
+  {
+   "id": "URS0000D5D3C3_9606_rank_1.pdb",
+   "tokens": 308,
+   "s": 0.73409
+  },
+  {
+   "id": "URS00027DFA02_9606_rank_1.pdb",
+   "tokens": 308,
+   "s": 0.5868
+  },
+  {
+   "id": "URS0000B2297B_10116_rank_1.pdb",
+   "tokens": 311,
+   "s": 0.62183
+  },
+  {
+   "id": "URS00022633F7_447093_rank_1.pdb",
+   "tokens": 313,
+   "s": 0.9962
+  },
+  {
+   "id": "URS0000EB839A_9606_rank_1.pdb",
+   "tokens": 322,
+   "s": 0.61256
+  },
+  {
+   "id": "URS0000D5AD86_9606_rank_1.pdb",
+   "tokens": 325,
+   "s": 0.52376
+  },
+  {
+   "id": "URS00001D0FAF_9606_rank_1.pdb",
+   "tokens": 330,
+   "s": 0.73404
+  },
+  {
+   "id": "URS0000A76BC1_3702_rank_1.pdb",
+   "tokens": 333,
+   "s": 0.72951
+  },
+  {
+   "id": "URS0000EB1C0C_9606_rank_1.pdb",
+   "tokens": 335,
+   "s": 0.75867
+  },
+  {
+   "id": "URS00009B9712_9606_rank_1.pdb",
+   "tokens": 339,
+   "s": 0.79123
+  },
+  {
+   "id": "URS00009BF888_10090_rank_1.pdb",
+   "tokens": 345,
+   "s": 0.93965
+  },
+  {
+   "id": "URS00008BC182_9606_rank_1.pdb",
+   "tokens": 347,
+   "s": 0.79527
+  },
+  {
+   "id": "URS0000D6DE93_9606_rank_1.pdb",
+   "tokens": 354,
+   "s": 0.87955
+  },
+  {
+   "id": "URS00008B7337_9606_rank_1.pdb",
+   "tokens": 356,
+   "s": 0.78938
+  },
+  {
+   "id": "URS0000EA0E35_9606_rank_1.pdb",
+   "tokens": 358,
+   "s": 0.94384
+  },
+  {
+   "id": "URS000054E5C4_6239_rank_1.pdb",
+   "tokens": 365,
+   "s": 0.86631
+  },
+  {
+   "id": "URS00009C3EE9_10090_rank_1.pdb",
+   "tokens": 367,
+   "s": 0.82164
+  },
+  {
+   "id": "URS000235C8DD_3847_rank_1.pdb",
+   "tokens": 368,
+   "s": 1.06321
+  },
+  {
+   "id": "URS00009C081D_10090_rank_1.pdb",
+   "tokens": 376,
+   "s": 0.59358
+  },
+  {
+   "id": "URS00025D0CB0_9606_rank_1.pdb",
+   "tokens": 379,
+   "s": 0.63487
+  },
+  {
+   "id": "URS0000EBC87F_9606_rank_1.pdb",
+   "tokens": 378,
+   "s": 1.28075
+  },
+  {
+   "id": "URS0000EBB556_9606_rank_1.pdb",
+   "tokens": 381,
+   "s": 0.8105
+  },
+  {
+   "id": "URS0000CF4D27_3702_rank_1.pdb",
+   "tokens": 387,
+   "s": 1.02218
+  },
+  {
+   "id": "URS0002209F32_447093_rank_1.pdb",
+   "tokens": 389,
+   "s": 0.70677
+  },
+  {
+   "id": "URS0000B2D67E_10116_rank_1.pdb",
+   "tokens": 394,
+   "s": 1.11575
+  }
+ ],
+ "source": "rfoldsearch main cbf966d, active_blocks tokens; Intel(R) Xeon(R) Platinum 8470Q 1 thread; nufold_sw_100000.json"
 }

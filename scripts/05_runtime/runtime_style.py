@@ -12,15 +12,17 @@ MM = F.MM
 WIDTH_MM, HEIGHT_MM = 180.0, 104.0
 FIGDIR = F.FIGDIR
 
-# Okabe-Ito, four hues, assigned in fixed order and never cycled.
-COLOR = {"RFoldSearch": "#0072B2", "GTalign": "#009E73", "GTalign-fast": "#009E73",
-         "RiboSeek": "#CC79A7", "BLASTN": "#E69F00"}
-MARKER = {"RFoldSearch": "o", "GTalign": "X", "GTalign-fast": "X", "RiboSeek": "v", "BLASTN": "D"}
+# Fig. 2 method colours and markers, shared through runtime_common.
+COLOR = {m: F.COLOR[m] for m in ("RFoldSearch", "GTalign", "GTalign-fast", "RiboSeek",
+                                 "RiboSeek-RS20", "BLASTN", "Infernal", "Infernal-fast",
+                                 "US-align", "RTM-align", "RMalign")}
+MARKER = {m: F.MARKER[m] for m in COLOR}
 LABEL = {"RFoldSearch": "RFoldSearch", "GTalign": "GTalign (GPU)", "GTalign-fast": "GTalign (GPU)-fast",
-         "RiboSeek": "RiboSeek", "BLASTN": "BLASTN"}
+         "RiboSeek": "RiboSeek (RS-80)", "BLASTN": "BLASTN"}
 CURVES = ["GTalign", "RiboSeek", "BLASTN", "RFoldSearch"]
 BAND = "#8A8A8A"
 INK, MUTED = "#1A1A1A", "#6B6B6B"
+K = 1.0   # size scale for marks and text; raised when the panels are drawn into Fig. 5
 
 matplotlib.rcParams.update({
     "font.family": "sans-serif",
@@ -42,8 +44,8 @@ def relative(pts, stat):
 
 def curve_style(m):
     if m == "RFoldSearch":
-        return 1.9, 3.2, 6
-    return 1.1, 2.4, 4
+        return 1.9 * K, 3.2 * K, 6
+    return 1.1 * K, 2.4 * K, 4
 
 
 def draw_shape(ax, data, order, stat, sizes, ylim, iqr=None, coord=None,
@@ -216,7 +218,8 @@ LADDER_NAME = {"RFoldSearch": "RFoldSearch", "GTalign": "GTalign (GPU)",
                "GTalign-fast": "GTalign (GPU)-fast"}
 
 
-def ladder(ax, values, title, ylim, footer, ref="RFoldSearch"):
+def ladder(ax, values, title, ylim, footer, ref="RFoldSearch",
+           rail=0.26, ratio_x=0.60, name_x=0.655, step=0.075):
     """Riboseek's search-time rail, but each rung names its method.
 
     With the legend gone, a marker on the rail is otherwise unidentifiable:
@@ -226,13 +229,13 @@ def ladder(ax, values, title, ylim, footer, ref="RFoldSearch"):
     ref_val = values[ref]
     lo, hi = ylim
     ax.set_yscale("log"); ax.set_xlim(0, 1); ax.set_ylim(lo, hi)
-    ax.plot([0.26, 0.26], [lo, hi], color=INK, lw=0.7, zorder=2,
+    ax.plot([rail, rail], [lo, hi], color=INK, lw=0.7 * K, zorder=2,
             solid_capstyle="butt")
 
     for v, lab in F.TIME_TICKS:
         if lo <= v <= hi:
-            ax.plot([0.205, 0.26], [v, v], color=INK, lw=0.5, zorder=3)
-            ax.text(0.175, v, lab, ha="right", va="center", fontsize=5.9,
+            ax.plot([rail - 0.055, rail], [v, v], color=INK, lw=0.5 * K, zorder=3)
+            ax.text(rail - 0.085, v, lab, ha="right", va="center", fontsize=5.9 * K,
                     color=MUTED)
 
     methods = sorted(values, key=lambda m: values[m])
@@ -240,30 +243,36 @@ def ladder(ax, values, title, ylim, footer, ref="RFoldSearch"):
     label_y = F.spread_labels([np.log10(values[m]) for m in methods],
                               min_gap=0.058 * span)
     log_v = np.log10([values[m] for m in methods])
-    mx = np.full(len(methods), 0.26)
+    mx = np.full(len(methods), rail)
     for i in range(1, len(methods)):
         if log_v[i] - log_v[i - 1] < 0.030 * span:
-            mx[i] = 0.26 + (mx[i - 1] - 0.26 + 0.075)
+            mx[i] = mx[i - 1] + step
 
     for m, ly, x in zip(methods, label_y, mx):
         v, c = values[m], F.COLOR[m]
         extra = m in F.EXTRAPOLATED
-        ax.plot([x], [v], marker=F.MARKER[m], ms=4.2,
-                mfc="white" if extra else c, mec=c, mew=0.9 if extra else 0.5,
+        ax.plot([x], [v], marker=F.MARKER[m], ms=(6.0 if F.MARKER[m] == "*" else 4.2) * K,
+                mfc="white" if extra else c, mec=c, mew=(0.9 if extra else 0.5) * K,
                 ls="none", zorder=6, clip_on=False)
         txt = (F.fmt_abs(v) if m == ref else F.fmt_ratio(v / ref_val)) + \
               ("†" if extra else "")
-        ax.text(0.60, 10 ** ly, txt, ha="right", va="center", fontsize=6.3,
-                color=c, fontweight="bold" if m == ref else "normal")
-        ax.text(0.655, 10 ** ly, LADDER_NAME[m], ha="left", va="center",
-                fontsize=5.2, color=MUTED)
-        if abs(np.log10(v) - ly) > 0.012 * span:
-            ax.plot([x + 0.02, 0.30], [v, 10 ** ly], color=c, lw=0.4,
-                    alpha=0.55, zorder=4, clip_on=False)
+        # without names the value sits left-aligned, joined to its marker
+        ax.text(ratio_x, 10 ** ly, txt, ha="right" if name_x else "left",
+                va="center", fontsize=6.3 * K,
+                color=F.TEXT_COLOR.get(m, c), fontweight="bold" if m == ref else "normal")
+        if name_x is not None:
+            ax.text(name_x, 10 ** ly, LADDER_NAME[m], ha="left", va="center",
+                    fontsize=5.2 * K, color=MUTED)
+            if abs(np.log10(v) - ly) > 0.012 * span:
+                ax.plot([x + 0.02, x + 0.05], [v, 10 ** ly], color=c, lw=0.4,
+                        alpha=0.55, zorder=4, clip_on=False)
+        else:
+            ax.plot([x + 0.05, ratio_x - 0.03], [v, 10 ** ly], color=c, lw=0.4 * K,
+                    alpha=0.45, zorder=4, clip_on=False)
 
-    ax.set_title(title, pad=6.5, fontsize=6.8, fontweight="bold", color=INK)
+    ax.set_title(title, pad=6.5 * K, fontsize=6.3 * K, color=MUTED)
     ax.text(0.5, -0.035, footer, transform=ax.transAxes, ha="center", va="top",
-            fontsize=5.9, color=MUTED)
+            fontsize=5.9 * K, color=MUTED)
     ax.set_xticks([]); ax.set_yticks([]); ax.minorticks_off()
     for sp in ax.spines.values():
         sp.set_visible(False)

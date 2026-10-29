@@ -22,11 +22,26 @@ FULL = 83156
 NU_SIZES = [1000, 5000, 10000, 20000, 50000, 100000, 200000, 531888]
 NU_FULL = 531888
 
-COLOR = {"RFoldSearch": "#0072B2", "GTalign": "#7E5AB6", "RTM-align": "#E69F00",
-         "US-align": "#D55E00", "RMalign": "#009E73", "RiboSeek": "#CC79A7",
-         "BLASTN": "#B58900"}
-MARKER = {"RFoldSearch": "o", "GTalign": "X", "RTM-align": "P", "US-align": "s",
-          "RMalign": "^", "RiboSeek": "v", "BLASTN": "D"}
+# Fig. 2 method colours (plot_fig2.py): text in the base tone, marks in the
+# lightened tone. RiboSeek is timed in its default RS-80 mode, Fig. 2's deeper shade.
+TEXT_COLOR = {"RFoldSearch": "#1F9BD8", "RFoldSearch-TM": "#009E9E", "GTalign": "#9467BD",
+              "RTM-align": "#FF7F0E", "US-align": "#D62728", "RMalign": "#2CA02C",
+              "RiboSeek": "#A8327F", "RiboSeek-RS20": "#E377C2", "BLASTN": "#FFC107",
+              "Infernal": "#BCBD22", "Infernal-fast": "#BCBD22"}
+
+
+def lighten(h, f=0.24):
+    """Blend a hex colour toward white by fraction f, as in Fig. 2."""
+    h = h.lstrip("#")
+    r, g, b = (int(h[i:i + 2], 16) for i in (0, 2, 4))
+    return "#%02x%02x%02x" % tuple(round(c + (255 - c) * f) for c in (r, g, b))
+
+
+COLOR = {m: lighten(c) for m, c in TEXT_COLOR.items()}
+MARKER = {"RFoldSearch": "o", "RFoldSearch-TM": "*", "GTalign": "X", "RTM-align": "P",
+          "US-align": "s", "RMalign": "^", "RiboSeek": "v", "RiboSeek-RS20": "v", "BLASTN": "D",
+          "Infernal": "p", "Infernal-fast": "p"}
+TEXT_COLOR["GTalign-fast"] = TEXT_COLOR["GTalign"]
 COLOR["US-align-fast"] = COLOR["US-align"]
 COLOR["GTalign-fast"] = COLOR["GTalign"]
 MARKER["US-align-fast"] = "s"
@@ -37,6 +52,7 @@ LINES_NU = ["GTalign", "GTalign-fast", "RiboSeek", "BLASTN", "RFoldSearch"]
 LEGEND_ORDER = ["RFoldSearch", "GTalign", "RTM-align", "US-align",
                 "RMalign", "RiboSeek", "BLASTN"]
 LABEL = {m: (m + " (GPU)" if m == "GTalign" else m) for m in LEGEND_ORDER}
+LABEL["RiboSeek"] = "RiboSeek (RS-80)"
 LABEL["US-align-fast"] = "US-align $-$fast"
 LABEL["GTalign-fast"] = "GTalign (GPU)-fast"
 BENCH_KEY = {"GTalign": "gtalign", "US-align": "usalign", "RMalign": "rmalign",
@@ -48,8 +64,8 @@ BENCH_KEY = {"GTalign": "gtalign", "US-align": "usalign", "RMalign": "rmalign",
 RHO_FILE_EXTRA = {"GTalign-fast": "gtalign_fast_{n}.json"}
 NU_FILE = {"RFoldSearch": "nufold_timing_{n}.json", "GTalign": "nufold_gtalign_{n}.json",
            "GTalign-fast": "nufold_gtalign13_{n}.json",
-           "RiboSeek": "nufold_riboseek_{n}.json", "BLASTN": "nufold_blastn_{n}.json"}
-EXTRAPOLATED = set()  # RhoFold+: coordinate aligners direct (2080), GTalign-fast measured at all sizes
+           "RiboSeek": "nufold_riboseek_rs80_{n}.json", "BLASTN": "nufold_blastn_{n}.json"}
+EXTRAPOLATED = set()  # RhoFold+: every method measured directly at its sizes
 COORDINATE_ALIGNERS = {"US-align", "US-align-fast", "RTM-align", "RMalign"}
 REF = "RFoldSearch"
 
@@ -72,13 +88,13 @@ def quartiles(per_query):
 def load_rhofold(iqr=None):
     iqr = {} if iqr is None else iqr
     bench = {n: json.load(open(os.path.join(RHO_DIR, f"bench_{n}.json"))) for n in SIZES}
-    _coord2080 = json.load(open(os.path.join(RHO_DIR, "coord2080_paired.json")))["sizes"]  # US/RTM/RMalign re-timed on 2080, 300q, scaled to reference RFoldSearch baseline (paired ratio)
+    coord = json.load(open(os.path.join(RHO_DIR, "coord_8470.json")))["sizes"]  # US/RTM/RMalign, 300 queries on the reference system
     out = {}
     for m in LINES_RHO:
         pts = {}
         for n in SIZES:
             if m == "RiboSeek":
-                f = os.path.join(RHO_DIR, f"riboseek_{n}.json")
+                f = os.path.join(RHO_DIR, f"riboseek_rs80_{n}.json")
                 if os.path.exists(f):
                     r = json.load(open(f))
                     pts[n] = (r["mean_s"], r["median_s"])
@@ -93,7 +109,7 @@ def load_rhofold(iqr=None):
                     r = json.load(open(f))
                     pts[n] = (r["mean_s"], r["median_s"])
             elif m in ("US-align", "RTM-align", "RMalign"):
-                cd = _coord2080.get(str(n), {}).get(BENCH_KEY[m])
+                cd = coord.get(str(n), {}).get(BENCH_KEY[m])
                 if cd is not None:
                     pts[n] = (cd["mean_s"], cd["median_s"])
             else:
