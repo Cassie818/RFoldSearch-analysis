@@ -51,8 +51,8 @@ def _first_existing(env, *candidates):
 
 
 # The analysis workspace now lives in OneDrive; each location below falls back to it.
-_WORKSPACE = os.path.expanduser(
-    "~/Library/CloudStorage/OneDrive-TheUniversityofQueensland/RFoldseek/RFoldSeek")
+_ONEDRIVE = os.path.expanduser("~/Library/CloudStorage/OneDrive-TheUniversityofQueensland/RFoldSearch")
+_WORKSPACE = os.path.join(_ONEDRIVE, "RFoldSeek")
 
 # Released RFoldSearch tool (search CLI, model assets, RiboSeek wrappers).
 # The old checkout name and Python package remain fallbacks during migration.
@@ -65,7 +65,7 @@ RFOLDSEEK_REPO = RFOLDSEARCH_REPO
 # Experimental RNAsolo structures (mmCIF): Fig 2 Infernal queries, Fig 4 experimental queries.
 NR80_DIR = _first_existing(
     ("RFOLDSEARCH_NR80", "RFOLDSEEK_NR80"), os.path.join(_PARENT, "NR80"),
-    os.path.expanduser("~/Library/CloudStorage/OneDrive-TheUniversityofQueensland/RFoldseek/NR80"))
+    os.path.join(_ONEDRIVE, "NR80"))
 # NuFold predicted-structure release (structures/rank1, metadata/data.csv): Fig 4.
 NUFOLD_ROOT = _first_existing(
     ("RFOLDSEARCH_NUFOLD_ROOT", "RFOLDSEEK_NUFOLD_ROOT"),
