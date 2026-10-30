@@ -1,18 +1,29 @@
-# Versions used to produce the manuscript results.
-torch==2.2.2
-numpy==1.21.5
-scikit-learn==1.0.2
-matplotlib==3.5.2
-numba==0.55.1
-scipy==1.9.1      # Section 2.4 motif confidence intervals (Clopper-Pearson)
-biotite==0.40.0   # structure preprocessing (preprocessing/extract_backbone.py)
-biopython         # sequence identity (Fig. 3) and alignment-benchmark sequence baseline
-pandas            # motif controls (scripts/07_motifs)
-gemmi             # BGSU motif overlap (scripts/07_motifs/bgsu_overlap.py)
+# Python >= 3.9. Every plotting script runs under these versions (tested with
+# Python 3.9.13, numpy 2.0.2, torch 2.8.0, matplotlib 3.9.4, numba 0.60.0,
+# scikit-learn 1.6.1, scipy 1.13.1, biopython 1.85, pandas 2.3.3, gemmi 0.7.5).
+# files/models/db.pt was saved with NumPy 2 and cannot be loaded with numpy < 2.
+numpy>=2.0
+torch>=2.2
+matplotlib>=3.8
+numba>=0.60          # first release supporting NumPy 2
+scikit-learn>=1.0
+scipy>=1.13
+biopython            # sequence identity and the alignment-benchmark sequence baseline
+pandas               # motif controls (scripts/07_motifs)
+gemmi                # BGSU motif overlap (scripts/07_motifs/bgsu_overlap.py)
 
-# RiboSeek baseline only (scripts/02_rnasolo_benchmark/riboseek_baseline.py).
-# Requires Python >= 3.9; the rest of the pipeline was run under Python 3.8.
-riboseek==0.1.0
+# RiboSeek baseline and the alphabet controls (RS-20 and RS-80 modes)
+riboseek==0.2.0
 
-# External binaries, not pip-installable:
-#   US-align, RMalign, NCBI BLAST+ (blastn, makeblastdb)
+# Structure preprocessing only (preprocessing/), run in a separate environment
+# because biotite 0.40 requires numpy < 2:
+#   biotite==0.40.0
+
+# External programs, not pip-installable:
+#   US-align, RTM-align, RMalign, GTalign      coordinate baselines
+#   NCBI BLAST+ (blastn, makeblastdb)          RFOLDSEARCH_BLAST_BIN
+#   HMMER (nhmmer)                             RFOLDSEARCH_HMMER_BIN
+#   Infernal (cmbuild, cmcalibrate, cmsearch)  RFOLDSEARCH_INFERNAL_BIN
+#   DSSR 2.9.2                                 DSSR_BIN (motif annotation; cached JSON are bundled)
+#   cd-hit-est                                 dataset construction
+#   ChimeraX                                   Fig. 4F/G renders (bundled)
