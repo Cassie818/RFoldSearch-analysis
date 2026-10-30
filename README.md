@@ -36,7 +36,6 @@ files/ablation/                   ablation, cross-validation and alignment-bench
 files/predicted_runtime/          predicted-database runtime results
 files/predicted_retrieval/        predicted-database retrieval results
 files/motifs/                     motif-analysis tables
-files/motifs/fig6_structures/     RNAsolo per-chain CIFs (from the PDB) of the Fig. 6F/G fragments
 ```
 
 ## Quick start

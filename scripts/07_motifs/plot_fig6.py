@@ -10,11 +10,9 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.font_manager import FontProperties
-from matplotlib.lines import Line2D
-from matplotlib.patches import FancyArrowPatch, FancyBboxPatch, Patch, PathPatch, Rectangle
+from matplotlib.patches import Arc, PathPatch, Rectangle
 from matplotlib.textpath import TextPath
 from matplotlib.transforms import Affine2D
-from mpl_toolkits.mplot3d import proj3d
 
 
 REPO = Path(__file__).resolve().parents[2]
@@ -29,6 +27,7 @@ MOTIF = REPO / "files" / "motifs"
 CONTROLS = MOTIF / "word_controls"
 FIGURES = REPO / "figures"
 DEFAULT_CIF_DIR = MOTIF / "fig6_structures"   # RNAsolo chains of the F/G fragments
+RENDER_DIR = MOTIF / "fig6_render"            # ChimeraX renders of F/G (render_fig6_structures.py)
 
 BASE = CONTROLS / "base_inclusive_rmsd.tsv"
 BASE_SUMMARY = CONTROLS / "base_inclusive_rmsd_summary.tsv"
@@ -53,9 +52,13 @@ CONTROL_GREYS = {"frequency": "#8C8C8C", "random": "#B3B3B3", "sequence": "#D9D9
 WORD_COLORS = {"left": BLUE, "right": ORANGE}
 POSITION_COLORS = [S.lighten(c, 0.1) for c in ("#1F9BD8", "#4FA8C9", "#86B4A6", "#C9A86B", "#F0913A", "#D9661F")]
 
-# F: Leontis-Westhof classes.
+# G/H: Leontis-Westhof classes, read from each token nucleotide to its partner; the two
+# readings of one pair (tSH/tHS) share a colour.
 LW_COLORS = {"cWW": S.lighten("#9467BD"), "tSH": S.lighten("#E377C2"), "tWH": S.lighten("#17BECF"),
              "tWS": S.lighten("#BCBD22"), ".": "#E6E6E6"}
+LW_COLORS["tHS"], LW_COLORS["tSW"] = LW_COLORS["tSH"], LW_COLORS["tWS"]
+GNRA_SIGNATURE = "cWW,tSH,.,.,tHS,cWW"
+TLOOP_SIGNATURE = "tWH,tSW,cWW,."
 TLOOP_COLOR = S.lighten("#2CA02C", 0.1)
 PARTNER_COLOR = "#7A7A7A"   # F: residues outside the token window that pair with it   # G: one hue, so its positions are not read as the GNRA's
 LOGO_COLOR = "#A6A6A6"      # D: one colour; the letters name the nucleotides
@@ -87,12 +90,6 @@ def panel_label(ax, label: str, top=None, left=None, dy=0.0) -> None:
 
 def style_axis(ax, title=None, xlabel=None, ylabel=None) -> None:
     S.style_axes(ax, title=title, xlabel=xlabel, ylabel=ylabel)
-
-
-def subhead(ax, x, y, text, transform=None) -> None:
-    """Grey in-panel heading, as in Fig. 5G."""
-    ax.text(x, y, text, ha="center", va="bottom", fontsize=9.5, color=S.GREY_TEXT,
-            transform=transform or ax.transAxes)
 
 
 def base_inclusive_fragment(row: dict[str, str], n_residues: int, cif_dir: Path) -> np.ndarray:
@@ -220,12 +217,12 @@ def preflight(cif_dir: Path) -> dict:
     # Signature rule: every listed interaction must be among the DSSR records at its
     # position (additional records are allowed); "." positions are not constrained.
     n_gnra_signature = sum(
-        lw_pattern_contains(row["dssr_lw_signature"], "cWW,tSH,.,.,tSH,cWW")
+        lw_pattern_contains(row["dssr_lw_signature"], GNRA_SIGNATURE)
         for row in exact_hairpin
     )
     tloop = [row for row in dssr if row["kmer"] == "48-24-39-39"]
     n_tloop_signature = sum(
-        lw_pattern_contains(row["dssr_lw_pattern"], "tWH,tWS,cWW,.")
+        lw_pattern_contains(row["dssr_lw_pattern"], TLOOP_SIGNATURE)
         for row in tloop
     )
     if (n_gnra_signature, len(exact_hairpin), n_tloop_signature, len(tloop)) != (12, 13, 10, 10):
@@ -311,16 +308,15 @@ def boxplot(ax, values: list[np.ndarray], positions: list[float], colors: list[s
 
 def panel_a(ax, data: dict) -> None:
     labels = ["3Dr\nword", "Frequency\nmatched", "Sequence\nmatched", "Random"]
-    groups = [("five", "Five anchors", 0.0), ("base", "Base-inclusive atoms", 5.0)]
+    groups = [("five", 0.0), ("base", 5.0)]
     offsets = [0.9, 2.0, 3.1, 4.2]
     colors = [CANDIDATE, CONTROL_GREYS["frequency"], CONTROL_GREYS["sequence"], CONTROL_GREYS["random"]]
     suffixes = ["candidate", "frequency", "sequence", "random"]
     ticks, ticklabels = [], []
-    for prefix, title, x0 in groups:
+    for prefix, x0 in groups:
         keys = [f"{prefix}_{suffix}" for suffix in suffixes]
         positions = [x0 + off for off in offsets]
         boxplot(ax, [data["a_distributions"][key] for key in keys], positions, colors)
-        subhead(ax, x0 + 2.55, 0.95, title, ax.get_xaxis_transform())
         for x, key in zip(positions, keys):
             top = float(np.percentile(data["a_distributions"][key], 90))
             ax.text(x, top + 0.14, f"{data['a_medians'][key]:.2f}",
@@ -383,35 +379,30 @@ def panel_b(ax, data: dict) -> None:
 
 
 def panel_c(ax, data: dict) -> None:
-    """Arc diagram of the two overlapping 3Dr words on the six-nucleotide GNRA hairpin."""
-    from matplotlib.patches import Arc
+    """Arc diagram of the two overlapping 3Dr words on the six-nucleotide GNRA hairpin; the
+    strip under each token carries its position colour, as in E and F."""
     first = data["hairpin"][0]
     left, right = first["left_kmer"].split("-"), first["right_kmer"].split("-")
     tokens = left + right[2:]
-    w, h = 0.76, 0.62
+    w = 0.74
     for x, token in enumerate(tokens):
-        ax.add_patch(FancyBboxPatch((x - w / 2, -h / 2), w, h, boxstyle="round,pad=0,rounding_size=0.08",
-                                    facecolor="white", edgecolor=INK, lw=1.1, zorder=3))
-        ax.text(x, 0, token, ha="center", va="center", fontsize=11, color=INK, zorder=4)
-        ax.text(x, -h / 2 - 0.16, str(x + 1), ha="center", va="top", fontsize=9, color=S.GREY_TEXT)
+        ax.add_patch(Rectangle((x - w / 2, -0.13), w, 0.32, facecolor="white", edgecolor="#555555", lw=0.8))
+        ax.add_patch(Rectangle((x - w / 2, -0.13), w, 0.045, facecolor=POSITION_COLORS[x], edgecolor="none"))
+        ax.text(x, 0.03, token, ha="center", va="center", fontsize=12)
     # the two words: brackets above the token track
-    for (start, end), y, color, word, ha in (((0, 3), 0.62, WORD_COLORS["left"], first["left_kmer"], "left"),
-                                             ((2, 5), 1.36, WORD_COLORS["right"], first["right_kmer"], "right")):
-        x0, x1 = start - w / 2, end + w / 2
-        ax.plot([x0, x0, x1, x1], [y - 0.14, y, y, y - 0.14], color=color, lw=1.6, solid_capstyle="butt")
-        ax.text(x0 if ha == "left" else x1, y + 0.10, word.replace("-", "–"), ha=ha, va="bottom",
-                fontsize=9.5, color=color)
+    for (start, end), y, color, word in (((0, 3), 0.46, WORD_COLORS["left"], first["left_kmer"]),
+                                         ((2, 5), 0.91, WORD_COLORS["right"], first["right_kmer"])):
+        ax.plot([start - w / 2, start - w / 2, end + w / 2, end + w / 2], [y - 0.05, y, y, y - 0.05],
+                color=color, lw=1.5)
+        ax.text((start + end) / 2, y + 0.05, word.replace("-", "–"), ha="center", va="bottom",
+                color=color, fontsize=10)
     # base pairs: arcs below the track
-    y0 = -h / 2 - 0.55
     for i, j, label in ((0, 5, "cis"), (1, 4, "trans")):
         span = j - i
-        ax.add_patch(Arc(((i + j) / 2, y0), span, span * 0.62, theta1=180, theta2=360, color=INK, lw=1.3))
-        ax.text((i + j) / 2, y0 - span * 0.31 - 0.12, label, ha="center", va="top",
-                fontsize=9, color=INK)
-    ax.set_xlim(-0.75, 5.75)
-    ax.set_ylim(y0 - 5 * 0.31 - 0.55, 2.05)
-    ax.set_aspect("equal")
-    ax.set_anchor("C")
+        ax.add_patch(Arc(((i + j) / 2, -0.22), span, 0.25 * span, theta1=180, theta2=360, color="#555555", lw=1))
+        ax.text((i + j) / 2, -0.22 - 0.125 * span - 0.03, label, ha="center", va="top", fontsize=9)
+    ax.set_xlim(-0.65, 5.65)
+    ax.set_ylim(-1.02, 1.22)
     ax.axis("off")
 
 
@@ -437,48 +428,56 @@ def panel_d(ax, data: dict) -> None:
     probabilities = [{base: sum(seq[position] == base for seq in data["sequences"]) / n for base in "ACGU"}
                      for position in range(6)]
     draw_logo(ax, probabilities, dict.fromkeys("ACGU", LOGO_COLOR))
-    ax.set_xlim(-0.5, 5.5)
-    ax.set_ylim(0, 1.05)
+    ax.set_xlim(-0.65, 5.65)
+    ax.set_ylim(0, 1.02)
+    for x, color in enumerate(POSITION_COLORS):
+        ax.add_patch(Rectangle((x - 0.37, -0.035), 0.74, 0.025, facecolor=color, edgecolor="none",
+                               clip_on=False))
     ax.set_xticks(np.arange(6))
     ax.set_xticklabels(["1", "2", "3", "4", "5", "6"])
     ax.set_yticks([0, 0.5, 1.0])
-    style_axis(ax, xlabel="Hairpin position", ylabel="Probability")
+    style_axis(ax, xlabel="Position in the six-token pattern", ylabel="Nucleotide frequency")
 
 
 NO_REQUIRED_INTERACTION = "–"
+OUTSIDE = "N/A"
 
 
 def panel_e(ax, data: dict) -> None:
-    """Panel G: DSSR Leontis-Westhof label at each token position. A row counts the fragments
-    whose records at every required position include the displayed label; "–" marks positions
-    without a required interaction label."""
+    """Panel H: required DSSR Leontis-Westhof label at each token position, read from the token
+    nucleotide to its partner. A row counts the fragments whose records include every required
+    label; "–" positions are unconstrained and N/A lies outside the four-nucleotide fragment."""
     rows = [
-        (["cWW", "tSH", NO_REQUIRED_INTERACTION, NO_REQUIRED_INTERACTION, "tSH", "cWW"],
-         f"{data['n_gnra_signature']}/{len(data['exact_hairpin'])}", "HL_34789.6"),
-        (["tWH", "tWS", "cWW", NO_REQUIRED_INTERACTION],
-         f"{data['n_tloop_signature']}/{len(data['tloop'])}", "HL_33597.6"),
+        ([label if label != "." else NO_REQUIRED_INTERACTION for label in GNRA_SIGNATURE.split(",")],
+         "GNRA hairpin\nHL_34789.6  (F)", (data["n_gnra_signature"], len(data["exact_hairpin"]))),
+        ([label if label != "." else NO_REQUIRED_INTERACTION for label in TLOOP_SIGNATURE.split(",")],
+         "T-loop fragment\nHL_33597.6  (G)", (data["n_tloop_signature"], len(data["tloop"]))),
     ]
-    ax.set_xlim(0, 9.4)
-    ax.set_ylim(-0.32, 1.32)
-    ax.invert_yaxis()
-    for y, (signature, count, label) in enumerate(rows):
-        for x, state in enumerate(signature):
-            ax.add_patch(Rectangle((x + 0.05, y - 0.27), 0.90, 0.54,
-                                   facecolor=LW_COLORS.get(state, LW_COLORS["."]), edgecolor="white", lw=1.2))
-            ax.text(x + 0.50, y, state, ha="center", va="center", fontsize=8.5, color=INK)
-        ax.text(6.25, y - 0.12, count, ha="left", va="center", fontsize=10)
-        ax.text(6.25, y + 0.16, label, ha="left", va="center", fontsize=8.5, color=S.GREY_TEXT)
-    ax.set_xticks(np.arange(6) + 0.50)
-    ax.set_xticklabels(["1", "2", "3", "4", "5", "6"])
+    for y, (labels, name, (n_match, n)) in enumerate(rows):
+        ax.text(-0.8, y, name, ha="right", va="center", fontsize=11)
+        for x in range(6):
+            label = labels[x] if x < len(labels) else OUTSIDE
+            outside = label == OUTSIDE
+            face = "white" if outside else LW_COLORS["."] if label == NO_REQUIRED_INTERACTION else LW_COLORS[label]
+            ax.add_patch(Rectangle((x - 0.45, y - 0.24), 0.9, 0.48, facecolor=face,
+                                   edgecolor="#BBBBBB" if outside else "white", lw=0.7))
+            ax.text(x, y, label, ha="center", va="center", fontsize=9 if outside else 11,
+                    color="#888888" if outside else "#222222")
+        ax.text(6, y, f"{n_match}/{n}", ha="center", va="center", fontsize=11)
+    ax.text(6, -0.55, "Matching\nfragments", ha="center", va="center", fontsize=10)
+    ax.set_xlim(-2.5, 6.65)
+    ax.set_ylim(1.65, -0.85)
+    ax.set_xticks(range(6))
+    ax.set_xticklabels(range(1, 7))
     ax.set_yticks([])
-    style_axis(ax, xlabel="Position")
+    style_axis(ax, xlabel="Token position")
+    ax.tick_params(length=0)
     for spine in ax.spines.values():
         spine.set_visible(False)
-    ax.tick_params(length=0)
-    handles = [Patch(facecolor=LW_COLORS[state], edgecolor="none", label=state) for state in ("cWW", "tSH", "tWH", "tWS")]
-    handles.append(Patch(facecolor=LW_COLORS["."], edgecolor="none", label="no required interaction"))
-    ax.legend(handles=handles, loc="center right", bbox_to_anchor=(1.0, 0.5), ncol=1,
-              frameon=False, fontsize=9.5, columnspacing=1.2, handlelength=1.1)
+    ax.text(0.5, -0.35, f"{NO_REQUIRED_INTERACTION}  Unconstrained label    {OUTSIDE}  Outside the fragment",
+            transform=ax.transAxes, ha="center", fontsize=9, color=S.GREY_TEXT)
+    ax.text(0.5, -0.47, "Additional interactions are allowed", transform=ax.transAxes, ha="center",
+            fontsize=9, color=S.GREY_TEXT)
 
 
 def representative_index(fragments: list[np.ndarray], allowed: list[int] | None = None) -> int:
@@ -493,163 +492,41 @@ def representative_index(fragments: list[np.ndarray], allowed: list[int] | None 
     return min(candidates, key=lambda i: rmsd[i].sum())
 
 
-def align_to_medoid(fragments: list[np.ndarray], medoid: int | None = None) -> np.ndarray:
-    """Superpose every instance on the representative (default: the medoid); representative first."""
-    n = len(fragments)
-    if medoid is None:
-        medoid = representative_index(fragments)
-    order = [medoid] + [i for i in range(n) if i != medoid]
-    return np.asarray([kabsch_align(fragments[i], fragments[medoid]) for i in order])
+VIEW_HALF_WIDTH = 13.0   # Å; the same crop for F and G keeps one physical scale
 
 
-# Base-inclusive atoms per residue: P OP1 OP2 O5' C5' C4' O4' C3' O3' C2' O2' C1', then three base locators.
-P, O5, C5, C4, O4, C3, O3, C2, C1 = 0, 3, 4, 5, 6, 7, 8, 9, 11
-BASE_TRI = slice(12, 15)
-
-
-BASE_SCALE = 2.2   # base triangles enlarged about the glycosidic atom to roughly the base's size
-
-
-def base_triangle(residue: np.ndarray) -> np.ndarray:
-    tri = residue[BASE_TRI]
-    return tri[0] + (tri - tri[0]) * BASE_SCALE
-
-
-def backbone_trace(residues: np.ndarray) -> np.ndarray:
-    """P-O5'-C5'-C4'-C3'-O3' through every residue."""
-    return np.vstack([r[[P, O5, C5, C4, C3, O3]] for r in residues])
-
-
-def draw_base_inclusive_overlay(ax, aligned: np.ndarray, title: str, colors: list[str],
-                                title_y: float = 0.98) -> None:
-    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-    n_residues = aligned.shape[1] // 15
-    for fragment in aligned[1:]:                       # other instances: thin translucent lines
-        residues = fragment.reshape(n_residues, 15, 3)
-        trace = backbone_trace(residues)
-        ax.plot(*trace.T, color=S.NEUTRAL_LIGHT, alpha=0.45, lw=0.6)
-        for position, residue in enumerate(residues):
-            color = colors[position]
-            tri = base_triangle(residue)
-            tri = np.vstack([tri, tri[:1]])
-            ax.plot(*np.vstack([residue[C1], residue[12]]).T, color=color, alpha=0.35, lw=0.6)
-            ax.plot(*tri.T, color=color, alpha=0.35, lw=0.6)
-    medoid = aligned[0].reshape(n_residues, 15, 3)
-    for position, residue in enumerate(medoid):        # medoid: thick backbone, filled base triangles
-        color = colors[position]
-        segment = residue[[P, O5, C5, C4, C3, O3]]
-        if position + 1 < n_residues:
-            segment = np.vstack([segment, medoid[position + 1][P]])
-        ax.plot(*segment.T, color=color, lw=2.6, solid_capstyle="round")
-        ax.plot(*residue[[C4, O4, C1, C2, C3]].T, color=color, lw=1.2)
-        ax.plot(*np.vstack([residue[C1], residue[12]]).T, color=color, lw=1.8)
-        ax.add_collection3d(Poly3DCollection([base_triangle(residue)], facecolor=color, edgecolor=INK,
-                                             linewidths=0.6, alpha=0.85))
-    ax.text2D(0.5, title_y, title, transform=ax.transAxes, ha="center", va="top", fontsize=10.5)
-    if len(set(colors)) > 1:                           # position key only when positions are coloured
-        legend_x0 = 0.5 - (n_residues - 1) * 0.042
-        for position in range(n_residues):
-            ax.text2D(legend_x0 + position * 0.084, 0.90, str(position + 1), transform=ax.transAxes,
-                      ha="center", va="center", fontsize=9, color=colors[position])
-    ax.set_axis_off()
-    ax.set_box_aspect((1, 1, 1), zoom=1.75)
-    ax.view_init(elev=24, azim=-62)
-
-
-def same_physical_limits(axes: list, aligned_sets: list[np.ndarray]) -> None:
-    full_span = max(float(np.ptp(aligned.reshape(-1, 3), axis=0).max()) for aligned in aligned_sets)
-    half_range = full_span * 0.55
-    for ax, aligned in zip(axes, aligned_sets):
-        center = aligned.reshape(-1, 3).mean(axis=0)
-        ax.set_xlim(center[0] - half_range, center[0] + half_range)
-        ax.set_ylim(center[1] - half_range, center[1] + half_range)
-        ax.set_zlim(center[2] - half_range, center[2] + half_range)
-
-
-def add_scale_bar(ax, length: float = 2.0) -> None:
-    center = np.asarray([np.mean(ax.get_xlim3d()), np.mean(ax.get_ylim3d()), np.mean(ax.get_zlim3d())])
-    projected = proj3d.proj_transform(*center, ax.get_proj())
-    origin = ax.transData.transform(projected[:2])
-    pixels = []
-    for delta in np.eye(3) * length:
-        endpoint = proj3d.proj_transform(*(center + delta), ax.get_proj())
-        pixels.append(np.linalg.norm(ax.transData.transform(endpoint[:2]) - origin))
-    fraction = max(pixels) / ax.get_window_extent().width
-    x0, y0 = 0.08, 0.10
-    ax.add_line(Line2D([x0, x0 + fraction], [y0, y0], transform=ax.transAxes, color=INK, lw=2.1))
-    ax.text2D(x0 + fraction / 2, y0 - 0.025, r"2 $\AA$", transform=ax.transAxes, ha="center", va="top", fontsize=9)
-
-
-def draw_partners(ax, core: np.ndarray, partners: list[list[dict]], order: list[int],
-                  transforms: list) -> np.ndarray:
-    """Partner residues outside the token window, in the frame of the core superposition.
-    Medoid instance (first in `order`) drawn solid and labelled; the others thin. Each pair
-    is joined base-to-base by a dashed line in its LW colour (as in panel H)."""
-    points = []
-    for rank, index in enumerate(order):
-        rotation, mu = transforms[rank]
-        residues = core[rank].reshape(-1, 15, 3)
-        for partner in partners[index]:
-            xyz = (partner["coords"] - mu) @ rotation.T
-            points.append(xyz)
-            tri = base_triangle(xyz)
-            core_tri = base_triangle(residues[partner["position"] - 1])
-            link = np.vstack([core_tri.mean(axis=0), tri.mean(axis=0)])
-            colour = LW_COLORS.get(partner["lw"], INK)
-            if rank == 0:
-                from mpl_toolkits.mplot3d.art3d import Poly3DCollection
-                ax.plot(*xyz[[C4, O4, C1, C2, C3]].T, color=PARTNER_COLOR, lw=1.2)
-                ax.plot(*np.vstack([xyz[C1], xyz[12]]).T, color=PARTNER_COLOR, lw=1.8)
-                ax.add_collection3d(Poly3DCollection([tri], facecolor=PARTNER_COLOR, edgecolor=INK,
-                                                     linewidths=0.6, alpha=0.85))
-                ax.plot(*link.T, color=colour, lw=2.6, ls=(0, (1.5, 1.0)), zorder=10)
-                away = tri.mean(axis=0) - residues.reshape(-1, 3).mean(axis=0)
-                away = away / (np.linalg.norm(away) + 1e-9)
-                ax.text(*(tri.mean(axis=0) + away * 3.2), f"{partner['label']}\n{partner['lw']}",
-                        fontsize=7.5, color=INK, ha="center", va="center", linespacing=0.95, zorder=12,
-                        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.8, "pad": 0.4})
-            else:
-                closed = np.vstack([tri, tri[:1]])
-                ax.plot(*closed.T, color=PARTNER_COLOR, alpha=0.30, lw=0.6)
-    return np.asarray(points).reshape(-1, 3) if points else np.zeros((0, 3))
-
-
-def panel_f(fig, cells, data: dict) -> tuple[list, list[np.ndarray]]:
-    """The two base-inclusive superpositions, one per grid cell. The T-loop panel adds the
-    pairing partners outside the four-residue window."""
-    gnra = align_to_medoid(data["gnra_coords"])
-    fragments = data["tloop_coords"]
-    # The representative is the medoid among the tRNAs numbered in the standard way (T54-G57),
-    # so that partner labels read as A58, G18 and G19.
-    standard = [i for i, row in enumerate(data["tloop"]) if row["author_residues"].split(",")[0] == "54"]
-    medoid = representative_index(fragments, standard)
-    tloop = align_to_medoid(fragments, medoid)
-    order = [medoid] + [i for i in range(len(fragments)) if i != medoid]
-    reference = fragments[medoid]
-    # Same frame as align_to_medoid: each instance centred on its own mean and rotated onto
-    # the medoid, whose centre is the origin.
-    transforms = [superposition(fragments[i], reference) for i in order]
-    axes = [fig.add_subplot(cells[0], projection="3d"), fig.add_subplot(cells[1], projection="3d")]
-    draw_base_inclusive_overlay(axes[0], gnra, "GNRA hairpin", POSITION_COLORS)
-    draw_base_inclusive_overlay(axes[1], tloop, "T-loop", [TLOOP_COLOR] * 4)
-    partner_points = draw_partners(axes[1], tloop, data["tloop_partners"], order, transforms)
-    medoid_residues = tloop[0].reshape(-1, 15, 3)
-    rep_row = data["tloop"][medoid]
-    rep_labels = [f"{base}{number}" for base, number in
-                  zip(rep_row["sequence"], rep_row["author_residues"].split(","))]
-    for position, residue in enumerate(medoid_residues, start=1):   # token positions, as in H
-        tri = base_triangle(residue)
-        away = tri.mean(axis=0) - tloop[0].mean(axis=0)
-        away = away / (np.linalg.norm(away) + 1e-9)
-        # outward from the fragment centre; position 2 inward, clear of its neighbour's label
-        offset = {1: 4.6, 2: -4.2}.get(position, 3.6)
-        axes[1].text(*(tri.mean(axis=0) + away * offset), f"{position} {rep_labels[position - 1]}",
-                     fontsize=8.5, color="#2A7A2A",
-                     ha="center", va="center", fontweight="bold",
-                     bbox=dict(boxstyle="round,pad=0.12", fc="white", ec="none", alpha=0.8))
-    tloop_extent = np.vstack([tloop.reshape(-1, 3), partner_points])
-    same_physical_limits(axes, [gnra, tloop_extent[None, ...]])
-    return axes, [gnra, tloop]
+def panel_structure(ax, letter: str, manifest: dict) -> None:
+    """A ChimeraX render from render_fig6_structures.py, placed in Å so that F and G share a
+    scale: the representative coloured, the other fragments thin grey sticks. G adds the
+    representative's external partners (grey) with a dashed connector per DSSR pairing class."""
+    panel = manifest["panels"][letter]
+    half = manifest["camera_width_angstrom"] / 2
+    ax.imshow(plt.imread(RENDER_DIR / f"molecule_{letter}.png"), extent=(-half, half, -half, half))
+    h = min(half, VIEW_HALF_WIDTH)
+    ax.set_xlim(-h, h)
+    ax.set_ylim(-h, h)
+    ax.axis("off")
+    # label positions (Å) for the T-loop representative, chosen clear of the stacked bases
+    tloop_label_xy = [(-10, -5), (-3, -11), (10, -3), (10, 1)]
+    partner_label_xy = {"A58": (-9, 5), "G18": (-1, 11), "G19": (9, 7)}
+    for j, centre in enumerate(panel["centres"]):
+        xy = np.asarray(centre[:2])
+        if letter == "G":
+            pos, label = tloop_label_xy[j], f"{j + 1} {panel['labels'][j]}"
+        else:
+            pos, label = xy + xy / (np.linalg.norm(xy) + 1e-9) * 3, str(j + 1)
+        ax.annotate(label, xy=xy, xytext=pos, fontsize=9, color=panel["colors"][j], ha="center",
+                    va="center", fontweight="bold", arrowprops={"arrowstyle": "-", "color": "#777777", "lw": 0.5},
+                    bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.4, "alpha": 0.9})
+    for link in panel["links"]:
+        start, end = np.asarray(link["start"][:2]), np.asarray(link["end"][:2])
+        delta = end - start
+        ax.plot(*np.transpose([start + delta * 0.25, end - delta * 0.25]), "--", color=LW_COLORS[link["lw"]], lw=1.2)
+        ax.annotate(f"{link['label']}\n{link['lw']}", xy=end, xytext=partner_label_xy[link["label"]], fontsize=8,
+                    ha="center", va="center", arrowprops={"arrowstyle": "-", "color": "#777777", "lw": 0.5},
+                    bbox={"facecolor": "white", "edgecolor": "none", "pad": 0.4, "alpha": 0.9})
+    ax.plot([-h + 1, -h + 3], [-h + 1, -h + 1], color="#333333", lw=2)
+    ax.text(-h + 2, -h + 0.25, "2 Å", ha="center", va="top", fontsize=9)
 
 
 def write_numbers(data: dict) -> Path:
@@ -703,10 +580,10 @@ def write_numbers(data: dict) -> Path:
     add("F", "scale_bar_angstrom", 2, HAIRPIN, "pdb_chain,author_residues", "physical coordinate scale")
     add("G", "T_loop_superposition_n", len(data["tloop_coords"]), DSSR, "pdb_chain,author_residues,kmer", "successfully parsed base-inclusive atoms")
     add("G", "scale_bar_angstrom", 2, DSSR, "pdb_chain,author_residues", "physical coordinate scale")
-    add("H", "GNRA_signature_count", data["n_gnra_signature"], HAIRPIN, "dssr_lw_signature", "contains cWW,tSH at positions 1,2 and tSH,cWW at 5,6; positions 3-4 unconstrained")
+    add("H", "GNRA_signature_count", data["n_gnra_signature"], HAIRPIN, "dssr_lw_signature", f"contains {GNRA_SIGNATURE} ('.' unconstrained); labels read from each token nucleotide")
     add("H", "GNRA_signature_denominator", len(data["exact_hairpin"]), HAIRPIN,
         "dssr_exact_bgsu_hl_34789_6", "six residues exactly match one six-nucleotide HL_34789.6 occurrence")
-    add("H", "T_loop_signature_count", data["n_tloop_signature"], DSSR, "kmer,dssr_lw_pattern", "kmer 48-24-39-39; contains tWH,tWS,cWW at positions 1-3; position 4 unconstrained")
+    add("H", "T_loop_signature_count", data["n_tloop_signature"], DSSR, "kmer,dssr_lw_pattern", f"kmer 48-24-39-39; contains {TLOOP_SIGNATURE} ('.' unconstrained)")
     add("H", "T_loop_signature_denominator", len(data["tloop"]), DSSR, "kmer", "kmer 48-24-39-39 row count")
     path = FIGURES / "fig6_numbers.tsv"
     with path.open("w", newline="") as handle:
@@ -736,7 +613,10 @@ def main() -> None:
     ax_d = fig.add_subplot(grid[1, 1])
     ax_e = fig.add_subplot(grid[2, 0:2])
     right = grid[1:3, 2].subgridspec(2, 1, hspace=0.05)      # the two structures share the right column equally
-    f_axes, _aligned = panel_f(fig, (right[0], right[1]), data)
+    f_axes = [fig.add_subplot(right[0]), fig.add_subplot(right[1])]
+    manifest = json.loads((RENDER_DIR / "aligned_models.json").read_text())
+    for ax, letter in zip(f_axes, "FG"):
+        panel_structure(ax, letter, manifest)
     panel_a(ax_a, data)
     panel_b(ax_b, data)
     panel_c(ax_c, data)
@@ -748,11 +628,11 @@ def main() -> None:
     for ax in f_axes:
         p = ax.get_position(original=True)
         ax.set_position([p.x0 - shift, p.y0, p.width, p.height])
+        ax.set_aspect("equal")                # equal cells and crops: one Å scale for F and G
+        ax.set_anchor("C")
+        ax.apply_aspect()
     pb = ax_b.get_position()                 # a narrower B, left-aligned with E and F
     ax_b.set_position([f_axes[0].get_position().x0, pb.y0, pb.width * 0.8, pb.height])
-    fig.canvas.draw()
-    for ax in f_axes:
-        add_scale_bar(ax, 2.0)
     # letters in reading order, row by row
     panel_label(ax_a, "A")
     # B is the base-inclusive half of the shared axes, lettered just right of the divider.

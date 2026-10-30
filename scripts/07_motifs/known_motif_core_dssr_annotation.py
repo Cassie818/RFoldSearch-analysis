@@ -141,6 +141,11 @@ def load_or_run_dssr(row: dict[str, str]) -> tuple[dict, str, Path]:
     return dssr, "computed", json_path
 
 
+def focal_lw(label: str) -> str:
+    """The same Leontis-Westhof pair read from its second nucleotide."""
+    return label[0] + label[2] + label[1] if len(label) == 3 else label
+
+
 def pair_lookup(
     dssr: dict,
     core_chain: str | None = None,
@@ -167,6 +172,9 @@ def pair_lookup(
         record_1["partner_resnum"] = reference_number(ref2)
         record_1["partner_ref"] = ref2
         record_2 = dict(pair)
+        # Leontis-Westhof labels name the edges in nt1, nt2 order; read from nt2 the
+        # two edges swap (tWS -> tSW), so every label runs from the core nucleotide.
+        record_2["LW"] = focal_lw(pair.get("LW", "."))
         record_2["core_nt"] = pair.get("nt2", ".")
         record_2["partner_nt"] = pair.get("nt1", ".")
         record_2["partner_resnum"] = reference_number(ref1)
