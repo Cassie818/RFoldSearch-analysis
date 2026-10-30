@@ -305,6 +305,7 @@ def main():
     title_c = fig.texts[-1]
     overall_panel(fig, r0[1], est, STRUCT_TRUTH, MAIN, "US-align (exhaustive)",
                   f"Structure truth (TM-score ≥ {E.TM_MAIN:.2f})", ylabels=False)
+    title_d = fig.texts[-1]
 
     r1 = rows[2].subgridspec(1, 2, wspace=0.22)
     ax_b, ax_c = (fig.add_subplot(r1[k]) for k in range(2))
@@ -333,13 +334,13 @@ def main():
                 anchor=(0.5, 1.0), ncol=2)
     ax_c.set_ylim(0, 0.75)
 
-    # every letter level with its panel's title; A, C, D in one column, B and E in another
+    # every letter level with its panel's title; A, C, E in one column, B, D, F in another
     pb, pc = ax_b.get_position(), ax_c.get_position()
     col_l, col_r = pb.x0 - 0.14 * pb.width, pc.x0 - 0.14 * pc.width
     fig.canvas.draw()
     inv = fig.transFigure.inverted()
     for title, lab, x in ((ax_sa.title, "A", col_l), (ax_sb.title, "B", col_r), (title_c, "C", col_l),
-                          (ax_b.title, "D", col_l), (ax_c.title, "E", col_r)):
+                          (title_d, "D", col_r), (ax_b.title, "E", col_l), (ax_c.title, "F", col_r)):
         bb = inv.transform(title.get_window_extent())
         fig.text(x, (bb[0][1] + bb[1][1]) / 2, lab, fontsize=16, fontweight="bold",
                  va="center", ha="right")
