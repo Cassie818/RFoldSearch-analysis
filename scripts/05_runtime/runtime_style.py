@@ -58,19 +58,16 @@ def draw_shape(ax, data, order, stat, sizes, ylim, iqr=None, coord=None,
         if ylim[0] <= y <= ylim[1]:
             ax.axhline(y, color="#E6E6E6", lw=0.45, zorder=0)
 
-    # the coordinate aligners, as one band: they differ by <7% at every size.
-    # Their extrapolated point at 83,156 is dropped, as in the absolute view --
-    # a derived point on a fitted line can only restate the fit.
+    # the coordinate aligners, as one band: their normalised curves differ little,
+    # and none of them appears in the other curves' legend
     if coord:
-        ns = np.array([n for n in sorted(coord[0]) if n != F.FULL])
-        stack = np.array([relative({n: v for n, v in c.items() if n != F.FULL},
-                                   stat)[1] for c in coord])
+        ns = np.array(sorted(coord[0]))
+        stack = np.array([relative(c, stat)[1] for c in coord])
         ax.fill_between(ns, stack.min(axis=0), stack.max(axis=0),
                         color=BAND, alpha=0.45, lw=0, zorder=2)
         ax.plot(ns, stack.mean(axis=0), "-", color=BAND, lw=1.0, zorder=2)
-        ax.text(sizes[-1] * 1.14, stack.mean(axis=0)[-1], "coordinate\naligners",
-                color="#5F5F5F", fontsize=6.0, va="center", ha="left",
-                linespacing=1.15, clip_on=False)
+        ax.text(sizes[0] * 1.25, stack.max(axis=0)[0] * 1.25, "Coordinate aligners",
+                color="#5F5F5F", fontsize=6.0, va="bottom", ha="left")
 
     # where the coordinate-aligner band already sits on 1.0, a dashed rule
     # underneath it is one line too many
@@ -88,8 +85,8 @@ def draw_shape(ax, data, order, stat, sizes, ylim, iqr=None, coord=None,
     for m in order:
         xs, ys = relative(data[m], stat)
         lw, ms, z = curve_style(m)
-        ax.plot(xs, ys, "-", color=COLOR[m], lw=lw, marker=MARKER[m], ms=ms,
-                mec="white", mew=0.4, zorder=z)
+        ax.plot(xs, ys, "--" if m == "BLASTN" else "-", color=COLOR[m], lw=lw,
+                marker=MARKER[m], ms=ms, mec="white", mew=0.4, zorder=z)
         ends[m] = ys[-1]
 
     span = np.log10(ylim[1]) - np.log10(ylim[0])
@@ -157,8 +154,8 @@ def draw_absolute(ax, data, order, stat, sizes, ylim, coord=None, band_label_y=N
     for m in order:
         xs, ys = per_thousand(data[m], stat)
         lw, ms, z = curve_style(m)
-        ax.plot(xs, ys, "-", color=COLOR[m], lw=lw, marker=MARKER[m], ms=ms,
-                mec="white", mew=0.4, zorder=z)
+        ax.plot(xs, ys, "--" if m == "BLASTN" else "-", color=COLOR[m], lw=lw,
+                marker=MARKER[m], ms=ms, mec="white", mew=0.4, zorder=z)
         ends[m] = ys[-1]
 
     if labels:

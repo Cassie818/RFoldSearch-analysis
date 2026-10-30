@@ -1,4 +1,6 @@
-"""Supplementary figure: where RFoldSearch's speed advantage over RiboSeek comes from"""
+"""Supplementary figure (S20): where RFoldSearch's speed advantage over RiboSeek comes from.
+
+The panels stay bare; the fitted exponents and per-query counts are printed for the legend."""
 import json
 import os
 import sys
@@ -57,29 +59,23 @@ def main():
            zorder=5)
     a.axvline(cross, color=MUTED, lw=0.7, dashes=(1.4, 1.8), zorder=2)
     a.set_xscale("log"); a.set_yscale("log")
-    a.set_ylim(0.25, 4)
-    a.set_xlabel("Database size (structures)")
-    a.set_ylabel("RiboSeek time / RFoldSearch time")
+    a.set_ylim(0.3, 12)
+    a.set_xlabel("Database size")
+    a.set_ylabel("RiboSeek / RFoldSearch time")
     a.set_xticks([1000, 10000, 100000, 531888])
     a.set_xticklabels(["1k", "10k", "100k", "532k"])
-    a.set_yticks([0.25, 0.5, 1, 2, 4])
-    a.set_yticklabels(["0.25", "0.5", "1", "2", "4"])
-    a.text(cross * 1.12, 0.28, f"crossover\n{cross/1000:.0f}k structures",
-           fontsize=5.8, color=MUTED, va="bottom", ha="left",
-           linespacing=1.3)
+    a.set_yticks([0.3, 0.5, 1, 2, 5, 10])
+    a.set_yticklabels(["0.3", "0.5", "1", "2", "5", "10"])
+    a.text(cross * 0.92, 0.33, f"Crossover: {cross/1000:.0f}k", fontsize=6.0, color=MUTED,
+           va="bottom", ha="right")
     a.annotate(f"{ratio[-1]:.1f}×", xy=(N[-1], ratio[-1]),
                xytext=(-4, 7), textcoords="offset points", fontsize=7,
                color=BLUE, fontweight="bold", ha="right")
-    a.text(0.035, 0.955,
-           f"cost $\\propto N^{{{a_rf:.2f}}}$  RFoldSearch\n"
-           f"cost $\\propto N^{{{a_rs:.2f}}}$  RiboSeek",
-           transform=a.transAxes, fontsize=6.0, va="top", color=INK,
-           linespacing=1.5)
     # the shaded half is where RFoldSearch wins; label each side of the 1.0 line
-    a.text(0.985, 3.6, "RFoldSearch faster", transform=a.get_yaxis_transform(),
-           fontsize=5.8, color=BLUE, ha="right", va="top")
-    a.text(0.985, 0.82, "RiboSeek faster", transform=a.get_yaxis_transform(),
-           fontsize=5.8, color=PINK, ha="right", va="top")
+    a.text(0.035, 1.25, "RFoldSearch faster", transform=a.get_yaxis_transform(),
+           fontsize=6.0, color=P.F.TEXT_COLOR["RFoldSearch"], ha="left", va="bottom")
+    a.text(0.035, 0.82, "RiboSeek faster", transform=a.get_yaxis_transform(),
+           fontsize=6.0, color=P.F.TEXT_COLOR["RiboSeek"], ha="left", va="top")
 
     # ---- B: paired per-query cost at full scale
     lim = (10 ** np.floor(np.log10(min(t_rf.min(), t_rs.min()))),
@@ -89,19 +85,20 @@ def main():
                    alpha=0.85, zorder=5, norm=matplotlib.colors.LogNorm())
     b.set_xscale("log"); b.set_yscale("log")
     b.set_xlim(*lim); b.set_ylim(*lim)
+    ticks = [t for t in (0.01, 0.1, 1, 10) if lim[0] <= t <= lim[1]]
+    for set_ticks, set_labels in ((b.set_xticks, b.set_xticklabels), (b.set_yticks, b.set_yticklabels)):
+        set_ticks(ticks)
+        set_labels([f"{t:g}" for t in ticks])
     b.set_xlabel("RFoldSearch time per query (s)")
     b.set_ylabel("RiboSeek time per query (s)")
     cb = fig.colorbar(sc, ax=b, pad=0.02, fraction=0.045)
-    cb.set_label("Query length (tokens)", fontsize=6.0)
+    cb.set_label("Query length", fontsize=6.0)
+    cb.set_ticks([20, 50, 100, 200])
+    cb.set_ticklabels(["20", "50", "100", "200"])
+    cb.ax.minorticks_off()
     cb.ax.tick_params(labelsize=5.6, length=2.0)
     n_above = int((t_rs > t_rf).sum())
     sp = t_rs / t_rf
-    b.text(0.035, 0.955,
-           f"{n_above} of {len(t_rf)} queries above the diagonal\n"
-           f"median {np.median(sp):.0f}×, IQR "
-           f"{np.percentile(sp, 25):.0f}–{np.percentile(sp, 75):.0f}×",
-           transform=b.transAxes, fontsize=6.0, va="top", color=INK,
-           linespacing=1.5)
 
     for ax, lab in ((a, "A"), (b, "B")):
         ax.text(-0.135, 1.06, lab, transform=ax.transAxes, fontsize=8,
@@ -116,7 +113,8 @@ def main():
         fig.savefig(out, dpi=600 if ext == "png" else None)
         print("wrote", out)
     print(f"crossover {cross:,.0f}; alpha RF {a_rf:.3f} RS {a_rs:.3f}; "
-          f"{n_above}/{len(t_rf)} above diagonal; median speedup {np.median(sp):.1f}x")
+          f"{n_above}/{len(t_rf)} above diagonal; median speedup {np.median(sp):.1f}x "
+          f"(IQR {np.percentile(sp, 25):.1f}-{np.percentile(sp, 75):.1f})")
 
 
 if __name__ == "__main__":
