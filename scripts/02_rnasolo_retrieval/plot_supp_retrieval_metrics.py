@@ -2,9 +2,13 @@
 held-out test partition (same query sets as Fig 2A/B).
 
 (A) Rfam family- and clan-level Recall@1 (grouped bars).
-(B,C) Per-query-averaged precision-recall curves at the (B) family and (C) clan level: 
-each method's mean interpolated precision over queries, with its mean average precision (AP) in the legend. Each query is
-weighted equally, so the curves are not biased by family size or query length; AP corresponds to the per-query mean AUPR.
+Rows: Rfam family (top) and clan (bottom).
+(A,D) Recall@1 (bars).
+(B,E) Per-query-averaged precision-recall curves: each method's mean interpolated precision over queries, with its mean
+average precision (AP) in the legend. Each query is weighted equally, so the curves are not biased by family size or
+query length; AP corresponds to the per-query mean AUPR.
+(C,F) Mean per-query AUROC with 95% hierarchical block-bootstrap intervals (roc_auc.py); * marks a paired difference
+to RFoldSearch whose interval excludes zero. The dashed line is chance (0.5).
 """
 import sys as _sys, os as _os
 
@@ -27,20 +31,23 @@ RET = REPO / "files/production/retrieval"
 r1 = json.load(open(RET / "recall1_rfam_test.json"))
 wp = json.load(open(RET / "weighted_pr_rfam_test.json"))
 ap_sig = json.load(open(RET / "bootstrap_figS12_ap.json"))
+auc = json.load(open(RET / "roc_auc_test.json"))["panels"]
 
 # Colours, markers and the RFoldSearch emphasis are shared with Fig. 2.
 _sys.path.insert(0, _os.path.dirname(_os.path.abspath(__file__)))
 from plot_fig2 import (CURVE_MUTED, HIGHLIGHT, LABEL, LINESTYLE, MARKER,  # noqa: E402
                        METHOD_BASE, METHOD_COLOR, METHODS)
 
-# Two rows: family (top) and clan (bottom); left = Recall@1 bars, right = PR
-# curve. Bars are coloured by method to match the curves on their right.
-fig = plt.figure(figsize=(12.8, 9.0))
-gs = fig.add_gridspec(2, 2, width_ratios=[1.12, 1.0], wspace=0.22, hspace=0.55)
+# Two rows: family (top) and clan (bottom); columns Recall@1 bars, PR curves, AUROC.
+# Bars and points are coloured by method to match the curves.
+fig = plt.figure(figsize=(19.0, 9.0))
+gs = fig.add_gridspec(2, 3, width_ratios=[1.12, 1.0, 1.12], wspace=0.24, hspace=0.55)
 axA = fig.add_subplot(gs[0, 0])   # family Recall@1
 axB = fig.add_subplot(gs[0, 1])   # family PR
-axC = fig.add_subplot(gs[1, 0])   # clan Recall@1
-axD = fig.add_subplot(gs[1, 1])   # clan PR
+axC = fig.add_subplot(gs[0, 2])   # family AUROC
+axD = fig.add_subplot(gs[1, 0])   # clan Recall@1
+axE = fig.add_subplot(gs[1, 1])   # clan PR
+axF = fig.add_subplot(gs[1, 2])   # clan AUROC
 
 xs = np.arange(len(METHODS))
 
@@ -97,13 +104,40 @@ def pr_panel(ax, level, title):
               handlelength=1.4, labelspacing=0.3)
 
 
+# ---- (C,F) AUROC: point estimate and 95% block-bootstrap interval ----
+def auc_panel(ax, level, title):
+    res = auc[f"rfam|{level}"]["summary"]
+    for x, m in zip(xs, METHODS):
+        r = res[m]
+        hero = m in HIGHLIGHT
+        ax.errorbar(x, r["estimate"], yerr=[[r["estimate"] - r["ci_lower"]], [r["ci_upper"] - r["estimate"]]],
+                    fmt=MARKER[m], color=METHOD_BASE[m], ms=(11 if m == "RFoldSearch-TM" else 8.5) if hero else 7,
+                    mec="white", mew=0.8, elinewidth=1.4, capsize=3, zorder=HIGHLIGHT.get(m, 3))
+        ax.text(x, r["ci_upper"] + 0.012, f"{r['estimate']:.3f}" + ("*" if r["sig_vs_rf"] else ""),
+                ha="center", va="bottom", fontsize=8, color="#333333")
+    ax.axhline(0.5, ls="--", color="#999999", lw=1.0, zorder=1)
+    ax.set_ylabel("AUROC", fontsize=12)
+    ax.set_xticks(xs)
+    ax.set_xticklabels([LABEL.get(m, m) for m in METHODS], fontsize=9.5, rotation=30, ha="right")
+    ax.set_ylim(0.4, 1.06)
+    ax.set_yticks(np.arange(0.4, 1.01, 0.1))
+    ax.grid(axis="y", color="#E6E6E6", linewidth=0.8, zorder=0)
+    ax.set_axisbelow(True)
+    ax.set_xlim(-0.6, len(METHODS) - 0.4)
+    ax.set_title(title, fontsize=12)
+    ax.spines[["top", "right"]].set_visible(False)
+    ax.tick_params(axis="both", labelsize=10)
+
+
 recall_panel(axA, "family", "Family")
 pr_panel(axB, "family", "Family")
-recall_panel(axC, "clan", "Clan")
-pr_panel(axD, "clan", "Clan")
+auc_panel(axC, "family", "Family")
+recall_panel(axD, "clan", "Clan")
+pr_panel(axE, "clan", "Clan")
+auc_panel(axF, "clan", "Clan")
 
 # panel labels
-for ax, lab in ((axA, "A"), (axB, "B"), (axC, "C"), (axD, "D")):
+for ax, lab in ((axA, "A"), (axB, "B"), (axC, "C"), (axD, "D"), (axE, "E"), (axF, "F")):
     ax.text(-0.12, 1.06, lab, transform=ax.transAxes, fontsize=15, fontweight="bold", va="top")
 
 fig.tight_layout(rect=(0, 0.02, 1, 1))

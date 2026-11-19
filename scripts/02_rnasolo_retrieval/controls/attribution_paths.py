@@ -12,11 +12,11 @@ os.environ.setdefault("RFS_ALPHABET_CONTROL_MATRIX", "native")
 import riboseek_alphabet_control as F
 from riboseek import Searcher
 from riboseek.align import NWAligner
-from riboseek.prefilter import KmerPrefilter
+from riboseek.prefilter import SpacedSeedPrefilter
 
 B, SEED = 2000, 123
 LEVEL_SEED = {"family": SEED + 1, "clan": SEED + 2}
-PREF_K, PREF_N = 6, 500
+PREF_N = 500
 
 db = torch.load(F.resolve("files/models/db.pt"), map_location="cpu", weights_only=False)
 ents = db["entries"]
@@ -37,14 +37,14 @@ M_3dr = torch.load(F.resolve("files/models/sub_matrix.pt"), map_location="cpu",
 
 
 def ribo_pipeline(toks, mat, name):
-    """RiboSeek as published: IDF 6-mer set prefilter + linear-gap NW+SW."""
+    """RiboSeek 0.2.1 pipeline: spaced-seed prefilter (three patterns, IDF-weighted, top 500,
+    query excluded) + linear-gap NW+SW."""
     aln = NWAligner(mat, gap_penalty=-2.0)
-    chains = {str(i): {"labels": toks[i].tolist()} for i in range(n)}
-    pf = KmerPrefilter(chains, k=PREF_K)
+    pf = SpacedSeedPrefilter({str(i): toks[i].tolist() for i in range(n)}, K=mat.shape[0])
     per = {"family": {}, "clan": {}}
     for level, qs in (("family", fam_q), ("clan", clan_q)):
         for q in qs:
-            cand = [int(kk) for kk, _ in pf.candidates(toks[q].tolist(), top_n=PREF_N) if int(kk) != q]
+            cand = [int(kk) for kk, _ in pf.candidates(toks[q].tolist(), top_n=PREF_N, exclude_key=str(q))]
             if not cand:
                 per[level][q] = 0.0; continue
             nw = np.array([aln.align(toks[q], toks[t], local=False) for t in cand])

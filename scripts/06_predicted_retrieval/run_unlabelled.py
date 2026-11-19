@@ -1,4 +1,6 @@
-"""Searches and exhaustive US-align for the unlabelled experimental queries."""
+"""Searches and exhaustive US-align for the unlabelled experimental queries.
+
+The RiboSeek entries are replaced by run_riboseek.py (RiboSeek 0.2.1, RS-20 and RS-80)."""
 import json
 import os
 import subprocess

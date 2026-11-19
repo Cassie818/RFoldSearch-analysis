@@ -253,8 +253,8 @@ def main() -> None:
     match_columns = {index for index, char in enumerate(rf_annotation) if char.isupper()}
 
     sys.path.insert(0, str(args.rfoldsearch_repo))
-    from rfoldseek.database import structure_to_entry
-    from rfoldseek.tokenizer import encode_entry, load_model
+    from rfoldsearch.database import structure_to_entry
+    from rfoldsearch.tokenizer import encode_entry, load_model
 
     device = torch.device("cpu")
     package_dir = "rfoldsearch" if (args.rfoldsearch_repo / "rfoldsearch").is_dir() else "rfoldseek"

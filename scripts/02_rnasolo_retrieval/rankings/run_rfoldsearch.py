@@ -13,8 +13,8 @@ K, TOPN, KMER_K, THRESH_FRAC, GO, GE = 80, 200, 4, 0.75, -2.0, -0.5
 
 def main():
     import torch
-    from rfoldseek.structure_score import c4_coords, score_pair
-    from rfoldseek.tiebreak import tie_keys
+    from rfoldsearch.structure_score import c4_coords, score_pair
+    from rfoldsearch.tiebreak import tie_keys
     b = BM.load()
     toks = [np.asarray(e["tokens"], dtype=np.int64) for e in b.ents]
     xyz = [c4_coords(e, len(t)) for e, t in zip(b.ents, toks)]

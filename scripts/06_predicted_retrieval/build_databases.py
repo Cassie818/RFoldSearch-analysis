@@ -48,7 +48,7 @@ def guard(n, failures, pool):
 
 def _init_rfs():
     torch.set_num_threads(1)
-    from rfoldseek.tokenizer import load_model
+    from rfoldsearch.tokenizer import load_model
     model, ckpt, _, _ = load_model(CKPT, torch.device("cpu"))
     _state.update(model=model, nm=ckpt.get("norm_mean"), ns=ckpt.get("norm_std"),
                   ab=ckpt.get("active_blocks"))
@@ -56,8 +56,8 @@ def _init_rfs():
 
 def _enc_rfs(job):
     i, urs = job
-    from rfoldseek.database import structure_to_entry
-    from rfoldseek.tokenizer import encode_entry
+    from rfoldsearch.database import structure_to_entry
+    from rfoldsearch.tokenizer import encode_entry
     try:
         with torch.no_grad():
             enc = encode_entry(_state["model"], structure_to_entry(path_of(urs)),
@@ -93,8 +93,8 @@ def build_rfoldsearch(ids, out):
 
 
 def verify_rfoldsearch(entries, k=20):
-    from rfoldseek.database import structure_to_entry
-    from rfoldseek.tokenizer import encode_entry, load_model
+    from rfoldsearch.database import structure_to_entry
+    from rfoldsearch.tokenizer import encode_entry, load_model
     model, ckpt, _, _ = load_model(CKPT, torch.device("cpu"))
     random.seed(0)
     ok = 0

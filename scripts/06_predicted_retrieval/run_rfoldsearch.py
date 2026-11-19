@@ -15,7 +15,7 @@ DEPTHS = (500,)
 
 def main():
     import torch
-    from rfoldseek.search import Searcher
+    from rfoldsearch.search import Searcher
     paper = torch.load(os.path.join(RS.REPO, "files", "models", "db.pt"), map_location="cpu",
                        weights_only=False)["entries"]
     _, sets = RS.load_queries(paper)

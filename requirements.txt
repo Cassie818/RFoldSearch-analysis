@@ -13,7 +13,7 @@ pandas               # motif controls (scripts/07_motifs)
 gemmi                # BGSU motif overlap (scripts/07_motifs/bgsu_overlap.py)
 
 # RiboSeek baseline and the alphabet controls (RS-20 and RS-80 modes)
-riboseek==0.2.0
+riboseek==0.2.1
 
 # Structure preprocessing only (preprocessing/), run in a separate environment
 # because biotite 0.40 requires numpy < 2:

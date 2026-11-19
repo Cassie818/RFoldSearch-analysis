@@ -35,7 +35,7 @@ from numba import njit
 from vqvae import DescriptorVQVAE, descriptor_loss
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
 from smith_waterman import smith_waterman_numba
-from rfoldseek.structure_score import c4_coords, score_pair
+from rfoldsearch.structure_score import c4_coords, score_pair
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--split", choices=["pdb", "family", "homology", "pdb-random"], required=True)
@@ -566,7 +566,7 @@ def save_rankings(path, rankings):
                         flat=np.concatenate([r for _, r in rows] or [np.zeros(0)]).astype(np.int32))
 
 
-from rfoldseek.tiebreak import tie_keys  # noqa: E402
+from rfoldsearch.tiebreak import tie_keys  # noqa: E402
 
 tie_keys_by_seed = [np.asarray(tie_keys([_os.path.splitext(_os.path.basename(str(ents[d]["id"])))[0]
                                          for d in pool], sd)) for sd in TIE_SEEDS]

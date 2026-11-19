@@ -28,9 +28,8 @@ DEPTH = 500
 METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal",
            "US-align (exhaustive)"]
 BAR_METHODS = [m for m in METHODS if m != "US-align (exhaustive)"]
-PLDDT_METHODS = ["RFoldSearch n500", "RFoldSearch-TM n500", "RiboSeek RS-80 c500", "nhmmer", "Infernal"]
 MIN_BIN = 5
-TARGET_METHODS = PLDDT_METHODS + ["US-align (exhaustive)"]
+TARGET_METHODS = METHODS          # every method drawn in the target-pLDDT panel
 METRIC = "Sens@1FP"
 MAIN_FILTER = "none"
 FILTERS = [("none", "None"), ("E<0.01", "$E<0.01$"), ("E<=10", "$E\\leq10$")]   # sequence-detected positives removed
@@ -429,6 +428,9 @@ def main():
     sd.set_title("Predicted queries (annotation truth)", fontsize=11.5, pad=6)
     for ax, lab, x in ((sd, "A", -0.62), (sc, "B", -0.065)):
         letter(ax, lab, x)
+    # only the methods this figure draws (Fig. 5's legend also lists the runtime-only ones)
+    handles = [handle(m) for m in ["RFoldSearch n500", "RFoldSearch-TM n500", "US-align (exhaustive)",
+                                   "RiboSeek c500", "RiboSeek RS-80 c500", "BLASTN", "nhmmer", "Infernal"]]
     fig.legend(handles=handles, loc="lower center", ncol=8, frameon=False, fontsize=10.5,
                bbox_to_anchor=(0.5, 0.0), handlelength=2.2, columnspacing=1.2)
     fig.savefig(os.path.join(FIG, "supp_predicted_breakdown.png"), dpi=200, bbox_inches="tight")

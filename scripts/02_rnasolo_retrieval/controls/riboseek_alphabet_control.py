@@ -18,7 +18,7 @@ from riboseek import Searcher
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 from paths import DATA_ROOT, RFOLDSEARCH_REPO, SPLITS_DESC, SRC_SEARCH, resolve
 sys.path.insert(0, RFOLDSEARCH_REPO)
-from rfoldseek.structure_score import c4_coords, score_pair
+from rfoldsearch.structure_score import c4_coords, score_pair
 
 sys.path.insert(0, SRC_SEARCH)
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels

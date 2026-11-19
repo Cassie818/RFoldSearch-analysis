@@ -18,7 +18,7 @@ FIG_DIR = os.path.join(REPO, "figures")
 B, SEED = 2000, 124
 
 _KEY = {"RFoldSearch": "RFoldSearch n500", "RFoldSearch-TM": "RFoldSearch-TM n500", "US-align": "US-align (exhaustive)",
-        "Infernal": "Infernal", "nhmmer": "nhmmer", "BLASTN": "BLASTN",
+        "GTalign": "GTalign", "Infernal": "Infernal", "nhmmer": "nhmmer", "BLASTN": "BLASTN",
         "RS-20": "RiboSeek c500", "RS-80": "RiboSeek RS-80 c500"}
 COLOR = {m: S.BASE[k] for m, k in _KEY.items()}
 COLOR.update({"Composition": "#6E6E6E", "Length": "#8C8C8C", "Shuffled": "#ABABAB"})
@@ -163,7 +163,7 @@ def clan_panel(ax, cl, method_legend=True, filter_legend=True):
 
     def in_group(q, g):
         return clan[q] == g if g != "other" else clan[q] not in {x for x, _ in CLANS}
-    cm = ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "RS-20", "RS-80"]   # as in B
+    cm = ["RFoldSearch", "RFoldSearch-TM", "US-align", "GTalign", "Infernal", "RS-20", "RS-80"]
     step = 0.8 / len(cm)
     for k, (g, glab) in enumerate(groups):
         for j, m in enumerate(cm):

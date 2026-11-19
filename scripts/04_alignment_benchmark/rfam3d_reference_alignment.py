@@ -414,8 +414,8 @@ def main() -> None:
     sys.path.insert(0, str(args.rfoldsearch_repo))
     paper_root = Path(__file__).resolve().parents[2]
     sys.path.insert(0, str(paper_root / "src" / "search"))
-    from rfoldseek.database import structure_to_entry
-    from rfoldseek.tokenizer import encode_entry, load_model
+    from rfoldsearch.database import structure_to_entry
+    from rfoldsearch.tokenizer import encode_entry, load_model
     from token_alignment import smith_waterman_traceback
     args.output_dir.mkdir(parents=True, exist_ok=True)
     families = parse_stockholm(args.rfam_seed)

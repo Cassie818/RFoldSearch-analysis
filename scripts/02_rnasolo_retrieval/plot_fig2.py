@@ -30,7 +30,7 @@ import numpy as np
 # ---- shared style (identical to plot_fig2.py) --------------------------------
 METHODS = ["RFoldSearch", "RFoldSearch-TM", "GTalign", "RTM-align", "US-align", "RMalign",
            "RiboSeek", "RiboSeek RS-80", "BLASTN", "Infernal"]
-# RiboSeek 0.2.0: RS-20 (geometry only; the "RiboSeek" key) and the default
+# RiboSeek 0.2.1: RS-20 (geometry only; the "RiboSeek" key) and the default
 # RS-80 (RS-20 x nucleotide identity) share one hue, RS-80 in the deeper shade.
 METHOD_COLOR = {
     "RFoldSearch": "#1F9BD8", "GTalign": "#9467BD", "RTM-align": "#FF7F0E",
@@ -220,14 +220,15 @@ def main():
     r2 = rows[2].subgridspec(1, 2, width_ratios=(1.25, 1), wspace=0.32)
     ax_e, ax_f = fig.add_subplot(r2[0]), fig.add_subplot(r2[1])
     F3.line_panel(ax_e, V, blocks, strata, ticks,
-                  ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN", "RS-20", "RS-80"],
+                  ["RFoldSearch", "RFoldSearch-TM", "US-align", "GTalign", "Infernal", "nhmmer", "BLASTN",
+                   "RS-20", "RS-80"],
                   bold=("RFoldSearch", "RFoldSearch-TM"))
     F3.S.style_axes(ax_e, ylabel="Family-level Sens@1FP")
     ax_e.set_ylim(0, 1.0)
     ax_e.set_yticks(np.arange(0, 1.01, 0.2))
     F3.interval_panel(ax_f, V["none"], V["B/N E<=10"], blocks,
-                      ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN",
-                       "RS-20", "RS-80"])
+                      ["RFoldSearch", "RFoldSearch-TM", "US-align", "GTalign", "Infernal", "nhmmer",
+                       "BLASTN", "RS-20", "RS-80"])
 
     for ax, lab, x in ((ax_a, "A", -0.10), (ax_b, "B", -0.10), (ax_c, "C", -0.10), (ax_d, "D", -0.10),
                        (ax_e, "E", -0.08), (ax_f, "F", -0.36)):

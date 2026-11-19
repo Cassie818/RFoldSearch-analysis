@@ -1,4 +1,7 @@
-"""RiboSeek 0.2.0 sa20 encodings of the 885 RNAsolo chains, for the alphabet controls."""
+"""RiboSeek 0.1.0 sa20 encodings of the 885 RNAsolo chains, for the alphabet controls.
+
+The RS-20 encoder is unchanged in 0.2.0 and 0.2.1: these labels are identical, chain for chain,
+to files/ablation/riboseek020_encoded.json (written by rankings/run_riboseek.py)."""
 import importlib.resources as R
 import json
 import os

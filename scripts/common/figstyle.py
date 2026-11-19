@@ -20,16 +20,17 @@ BASE = {"RFoldSearch n500": "#1F9BD8",      # Fig. 2 RFoldSearch
         "RFoldSearch-TM n200": "#009E9E",
         "RiboSeek c500": "#E377C2",       # Fig. 2 RiboSeek
         "RiboSeek c200": "#E377C2",
-        "RiboSeek RS-80 c500": "#A8327F",  # RiboSeek 0.2.0 default RS-80: same hue, deeper shade
+        "RiboSeek RS-80 c500": "#A8327F",  # RiboSeek 0.2.1 default RS-80: same hue, deeper shade
         "BLASTN": "#FFC107",              # Fig. 2 BLASTN
         "nhmmer": "#8C564B",              # not in Fig. 2: brown, absent from the Fig. 2 palette
         "Infernal": "#BCBD22",            # not in Fig. 2 or elsewhere: olive (unused tab10 slot)
         "US-align (exhaustive)": "#D62728",   # Fig. 2 US-align
+        "GTalign": "#9467BD",                 # Fig. 2 GTalign
         "RMalign (exhaustive)": "#2CA02C"}    # Fig. 2 RMalign
 MARKER = {"RFoldSearch n500": "o",
           "RFoldSearch-TM n500": "*", "RFoldSearch-TM n200": "*",
           "RiboSeek c500": "v", "RiboSeek c200": "v", "RiboSeek RS-80 c500": "v", "BLASTN": "D", "nhmmer": "h", "Infernal": "p",
-          "US-align (exhaustive)": "s", "RMalign (exhaustive)": "^"}
+          "US-align (exhaustive)": "s", "GTalign": "X", "RMalign (exhaustive)": "^"}
 LINESTYLE = {m: "-" for m in BASE}
 LINESTYLE["BLASTN"] = "--"
 OPEN = set()                              # lines: white face; bars: hatched
@@ -38,7 +39,7 @@ MSIZE = {"RFoldSearch-TM n500": 11, "RFoldSearch-TM n200": 11}         # the sta
 SHORT = {"RFoldSearch n500": "RFoldSearch", "RFoldSearch-TM n500": "RFoldSearch-TM",
          "RiboSeek c500": "RiboSeek (RS-20)", "RiboSeek RS-80 c500": "RiboSeek (RS-80)",
          "BLASTN": "BLASTN", "nhmmer": "nhmmer",
-         "US-align (exhaustive)": "US-align", "RMalign (exhaustive)": "RMalign", "Infernal": "Infernal",
+         "US-align (exhaustive)": "US-align", "GTalign": "GTalign", "RMalign (exhaustive)": "RMalign", "Infernal": "Infernal",
          # other candidate depths, named only where the depth itself is the point
          "RFoldSearch-TM n200": "RFoldSearch-TM (depth 200)",
          "RiboSeek c200": "RiboSeek (RS-20, depth 200)"}

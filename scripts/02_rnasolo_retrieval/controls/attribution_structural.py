@@ -13,14 +13,14 @@ os.environ.setdefault("RFS_ALPHABET_CONTROL_MATRIX", "native")
 import riboseek_alphabet_control as F
 from riboseek import Searcher
 from riboseek.align import NWAligner
-from riboseek.prefilter import KmerPrefilter
+from riboseek.prefilter import SpacedSeedPrefilter
 
 sys.path.insert(0, os.path.join(PC, "src", "search"))
 from prefilter_rfam_benchmark import first_fp_sensitivity
 
 B, SEED = 2000, 123
 LEVEL_SEED = {"family": SEED + 1, "clan": SEED + 2}
-PREF_K, PREF_N = 6, 500
+PREF_N = 500
 THRESHOLDS = [0.40, 0.45, 0.50]
 
 db = torch.load(F.resolve("files/models/db.pt"), map_location="cpu", weights_only=False)
@@ -64,14 +64,14 @@ M_sa20_sb = F.build_self_blosum(sa20, pairs, 20)[0].astype(np.float64)
 
 
 def ribo_ranks(toks, mat, name):
-    """RiboSeek as published: IDF 6-mer set prefilter + linear-gap NW+SW."""
+    """RiboSeek 0.2.1 pipeline: spaced-seed prefilter (three patterns, IDF-weighted, top 500,
+    query excluded) + linear-gap NW+SW."""
     t0 = time.time()
     aln = NWAligner(mat, gap_penalty=-2.0)
-    chains = {str(i): {"labels": toks[i].tolist()} for i in range(n)}
-    pf = KmerPrefilter(chains, k=PREF_K)
+    pf = SpacedSeedPrefilter({str(i): toks[i].tolist() for i in range(n)}, K=mat.shape[0])
     out = {}
     for q in queries:
-        cand = [int(k) for k, _ in pf.candidates(toks[q].tolist(), top_n=PREF_N) if int(k) != q]
+        cand = [int(k) for k, _ in pf.candidates(toks[q].tolist(), top_n=PREF_N, exclude_key=str(q))]
         if not cand:
             out[q] = np.zeros(0, dtype=np.int64)
             continue

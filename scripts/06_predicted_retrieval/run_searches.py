@@ -4,7 +4,8 @@ For both query sets (predicted, experimental) every method returns its complete
 ranked output, so that neutral targets can be removed before evaluation:
     RFoldSearch      candidate depth 200 / 500 / 2000 (whole pool ranked)
     RFoldSearch-TM   candidate depth 200 / 500
-    RiboSeek       candidate depth 200 / 500 (RS-20)
+    RiboSeek       candidate depth 200 / 500 (RS-20); replaced by run_riboseek.py (RiboSeek 0.2.1,
+                   RS-20 and RS-80)
     BLASTN, nhmmer every hit at E < 10, best bit score per target
 Every query is timed. Methods run one after another in a single process on an
 otherwise idle machine; query preparation (tokens, RS-20 labels, sequences) is
@@ -90,7 +91,7 @@ def load_queries(paper):
 
 
 def run_token(sets, manifest):
-    from rfoldseek.search import Searcher
+    from rfoldsearch.search import Searcher
     t0 = time.perf_counter()
     s = Searcher(RFOLDSEARCH_DB, evalue_params_path=os.path.join(DB, "__none__.json"))
     print(f"rfoldsearch load+index {time.perf_counter()-t0:.1f}s", flush=True)

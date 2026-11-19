@@ -49,7 +49,7 @@ def main():
     # C: clan-level counterpart of Fig. 2F over all clans; D: the same split by clan, with the
     # methods' hues and shapes keyed by C
     interval_panel(ax_c, cl["values"]["none"], cl["values"][f], cl["clan"],
-                   ["RFoldSearch", "RFoldSearch-TM", "US-align", "Infernal", "nhmmer", "BLASTN",
+                   ["RFoldSearch", "RFoldSearch-TM", "US-align", "GTalign", "Infernal", "nhmmer", "BLASTN",
                     "RS-20", "RS-80"], level="Clan")
     clan_panel(ax_d, cl, method_legend=False, filter_legend=False)
     fig.legend(handles=filter_handles(), loc="lower center", bbox_to_anchor=(0.5, -0.01), ncol=2,

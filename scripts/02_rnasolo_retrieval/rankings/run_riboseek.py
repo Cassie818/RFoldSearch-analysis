@@ -1,4 +1,8 @@
-"""RiboSeek 0.2.0 rankings (RS-20 and RS-80) on the RNAsolo benchmark."""
+"""RiboSeek 0.2.1 rankings (RS-20 and RS-80) on the RNAsolo benchmark.
+
+0.2.1 is the release archived with the RiboSeek paper; it replaces the 6-mer prefilter of 0.2.0
+with a spaced-seed prefilter (three patterns, IDF-weighted, top 500 rescored). The encoder is
+unchanged, so the cached RS-20 encodings are shared with 0.2.0."""
 import json
 import os
 import sys
@@ -26,8 +30,8 @@ def main():
     import riboseek
     from riboseek import Searcher
     from riboseek.alphabet import Alphabet
-    if riboseek.__version__ != "0.2.0":
-        raise SystemExit(f"expected riboseek 0.2.0, found {riboseek.__version__}")
+    if riboseek.__version__ != "0.2.1":
+        raise SystemExit(f"expected riboseek 0.2.1, found {riboseek.__version__}")
     b = BM.load()
     if os.path.exists(ENCODED):
         encoded = json.load(open(ENCODED))
@@ -36,7 +40,7 @@ def main():
             encoded = {str(i): e for i, e in enumerate(pool.map(encode, b.tags, chunksize=8))}
         json.dump(encoded, open(ENCODED, "w"))
     for alphabet, method in ALPHABETS.items():
-        searcher = Searcher(Alphabet.from_pretrained(alphabet), encoded, gap_penalty=-2.0, prefilter_k=6)
+        searcher = Searcher(Alphabet.from_pretrained(alphabet), encoded, gap_penalty=-2.0)
         runs = {}
         for q in b.queries:
             hits = searcher.search(str(q), top_n=500, prefilter=True, prefilter_candidates=500)

@@ -19,8 +19,8 @@ from paths import BLAST_BIN, RFOLDSEARCH_REPO, SRC_SEARCH
 sys.path.insert(0, SRC_SEARCH)
 sys.path.insert(0, RFOLDSEARCH_REPO)
 from prefilter_rfam_benchmark import attach_labels, first_fp_sensitivity, load_labels
-from rfoldseek.structure_score import c4_coords, score_pair
-from rfoldseek.tiebreak import tie_keys
+from rfoldsearch.structure_score import c4_coords, score_pair
+from rfoldsearch.tiebreak import tie_keys
 from smith_waterman import smith_waterman_numba
 
 from sequence_divergent_rescore import seq_identity
@@ -174,6 +174,7 @@ def sequence_hits(q):
 
 
 INF = json.load(open(os.path.join(RET, "rankings", "infernal.json")))
+GT = json.load(open(os.path.join(RET, "rankings", "gtalign.json")))
 RS = {m: json.load(open(os.path.join(RET, "rankings", f"riboseek_{k}.json")))
       for m, k in (("RS-20", "rs20"), ("RS-80", "rs80"))}
 TLEN = np.array([len(SEQS[t]) for t in tags])
@@ -194,6 +195,8 @@ def rankings(q, keys_by_seed, cache):
         "nhmmer": np.asarray(sorted(nh, key=lambda i: (nh[i], i)), np.int64),
         "Infernal": np.asarray([t2i[x] for x in INF.get(tags[q], {}).get("ranking", [])
                                 if x in t2i and t2i[x] != q], np.int64),
+        "GTalign": np.asarray([t2i[x] for x in GT.get(tags[q], {}).get("ranking", [])
+                               if x in t2i and t2i[x] != q], np.int64),
         "Length": np.asarray([i for i in np.lexsort((ALL, np.abs(TLEN - TLEN[q]))) if i != q], np.int64),
         "Composition": np.asarray([i for i in np.lexsort((ALL, -(COMP @ COMP[q]))) if i != q], np.int64),
     }
