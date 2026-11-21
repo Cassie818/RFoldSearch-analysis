@@ -47,12 +47,14 @@ COLOR["GTalign-fast"] = COLOR["GTalign"]
 MARKER["US-align-fast"] = "s"
 MARKER["GTalign-fast"] = "X"
 LINES_RHO = ["RMalign", "US-align", "RTM-align", "GTalign", "GTalign-fast",
-             "RiboSeek", "BLASTN", "RFoldSearch"]
-LINES_NU = ["GTalign", "GTalign-fast", "RiboSeek", "BLASTN", "RFoldSearch"]
+             "RiboSeek-RS20", "RiboSeek", "BLASTN", "RFoldSearch"]
+LINES_NU = ["GTalign", "GTalign-fast", "RiboSeek-RS20", "RiboSeek", "BLASTN",
+            "RFoldSearch"]
 LEGEND_ORDER = ["RFoldSearch", "GTalign", "RTM-align", "US-align",
                 "RMalign", "RiboSeek", "BLASTN"]
 LABEL = {m: (m + " (GPU)" if m == "GTalign" else m) for m in LEGEND_ORDER}
 LABEL["RiboSeek"] = "RiboSeek (RS-80)"
+LABEL["RiboSeek-RS20"] = "RiboSeek (RS-20)"
 LABEL["US-align-fast"] = "US-align $-$fast"
 LABEL["GTalign-fast"] = "GTalign (GPU)-fast"
 BENCH_KEY = {"GTalign": "gtalign", "US-align": "usalign", "RMalign": "rmalign",
@@ -61,9 +63,11 @@ BENCH_KEY = {"GTalign": "gtalign", "US-align": "usalign", "RMalign": "rmalign",
 # paper does, rather than mentioned only in Methods. US-align -fast is timed
 # on the same 20-query set as its default mode; GTalign --speed=13 on the
 # same 300-query NuFold ladder as --speed=8.
-RHO_FILE_EXTRA = {"GTalign-fast": "gtalign_fast_{n}.json"}
+RHO_FILE_EXTRA = {"GTalign-fast": "gtalign_fast_{n}.json",
+                  "RiboSeek-RS20": "riboseek_rs20_{n}.json"}
 NU_FILE = {"RFoldSearch": "nufold_timing_{n}.json", "GTalign": "nufold_gtalign_{n}.json",
            "GTalign-fast": "nufold_gtalign13_{n}.json",
+           "RiboSeek-RS20": "nufold_riboseek_rs20_{n}.json",
            "RiboSeek": "nufold_riboseek_rs80_{n}.json", "BLASTN": "nufold_blastn_{n}.json"}
 EXTRAPOLATED = set()  # RhoFold+: every method measured directly at its sizes
 COORDINATE_ALIGNERS = {"US-align", "US-align-fast", "RTM-align", "RMalign"}

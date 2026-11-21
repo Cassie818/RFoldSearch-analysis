@@ -128,6 +128,7 @@ def speed_row(fig, cell, wspace=0.06):
 
 def main():
     out_png = sys.argv[1] if len(sys.argv) > 1 else None
+    os.makedirs(F.FIGDIR, exist_ok=True)
     setup_styles()
     fig = plt.figure(figsize=(WIDTH_MM * MM, HEIGHT_MM * MM))
     gs = fig.add_gridspec(1, 1, left=0.085, right=0.99, top=0.93, bottom=0.215)

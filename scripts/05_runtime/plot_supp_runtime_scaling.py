@@ -17,6 +17,7 @@ import runtime_style as P
 
 MM = F.MM
 WIDTH_MM, HEIGHT_MM = 180.0, 155.0
+S14_CURVES = ["GTalign", "RiboSeek-RS20", "BLASTN", "RFoldSearch"]
 LENGTH_FILES = {"RhoFold+": "rhofold/kernel_timing_83156.json",
                 "NuFold": "nufold/nufold_timing_531888.json"}
 
@@ -65,6 +66,7 @@ def length_panel(ax, lengths, times, xlim, ylim):
 
 
 def main():
+    os.makedirs(F.FIGDIR, exist_ok=True)
     rho, rho_iqr = F.load_rhofold()
     nu, nu_iqr = F.load_nufold()
     coord = [rho[m] for m in ("RMalign", "US-align", "RTM-align")]
@@ -77,8 +79,8 @@ def main():
     RHO_YL, NU_YL = (1e-3, 2.0), (1e-3, 2.6)
     for row, (stat, name) in enumerate(((1, "median"), (0, "mean"))):
         a, b = axes[row]
-        P.draw_shape(a, rho, P.CURVES, stat, F.SIZES, RHO_YL, iqr=rho_iqr, coord=coord)
-        P.draw_shape(b, nu, P.CURVES, stat, F.NU_SIZES, NU_YL, iqr=nu_iqr)
+        P.draw_shape(a, rho, S14_CURVES, stat, F.SIZES, RHO_YL, iqr=rho_iqr, coord=coord)
+        P.draw_shape(b, nu, S14_CURVES, stat, F.NU_SIZES, NU_YL, iqr=nu_iqr)
         a.set_title(f"RhoFold+ ({name})", pad=4.0, color=P.INK)
         b.set_title(f"NuFold ({name})", pad=4.0, color=P.INK)
         a.set_ylabel("Cost per target,\nrelative to 1,000 structures")

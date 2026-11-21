@@ -1,4 +1,4 @@
-"""Supplementary figure (S20): where RFoldSearch's speed advantage over RiboSeek comes from.
+"""Supplementary figure (S20): RFoldSearch versus RiboSeek 0.2.1 RS-20 runtime.
 
 The panels stay bare; the fitted exponents and per-query counts are printed for the legend."""
 import json
@@ -17,7 +17,7 @@ import runtime_style as P
 MM = F.MM
 SIZES = [1000, 5000, 10000, 20000, 50000, 100000, 200000, 531888]
 NU = F.NU_DIR
-BLUE, PINK = P.COLOR["RFoldSearch"], P.COLOR["RiboSeek"]
+BLUE, PINK = P.COLOR["RFoldSearch"], P.COLOR["RiboSeek-RS20"]
 INK, MUTED = P.INK, P.MUTED
 
 
@@ -27,22 +27,28 @@ def ladder(pat):
 
 
 def main():
+    os.makedirs(F.FIGDIR, exist_ok=True)
     rf = ladder("nufold_timing_{n}.json")
-    rs = ladder("nufold_riboseek_rs80_{n}.json")
+    rs = ladder("nufold_riboseek_rs20_{n}.json")
     N = np.array(SIZES, dtype=float)
     ratio = rs / rf
     a_rf = np.polyfit(np.log(N), np.log(rf), 1)[0]
     a_rs = np.polyfit(np.log(N), np.log(rs), 1)[0]
 
-    # where the ratio crosses one, interpolated in log-log
-    i = int(np.argmax(ratio > 1.0))
-    cross = np.exp(np.log(N[i - 1]) + (np.log(1.0) - np.log(ratio[i - 1]))
-                   * (np.log(N[i]) - np.log(N[i - 1]))
-                   / (np.log(ratio[i]) - np.log(ratio[i - 1])))
+    # Interpolate a crossing only when RiboSeek starts faster. With the
+    # current RS-20 measurements RFoldSearch is already faster at 1,000
+    # structures, so there is no observed crossover to annotate.
+    cross = None
+    if ratio[0] < 1.0 and np.any(ratio > 1.0):
+        i = int(np.argmax(ratio > 1.0))
+        cross = np.exp(np.log(N[i - 1]) + (np.log(1.0) - np.log(ratio[i - 1]))
+                       * (np.log(N[i]) - np.log(N[i - 1]))
+                       / (np.log(ratio[i]) - np.log(ratio[i - 1])))
 
     full = json.load(open(os.path.join(NU, "nufold_timing_531888.json")))["per_query"]
-    rsq = json.load(open(os.path.join(NU, "nufold_riboseek_rs80_531888.json")))["per_query"]
-    assert [q["id"] for q in full] == [q["id"] for q in rsq], "query sets differ"
+    rsq = json.load(open(os.path.join(NU, "nufold_riboseek_rs20_531888.json")))["per_query"]
+    query_id = lambda q: q["id"].removesuffix(".pdb")
+    assert [query_id(q) for q in full] == [query_id(q) for q in rsq], "query sets differ"
     t_rf = np.array([q["s"] for q in full])
     t_rs = np.array([q["s"] for q in rsq])
     qlen = np.array([q["tokens"] for q in full], dtype=float)
@@ -53,21 +59,25 @@ def main():
     a, b = fig.add_subplot(gs[0, 0]), fig.add_subplot(gs[0, 1])
 
     # ---- A: ratio against database size
-    a.axhspan(1.0, 12, color=BLUE, alpha=0.05, lw=0)
+    ytop = max(12.0, 1.6 * float(ratio.max()))
+    a.axhspan(1.0, ytop, color=BLUE, alpha=0.05, lw=0)
     a.axhline(1.0, color=INK, lw=0.8, dashes=(2.2, 2.0), zorder=3)
     a.plot(N, ratio, "-o", color=BLUE, lw=1.9, ms=4.0, mec="white", mew=0.6,
            zorder=5)
-    a.axvline(cross, color=MUTED, lw=0.7, dashes=(1.4, 1.8), zorder=2)
+    if cross is not None:
+        a.axvline(cross, color=MUTED, lw=0.7, dashes=(1.4, 1.8), zorder=2)
     a.set_xscale("log"); a.set_yscale("log")
-    a.set_ylim(0.3, 12)
+    a.set_ylim(0.3, ytop)
     a.set_xlabel("Database size")
-    a.set_ylabel("RiboSeek / RFoldSearch time")
+    a.set_ylabel("RiboSeek RS-20 / RFoldSearch time")
     a.set_xticks([1000, 10000, 100000, 531888])
     a.set_xticklabels(["1k", "10k", "100k", "532k"])
-    a.set_yticks([0.3, 0.5, 1, 2, 5, 10])
-    a.set_yticklabels(["0.3", "0.5", "1", "2", "5", "10"])
-    a.text(cross * 0.92, 0.33, f"Crossover: {cross/1000:.0f}k", fontsize=6.0, color=MUTED,
-           va="bottom", ha="right")
+    yticks = [y for y in (0.3, 0.5, 1, 2, 5, 10, 20) if y <= ytop]
+    a.set_yticks(yticks)
+    a.set_yticklabels([f"{y:g}" for y in yticks])
+    if cross is not None:
+        a.text(cross * 0.92, 0.33, f"Crossover: {cross/1000:.0f}k", fontsize=6.0,
+               color=MUTED, va="bottom", ha="right")
     a.annotate(f"{ratio[-1]:.1f}×", xy=(N[-1], ratio[-1]),
                xytext=(-4, 7), textcoords="offset points", fontsize=7,
                color=BLUE, fontweight="bold", ha="right")
@@ -75,7 +85,7 @@ def main():
     a.text(0.035, 1.25, "RFoldSearch faster", transform=a.get_yaxis_transform(),
            fontsize=6.0, color=P.F.TEXT_COLOR["RFoldSearch"], ha="left", va="bottom")
     a.text(0.035, 0.82, "RiboSeek faster", transform=a.get_yaxis_transform(),
-           fontsize=6.0, color=P.F.TEXT_COLOR["RiboSeek"], ha="left", va="top")
+           fontsize=6.0, color=P.F.TEXT_COLOR["RiboSeek-RS20"], ha="left", va="top")
 
     # ---- B: paired per-query cost at full scale
     lim = (10 ** np.floor(np.log10(min(t_rf.min(), t_rs.min()))),
@@ -90,7 +100,7 @@ def main():
         set_ticks(ticks)
         set_labels([f"{t:g}" for t in ticks])
     b.set_xlabel("RFoldSearch time per query (s)")
-    b.set_ylabel("RiboSeek time per query (s)")
+    b.set_ylabel("RiboSeek RS-20 time per query (s)")
     cb = fig.colorbar(sc, ax=b, pad=0.02, fraction=0.045)
     cb.set_label("Query length", fontsize=6.0)
     cb.set_ticks([20, 50, 100, 200])
@@ -112,7 +122,8 @@ def main():
         out = os.path.join(F.FIGDIR, f"supp_riboseek_speed.{ext}")
         fig.savefig(out, dpi=600 if ext == "png" else None)
         print("wrote", out)
-    print(f"crossover {cross:,.0f}; alpha RF {a_rf:.3f} RS {a_rs:.3f}; "
+    cross_label = f"{cross:,.0f}" if cross is not None else "none in measured range"
+    print(f"crossover {cross_label}; alpha RF {a_rf:.3f} RS {a_rs:.3f}; "
           f"{n_above}/{len(t_rf)} above diagonal; median speedup {np.median(sp):.1f}x "
           f"(IQR {np.percentile(sp, 25):.1f}-{np.percentile(sp, 75):.1f})")
 

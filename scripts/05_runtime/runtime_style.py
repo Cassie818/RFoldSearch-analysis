@@ -19,6 +19,7 @@ COLOR = {m: F.COLOR[m] for m in ("RFoldSearch", "GTalign", "GTalign-fast", "Ribo
 MARKER = {m: F.MARKER[m] for m in COLOR}
 LABEL = {"RFoldSearch": "RFoldSearch", "GTalign": "GTalign (GPU)", "GTalign-fast": "GTalign (GPU)-fast",
          "RiboSeek": "RiboSeek (RS-80)", "BLASTN": "BLASTN"}
+LABEL["RiboSeek-RS20"] = "RiboSeek (RS-20)"
 CURVES = ["GTalign", "RiboSeek", "BLASTN", "RFoldSearch"]
 BAND = "#8A8A8A"
 INK, MUTED = "#1A1A1A", "#6B6B6B"

@@ -7,7 +7,7 @@ This repository contains the analysis and figure-generation code supporting the 
 - **RNA-specific structural representation:** 3Dr captures local tertiary geometry, base-pairing, stacking and spatial interaction context.
 - **Structure-aware retrieval:** indexed candidate search, token Smith–Waterman alignment and geometric scoring enable sensitive structural comparison.
 - **Retrieval beyond sequence similarity:** RFoldSearch finds structurally related RNAs that nucleotide sequence search misses.
-- **Scalable database search:** about 0.47 s per query against 531,888 predicted RNA structures on a single CPU core.
+- **Scalable database search:** about 0.31 s per query against 531,888 predicted RNA structures on a single CPU core with RFoldSearch 1.0.2.
 - **Interpretable structural patterns:** recurrent 3Dr words capture conserved local RNA geometry, including fragments of known RNA 3D motifs.
 
 ## Installation
@@ -25,7 +25,7 @@ pip install -r requirements.txt
 - Sequence-divergent zone summaries: `files/production/retrieval/sequence_divergent/zone_checks.json`.
 - Sequence-filtered family and clan results: `family_perquery.json` and `clan_perquery.json` in the same directory. The `B/N E<=10` key denotes positives reported by BLASTN or nhmmer at E ≤ 10.
 - Canonical 313-pair nucleotide-alignment summary: `files/ablation/rfam3d_reference_disjoint_independent_3dseed/rfam3d_reference_alignment_common_313.json`.
-- Runtime benchmarks: `files/predicted_runtime/` (see `single_system/README.md` there).
+- Runtime benchmarks: `files/predicted_runtime/` (see its `README.md` for the RFoldSearch 1.0.2 and RiboSeek 0.2.1 runs).
 
 ## Repository layout
 
