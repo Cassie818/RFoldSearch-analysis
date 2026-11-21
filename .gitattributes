@@ -1,0 +1,5 @@
+# Analysis outputs are data artifacts, not TeX source for this repository.
+*.tex linguist-detectable=false
+*.sty linguist-detectable=false
+*.cls linguist-detectable=false
+*.bst linguist-detectable=false
