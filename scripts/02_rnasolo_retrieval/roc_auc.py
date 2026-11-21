@@ -141,33 +141,7 @@ def main():
                 row.append(f"{s['estimate']:.3f} [{s['ci_lower']:.3f}, {s['ci_upper']:.3f}]"
                            + ("" if s["sig_vs_rf"] is None else (" *" if s["sig_vs_rf"] else "")))
             w.writerow(row)
-    write_tex(out, cols)
-    print("wrote roc_auc_test.json, roc_auc_table.tsv and roc_auc_table.tex")
-
-
-TEX_NAME = {"RiboSeek": "RiboSeek (RS-20)", "RiboSeek RS-80": "RiboSeek (RS-80)"}
-REFERENCE = {"tm": "US-align", "rm": "RMalign"}      # truth-defining aligner, near-circular
-
-
-def write_tex(out, cols):
-    """Supplementary table: mean per-query AUROC [95% block-bootstrap CI]."""
-    head = " & ".join(["Method"] + [lab.replace(">=", "$\\geq$") for _, lab in cols])
-    lines = ["\\begin{tabular}{l" + "c" * len(cols) + "}", "\\toprule", head + " \\\\",
-             " & ".join(["Queries / blocks"] + [
-                 f"{out['panels'][k]['summary']['RFoldSearch']['n_queries']} / "
-                 f"{out['panels'][k]['summary']['RFoldSearch']['n_blocks']}" for k, _ in cols]) + " \\\\",
-             "\\midrule"]
-    for m in METHODS:
-        cells = [TEX_NAME.get(m, m)]
-        for k, _ in cols:
-            s = out["panels"][k]["summary"][m]
-            ref = REFERENCE.get(k[:2]) == m
-            star = "" if s["sig_vs_rf"] is None or not s["sig_vs_rf"] else "$^{*}$"
-            cell = f"{s['estimate']:.3f} [{s['ci_lower']:.3f}, {s['ci_upper']:.3f}]{star}"
-            cells.append(f"\\textit{{{cell}}}" if ref else (f"\\textbf{{{cell}}}" if m == "RFoldSearch" else cell))
-        lines.append(" & ".join(cells) + " \\\\")
-    lines += ["\\bottomrule", "\\end{tabular}"]
-    open(os.path.join(BM.RET, "roc_auc_table.tex"), "w").write("\n".join(lines) + "\n")
+    print("wrote roc_auc_test.json and roc_auc_table.tsv")
 
 
 if __name__ == "__main__":
