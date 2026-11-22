@@ -243,10 +243,10 @@ def plddt_panel(ax, est, qplddt, truth, methods, title):
 
 
 def main():
+    main_only = "--main-only" in sys.argv[1:]
     os.makedirs(FIG, exist_ok=True)
     pq = json.load(open(os.path.join(HERE, "per_query.json")))
     fams = pq["families"]
-    data = collect()
     qplddt = {q["urs_id"]: q["plddt"] for q in
               json.load(open(os.path.join(ROOT, "sample", "p2p_queries.json")))["queries"]}
     order = ["exp", "p2p"]
@@ -278,14 +278,6 @@ def main():
         lo, hi = np.percentile(bs, [2.5, 97.5])
         return rate, max(rate - lo, 0), max(hi - rate, 0), int(arr[:, 0].sum()), int(np.sum(arr[:, 1] > 0))
 
-    h_values = {}
-    for qs in order:
-        for w in WHO:
-            for i, b in enumerate(BINS):
-                v = ratio_boot(data["recover"][qs][w][i])
-                h_values.setdefault(qs, {}).setdefault(f"{b[0]}-{b[1]}", {})[w] = dict(
-                    rate=v[0], lo=v[0] - v[1], hi=v[0] + v[2], missed=v[3], families_recovered=v[4])
-
     # ================= main figure =================
     fig = plt.figure(figsize=(16.0, 13.0))
     rows = fig.add_gridspec(3, 1, height_ratios=(1.05, 1, 1), hspace=0.44, left=0.12, right=0.99,
@@ -300,16 +292,17 @@ def main():
     # rows share their outer edges.
     r0 = fig.add_gridspec(1, 2, wspace=0.10, left=0.165, right=0.99,
                           top=rows[1].get_position(fig).y1, bottom=rows[1].get_position(fig).y0)
-    ax_a1 = overall_panel(fig, r0[0], est, "label", MAIN, None, "Annotation truth (Rfam family)")
+    ax_a1 = overall_panel(fig, r0[0], est, "label", MAIN, None,
+                          "NuFold retrieval: annotation truth (Rfam family)")
     title_c = fig.texts[-1]
     overall_panel(fig, r0[1], est, STRUCT_TRUTH, MAIN, "US-align (exhaustive)",
-                  f"Structure truth (TM-score ≥ {E.TM_MAIN:.2f})", ylabels=False)
+                  f"NuFold retrieval: US-align truth (TM-score ≥ {E.TM_MAIN:.2f})", ylabels=False)
     title_d = fig.texts[-1]
 
     r1 = rows[2].subgridspec(1, 2, wspace=0.22)
     ax_b, ax_c = (fig.add_subplot(r1[k]) for k in range(2))
     plddt_panel(ax_b, est, qplddt, STRUCT_TRUTH, [m for m in MAIN if m != "US-align (exhaustive)"],
-                "Predicted queries (structure truth)")
+                "Predicted queries (US-align-defined structure truth)")
 
     # C: structure truth, before/after neutralising sequence-detectable positives.
     # BLASTN and nhmmer are left out (their own positives become neutral) and US-align (the oracle).
@@ -328,8 +321,8 @@ def main():
     ax_c.set_xlim(-0.5, 1.5)
     ax_c.set_ylim(0, 0.7)
     S.style_axes(ax_c, ylabel=METRIC)
-    ax_c.set_title("Structure truth", fontsize=11.5, pad=6)
-    fill_legend(ax_c, ("All positives", "Sequence-detectable positives neutral"), loc="upper center",
+    ax_c.set_title("US-align-defined structure truth", fontsize=11.5, pad=6)
+    fill_legend(ax_c, ("All positives", "BLASTN/nhmmer positives neutral"), loc="upper center",
                 anchor=(0.5, 1.0), ncol=2)
     ax_c.set_ylim(0, 0.75)
 
@@ -362,7 +355,21 @@ def main():
     fig.legend(handles=handles, loc="lower center", ncol=5, frameon=False, fontsize=10.5,
                bbox_to_anchor=(0.5, -0.02), handlelength=2.6, columnspacing=2.2)
     fig.savefig(os.path.join(FIG, "fig5.png"), dpi=200, bbox_inches="tight")
+    fig.savefig(os.path.join(FIG, "fig5.pdf"), bbox_inches="tight")
     plt.close(fig)
+
+    if main_only:
+        print("wrote", os.path.join(FIG, "fig5.png"), "and", os.path.join(FIG, "fig5.pdf"))
+        return
+
+    data = collect()
+    h_values = {}
+    for qs in order:
+        for w in WHO:
+            for i, b in enumerate(BINS):
+                v = ratio_boot(data["recover"][qs][w][i])
+                h_values.setdefault(qs, {}).setdefault(f"{b[0]}-{b[1]}", {})[w] = dict(
+                    rate=v[0], lo=v[0] - v[1], hi=v[0] + v[2], missed=v[3], families_recovered=v[4])
 
     # ================= supplementary figure =================
     fig = plt.figure(figsize=(14.0, 6.0))

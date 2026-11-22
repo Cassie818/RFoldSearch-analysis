@@ -1,4 +1,4 @@
-"""Runtime panels: per-target search cost against database size, one panel per corpus,
+"""Runtime panels: mean search time per query against database size, one panel per corpus,
 with the full-database search-time ladder inset on the right of each panel."""
 import json
 import os
@@ -38,7 +38,8 @@ def panel(ax, data, sizes, ylim, methods, ladder_ylim, title):
     """Mean curves on the left, search-time ladder inset on the right."""
     k = P.K
     for m in methods:
-        xs, ys = P.per_thousand(data[m], 0)
+        xs = np.array(sorted(data[m]), dtype=float)
+        ys = np.array([data[m][n][0] for n in xs], dtype=float)
         lw, ms, z = P.curve_style(m)
         ax.plot(xs, ys, linestyle(m), color=P.COLOR[m], lw=lw,
                 marker=P.MARKER[m], ms=ms, mec="white", mew=0.4 * k, zorder=z)
@@ -113,7 +114,7 @@ def speed_row(fig, cell, wspace=0.06):
 
     sub = cell.subgridspec(1, 2, wspace=wspace)
     a = fig.add_subplot(sub[0]); b = fig.add_subplot(sub[1], sharey=a)
-    ylim, ladder_ylim = (2.8e-5, 60), (5e-2, 1.2e4)       # shared by both panels
+    ylim, ladder_ylim = (3e-2, 3e3), (5e-2, 1.2e4)       # shared by both panels
     panel(a, rho, F.SIZES, ylim,
           ("RMalign", "US-align", "RTM-align", "Infernal", "Infernal-fast", "GTalign",
            "GTalign-fast", "RiboSeek-RS20", "RiboSeek", "BLASTN", "RFoldSearch"),
@@ -121,7 +122,7 @@ def speed_row(fig, cell, wspace=0.06):
     panel(b, nu, F.NU_SIZES, ylim,
           ("GTalign", "RiboSeek-RS20", "RiboSeek", "BLASTN", "RFoldSearch"),
           ladder_ylim, "NuFold database")
-    a.set_ylabel("Search time per\n1,000 targets (s)", fontsize=7.2 * P.K)
+    a.set_ylabel("Mean search time\nper query (s)", fontsize=7.2 * P.K)
     b.tick_params(labelleft=False)
     return a, b
 
