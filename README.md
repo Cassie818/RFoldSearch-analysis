@@ -77,6 +77,26 @@ RFoldSearch is freely available as open-source software, a web server and a REST
 - **Source code:** [https://github.com/DylanYang/RFoldSearch](https://github.com/DylanYang/RFoldSearch)
 - **Analysis and figure reproduction:** [https://github.com/Cassie818/RFoldSearch-analysis](https://github.com/Cassie818/RFoldSearch-analysis)
 
+## Citation
+
+If you use RFoldSearch or the analyses in this repository, please cite:
+
+```bibtex
+@article{chen2026rfoldsearch,
+  title   = {{RFoldSearch} enables fast {RNA} structure search beyond sequence similarity},
+  author  = {Chen, Ruyi and
+             Yang, Wudao and
+             Li, Hongxiang and
+             Rost, Burkhard and
+             Bod{\'e}n, Mikael and
+             Heinzinger, Michael},
+  journal = {bioRxiv},
+  year    = {2026},
+  doi     = {10.64898/2026.11.23.768743},
+  url     = {https://doi.org/10.64898/2026.11.23.768743}
+}
+```
+
 ## License
 
 Apache License 2.0; see [LICENSE](LICENSE).
